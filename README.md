@@ -29,6 +29,7 @@ npm run lint
 ## Documentação
 
 - [Ponto de retomada](docs/ponto-retomada.md).
+- [Etapas do projeto e situação atual](docs/etapas-projeto.md).
 - [Configuração Supabase](docs/primeiro-projeto-supabase.md).
 - [Modelo e decisões da operação](docs/modelo-relacional.md).
 - [Planejamento das etapas](docs/planejamento-proximas-etapas.md).
