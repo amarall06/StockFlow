@@ -34,6 +34,4 @@ npm run lint
 - [Modelo e decisões da operação](docs/modelo-relacional.md).
 - [Planejamento das etapas](docs/planejamento-proximas-etapas.md).
 - [Acesso e administração](docs/regras-acesso-administracao.md).
-- Guias de estudo do código na pasta `docs/`.
 
-As migrações ficam em `supabase/migrations/`, em ordem numérica. Aplique somente a próxima necessária; não repita as já executadas. O seed de demonstração destina-se a uma base vazia, não a uma instalação com dados existentes.
