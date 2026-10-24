@@ -1,0 +1,35 @@
+.application-history { padding: 20px 22px; border-top: 1px solid #e9dfd8; }
+.application-history-heading, .application-history-record-heading, .application-history-dialog-heading, .application-history-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.application-history-heading p, .application-history-dialog-heading p { margin: 6px 0 0; color: #74818a; font-size: 12px; line-height: 1.5; }
+.application-history-list { display: grid; gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; }
+.application-history-record { min-width: 0; padding: 14px; border: 1px solid #e9dfd8; border-radius: 7px; background: #fffcf9; }
+.application-history-record-heading { flex-wrap: wrap; align-items: start; }
+.application-history-record-heading strong { color: #40515a; font-size: 12px; }
+.application-history-record time { color: #74818a; font-size: 11px; }
+.application-history-actor, .application-history-more { margin: 7px 0 0; color: #74818a; font-size: 11px; }
+.application-change-lines { margin: 10px 0 0; padding-left: 18px; color: #566671; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.application-history-message { padding: 12px 0; color: #74818a; font-size: 12px; }
+.application-history-actions { display: flex; justify-content: end; margin-top: 16px; }
+.application-history-actions button { min-height: 38px; }
+.application-history-footnote { margin: 16px 0 0; color: #74818a; font-size: 10px; line-height: 1.6; }
+.application-history button:disabled, .application-history-dialog button:disabled { opacity: .5; cursor: not-allowed; }
+.application-history .catalog-notice { margin: 16px 0 0; }
+.application-history-dialog { box-sizing: border-box; width: min(900px, calc(100vw - 32px)); max-height: 90dvh; padding: 24px; border: 1px solid #eadbd1; border-radius: 12px; background: #fff; color: #263c48; box-shadow: 0 20px 80px #0004; }
+.application-history-dialog::backdrop { background: #261d19a6; }
+.application-history-dialog-body { min-height: 80px; }
+.application-history-dialog-heading { align-items: start; }
+.application-history-pagination { flex-wrap: wrap; margin-top: 20px; color: #74818a; font-size: 11px; }
+.application-history-pagination > div { display: flex; flex-wrap: wrap; gap: 8px; }
+.application-history-snapshots { margin-top: 14px; color: #566671; font-size: 12px; }
+.application-history-snapshots summary { cursor: pointer; color: #9a5541; }
+.application-history-snapshots > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.application-history-snapshots section { padding: 12px; border: 1px solid #eadbd1; border-radius: 6px; background: #fff; }
+.application-history-snapshots h3 { margin: 0 0 8px; color: #40515a; font-size: 12px; }
+.application-history-snapshots p { color: #74818a; font-size: 12px; }
+.theme-dark .application-history { border-color: #4a3832; }
+.theme-dark .application-history-dialog { border-color: #5b4841; background: #29211e; color: #f1e7df; color-scheme: dark; }
+.theme-dark .application-history-record, .theme-dark .application-history-snapshots section { border-color: #5b4841; background: #382c28; }
+.theme-dark .application-history-record-heading strong, .theme-dark .application-history-snapshots h3 { color: #f1e7df; }
+.theme-dark .application-history-heading p, .theme-dark .application-history-dialog p, .theme-dark .application-history-record p, .theme-dark .application-history-record time, .theme-dark .application-change-lines, .theme-dark .application-history-footnote, .theme-dark .application-history-message, .theme-dark .application-history-pagination { color: #c0aca1; }
+.theme-dark .application-history-snapshots summary { color: #e2b999; }
+@media (max-width: 650px) { .application-history { padding: 16px 14px; } .application-history-heading { align-items: start; flex-direction: column; } .application-history-dialog { padding: 16px; } .application-history-snapshots > div { grid-template-columns: 1fr; } }

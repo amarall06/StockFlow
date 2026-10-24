@@ -1,32 +1,38 @@
-# React + TypeScript + Vite
+# LIBER automotive
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Protótipo de estoque de amortecedores e molas com React, TypeScript, Vite e Supabase. Usa produtos fictícios durante o desenvolvimento.
 
-Currently, two official plugins are available:
+## Executar localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```powershell
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Configure `.env.local` conforme `.env.example`, com a URL Supabase e a chave publicável. A configuração local é ignorada pelo Git. Chaves administrativas pertencem exclusivamente ao servidor.
+
+```powershell
+npm run build
+npm run lint
+```
+
+## Recursos atuais
+
+- Login e nome do usuário persistidos no Supabase.
+- Estoque em caixas, consulta por código, entradas, transferências e histórico.
+- Molas com códigos independentes e sem testagem.
+- Aplicações de veículos/anos e tipos de amortecedor, com histórico de modificações.
+- Cadastro de fabricantes da garantia.
+- Tema claro/escuro por ícones em todas as telas.
+- Adicionar/retirar caixas da garantia por fabricante preparado no código; aguarda confirmar a migração 008 e o teste no banco.
+
+## Documentação
+
+- [Ponto de retomada](docs/ponto-retomada.md).
+- [Configuração Supabase](docs/primeiro-projeto-supabase.md).
+- [Modelo e decisões da operação](docs/modelo-relacional.md).
+- [Planejamento das etapas](docs/planejamento-proximas-etapas.md).
+- [Acesso e administração](docs/regras-acesso-administracao.md).
+- Guias de estudo do código na pasta `docs/`.
+
+As migrações ficam em `supabase/migrations/`, em ordem numérica. Aplique somente a próxima necessária; não repita as já executadas. O seed de demonstração destina-se a uma base vazia, não a uma instalação com dados existentes.

@@ -1,0 +1,13 @@
+.history-filters { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; padding: 20px 22px; border-bottom: 1px solid #edf0f2; }
+.history-filters label { display: grid; gap: 7px; color: #667780; font-size: 11px; }
+.history-filters input, .history-filters select { min-height: 36px; padding: 0 10px; border: 1px solid #dfe7ea; border-radius: 5px; background: #fff; color: #253e4b; font: inherit; font-size: 12px; }
+.history-message { padding: 30px 22px; color: #74818a; font-size: 13px; }
+.history-detail { display: block; margin-top: 5px; color: #74818a; font-size: 10px; }
+.history-note { max-width: 230px; white-space: normal; line-height: 1.5; }
+.history-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 22px; color: #74818a; font-size: 11px; }
+.history-pagination > div { display: flex; gap: 8px; }
+.history-panel button:disabled, .page-heading button:disabled { opacity: .5; cursor: not-allowed; }
+.theme-dark .history-filters { border-color: #4a3832; }
+.theme-dark .history-filters label, .theme-dark .history-detail, .theme-dark .history-message, .theme-dark .history-pagination { color: #c0aca1; }
+.theme-dark .history-filters input, .theme-dark .history-filters select { border-color: #5b4841; background: #382c28; color: #f1e7df; }
+@media (max-width: 650px) { .history-filters { padding: 16px 14px; } .history-filters label { flex: 1 1 100%; } .history-filters button { width: 100%; } }

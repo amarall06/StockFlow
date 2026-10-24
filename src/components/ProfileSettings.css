@@ -1,0 +1,26 @@
+.profile-open-button { display: inline-flex; align-items: center; gap: 9px; min-width: 0; padding: 3px; border: 0; border-radius: 5px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.profile-open-button:hover { background: #a95c460d; }
+.profile-open-button:focus-visible { outline: 2px solid #a95c46; outline-offset: 2px; }
+.profile-name-text { max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.profile-name-text small { display: block; margin-top: 3px; color: #90776c; font-size: 9px; }
+.profile-panel { max-width: 760px; padding: 24px; }
+.profile-account { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; padding-bottom: 22px; border-bottom: 1px solid #e9dfd8; }
+.profile-account dt { color: #74818a; font-size: 11px; }
+.profile-account dd { margin: 7px 0 0; color: #40515a; font-size: 13px; overflow-wrap: anywhere; }
+.profile-form { display: grid; gap: 10px; margin-top: 22px; }
+.profile-form > label { color: #566671; font-size: 12px; font-weight: 600; }
+.profile-form input { min-height: 40px; padding: 0 11px; border: 1px solid #dfe7ea; border-radius: 6px; background: #fff; color: #253e4b; font: inherit; font-size: 13px; }
+.profile-form input:focus { outline: 2px solid #a95c4640; outline-offset: 1px; }
+.profile-form p { margin: 0; color: #74818a; font-size: 12px; line-height: 1.6; }
+.profile-form button { justify-self: start; min-height: 38px; margin-top: 5px; }
+.profile-form button:disabled { opacity: .5; cursor: not-allowed; }
+.profile-form .auth-error { color: #a73c35; }
+.profile-form .profile-success { padding: 10px; border-radius: 6px; background: #edf3ed; color: #426749; }
+.profile-notice { margin: 18px 0 0; padding: 12px; border-radius: 6px; background: #fbf0d8; color: #805f30; font-size: 12px; line-height: 1.6; }
+.theme-dark .profile-account { border-color: #4a3832; }
+.theme-dark .profile-form input { border-color: #5b4841; background: #382c28; color: #f1e7df; }
+.theme-dark .profile-account dd, .theme-dark .profile-form > label { color: #f1e7df; }
+.theme-dark .profile-account dt, .theme-dark .profile-form p, .theme-dark .profile-name-text small { color: #c0aca1; }
+.theme-dark .profile-notice { background: #42351f; color: #efcd7c; }
+.theme-dark .profile-form .profile-success { background: #203b30; color: #9bd6b6; }
+@media (max-width: 650px) { .profile-panel { padding: 18px; } .profile-account { grid-template-columns: 1fr; } .profile-name-text { max-width: 100px; } }

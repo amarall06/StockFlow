@@ -7,6 +7,9 @@
 .brand-light { margin-left: 3px; color: #e8c178; font-size: 12px; font-weight: 500; letter-spacing: 0; }
 .sidebar-label { margin: 52px 9px 13px; color: #baa39a; font-size: 10px; font-weight: 700; letter-spacing: 1.15px; }
 .nav-item { display: flex; align-items: center; gap: 12px; margin: 2px 0; padding: 11px 10px; border-radius: 7px; color: #ddcfc8; font-size: 13px; text-decoration: none; }
+.nav-item { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; font-family: inherit; }
+.nav-item-disabled { cursor: not-allowed; opacity: .58; }
+.nav-item-disabled small { margin-left: auto; color: #e8c178; font-size: 9px; }
 .nav-item.active { color: #fff; background: #54403a; }
 .nav-icon { width: 18px; text-align: center; font-size: 17px; }
 .sidebar-bottom { display: flex; align-items: center; gap: 9px; margin-top: auto; padding: 13px 8px 2px; border-top: 1px solid #51413d; color: #dbc8bf; font-size: 11px; }
@@ -170,10 +173,11 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 
 @media (max-width: 650px) {
   .app-shell { display: block; }
-  .sidebar { min-height: auto; flex-direction: row; align-items: center; justify-content: space-between; padding: 13px 16px; }
+  .sidebar { min-height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 13px 16px; }
   .brand { font-size: 18px; }
   .brand-mark { width: 29px; height: 29px; }
-  .sidebar-label, .nav-item, .sidebar-bottom { display: none; }
+  .sidebar-label, .sidebar-bottom { display: none; }
+  .nav-item { width: auto; flex: 1; justify-content: center; margin-top: 8px; padding: 8px 5px; font-size: 11px; }
   .topbar { height: 52px; padding: 0 18px; }
   .content { padding: 27px 16px 36px; }
   .scan-result { grid-template-columns: 1fr; gap: 10px; }
@@ -235,3 +239,84 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 @media (max-width: 650px) {
   .page-heading-tools { flex-wrap: wrap; }
 }
+
+/* Cartões iniciais para visualizar a futura organização de garantias por prefixo. */
+.warranty-notice { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 18px; padding: 16px; border: 1px solid #ead5b2; border-radius: 9px; background: #fbf5e9; }
+.warranty-notice-icon { width: 23px; height: 23px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #e8c178; color: #49372f; font-size: 13px; font-weight: 700; }
+.warranty-notice h2 { margin: 2px 0 6px; color: #49372f; }
+.warranty-notice p { max-width: 760px; margin: 0; color: #806d62; font-size: 12px; line-height: 1.6; }
+.warranty-flow { margin-bottom: 18px; padding: 17px; border: 1px solid #eee6df; border-radius: 9px; background: #fff; }
+.warranty-flow-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.warranty-flow-heading p { margin: 5px 0 0; color: #87939b; font-size: 11px; }
+.warranty-draft-badge { padding: 5px 8px; border-radius: 12px; background: #fbf0d8; color: #8f6c36; font-size: 9px; font-weight: 700; letter-spacing: .4px; }
+.warranty-flow-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 14px; }
+.warranty-flow-card { display: flex; align-items: flex-start; gap: 10px; min-height: 95px; padding: 12px; border: 1px solid #eee6df; border-radius: 7px; background: #fffcf9; }
+.warranty-step-number { width: 23px; height: 23px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #f6ece4; color: #a95c46; font-size: 10px; font-weight: 700; }
+.warranty-flow-card h3 { margin: 2px 0 5px; color: #49372f; font-size: 11px; }
+.warranty-flow-card p { margin: 0; color: #806d62; font-size: 10px; line-height: 1.55; }
+.warranty-open-flow { margin: 12px 0 0; padding: 9px 10px; border-radius: 6px; background: #fbf5e9; color: #806d62; font-size: 10px; line-height: 1.5; }
+.warranty-open-flow strong { color: #704438; }
+.warranty-maker-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.warranty-maker-card { display: flex; align-items: flex-start; gap: 12px; min-height: 130px; padding: 16px; border: 1px solid #eee6df; border-radius: 9px; background: #fff; }
+.warranty-maker-icon { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 8px; background: #f6ece4; color: #a95c46; }
+.warranty-maker-label { margin: 0 0 4px; color: #90776c; font-size: 9px; font-weight: 700; letter-spacing: .7px; }
+.warranty-maker-card h2 { color: #49372f; font-size: 16px; }
+.warranty-maker-empty { margin: 7px 0 0; color: #87939b; font-size: 11px; }
+.warranty-count { margin-left: auto; padding: 5px 8px; border-radius: 12px; background: #f8efe6; color: #805c4b; font-size: 9px; white-space: nowrap; }
+.warranty-footnote { margin: 15px 0; color: #90776c; font-size: 11px; line-height: 1.6; }
+.spring-prefix-note { margin-top: 18px; padding: 17px; border: 1px dashed #d8b77d; border-radius: 9px; background: #fffcf6; }
+.spring-prefix-note h2 { margin-top: 4px; color: #49372f; }
+.spring-prefix-note > p:not(.warranty-maker-label) { margin: 7px 0 0; color: #806d62; font-size: 11px; }
+.spring-prefix-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.spring-prefix-pair { display: inline-flex; align-items: center; gap: 9px; padding: 7px 10px; border: 1px solid #eee6df; border-radius: 6px; background: #fff; color: #a95c46; font-size: 11px; }
+.spring-prefix-pair strong { color: #704438; }
+.theme-dark .warranty-notice { border-color: #665432; background: #382f20; }
+.theme-dark .warranty-notice-icon { background: #a87935; color: #fff4dc; }
+.theme-dark .warranty-notice h2, .theme-dark .warranty-maker-card h2 { color: #f1e7df; }
+.theme-dark .warranty-notice p, .theme-dark .warranty-footnote, .theme-dark .warranty-maker-label { color: #c0aca1; }
+.theme-dark .warranty-flow { border-color: #4a3832; background: #29211e; }
+.theme-dark .warranty-flow-heading p, .theme-dark .warranty-flow-card p { color: #c0aca1; }
+.theme-dark .warranty-flow-card { border-color: #4a3832; background: #332823; }
+.theme-dark .warranty-flow-card h3, .theme-dark .warranty-open-flow strong { color: #f1e7df; }
+.theme-dark .warranty-step-number { background: #45342d; color: #e3c38f; }
+.theme-dark .warranty-draft-badge { background: #42351f; color: #efcd7c; }
+.theme-dark .warranty-open-flow { background: #382f20; color: #c0aca1; }
+.theme-dark .warranty-maker-card { border-color: #4a3832; background: #29211e; }
+.theme-dark .warranty-maker-icon { background: #45342d; color: #e3c38f; }
+.theme-dark .warranty-count { background: #44342f; color: #dfd0c6; }
+.theme-dark .spring-prefix-note { border-color: #806b46; background: #29241b; }
+.theme-dark .spring-prefix-note h2, .theme-dark .spring-prefix-pair strong { color: #f1e7df; }
+.theme-dark .spring-prefix-note > p:not(.warranty-maker-label) { color: #c0aca1; }
+.theme-dark .spring-prefix-pair { border-color: #4a3832; background: #332823; color: #e3c38f; }
+@media (max-width: 650px) { .warranty-maker-grid, .warranty-flow-grid { grid-template-columns: 1fr; } }
+
+/* Tela de autenticação do Supabase, exibida antes do módulo de demonstração. */
+.auth-screen { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 15% 10%, #f8edd9 0, transparent 38%), #f6f8fa; }
+.auth-card { width: min(100%, 420px); padding: 34px; border: 1px solid #eadfd5; border-radius: 14px; background: #fff; box-shadow: 0 18px 50px #4f382014; }
+.auth-brand { display: flex; align-items: center; gap: 10px; color: #49372f; font-size: 18px; font-weight: 750; letter-spacing: -.4px; }
+.auth-brand .brand-mark { width: 34px; height: 34px; margin: 0; }
+.auth-eyebrow { margin: 29px 0 7px; color: #a95c46; font-size: 10px; font-weight: 750; letter-spacing: 1px; }
+.auth-card h1 { margin: 0; color: #263c48; font-size: 25px; letter-spacing: -.6px; }
+.auth-description, .auth-card > p:not(.auth-eyebrow):not(.auth-error) { color: #74818a; font-size: 12px; line-height: 1.6; }
+.auth-form { display: grid; gap: 9px; margin-top: 23px; }
+.auth-form label { margin-top: 5px; color: #566671; font-size: 11px; font-weight: 650; }
+.auth-form input { height: 41px; padding: 0 11px; border: 1px solid #dfe5e7; border-radius: 6px; background: #fff; color: #263c48; font-size: 12px; }
+.auth-form input:focus { outline: 0; border-color: #bd8069; box-shadow: 0 0 0 3px #a95c4617; }
+.auth-form button, .auth-secondary-button { min-height: 41px; margin-top: 8px; border: 0; border-radius: 6px; background: #a95c46; color: #fff; cursor: pointer; font-size: 12px; font-weight: 650; }
+.auth-form button:hover, .auth-secondary-button:hover { background: #914a39; }
+.auth-form button:disabled { cursor: wait; opacity: .7; }
+.auth-error { color: #a73c35; font-size: 11px; line-height: 1.5; }
+.auth-secondary-button { padding: 0 14px; }
+.sign-out-button { padding: 6px 9px; border: 1px solid #eadbd1; border-radius: 5px; background: #fffdfa; color: #805c4b; cursor: pointer; font-size: 10px; }
+.sign-out-button:hover { background: #f8efe6; }
+.auth-form button:disabled, .add-product-button:disabled, .location-create-form button:disabled, .transfer-form > button:disabled { cursor: not-allowed; opacity: .55; }
+.summary-grid-springs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.theme-icon-toggle { flex: 0 0 38px; width: 38px; height: 38px; padding: 0; justify-content: center; color: #a87935; }
+.theme-icon-toggle:focus-visible { outline: 2px solid #a95c46; outline-offset: 2px; }
+.auth-screen { position: relative; }
+.auth-theme-toggle { position: absolute; top: 20px; right: 20px; }
+.auth-screen.theme-dark { background: radial-gradient(circle at 15% 10%, #3e3025 0, transparent 38%), #1b1716; }
+.auth-screen.theme-dark .auth-card { border-color: #5b4841; background: #29211e; color: #f1e7df; }
+.auth-screen.theme-dark .auth-card h1, .auth-screen.theme-dark .auth-brand { color: #f1e7df; }
+.auth-screen.theme-dark .auth-form input { border-color: #5b4841; background: #382c28; color: #f1e7df; }
+.auth-screen.theme-dark .auth-form label, .auth-screen.theme-dark .auth-card > p:not(.auth-error) { color: #c0aca1; }

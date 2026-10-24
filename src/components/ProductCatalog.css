@@ -1,0 +1,42 @@
+.catalog-selection, .catalog-editor { padding: 20px 22px; }
+.catalog-selection { border-bottom: 1px solid #edf0f2; }
+.catalog-selection label, .catalog-editor label { display: grid; gap: 7px; color: #667780; font-size: 11px; }
+.catalog-selection select { width: min(100%, 360px); }
+.catalog-panel input, .catalog-panel select { min-width: 0; height: 38px; padding: 0 10px; border: 1px solid #dfe7ea; border-radius: 6px; background: #fff; color: #253e4b; font: inherit; font-size: 12px; }
+.catalog-panel input:focus, .catalog-panel select:focus { outline: 2px solid #a95c4640; outline-offset: 1px; }
+.catalog-notice, .catalog-success { margin: 16px 22px 0; padding: 12px; border-radius: 6px; font-size: 12px; line-height: 1.6; }
+.catalog-notice { background: #fbf0d8; color: #805f30; }
+.catalog-success { background: #edf3ed; color: #426749; }
+.catalog-product-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.catalog-product-heading p, .catalog-application-heading p, .catalog-empty { color: #74818a; font-size: 12px; line-height: 1.6; }
+.catalog-editor fieldset { margin: 0; padding: 0; min-width: 0; border: 0; }
+.catalog-type { max-width: 360px; }
+.catalog-editor h3, .catalog-preview h3 { margin: 0 0 7px; color: #40515a; font-size: 12px; }
+.catalog-application-heading { margin-top: 22px; }
+.catalog-application-row { display: grid; grid-template-columns: minmax(180px, 2fr) minmax(90px, 1fr) minmax(90px, 1fr) auto; align-items: end; gap: 12px; margin-bottom: 14px; }
+.catalog-remove { min-height: 38px; padding: 0 10px; border: 1px solid #eadbd1; border-radius: 6px; background: #fffdfa; color: #805c4b; cursor: pointer; font-size: 11px; }
+.catalog-save { display: flex; justify-content: end; margin-top: 20px; }
+.catalog-save button { min-height: 38px; }
+.catalog-editor fieldset:disabled { opacity: .65; }
+.catalog-editor button:disabled { cursor: not-allowed; }
+.catalog-preview { margin-top: 24px; padding: 16px; border: 1px solid #e9dfd8; border-radius: 7px; background: #fffcf9; }
+.catalog-preview-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.catalog-preview-heading h3 { margin: 0; }
+.vehicle-applications, .vehicle-application { display: block; }
+.vehicle-application + .vehicle-application { margin-top: 7px; }
+.vehicle-applications .vehicle-model { display: block; color: #40515a; font-size: 12px; font-weight: 500; letter-spacing: normal; white-space: normal; }
+.vehicle-applications .vehicle-years { display: block; margin: 3px 0 0; color: #74818a; font-size: 10px; font-weight: 400; }
+.vehicle-applications .vehicle-fallback, .vehicle-applications .vehicle-shock-type { display: block; margin-top: 4px; color: #74818a; font-size: 10px; letter-spacing: normal; font-weight: 400; white-space: normal; }
+.vehicle-applications .vehicle-shock-type { color: #a15d45; }
+.product-edit-button { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; min-height: 28px; padding: 4px; border: 1px solid #eadbd1; border-radius: 5px; background: #fffdfa; color: #9a5541; cursor: pointer; }
+.product-edit-button:hover { background: #f8eadc; border-color: #c48d73; }
+.product-edit-button:focus-visible { outline: 2px solid #a95c46; outline-offset: 2px; }
+.theme-dark .product-edit-button { border-color: #5b4841; background: #382c28; color: #e2b999; }
+.theme-dark .catalog-selection { border-color: #4a3832; }
+.theme-dark .catalog-panel input, .theme-dark .catalog-panel select { border-color: #5b4841; background: #382c28; color: #f1e7df; }
+.theme-dark .catalog-editor h3, .theme-dark .catalog-preview h3, .theme-dark .vehicle-applications .vehicle-model { color: #f1e7df; }
+.theme-dark .catalog-panel label, .theme-dark .catalog-panel p, .theme-dark .vehicle-applications .vehicle-years, .theme-dark .vehicle-applications .vehicle-fallback, .theme-dark .vehicle-applications .vehicle-shock-type { color: #c0aca1; }
+.theme-dark .catalog-preview, .theme-dark .catalog-remove { border-color: #5b4841; background: #382c28; color: #f1e7df; }
+.theme-dark .catalog-notice { background: #42351f; }
+.theme-dark .catalog-success { background: #203b30; }
+@media (max-width: 650px) { .catalog-selection, .catalog-editor { padding: 16px 14px; } .catalog-application-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .catalog-application-row > label:first-child { grid-column: 1 / -1; } .catalog-remove { grid-column: 1 / -1; } }
