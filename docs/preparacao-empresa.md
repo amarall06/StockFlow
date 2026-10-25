@@ -15,6 +15,12 @@ Compilar, verificar as funções alteradas, fazer commit e push da pasta ativa e
 
 ## Backup — pendente até exportação e restauração conferidas
 
+Conferência no painel em 25/10: organização Liber no plano Free. A página Scheduled backups informa que esse plano não inclui backups do projeto. Nenhum upgrade foi contratado. O usuário confirmou ter a senha do banco, sem compartilhá-la. Preparados clientes portáteis PostgreSQL 18.6 em outputs/tools/pgsql/bin, extraídos do arquivo oficial EDB indicado pelo PostgreSQL para Windows; executáveis pg_dump e pg_restore conferidos. Certificado público do Supabase obtido no botão Download certificate de Database > Settings, somado às raízes confiáveis do Windows para a verificação TLS.
+
+Script `scripts/backup-database.ps1`: pede senha oculta no PowerShell do usuário, verifica TLS/hostname, ativa modo somente leitura, exporta banco em formato custom e cargos sem senhas, verifica índice com pg_restore --list e grava hashes e manifesto. O destino é outputs/Backups/Supabase, fora do Git. Sintaxe conferida, mas **a exportação ainda não foi executada com a senha**. A leitura do índice não substitui teste de restauração. Backups não incluem objetos de Storage, configuração da plataforma, funções Edge ou segredos externos; preservar estes itens separadamente quando aplicável.
+
+Executar no PowerShell do usuário: `& "C:/Users/fs_am/Documents/Codex/2026-10-23/files-mentioned-by-the-user-projeto/outputs/StockFlow/scripts/backup-database.ps1"`. Não enviar a senha, o dump ou os arquivos de contas ao chat. Guardar em local privado e separado do computador após confirmar a exportação. Uma pasta com manifesto failed/incomplete não é backup concluído.
+
 GitHub guarda código, não os dados do banco ou as contas do Supabase. A chave publishable não produz um backup administrativo completo.
 
 1. Entrar no painel do projeto e conferir Database > Backups: data, cobertura e retenção disponíveis. Não contratar upgrade sem autorização.

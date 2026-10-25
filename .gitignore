@@ -11,6 +11,9 @@ node_modules
 .npm-cache/
 dist
 dist-ssr
+*.dump
+*.backup
+backups/
 *.local
 
 # Editor directories and files
