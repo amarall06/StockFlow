@@ -1,0 +1,29 @@
+.stock-alerts{padding:22px;margin-bottom:24px}
+.alerts-heading,.minimum-heading{display:flex;justify-content:space-between;align-items:start;gap:14px}
+.alerts-heading h2,.minimum-heading h2{margin:0;font-size:18px}
+.alerts-heading p,.alerts-message,.stock-alert-cards p,.minimum-dialog p{font-size:12px;color:#74685e;line-height:1.6}
+.alerts-actions{display:flex;flex-wrap:wrap;gap:8px;flex-shrink:0}
+.stock-alerts button,.minimum-dialog button{min-height:35px}
+.stock-alerts button:disabled,.minimum-dialog button:disabled{opacity:.5;cursor:not-allowed}
+.alerts-totals{display:flex;flex-wrap:wrap;gap:12px;margin:15px 0;font-size:12px;color:#74685e}
+.alerts-totals>span{padding:9px 12px;border:1px solid #eadbd1;border-radius:6px}
+.stock-alert-cards{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0;margin:16px 0}
+.stock-alert-cards li{padding:14px;border:1px solid #e7d3c3;border-radius:8px;background:#fffaf0}
+.stock-alert-cards .stock-alert-zero{border-color:#dba599;background:#fff5f1}
+.alert-card-title{display:flex;align-items:center;gap:10px;color:#784d3b;font-size:14px}
+.alert-card-title>span{font-size:11px;flex:1}
+.stock-alert-cards p{margin:10px 0 0;overflow-wrap:anywhere}
+.minimum-dialog{box-sizing:border-box;width:min(520px,calc(100vw - 32px));max-height:90dvh;overflow:auto;padding:24px;border:1px solid #eadbd1;border-radius:12px;background:#fff;color:#49372f;box-shadow:0 20px 80px #0004}
+.minimum-dialog::backdrop{background:#261d19a6}
+.minimum-dialog fieldset{display:grid;gap:14px;min-width:0;border:0;padding:0;margin:20px 0}
+.minimum-dialog label{display:grid;gap:7px;font-size:12px}
+.minimum-dialog input,.minimum-dialog select{box-sizing:border-box;width:100%;min-width:0;min-height:38px;padding:8px;border:1px solid #dfc9bc;border-radius:6px;background:#fff;color:#49372f;font:inherit}
+.theme-dark .alerts-heading p,.theme-dark .alerts-message,.theme-dark .alerts-totals,.theme-dark .stock-alert-cards p,.theme-dark .minimum-dialog p{color:#c0aca1}
+.theme-dark .alerts-totals>span{border-color:#5b4841}
+.theme-dark .stock-alert-cards li{border-color:#71533b;background:#3d3022}
+.theme-dark .stock-alert-cards .stock-alert-zero{border-color:#8b5148;background:#402a25}
+.theme-dark .alert-card-title{color:#f0c9aa}
+.theme-dark .minimum-dialog{border-color:#5b4841;background:#29211e;color:#f1e7df;color-scheme:dark}
+.theme-dark .minimum-dialog input,.theme-dark .minimum-dialog select{border-color:#5b4841;background:#382c28;color:#f1e7df}
+@media(max-width:900px){.alerts-heading{flex-wrap:wrap}.alerts-actions{flex-shrink:1}}
+@media(max-width:650px){.stock-alerts{padding:16px}.stock-alert-cards{grid-template-columns:1fr}.minimum-dialog{padding:16px}}

@@ -6,6 +6,8 @@ export type ProductInfo = {
   vehicleApplications?: VehicleApplication[]
   shockType?: ShockType | null
   updatedAt?: string
+  minimumBoxes?: number | null
+  minimumUpdatedAt?: string
 }
 
 export const shockTypeLabels: Record<ShockType, string> = {

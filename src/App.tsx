@@ -8,6 +8,7 @@ import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ReceiptForm } from './components/ReceiptForm'
 import { StockOutflows } from './components/StockOutflows'
+import { StockAlerts } from './components/StockAlerts'
 import { ProductApplications } from './components/ProductApplications'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
@@ -616,6 +617,8 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
             </article></>}
           </section>
 
+          <StockAlerts key={isSpringPage ? 'spring-alerts' : 'shock-alerts'} catalog={catalog} stock={stock} springs={isSpringPage}
+            ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} />
           <section className="inventory-panel">
             {dataMode === 'database' && inventoryApiVersion >= 10 ? <ReceiptForm key={isSpringPage ? 'springs' : 'shocks'}
               catalog={catalog} locations={locations} springs={isSpringPage} role={userRole} onReceived={refreshDatabaseSnapshot} /> : <form className="add-product-form" onSubmit={handleAddProduct}>

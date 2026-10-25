@@ -31,9 +31,10 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
 
   const [productsResult, locationsResult, balancesResult, applicationsResult] = await Promise.all([
     Number(apiVersion) >= 3
-      ? client.from('products').select('id, code, application, default_location_id, updated_at, shock_type').order('code')
+      ? client.from('products').select(`id, code, application, default_location_id, updated_at, shock_type${Number(apiVersion) >= 12 ? ', minimum_boxes, minimum_updated_at' : ''}`).order('code')
       : client.from('products').select('id, code, application, default_location_id, updated_at').order('code'),
-    client.from('locations').select('id, code').eq('is_active', true).order('code'),
+    // O total também considera caixas já guardadas em locais desativados.
+    client.from('locations').select('id, code, is_active').order('code'),
     client.from('stock_balances')
       .select('product_id, location_id, status_code, quantity')
       .eq('unit_type', 'box')
@@ -48,7 +49,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
   if (balancesResult.error) throw balancesResult.error
   if (applicationsResult.error) throw applicationsResult.error
 
-  const locationRows = (locationsResult.data ?? []) as Array<{ id: string; code: string }>
+  const locationRows = (locationsResult.data ?? []) as Array<{ id: string; code: string; is_active: boolean }>
   const productRows = (productsResult.data ?? []) as Array<{
     id: string
     code: string
@@ -56,6 +57,8 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     default_location_id: string | null
     updated_at: string
     shock_type?: ShockType | null
+    minimum_boxes?: number | null
+    minimum_updated_at?: string
   }>
   const applicationRows = (applicationsResult.data ?? []) as Array<{
     product_id: string; vehicle_model: string; year_from: number | null; year_to: number | null
@@ -82,6 +85,8 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
       vehicleApplications: applicationsByProduct.get(product.id) ?? [],
       shockType: product.shock_type ?? null,
       updatedAt: product.updated_at,
+      minimumBoxes: product.minimum_boxes ?? null,
+      minimumUpdatedAt: product.minimum_updated_at,
       defaultLocation: product.default_location_id
         ? locationById.get(product.default_location_id) ?? 'Não definida'
         : 'Não definida',
@@ -100,7 +105,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     }]
   })
 
-  return { apiVersion: Number(apiVersion), catalog, locations: locationRows.map((location) => location.code), stock }
+  return { apiVersion: Number(apiVersion), catalog, locations: locationRows.filter((location) => location.is_active).map((location) => location.code), stock }
 }
 
 // Mantém a correspondência entre o texto da tela e o código salvo no banco.
