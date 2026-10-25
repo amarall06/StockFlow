@@ -4,20 +4,24 @@ Publicado em 25/10/2026: https://liber-automotive.vercel.app/.
 
 Publicação feita pelo envio direto da pasta `dist` ao projeto `liber-automotive` da conta `amarall06s-projects` na Vercel. Foram enviados somente cinco arquivos compilados (HTML, JavaScript, CSS e SVGs), sem fontes, `.env.local` ou senhas. O build utiliza a URL e a chave publishable do Supabase da configuração local. Versão de código: commit local `2e726fa`.
 
-A tela de login foi conferida no endereço HTTPS, sem erros no console. A entrada com credenciais e a conferência dos dados nesse novo endereço ainda dependem do usuário. O computador de casa pode ficar desligado.
+A tela de login foi conferida no endereço HTTPS, sem erros no console. O usuário confirmou que entrou corretamente no site publicado. O computador de casa pode ficar desligado.
 
-O push ao GitHub não foi concluído: o Git do Windows apresentou erro de credenciais Schannel; a tentativa com OpenSSL encontrou erro de cadeia de certificados. A validação TLS foi preservada. A hospedagem está ativa independentemente desse envio. As atualizações locais NÃO são publicadas automaticamente: precisam de novo build e envio, ou futura conexão do projeto ao GitHub.
+Em 25/10/2026, o projeto da Vercel foi conectado ao repositório `amarall06/StockFlow`, com autorização do usuário para acrescentar esse repositório à instalação existente da Vercel. Branch de produção `main` confirmada, preset Vite salvo e as duas variáveis públicas do Supabase salvas nos ambientes Production e Preview. O primeiro deploy disparado por commit ainda precisa ser verificado; até isso acontecer, o endereço continua atendendo a versão enviada por Drop.
 
-## Configuração para futura conexão ao GitHub
+O push desta sessão permanece bloqueado pelo gerenciador de credenciais do Windows. A conexão HTTPS foi resolvida usando OpenSSL com os certificados raiz confiáveis do Windows, sem desativar TLS. Foi solicitado ao usuário executar o push no PowerShell normal do computador. Nenhuma senha ou token foi colocado no código.
+
+## Configuração da conexão ao GitHub
 
 - Repositório: `amarall06/StockFlow`, branch `main`.
 - Framework: Vite.
-- Comando de instalação: `npm ci`.
+- Instalação: padrão da Vercel para npm, com `package-lock.json` no repositório.
 - Comando de compilação: `npm run build`.
 - Pasta de saída: `dist`.
 - Variáveis de ambiente: `VITE_SUPABASE_URL` e `VITE_SUPABASE_PUBLISHABLE_KEY`.
 
 Use os valores da configuração local apenas nos campos correspondentes da hospedagem. A chave publishable é destinada ao navegador; nunca colocar `service_role`, chave secreta ou senha do banco em variáveis VITE. O arquivo `.env.local` continua ignorado pelo Git. Alterar variáveis exige uma nova compilação/publicação.
+
+Depois de verificar a primeira publicação automática, o fluxo será: editar os arquivos, testar, criar um commit e enviar com `git push origin main`. Apenas salvar um arquivo no computador não envia a atualização ao GitHub. As migrações SQL do Supabase continuam sendo uma etapa separada; a Vercel não as executa automaticamente.
 
 ## Comportamento online
 
