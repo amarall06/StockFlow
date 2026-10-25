@@ -1,3 +1,4 @@
+import { ProductPhoto } from './ProductPhotos'
 import { useRef, useState, type FormEvent } from 'react'
 import { isSpringCode } from '../lib/product-category'
 import { shockTypeLabels, updateProductDetails, type ProductInfo, type ShockType, type VehicleApplication } from '../lib/inventory-api'
@@ -122,7 +123,7 @@ function ProductEditor({ code, product, databaseMode, editable, onDirty, onSaved
   }
 
   return <form className="catalog-editor" onSubmit={saveDetails}>
-    <div className="catalog-product-heading"><div><h2>{code}</h2><p>{spring ? 'Mola' : 'Amortecedor'} · Localização padrão: {product.defaultLocation}</p></div><span className="row-count">{applications.length} aplicações</span></div>
+    <div className="catalog-product-heading"><ProductPhoto code={code}/><div><h2>{code}</h2><p>{spring ? 'Mola' : 'Amortecedor'} · Localização padrão: {product.defaultLocation}</p></div><span className="row-count">{applications.length} aplicações</span></div>
     <fieldset ref={editorFieldsRef} disabled={!editable || saving}>
       {!spring && <label className="catalog-type">Tipo de amortecedor<select value={shockType} onChange={(event) => { setShockType(event.target.value as ShockType | ''); onDirty() }}><option value="">Não informado</option>{Object.entries(shockTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>}
       <div className="catalog-application-heading"><h3>Carro e anos de aplicação</h3><p>Adicione uma linha para cada veículo ou faixa de anos. Deixe os anos vazios se ainda não tiver essa informação.</p></div>

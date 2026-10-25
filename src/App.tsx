@@ -14,6 +14,7 @@ import { InventoryDashboard } from './components/InventoryDashboard'
 import { AllStockOverview, InventoryAlerts, ProductsOverview } from './components/InventoryNavigation'
 import { dashboardStockSummary } from './lib/dashboard-summary'
 import { ProductApplications } from './components/ProductApplications'
+import { ProductPhoto, ProductPhotosProvider } from './components/ProductPhotos'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
 import {
@@ -470,6 +471,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p><button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
 
   return (
+    <ProductPhotosProvider canEdit={isAdministrator}>
     <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
       {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
       <aside className="sidebar">
@@ -546,7 +548,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
             </form>
             {scanResult && (
               <div className="scan-result" role="status">
-                <div><span>CÓDIGO</span><strong>{scanResult.code}</strong></div>
+                <div className="scan-result-code"><ProductPhoto code={scanResult.code}/><span><span>CÓDIGO</span><strong>{scanResult.code}</strong></span></div>
                 <div><span>APLICAÇÃO</span><ProductApplications product={scanResult} /></div>
                 <div><span>LOCALIZAÇÃO PADRÃO</span><strong>{scanResult.defaultLocation}</strong></div>
               </div>
@@ -681,11 +683,11 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
                   <tr><th>PRODUTO</th><th>LOCALIZAÇÃO</th><th>SITUAÇÃO</th><th className="quantity-heading">QUANTIDADE (CAIXAS)</th></tr>
                 </thead>
                 <tbody>
-                  {filteredStock.map((row, index) => (
+                  {filteredStock.map((row) => (
                     <tr key={`${row.code}-${row.location}-${row.status}`}>
                       <td>
                         <div className="product-cell">
-                          <span className={`product-icon product-icon-${index % 2}`}>▰</span>
+                          <ProductPhoto code={row.code}/>
                           <span><strong>{row.code}</strong><ProductApplications product={activeCatalog[row.code]} /></span>
                         </div>
                       </td>
@@ -722,6 +724,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
           void refreshDatabaseSnapshot().catch(() => setTransferMessage('Aprovação salva. Recarregue o site para atualizar os saldos.'))
         }} />}
     </main>
+    </ProductPhotosProvider>
   )
 }
 
