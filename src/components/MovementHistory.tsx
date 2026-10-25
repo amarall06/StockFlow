@@ -13,6 +13,8 @@ type Movement = {
   status_after: string | null
   performed_by: string | null
   notes: string | null
+  supplier_name?: string | null
+  lot_reference?: string | null
   product: { code: string } | null
   origin: { code: string } | null
   destination: { code: string } | null
@@ -48,8 +50,10 @@ export function MovementHistory() {
 
     async function loadHistory() {
       if (!supabase) throw new Error('Supabase não configurado.')
+      const { data: apiVersion, error: apiError } = await supabase.rpc('inventory_api_version')
+      if (apiError) throw apiError
       let query = supabase.from('stock_movements').select(`
-        id, created_at, movement_type, quantity, unit_type, status_before, status_after, performed_by, notes,
+        id, created_at, movement_type, quantity, unit_type, status_before, status_after, performed_by, notes${Number(apiVersion) >= 10 ? ', supplier_name, lot_reference' : ''},
         product:products!inner(code),
         origin:locations!stock_movements_from_location_id_fkey(code),
         destination:locations!stock_movements_to_location_id_fkey(code)
@@ -123,7 +127,7 @@ export function MovementHistory() {
               <thead><tr><th>DATA E HORA</th><th>PRODUTO / OPERAÇÃO</th><th>QUANTIDADE</th><th>ORIGEM → DESTINO</th><th>SITUAÇÃO</th><th>RESPONSÁVEL</th></tr></thead>
               <tbody>{rows.map((row) => <tr key={row.id}>
                 <td><time dateTime={row.created_at}>{dateFormatter.format(new Date(row.created_at))}</time></td>
-                <td><strong>{row.product?.code ?? 'Produto indisponível'}</strong><small className="history-detail">{typeLabels[row.movement_type] ?? row.movement_type}</small>{row.notes && <small className="history-detail history-note">{row.notes}</small>}</td>
+                <td><strong>{row.product?.code ?? 'Produto indisponível'}</strong><small className="history-detail">{typeLabels[row.movement_type] ?? row.movement_type}</small>{row.supplier_name && <small className="history-detail">Fornecedor: {row.supplier_name}</small>}{row.lot_reference && <small className="history-detail">Lote: {row.lot_reference}</small>}{row.notes && <small className="history-detail history-note">{row.notes}</small>}</td>
                 <td>{row.quantity} {row.unit_type === 'box' ? (row.quantity === 1 ? 'caixa' : 'caixas') : (row.quantity === 1 ? 'peça' : 'peças')}</td>
                 <td>{row.origin?.code ?? '—'} → {row.destination?.code ?? '—'}</td>
                 <td>{row.status_before && row.status_before !== row.status_after && <small className="history-detail">{statusLabels[row.status_before] ?? row.status_before} →</small>}{row.status_after ? statusLabels[row.status_after] ?? row.status_after : '—'}</td>

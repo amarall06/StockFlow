@@ -6,6 +6,7 @@ import { ProfileSettings } from './components/ProfileSettings'
 import { WarrantyManufacturers } from './components/WarrantyManufacturers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
+import { ReceiptForm } from './components/ReceiptForm'
 import { ProductApplications } from './components/ProductApplications'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
@@ -614,7 +615,8 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
           </section>
 
           <section className="inventory-panel">
-            <form className="add-product-form" onSubmit={handleAddProduct}>
+            {dataMode === 'database' && inventoryApiVersion >= 10 ? <ReceiptForm key={isSpringPage ? 'springs' : 'shocks'}
+              catalog={catalog} locations={locations} springs={isSpringPage} role={userRole} onReceived={refreshDatabaseSnapshot} /> : <form className="add-product-form" onSubmit={handleAddProduct}>
               <div className="form-heading"><h2>{dataMode === 'database' ? 'Registrar entrada de estoque' : 'Adicionar ao estoque de demonstração'}</h2><p>{dataMode === 'database' ? 'A entrada é gravada no Supabase junto com o histórico. Código novo cadastra produto e saldo inicial.' : 'Código novo cadastra o produto; código existente adiciona caixas a outra localização. Os dados ficam salvos neste navegador.'}</p></div>
               <label>Código do produto<input value={newCode} onChange={(event) => setNewCode(event.target.value)} placeholder={isSpringPage ? 'MGM-35' : 'ARE-24'} required /></label>
               <label>Aplicação (para código novo)<input value={catalog[newCode.trim().toUpperCase()]?.application ?? newApplication} onChange={(event) => setNewApplication(event.target.value)} placeholder={isSpringPage ? 'Ex.: Mola — aplicação fictícia' : 'Ex.: Renault — exemplo'} disabled={Boolean(catalog[newCode.trim().toUpperCase()])} required={!catalog[newCode.trim().toUpperCase()]} /></label>
@@ -622,7 +624,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
               {isSpringPage ? <label>Situação<input value="Em estoque" readOnly /></label> : <label>Situação<select value={newStatus} onChange={(event) => setNewStatus(event.target.value as StockRow['status'])} disabled={dataMode === 'database' && userRole === 'receiving'}><option>Aguardando testagem</option>{(dataMode === 'demo' || isAdministrator) && <option>Liberado para venda</option>}</select></label>}
               <label>Quantidade (caixas)<input type="number" min="1" step="1" value={newQuantity} onChange={(event) => setNewQuantity(event.target.value)} required /></label>
               <button className="add-product-button" type="submit" disabled={!canSubmitStockForm}>{dataMode === 'database' ? 'Registrar entrada' : 'Adicionar registro'}</button>
-            </form>
+            </form>}
             <div className="panel-heading">
               <div>
                 <h2>Estoque de {productName} por localização</h2>
