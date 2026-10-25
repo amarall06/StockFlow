@@ -61,3 +61,7 @@ Usuários, convites e painel administrativo separado. A exigência futura de nom
 A última compilação passou. Há aviso de tamanho do JavaScript e avisos de efeitos React já existentes no lint; não são erros de compilação. Foram conferidos ícones acessíveis, retirada vazia bloqueada, seleção de categoria com saldo e aviso antes da migração de garantia.
 
 Preservar fontes, imagens, documentação, SQL e configuração local. Dependências e cache npm podem ser reconstruídos com `package-lock.json`. O Git local possui remoto origin em https://github.com/amarall06/StockFlow.git. A publicação anterior foi conferida; esta atualização de documentação ainda é local.
+
+## Publicação online — 25/10/2026
+Site ativo: https://liber-automotive.vercel.app/. Envio direto dos cinco arquivos de dist para o projeto liber-automotive na Vercel (amarall06s-projects). Código do build: 2e726fa. Login HTTPS conferido sem erros no console; usuário ainda precisa entrar e conferir os dados. GitHub ainda sem o commit de preparação devido a erro local de credenciais/certificados no push. Não há publicação automática por Git. Detalhes em docs/publicacao.md. Não alterar permissões do Supabase para resolver falhas de acesso.
+

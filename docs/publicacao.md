@@ -1,8 +1,14 @@
 # Publicação da LIBER automotive
 
-Preparação em 25/10/2026. A publicação online ainda aguarda a configuração na Vercel.
+Publicado em 25/10/2026: https://liber-automotive.vercel.app/.
 
-## Configuração da hospedagem
+Publicação feita pelo envio direto da pasta `dist` ao projeto `liber-automotive` da conta `amarall06s-projects` na Vercel. Foram enviados somente cinco arquivos compilados (HTML, JavaScript, CSS e SVGs), sem fontes, `.env.local` ou senhas. O build utiliza a URL e a chave publishable do Supabase da configuração local. Versão de código: commit local `2e726fa`.
+
+A tela de login foi conferida no endereço HTTPS, sem erros no console. A entrada com credenciais e a conferência dos dados nesse novo endereço ainda dependem do usuário. O computador de casa pode ficar desligado.
+
+O push ao GitHub não foi concluído: o Git do Windows apresentou erro de credenciais Schannel; a tentativa com OpenSSL encontrou erro de cadeia de certificados. A validação TLS foi preservada. A hospedagem está ativa independentemente desse envio. As atualizações locais NÃO são publicadas automaticamente: precisam de novo build e envio, ou futura conexão do projeto ao GitHub.
+
+## Configuração para futura conexão ao GitHub
 
 - Repositório: `amarall06/StockFlow`, branch `main`.
 - Framework: Vite.
