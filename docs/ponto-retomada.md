@@ -17,9 +17,15 @@ O site usa Vite em `http://127.0.0.1:5173/`. Os dados fictícios de estoque e as
 - Fabricantes Moripar, New Parts e Trebor carregados do Supabase na garantia, com cadastro/edição para administradores.
 - Lua no tema claro, sol no escuro e lápis nas ações Editar. Tema disponível inclusive no login, salvo no navegador.
 
-## Etapa de garantia conferida; projeto pausado pelo usuário
+## Etapa de garantia conferida; projeto retomado em 25/10/2026
 
-Após concluir esta etapa, o usuário pediu pausa até retomar amanhã. Não iniciar outra funcionalidade sem novo pedido.
+O usuário retomou o projeto em 25/10/2026. Etiquetas, impressão e QR foram adiados. Em seguida pediu um ícone de testagem junto da quantidade de caixas, com responsável e data.
+
+Preparados `ShockTestButton` e `ShockTestingDialog`, histórico paginado por produto e aprovação de quantidades inteiras de amortecedores por Administrador/Testador. A aprovação reduz aguardando e soma liberadas no mesmo local, preservando o total. Molas não recebem o ícone nem aceitam testagem. Não há identificação de caixa física sem etiqueta; o histórico mostra quantidade e local no momento do teste. Não foram inventadas datas ou responsáveis para saldos antigos. Reprovação/retirada para garantia não foi integrada a esta operação.
+
+Ativação confirmada pelo usuário e pela interface: `supabase/migrations/202610250002_shock_testing.sql` (API 9). Em 25/10/2026 às 11:40 (Bahia), foi aprovada uma caixa fictícia AGM-35 em A01 pela conta Felipe Amaral. A01 passou de 3 aguardando para 2 aguardando + 1 liberada. O total de amortecedores permaneceu 38 caixas; aguardando passou de 25 para 24 e liberadas de 13 para 14. Nome, data e saldos persistiram após recarregar o site. Molas continuaram sem ícones de teste, com 15 caixas. Saldos antigos sem autoria/data foram mostrados sem inventar dados. Não desfazer a aprovação fictícia apagando seu histórico. Testes com outra conta/cargo, concorrência e repetição de rede ainda não foram exercitados no Supabase. Guia: `docs/estudo-icone-testagem.md`.
+
+A página local voltou a ficar acessível. Ícones, janela de aprovação, histórico e ausência de testagem em molas foram conferidos visualmente na sessão autenticada.
 
 Caixas por fabricante e categoria na garantia, com Adicionar e Retirar. Migração: `supabase/migrations/202610240008_warranty_boxes.sql`.
 

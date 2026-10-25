@@ -5,6 +5,7 @@ import { ProductCatalog } from './components/ProductCatalog'
 import { ProfileSettings } from './components/ProfileSettings'
 import { WarrantyManufacturers } from './components/WarrantyManufacturers'
 import { ThemeToggle } from './components/ThemeToggle'
+import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ProductApplications } from './components/ProductApplications'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
@@ -158,6 +159,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   const [storageMessage, setStorageMessage] = useState('Salvando dados...')
   const [dataMode, setDataMode] = useState<'demo' | 'database'>('demo')
   const [inventoryApiVersion, setInventoryApiVersion] = useState(0)
+  const [testingRow, setTestingRow] = useState<StockRow | null>(null)
 
   // Reaproveita a mesma tela de estoque, filtrando somente amortecedores ou molas.
   const isSpringPage = activePage === 'springs'
@@ -656,7 +658,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
                       </td>
                       <td><span className="location-tag">{row.location}</span></td>
                       <td><span className={`status-pill ${row.status === 'Aguardando testagem' ? 'status-waiting' : 'status-released'}`}><span />{row.status}</span></td>
-                      <td className="quantity-cell">{row.boxes}<span> cx.</span></td>
+                      <td className="quantity-cell">{row.boxes}<span> cx.</span>{!isSpringPage && <ShockTestButton code={row.code} onClick={() => setTestingRow(row)} />}</td>
                     </tr>
                   ))}
                   {filteredStock.length === 0 && (
@@ -679,6 +681,13 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
               apiVersion={inventoryApiVersion} isAdministrator={isAdministrator} />}
         </div>
       </section>
+      {testingRow && <ShockTestingDialog row={testingRow} ready={dataMode === 'database' && inventoryApiVersion >= 9}
+        canApprove={userRole === 'administrator' || userRole === 'tester'} onClose={() => setTestingRow(null)}
+        onRecorded={() => {
+          setTestingRow(null)
+          setTransferMessage('Aprovação de teste registrada com responsável e data.')
+          void refreshDatabaseSnapshot().catch(() => setTransferMessage('Aprovação salva. Recarregue o site para atualizar os saldos.'))
+        }} />}
     </main>
   )
 }

@@ -1,0 +1,26 @@
+.shock-test-button { display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; margin-left: 9px; min-width: 34px; min-height: 34px; border: 1px solid #dfc9bc; border-radius: 6px; background: #fff9ee; color: #986047; cursor: pointer; }
+.shock-test-button:hover { background: #f8edda; }
+.shock-test-button:focus-visible { outline: 2px solid #b06a45; outline-offset: 3px; }
+.shock-testing-dialog { box-sizing: border-box; width: min(680px, calc(100vw - 32px)); max-height: 90dvh; overflow: auto; padding: 24px; border: 1px solid #eadbd1; border-radius: 12px; background: #fff; color: #49372f; box-shadow: 0 20px 80px #0004; }
+.shock-testing-dialog::backdrop { background: #261d19a6; }
+.shock-testing-heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.shock-testing-dialog h2 { margin: 0; font-size: 20px; }
+.shock-testing-dialog h3 { font-size: 15px; }
+.shock-testing-dialog p, .shock-testing-dialog label { font-size: 12px; line-height: 1.6; color: #74685e; }
+.shock-testing-dialog button { min-height: 36px; }
+.shock-testing-dialog button:disabled { opacity: .5; cursor: not-allowed; }
+.shock-approval-form { padding: 15px; margin: 15px 0 22px; background: #fffcf5; border: 1px solid #e9dfd8; border-radius: 8px; }
+.shock-approval-form h3 { margin: 0; }
+.shock-approval-form label { display: grid; gap: 6px; }
+.shock-approval-form input { box-sizing: border-box; width: 100%; min-height: 38px; padding: 8px; border: 1px solid #dfc9bc; border-radius: 6px; font: inherit; background: #fff; color: #49372f; }
+.shock-approval-list { display: grid; gap: 12px; list-style: none; padding: 0; }
+.shock-approval-list li { display: grid; gap: 7px; padding: 14px; border: 1px solid #e9dfd8; border-radius: 8px; font-size: 12px; }
+.shock-approval-list strong { color: #47704c; }
+.shock-testing-pagination { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; }
+.theme-dark .shock-test-button { background: #42351f; border-color: #71533b; color: #efcd7c; }
+.theme-dark .shock-testing-dialog { background: #29211e; border-color: #5b4841; color: #f1e7df; color-scheme: dark; }
+.theme-dark .shock-testing-dialog p, .theme-dark .shock-testing-dialog label { color: #c0aca1; }
+.theme-dark .shock-approval-form, .theme-dark .shock-approval-list li { background: #382c28; border-color: #5b4841; }
+.theme-dark .shock-approval-form input { background: #29211e; border-color: #5b4841; color: #f1e7df; }
+.theme-dark .shock-approval-list strong { color: #a7ce9c; }
+@media (max-width: 550px) { .shock-testing-dialog { padding: 16px; } .shock-testing-heading { flex-wrap: wrap; } }
