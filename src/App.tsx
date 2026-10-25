@@ -7,6 +7,7 @@ import { WarrantyManufacturers } from './components/WarrantyManufacturers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ReceiptForm } from './components/ReceiptForm'
+import { StockOutflows } from './components/StockOutflows'
 import { ProductApplications } from './components/ProductApplications'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
@@ -130,7 +131,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   isDarkMode: boolean; onToggleTheme: () => void
 }) {
   // Controla qual módulo está aberto na demonstração.
-  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile'>('inventory')
+  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow'>('inventory')
   const showInventoryPage = activePage === 'inventory' || activePage === 'springs'
   // O catálogo guarda os dados do produto, separados dos saldos por localização.
   const [catalog, setCatalog] = useState<Record<string, ProductInfo>>(() => readSavedDemoData()?.catalog ?? allDemoCatalog)
@@ -270,7 +271,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   }
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
-  function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile') {
+  function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow') {
     setActivePage(page)
     setScanResult(null)
     setScanMessage('')
@@ -469,6 +470,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
           </button>
         </>}
 
+        {isAdministrator && <button className={`nav-item${activePage === 'outflow' ? ' active' : ''}`} type="button" onClick={() => changePage('outflow')}><span className="nav-icon">↗</span> Saídas</button>}
         <button className={`nav-item${activePage === 'history' ? ' active' : ''}`} type="button" onClick={() => changePage('history')}>
           <span className="nav-icon">↺</span> Histórico
         </button>
@@ -484,7 +486,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
 
       <section className="main-panel" id="inicio">
         <header className="topbar">
-          <span className="breadcrumb">Estoque <span>/</span> {activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
+          <span className="breadcrumb">Estoque <span>/</span> {activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
           <div className="user-chip"><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /><button className="profile-open-button" type="button" onClick={() => changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar">{displayName.slice(0, 1).toUpperCase()}</span><span className="profile-name-text">{displayName}<small>Meu perfil</small></span></button><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button></div>
         </header>
 
@@ -671,7 +673,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'outflow' ? <StockOutflows stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {

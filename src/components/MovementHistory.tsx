@@ -15,6 +15,8 @@ type Movement = {
   notes: string | null
   supplier_name?: string | null
   lot_reference?: string | null
+  outflow_reference?: string | null
+  outflow_actor_name?: string | null
   product: { code: string } | null
   origin: { code: string } | null
   destination: { code: string } | null
@@ -23,6 +25,7 @@ type Movement = {
 const PAGE_SIZE = 25
 const typeLabels: Record<string, string> = {
   receipt: 'Recebimento', transfer: 'Transferência', testing: 'Testagem', inventory_adjustment: 'Ajuste de inventário',
+  sale: 'Venda', discard: 'Descarte', supplier_return: 'Devolução ao fornecedor',
 }
 const statusLabels: Record<string, string> = {
   awaiting_test: 'Aguardando testagem', released_for_sale: 'Liberado para venda', in_stock: 'Em estoque',
@@ -53,7 +56,7 @@ export function MovementHistory() {
       const { data: apiVersion, error: apiError } = await supabase.rpc('inventory_api_version')
       if (apiError) throw apiError
       let query = supabase.from('stock_movements').select(`
-        id, created_at, movement_type, quantity, unit_type, status_before, status_after, performed_by, notes${Number(apiVersion) >= 10 ? ', supplier_name, lot_reference' : ''},
+        id, created_at, movement_type, quantity, unit_type, status_before, status_after, performed_by, notes${Number(apiVersion) >= 10 ? ', supplier_name, lot_reference' : ''}${Number(apiVersion) >= 11 ? ', outflow_reference, outflow_actor_name' : ''},
         product:products!inner(code),
         origin:locations!stock_movements_from_location_id_fkey(code),
         destination:locations!stock_movements_to_location_id_fkey(code)
@@ -110,7 +113,7 @@ export function MovementHistory() {
 
   return <>
     <div className="page-heading">
-      <div><p className="eyebrow">CONTROLE DE ESTOQUE</p><h1>Histórico de movimentações</h1><p className="subtitle">Entradas e transferências de amortecedores e molas, da mais recente para a mais antiga.</p></div>
+      <div><p className="eyebrow">CONTROLE DE ESTOQUE</p><h1>Histórico de movimentações</h1><p className="subtitle">Entradas, saídas, testes e transferências de amortecedores e molas.</p></div>
       <button className="theme-toggle" type="button" onClick={() => setRevision((value) => value + 1)} disabled={loading}>Atualizar</button>
     </div>
     <section className="inventory-panel history-panel" aria-label="Movimentações do estoque">
@@ -127,11 +130,11 @@ export function MovementHistory() {
               <thead><tr><th>DATA E HORA</th><th>PRODUTO / OPERAÇÃO</th><th>QUANTIDADE</th><th>ORIGEM → DESTINO</th><th>SITUAÇÃO</th><th>RESPONSÁVEL</th></tr></thead>
               <tbody>{rows.map((row) => <tr key={row.id}>
                 <td><time dateTime={row.created_at}>{dateFormatter.format(new Date(row.created_at))}</time></td>
-                <td><strong>{row.product?.code ?? 'Produto indisponível'}</strong><small className="history-detail">{typeLabels[row.movement_type] ?? row.movement_type}</small>{row.supplier_name && <small className="history-detail">Fornecedor: {row.supplier_name}</small>}{row.lot_reference && <small className="history-detail">Lote: {row.lot_reference}</small>}{row.notes && <small className="history-detail history-note">{row.notes}</small>}</td>
+                <td><strong>{row.product?.code ?? 'Produto indisponível'}</strong><small className="history-detail">{typeLabels[row.movement_type] ?? row.movement_type}</small>{row.supplier_name && <small className="history-detail">Fornecedor: {row.supplier_name}</small>}{row.lot_reference && <small className="history-detail">Lote: {row.lot_reference}</small>}{row.outflow_reference && <small className="history-detail">Referência: {row.outflow_reference}</small>}{row.notes && <small className="history-detail history-note">{row.notes}</small>}</td>
                 <td>{row.quantity} {row.unit_type === 'box' ? (row.quantity === 1 ? 'caixa' : 'caixas') : (row.quantity === 1 ? 'peça' : 'peças')}</td>
                 <td>{row.origin?.code ?? '—'} → {row.destination?.code ?? '—'}</td>
-                <td>{row.status_before && row.status_before !== row.status_after && <small className="history-detail">{statusLabels[row.status_before] ?? row.status_before} →</small>}{row.status_after ? statusLabels[row.status_after] ?? row.status_after : '—'}</td>
-                <td>{row.performed_by ? names[row.performed_by] ?? `Usuário ${row.performed_by.slice(0, 8)}` : 'Não registrado'}</td>
+                <td>{row.status_before && row.status_after && row.status_before !== row.status_after && <small className="history-detail">{statusLabels[row.status_before] ?? row.status_before} →</small>}{row.status_after ? statusLabels[row.status_after] ?? row.status_after : row.status_before ? statusLabels[row.status_before] ?? row.status_before : '—'}</td>
+                <td>{row.outflow_actor_name ?? (row.performed_by ? names[row.performed_by] ?? `Usuário ${row.performed_by.slice(0, 8)}` : 'Não registrado')}</td>
               </tr>)}</tbody>
             </table></div>}
       <div className="history-pagination"><span>Página {page + 1} · até {PAGE_SIZE} registros por página</span><div><button className="theme-toggle" type="button" disabled={loading || page === 0} onClick={() => setPage((value) => value - 1)}>Anterior</button><button className="theme-toggle" type="button" disabled={loading || !!error || !hasNextPage} onClick={() => setPage((value) => value + 1)}>Próxima</button></div></div>

@@ -1,0 +1,18 @@
+.outflow-panel{padding:22px;max-width:940px}
+.outflow-heading{display:flex;align-items:start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.outflow-panel h2{margin:0;font-size:18px}
+.outflow-panel p{font-size:12px;line-height:1.6;color:#74685e}
+.outflow-panel fieldset{display:grid;gap:16px;min-width:0;padding:0;margin:0 0 16px;border:0}
+.outflow-panel label{display:grid;gap:7px;font-size:12px;color:#74685e}
+.outflow-panel input,.outflow-panel select,.outflow-panel textarea{box-sizing:border-box;width:100%;min-width:0;min-height:38px;padding:8px 10px;border:1px solid #dfc9bc;border-radius:6px;background:#fff;color:#49372f;font:inherit}
+.outflow-panel textarea{min-height:80px;resize:vertical}
+.outflow-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.outflow-summary{display:grid;gap:7px;padding:14px;border:1px solid #eadbd1;border-radius:7px;background:#fffcf5;font-size:12px}
+.outflow-panel button{min-height:36px}
+.outflow-panel button:disabled{opacity:.5;cursor:not-allowed}
+.outflow-panel .outflow-success{color:#426749}
+.theme-dark .outflow-panel p,.theme-dark .outflow-panel label{color:#c0aca1}
+.theme-dark .outflow-panel input,.theme-dark .outflow-panel select,.theme-dark .outflow-panel textarea{border-color:#5b4841;background:#382c28;color:#f1e7df;color-scheme:dark}
+.theme-dark .outflow-summary{border-color:#5b4841;background:#382c28;color:#f1e7df}
+.theme-dark .outflow-panel .outflow-success{color:#a7ce9c}
+@media(max-width:650px){.outflow-panel{padding:16px}.outflow-grid{grid-template-columns:1fr}.outflow-heading{flex-wrap:wrap}}
