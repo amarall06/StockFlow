@@ -9,6 +9,7 @@ import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ReceiptForm } from './components/ReceiptForm'
 import { StockOutflows } from './components/StockOutflows'
 import { StockAlerts } from './components/StockAlerts'
+import { InventoryDashboard } from './components/InventoryDashboard'
 import { ProductApplications } from './components/ProductApplications'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
@@ -132,7 +133,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   isDarkMode: boolean; onToggleTheme: () => void
 }) {
   // Controla qual módulo está aberto na demonstração.
-  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow'>('inventory')
+  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow' | 'dashboard'>('dashboard')
   const showInventoryPage = activePage === 'inventory' || activePage === 'springs'
   // O catálogo guarda os dados do produto, separados dos saldos por localização.
   const [catalog, setCatalog] = useState<Record<string, ProductInfo>>(() => readSavedDemoData()?.catalog ?? allDemoCatalog)
@@ -272,7 +273,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   }
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
-  function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow') {
+  function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow' | 'dashboard') {
     setActivePage(page)
     setScanResult(null)
     setScanMessage('')
@@ -452,12 +453,13 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
     <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
       {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
       <aside className="sidebar">
-        <a className="brand" href="#inicio" aria-label="LIBER automotive, início">
+        <a className="brand" href="#inicio" aria-label="LIBER automotive, início" onClick={() => changePage('dashboard')}>
           <span className="brand-mark">L</span>
           <span>LIBER<span className="brand-light"> automotive</span></span>
         </a>
 
         <div className="sidebar-label">MÓDULOS</div>
+        <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" onClick={() => changePage('dashboard')}><span className="nav-icon">▥</span> Painel</button>
         <button className={`nav-item${activePage === 'inventory' ? ' active' : ''}`} type="button" onClick={() => changePage('inventory')}>
           <span className="nav-icon">▦</span> Visão geral
         </button>
@@ -487,7 +489,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
 
       <section className="main-panel" id="inicio">
         <header className="topbar">
-          <span className="breadcrumb">Estoque <span>/</span> {activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
+          <span className="breadcrumb">Estoque <span>/</span> {activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
           <div className="user-chip"><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /><button className="profile-open-button" type="button" onClick={() => changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar">{displayName.slice(0, 1).toUpperCase()}</span><span className="profile-name-text">{displayName}<small>Meu perfil</small></span></button><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button></div>
         </header>
 
@@ -676,7 +678,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'outflow' ? <StockOutflows stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {
