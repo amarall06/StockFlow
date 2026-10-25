@@ -65,3 +65,7 @@ Preservar fontes, imagens, documentação, SQL e configuração local. Dependên
 ## Publicação online — 25/10/2026
 Site ativo: https://liber-automotive.vercel.app/. Envio direto dos cinco arquivos de dist para o projeto liber-automotive na Vercel (amarall06s-projects). Código do build: 2e726fa. Login HTTPS conferido sem erros no console; usuário ainda precisa entrar e conferir os dados. GitHub ainda sem o commit de preparação devido a erro local de credenciais/certificados no push. Não há publicação automática por Git. Detalhes em docs/publicacao.md. Não alterar permissões do Supabase para resolver falhas de acesso.
 
+
+## Atualização de prioridades e painel — 25/10/2026
+Publicação automática 54b014b conferida Ready em Production e domínio principal. Painel/navegação revisados: 38 caixas de amortecedores, 15 de molas, total 53 sem garantia; cartões clicáveis, Produtos das duas categorias e central de Alertas com contador no menu. Ícones SVG e layout móvel em faixa rolável. Alterações locais desta revisão ainda precisam de build, commit, push e confirmação na Vercel. Sem migração nova ou mudança de saldos. Fotos e testes operacionais continuam pendentes. Backup e piloto são prioridade atual e não estão concluídos; guia docs/preparacao-empresa.md. Lotes/saldo remanescente e item associado de estorno/correção retirados da pauta. Futuro somente nos documentos: bandejas/braços de suspensão, QR de garantia com fabricante, etiquetas por caixa e usuários. As decisões recentes em docs/etapas-projeto.md prevalecem sobre trechos históricos anteriores.
+

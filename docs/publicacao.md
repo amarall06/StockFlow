@@ -6,9 +6,9 @@ Publicação feita pelo envio direto da pasta `dist` ao projeto `liber-automotiv
 
 A tela de login foi conferida no endereço HTTPS, sem erros no console. O usuário confirmou que entrou corretamente no site publicado. O computador de casa pode ficar desligado.
 
-Em 25/10/2026, o projeto da Vercel foi conectado ao repositório `amarall06/StockFlow`, com autorização do usuário para acrescentar esse repositório à instalação existente da Vercel. Branch de produção `main` confirmada, preset Vite salvo e as duas variáveis públicas do Supabase salvas nos ambientes Production e Preview. O primeiro deploy disparado por commit ainda precisa ser verificado; até isso acontecer, o endereço continua atendendo a versão enviada por Drop.
+Em 25/10/2026, o projeto da Vercel foi conectado ao repositório `amarall06/StockFlow`, com autorização do usuário para acrescentar esse repositório à instalação existente da Vercel. Branch de produção `main` confirmada, preset Vite salvo e as duas variáveis públicas do Supabase salvas nos ambientes Production e Preview. O primeiro deploy automático foi confirmado: 54b014b, Ready, Production, domínio principal atribuído. A sessão autenticada carregou os dados do Supabase sem erros de console.
 
-O push desta sessão permanece bloqueado pelo gerenciador de credenciais do Windows. A conexão HTTPS foi resolvida usando OpenSSL com os certificados raiz confiáveis do Windows, sem desativar TLS. Foi solicitado ao usuário executar o push no PowerShell normal do computador. Nenhuma senha ou token foi colocado no código.
+O envio foi concluído pelo usuário no PowerShell após refazer o login com Git Credential Manager. A conexão HTTPS foi resolvida usando OpenSSL com os certificados raiz confiáveis do Windows, sem desativar TLS. Foi solicitado ao usuário executar o push no PowerShell normal do computador. Nenhuma senha ou token foi colocado no código.
 
 ## Configuração da conexão ao GitHub
 
@@ -21,7 +21,7 @@ O push desta sessão permanece bloqueado pelo gerenciador de credenciais do Wind
 
 Use os valores da configuração local apenas nos campos correspondentes da hospedagem. A chave publishable é destinada ao navegador; nunca colocar `service_role`, chave secreta ou senha do banco em variáveis VITE. O arquivo `.env.local` continua ignorado pelo Git. Alterar variáveis exige uma nova compilação/publicação.
 
-Depois de verificar a primeira publicação automática, o fluxo será: editar os arquivos, testar, criar um commit e enviar com `git push origin main`. Apenas salvar um arquivo no computador não envia a atualização ao GitHub. As migrações SQL do Supabase continuam sendo uma etapa separada; a Vercel não as executa automaticamente.
+Fluxo conferido de publicação automática: editar os arquivos, testar, criar um commit e enviar com `git push origin main`. Apenas salvar um arquivo no computador não envia a atualização ao GitHub. As migrações SQL do Supabase continuam sendo uma etapa separada; a Vercel não as executa automaticamente.
 
 ## Comportamento online
 

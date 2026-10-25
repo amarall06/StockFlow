@@ -32,8 +32,8 @@ function MinimumDialog({catalog,codes,initialCode,onClose,onSaved}:{catalog:Reco
   </dialog>
 }
 
-export function StockAlerts({catalog,stock,springs,ready,isAdministrator,onRefresh}:{
-  catalog:Record<string,ProductInfo>;stock:StockRow[];springs:boolean;ready:boolean;isAdministrator:boolean;onRefresh:()=>Promise<void>
+export function StockAlerts({catalog,stock,springs,ready,isAdministrator,onRefresh,titleId='stock-alerts-title'}:{
+  catalog:Record<string,ProductInfo>;stock:StockRow[];springs:boolean;ready:boolean;isAdministrator:boolean;onRefresh:()=>Promise<void>;titleId?:string
 }){
   const [editing,setEditing]=useState<string|null>(null)
   const [showAll,setShowAll]=useState(false)
@@ -51,8 +51,8 @@ export function StockAlerts({catalog,stock,springs,ready,isAdministrator,onRefre
     setEditing(null);setMessage('Limite salvo.');setError('');setRefreshing(true)
     void onRefresh().catch(()=>setError('Limite salvo. Atualize os alertas para consultar o valor atual.')).finally(()=>setRefreshing(false))
   }
-  return <section className="inventory-panel stock-alerts" aria-labelledby="stock-alerts-title">
-    <div className="alerts-heading"><div><h2 id="stock-alerts-title">Alertas de reposição</h2><p>{springs?'Conta todas as caixas de molas em estoque.':'Soma caixas aguardando teste e liberadas, em todas as localizações.'} Garantia não entra nesta contagem.</p></div>
+  return <section className={`inventory-panel stock-alerts${ready&&alerts.length?' has-alerts':''}`} aria-labelledby={titleId}>
+    <div className="alerts-heading"><div><h2 id={titleId}>Alertas de reposição</h2><p>{springs?'Conta todas as caixas de molas em estoque.':'Soma caixas aguardando teste e liberadas, em todas as localizações.'} Garantia não entra nesta contagem.</p></div>
       {ready&&<div className="alerts-actions"><button type="button" className="theme-toggle" disabled={refreshing} onClick={()=>void refresh()}>Atualizar alertas</button>{isAdministrator&&codes.length>0&&<button type="button" className="add-product-button" disabled={refreshing} onClick={()=>setEditing(codes[0])}>Configurar mínimos</button>}</div>}
     </div>
     {!ready?<p className="alerts-message" role="status">Os alertas de reposição aguardam ativação no banco.</p>:<>

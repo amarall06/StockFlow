@@ -25,7 +25,7 @@ export function DashboardActivity({report}:{report:DashboardReport}){
 }
 
 export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen}:{
-  catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs')=>void
+  catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
@@ -34,6 +34,10 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen}:{
   const [result,setResult]=useState<{category:DashboardCategory;revision:number;report:DashboardReport|null;error:string}>({category:'all',revision:-1,report:null,error:''})
   const loading=ready&&(result.category!==category||result.revision!==revision)
   const summary=dashboardStockSummary(catalog,stock,category)
+  // O resumo principal sempre inclui as duas categorias, mesmo com o relatório filtrado.
+  const shockBoxes=dashboardStockSummary(catalog,stock,'shocks').boxes
+  const springBoxes=dashboardStockSummary(catalog,stock,'springs').boxes
+  const stockPage=category==='all'?'stock':category==='springs'?'springs':'inventory'
   useEffect(()=>{
     if(!ready)return
     let current=true
@@ -51,13 +55,18 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen}:{
   return <>
     <div className="page-heading"><div><p className="eyebrow">LIBER AUTOMOTIVE</p><h1>Painel inicial</h1><p className="subtitle">Resumo de estoque, reposição, vendas e recebimentos.</p></div></div>
     {!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
-      <div className="dashboard-tools"><label>Categoria do painel<select value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><button className="theme-toggle" type="button" disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</button><button className="theme-toggle" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></div>
+      <section className="dashboard-stock-totals" aria-label="Total de caixas por categoria">
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen('inventory')}><span>Amortecedores</span><strong>{shockBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">↗</span></span></button>
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen('springs')}><span>Molas</span><strong>{springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">↗</span></span></button>
+        <button type="button" className="dashboard-stat dashboard-stat-total" onClick={()=>onOpen('stock')}><span>Total no estoque normal</span><strong>{shockBoxes+springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Amortecedores + molas · sem garantia <span aria-hidden="true">↗</span></span></button>
+      </section>
+      <div className="dashboard-tools"><label>Filtrar indicadores<select value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><button className="theme-toggle" type="button" disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</button></div>
       {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
       <section className="dashboard-totals" aria-label="Resumo do estoque normal">
-        <article><span>Caixas no estoque normal</span><strong>{summary.boxes}</strong><small>Garantia não incluída</small></article><article><span>Produtos cadastrados</span><strong>{summary.products}</strong><small>Na categoria selecionada</small></article>
-        <article><span>Produtos sem estoque</span><strong>{summary.zeros}</strong><small>Considera o catálogo completo</small></article><article><span>No mínimo ou abaixo</span><strong>{summary.low}</strong><small>Produtos com saldo positivo</small></article>
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen(stockPage)}><span>Caixas na seleção</span><strong>{summary.boxes}</strong><small>Consultar estoque ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('products')}><span>Produtos cadastrados</span><strong>{summary.products}</strong><small>Abrir catálogo de produtos ↗</small></button>
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>Produtos sem estoque</span><strong>{summary.zeros}</strong><small>Consultar alertas ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>No mínimo ou abaixo</span><strong>{summary.low}</strong><small>Consultar alertas ↗</small></button>
       </section>
-      <section className="inventory-panel dashboard-panel" aria-labelledby="dashboard-alerts-title"><h2 id="dashboard-alerts-title">Atenção à reposição</h2><p>Nos amortecedores, o total inclui aguardando teste e liberados. Configure os mínimos na página de estoque da categoria.</p>
+      <section className={`inventory-panel dashboard-panel dashboard-alert-panel${summary.alerts.length?' has-alerts':''}`} aria-labelledby="dashboard-alerts-title"><div className="dashboard-alert-heading"><div><span className="dashboard-section-label">Reposição</span><h2 id="dashboard-alerts-title">{summary.alerts.length?`${summary.alerts.length} produtos precisam de atenção`:'Estoque dentro dos limites'}</h2></div><button type="button" className="theme-toggle" onClick={()=>onOpen('alerts')}>Ver todos os alertas <span aria-hidden="true">↗</span></button></div><p>Estoque normal de todas as localizações. Amortecedores aguardando teste entram no total.</p>
         {!summary.alerts.length?<p>Nenhum produto zerado ou no limite configurado nesta consulta.</p>:<ul className="dashboard-alert-list">{summary.alerts.slice(0,6).map((row)=><li key={row.code}><strong>{row.code}</strong><span>{row.severity==='zero'?'Sem estoque':`${row.total} caixas · mínimo ${row.minimum}`}</span></li>)}</ul>}
         {summary.alerts.length>6&&<p>Prévia de 6 dos {summary.alerts.length} alertas. Consulte os estoques para ver todos.</p>}
       </section>

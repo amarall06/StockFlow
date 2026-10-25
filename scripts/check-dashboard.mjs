@@ -46,5 +46,14 @@ const empty=renderToStaticMarkup(React.createElement(DashboardActivity,{report:{
 assert(empty.includes('Nenhuma venda registrada'));assert(empty.includes('Nenhum recebimento registrado'));assert(!empty.includes('dashboard-bar-track'))
 const pending=renderToStaticMarkup(React.createElement(InventoryDashboard,{catalog,stock,ready:false,onRefresh:async()=>{},onOpen(){}}))
 assert(pending.includes('aguarda ativação'));assert(!pending.includes('dashboard-totals'))
+// Os cartões principais mostram ambas as categorias e excluem caixas fora do estoque normal.
+const readyPanel=renderToStaticMarkup(React.createElement(InventoryDashboard,{catalog,stock:[...stock,{code:'AGM-35',boxes:99,status:'Garantia',location:'GAR'}],ready:true,onRefresh:async()=>{},onOpen(){}}))
+assert(readyPanel.includes('Total de caixas por categoria'))
+assert(readyPanel.includes('Amortecedores</span><strong>5'))
+assert(readyPanel.includes('Molas</span><strong>4'))
+assert(readyPanel.includes('Total no estoque normal</span><strong>9'))
+assert(readyPanel.includes('Abrir catálogo de produtos'))
+assert(readyPanel.includes('Ver todos os alertas'))
+assert(readyPanel.includes('dashboard-alert-panel has-alerts'))
 delete globalThis.__dashboardAlerts;delete globalThis.__dashboardClient;delete globalThis.__dashboardApi;delete globalThis.__dashboardSummary
 console.log('OK: filtros de estoque, alertas, relatório inválido, categoria RPC, barras e quantidades, entradas, estado vazio e ativação pendente. A agregação SQL ainda exige ensaio no Supabase.')

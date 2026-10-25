@@ -59,7 +59,7 @@ Solicitação: aba para produtos de giro rápido e produtos parados, incluindo m
 
 Um ranking por quantidade de caixas vendidas pode ser calculado quando houver saídas de venda e período definido. A base da Curva ABC ainda deve ser escolhida: quantidade ou valor movimentado, por exemplo. Uma classificação por valor depende também de valores unitários confiáveis; não apresentar ranking de quantidade como se fosse uma análise financeira.
 
-Para indicar há quanto tempo o saldo remanescente está parado, preservar a data de recebimento do lote/unidade e relacionar as saídas com o saldo correspondente. A última transferência de prateleira não deve reiniciar a idade do estoque. Definir a regra de consumo dos lotes antes de calcular idade remanescente e capital imobilizado.
+Atualização de 25/10: controle do saldo restante por lote e o item associado de correções/estornos saíram da pauta por pedido do usuário. Para giro, usar vendas por período. Sem rastreamento por recebimento, não apresentar tempo desde a última venda como idade exata do saldo nem inventar capital imobilizado. Prioridades atuais em etapas-projeto.md.
 
 ## Ordem de implementação proposta
 
