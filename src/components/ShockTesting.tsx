@@ -68,7 +68,7 @@ export function ShockTestingDialog({ row, ready, canApprove, onClose, onRecorded
         {result.rows.length === 0 && <p>Nenhuma aprovação com responsável e data registrada para este produto. Os saldos antigos não possuem essas informações.</p>}
         <ol className="shock-approval-list">{result.rows.map((test) => <li key={test.id}>
           <strong>✓ {test.boxes} {test.boxes === 1 ? 'caixa aprovada' : 'caixas aprovadas'}</strong>
-          <span>Responsável: {test.actor_display_name}</span><span>Data: {formatDate.format(new Date(test.created_at))} (Bahia)</span><span>Local do teste: {test.location_code}</span>
+          <span>Responsável: {test.actor_display_name}</span><span>Data: {formatDate.format(new Date(test.created_at))}</span><span>Local do teste: {test.location_code}</span>
         </li>)}</ol>
         <nav className="shock-testing-pagination" aria-label="Páginas do histórico de testagem"><button type="button" className="theme-toggle" disabled={page === 0 || saving} onClick={() => setPage((value) => value - 1)}>Anterior</button><span>Página {page + 1}</span><button type="button" className="theme-toggle" disabled={!result.hasNext || saving} onClick={() => setPage((value) => value + 1)}>Próxima</button></nav>
       </>}

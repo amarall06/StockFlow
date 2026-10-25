@@ -6,7 +6,7 @@ Migração aplicada e conferida no Supabase: `supabase/migrations/202610250002_s
 
 ## O que aparece
 
-Cada linha de amortecedor mostra um ícone de teste junto da quantidade de caixas. Ao clicar, a janela consulta o histórico de aprovações do produto: caixas aprovadas, nome do responsável, data/hora (Bahia) e localização no momento do teste. Molas não mostram esse botão e são recusadas pela operação do servidor.
+Cada linha de amortecedor mostra um ícone de teste junto da quantidade de caixas. Ao clicar, a janela consulta o histórico de aprovações do produto: caixas aprovadas, nome do responsável, data/hora e localização no momento do teste. Por pedido do usuário, a data não mostra o nome do estado ou do fuso. O cálculo do horário mantém America/Bahia; a remoção do texto não altera o instante salvo. Molas não mostram esse botão e são recusadas pela operação do servidor.
 
 O histórico é por produto, em todas as localizações, com dez registros por página. Não indica que todas as caixas da linha atual pertencem ao teste mostrado. Uma transferência posterior não altera o local histórico. Sem etiqueta individual, não é possível associar o evento a uma caixa física específica: a etapa de etiquetas e QR foi adiada pelo usuário.
 
