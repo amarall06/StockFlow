@@ -3,6 +3,33 @@
 param()
 
 $ErrorActionPreference = 'Stop'
+
+# Lê stdout e stderr separadamente, inclusive no Windows PowerShell 5.
+# Avisos de ferramentas nativas não devem interromper um backup cujo código de saída é zero.
+function Invoke-BackupTool {
+    param([string]$Executable, [string[]]$ToolArguments, [string]$ErrorLog, [string]$OutputLog)
+    $process = New-Object System.Diagnostics.Process
+    try {
+        $process.StartInfo.FileName = $Executable
+        # Os argumentos são gerados pelo script; aspas não são permitidas em nomes de arquivo Windows.
+        foreach ($argument in $ToolArguments) { if ($argument.Contains('"')) { throw 'Argumento inválido para exportação.' } }
+        $process.StartInfo.Arguments = ($ToolArguments | ForEach-Object { '"' + $_ + '"' }) -join ' '
+        $process.StartInfo.UseShellExecute = $false
+        $process.StartInfo.CreateNoWindow = $true
+        $process.StartInfo.RedirectStandardOutput = $true
+        $process.StartInfo.RedirectStandardError = $true
+        [void]$process.Start()
+        $outputTask = $process.StandardOutput.ReadToEndAsync()
+        $errorTask = $process.StandardError.ReadToEndAsync()
+        $process.WaitForExit()
+        $outputText = $outputTask.GetAwaiter().GetResult()
+        $errorText = $errorTask.GetAwaiter().GetResult()
+        [IO.File]::WriteAllText($ErrorLog, $errorText, [Text.UTF8Encoding]::new($false))
+        if ($OutputLog) { [IO.File]::WriteAllText($OutputLog, $outputText, [Text.UTF8Encoding]::new($false)) }
+        if ($process.ExitCode -ne 0) { throw "Falha em $([IO.Path]::GetFileName($Executable)). Consulte: $ErrorLog" }
+    }
+    finally { $process.Dispose() }
+}
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $outputsRoot = Split-Path $projectRoot -Parent
 $toolsRoot = Join-Path $outputsRoot 'tools'
@@ -33,7 +60,7 @@ $manifest = [ordered]@{
 $manifest | ConvertTo-Json | Set-Content -LiteralPath $manifestPath -Encoding UTF8
 
 # A conexão Session pooler foi conferida no painel do projeto; suporta rede IPv4.
-$connectionArgs = @('--host=aws-0-us-east-1.pooler.supabase.com', '--port=5432', '--username=postgres.tfatagbhmkeelbvstcvb', '--database=postgres', '--no-password')
+$connectionArgs = @('--host=aws-0-us-east-1.pooler.supabase.com', '--port=5432', '--username=postgres.tfatagbhmkeelbvstcvb', '--dbname=postgres', '--no-password')
 $previousEnvironment = @{}
 foreach ($variableName in @('PGPASSWORD', 'PGSSLMODE', 'PGSSLROOTCERT', 'PGCONNECT_TIMEOUT', 'PGOPTIONS')) {
     $previousEnvironment[$variableName] = [Environment]::GetEnvironmentVariable($variableName, 'Process')
@@ -52,18 +79,15 @@ try {
     $env:PGOPTIONS = '-c default_transaction_read_only=on'
 
     Write-Host 'Exportando banco...'
-    & $dumpTool @connectionArgs '--format=custom' '--lock-wait-timeout=15s' "--file=$dumpPath" 2> (Join-Path $backupDirectory 'database-errors.log')
-    if ($LASTEXITCODE -ne 0) { throw 'A exportação do banco falhou. Confira database-errors.log na pasta indicada abaixo.' }
+    Invoke-BackupTool -Executable $dumpTool -ToolArguments ($connectionArgs + @('--format=custom', '--lock-wait-timeout=15s', "--file=$dumpPath")) -ErrorLog (Join-Path $backupDirectory 'database-errors.log')
 
     Write-Host 'Exportando definições de cargos, sem senhas...'
     # --database escolhe o banco inicial usado pela ferramenta para consultar os cargos.
     $roleConnectionArgs = @('--host=aws-0-us-east-1.pooler.supabase.com', '--port=5432', '--username=postgres.tfatagbhmkeelbvstcvb', '--database=postgres', '--no-password')
-    & $rolesTool @roleConnectionArgs '--roles-only' '--no-role-passwords' "--file=$rolesPath" 2> (Join-Path $backupDirectory 'roles-errors.log')
-    if ($LASTEXITCODE -ne 0) { throw 'As definições de cargos não foram exportadas. Confira roles-errors.log; o backup continua incompleto.' }
+    Invoke-BackupTool -Executable $rolesTool -ToolArguments ($roleConnectionArgs + @('--roles-only', '--no-role-passwords', "--file=$rolesPath")) -ErrorLog (Join-Path $backupDirectory 'roles-errors.log')
 
     # Lê o índice do arquivo local. Não se conecta a um destino nem restaura dados.
-    & $restoreTool '--list' $dumpPath 1> (Join-Path $backupDirectory 'contents.list') 2> (Join-Path $backupDirectory 'validation-errors.log')
-    if ($LASTEXITCODE -ne 0) { throw 'O arquivo exportado não passou na verificação de leitura.' }
+    Invoke-BackupTool -Executable $restoreTool -ToolArguments @('--list', $dumpPath) -OutputLog (Join-Path $backupDirectory 'contents.list') -ErrorLog (Join-Path $backupDirectory 'validation-errors.log')
     $manifest.status = 'exported'
     $manifest['databaseSha256'] = (Get-FileHash -LiteralPath $dumpPath -Algorithm SHA256).Hash
     $manifest['rolesSha256'] = (Get-FileHash -LiteralPath $rolesPath -Algorithm SHA256).Hash

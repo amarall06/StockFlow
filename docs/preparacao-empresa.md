@@ -38,3 +38,6 @@ Fontes oficiais consultadas em 25/10/2026:
 Obter autorização da empresa. Confirmar códigos, aplicações, fabricantes, prateleiras e contagens com o responsável. Planejar a transição para não misturar exemplos com operação real nem apagar históricos indevidamente.
 
 Testar com contas de cada cargo: consulta, recebimento, aprovação de amortecedores, transferência e saídas. Molas não passam por teste. Ensaiar descarte/devolução com motivo; duas pessoas no mesmo saldo; repetição após falha de rede sem duplicação ou saldo negativo. Registrar resultados e responsáveis. Piloto com a equipe e conferência física dependem de participação humana e ainda não foram realizados.
+
+Correção após primeira tentativa: pg_dump requer --dbname=postgres; pg_dumpall aceita --database=postgres. A tentativa anterior falhou no parser, antes de exportar dados. Corrigido o parâmetro e o tratamento de stderr no Windows PowerShell 5 usando execução sem shell, leitura assíncrona dos dois canais e verificação explícita do código de saída. Testes scripts/check-backup.ps1 passaram com ferramentas reais em porta local fechada, aviso com saída zero e falha com saída não zero, sem senha ou acesso ao Supabase. Exportação real continua pendente.
+
