@@ -17,17 +17,21 @@ O site usa Vite em `http://127.0.0.1:5173/`. Os dados fictícios de estoque e as
 - Fabricantes Moripar, New Parts e Trebor carregados do Supabase na garantia, com cadastro/edição para administradores.
 - Lua no tema claro, sol no escuro e lápis nas ações Editar. Tema disponível inclusive no login, salvo no navegador.
 
-## Etapa atual preparada
+## Etapa de garantia conferida; projeto pausado pelo usuário
+
+Após concluir esta etapa, o usuário pediu pausa até retomar amanhã. Não iniciar outra funcionalidade sem novo pedido.
 
 Caixas por fabricante e categoria na garantia, com Adicionar e Retirar. Migração: `supabase/migrations/202610240008_warranty_boxes.sql`.
 
-A execução dessa migração no Supabase ainda não foi confirmada. Conferir se a tela mostra os saldos ou o aviso de ativação pendente. Depois de aplicar, validar uma entrada fictícia, uma retirada e a persistência após recarregar. O banco impede saldo negativo e um mesmo envio repetido não deve duplicar a operação.
+Migração 008 confirmada na interface conectada. Entradas e retiradas fictícias de amortecedores e molas na Trebor foram conferidas; a entrada de amortecedores persistiu após recarregar o site. A interface bloqueou retirar 2 caixas com saldo 1. Os testes restauraram o saldo inicial zero da Trebor; Moripar (1 amortecedor) e New Parts (1 mola) mantiveram seus saldos. Concorrência e repetição após falha de rede não foram simuladas.
 
-Os saldos de garantia não alteram automaticamente o estoque normal ou o saldo para venda. A contagem é por fabricante/categoria; a identificação detalhada de cada devolução pertence à próxima fase. Somente administradores movimentam garantia até definir os demais cargos.
+Os saldos de garantia não alteram automaticamente o estoque normal ou o saldo para venda. A contagem é por fabricante/categoria, com registros detalhados de devolução vinculados às entradas e aos encerramentos. Somente administradores movimentam garantia até definir os demais cargos.
 
 ## Próximas funcionalidades
 
-1. Recebimento e acompanhamento de cada devolução/garantia, com identificação, local e destino. Não presumir o destino de peças erradas ou itens aleatórios recebidos.
+Migração `supabase/migrations/202610250001_warranty_returns.sql` (API 8) aplicada e confirmada pela interface. Conferidos no Supabase: recebimento fictício de AGM-35 em conferência, atualização para garantia (Trebor +1 amortecedor), destino obrigatório e encerramento (Trebor -1); recebimento fictício MGM-12 diretamente em garantia (Trebor +1 mola), ausência de testagem e encerramento (Trebor -1). Os dois registros foram mantidos como TESTE FICTÍCIO, encerrados. Saldo da Trebor restaurado a zero; outros fabricantes e estoque normal preservados. Instruções em `docs/estudo-devolucoes-garantia.md`. Concorrência, repetição por falha de rede e sessão de outro cargo ainda não foram exercitadas no banco.
+
+1. Evoluções futuras da garantia: divisão parcial de recebimentos, paginação além dos 100 mais recentes e verificações adicionais de concorrência e acesso. Não presumir destino de itens errados ou aleatórios.
 2. Testagem de amortecedores por caixa inteira, com QR único, pessoa e data. Molas não passam por teste.
 3. Fornecedor/lote e saídas por motivo. Transferência interna não conta como venda.
 4. Limite mínimo por produto e alertas de ruptura. Considerar todas as caixas do estoque normal, incluindo aguardando teste, como o usuário escolheu; garantia separada.
@@ -42,4 +46,4 @@ Usuários, convites e painel administrativo separado. A exigência futura de nom
 
 A última compilação passou. Há aviso de tamanho do JavaScript e avisos de efeitos React já existentes no lint; não são erros de compilação. Foram conferidos ícones acessíveis, retirada vazia bloqueada, seleção de categoria com saldo e aviso antes da migração de garantia.
 
-Preservar fontes, imagens, documentação, SQL e configuração local. Dependências e cache npm podem ser reconstruídos com `package-lock.json`. O Git local não tem remoto; publicação no GitHub segue pendente.
+Preservar fontes, imagens, documentação, SQL e configuração local. Dependências e cache npm podem ser reconstruídos com `package-lock.json`. O Git local possui remoto origin em https://github.com/amarall06/StockFlow.git. A publicação anterior foi conferida; esta atualização de documentação ainda é local.

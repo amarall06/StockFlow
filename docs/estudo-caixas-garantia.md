@@ -37,7 +37,13 @@ As demais contas ativas consultam os saldos. A ampliação das permissões de ga
 
 Use quantidades fictícias: adicione 2 caixas de amortecedores em um fabricante, retire 1 e recarregue. O fabricante deve permanecer com 1 caixa dessa categoria. As caixas de molas e dos outros fabricantes não devem mudar. Uma retirada maior que o disponível deve ser recusada.
 
-A compilação, o estado vazio da retirada e a seleção da categoria com saldo foram verificados localmente. Na interface atual foi conferido o aviso antes da instalação da migração. A entrada, retirada e persistência no Supabase ainda precisam ser conferidas após executar a migração 008.
+Migração 008 confirmada na interface conectada ao Supabase. Foram adicionadas e retiradas uma caixa de amortecedores e uma de molas na Trebor, restaurando o saldo inicial zero. A entrada de amortecedores persistiu após recarregar o site. A interface bloqueou retirar 2 caixas com saldo 1 e selecionou Molas automaticamente quando somente essa categoria tinha saldo. Os outros fabricantes mantiveram seus saldos. Concorrência e repetição após falha de rede não foram simuladas.
+
+### Como o código funciona
+
+`const` cria uma referência que não será reatribuída. `const [quantity, setQuantity] = useState('1')` guarda o texto digitado entre renderizações. `setQuantity` atualiza esse valor e solicita uma nova renderização. O `onChange` do campo chama `setQuantity(event.target.value)` a cada edição.
+
+O `onClick` de Adicionar caixas abre a janela. O botão de confirmação usa `type="submit"`, acionando o `onSubmit` do formulário. A função `submit` converte o texto com `Number(quantity)`, verifica caixas inteiras positivas e usa `await changeWarrantyBoxes(...)` para aguardar o banco. O banco atualiza saldo e registro da movimentação na mesma transação. Depois, `onSaved` fecha a janela e recarrega os saldos.
 
 ## Ícones em todo o site
 

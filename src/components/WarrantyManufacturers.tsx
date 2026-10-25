@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { loadWarrantyManufacturers, saveWarrantyManufacturer, type WarrantyManufacturer } from '../lib/warranty-api'
 import { WarrantyBoxesDialog } from './WarrantyBoxesDialog'
 import { EditButton } from './EditButton'
+import { WarrantyReturns } from './WarrantyReturns'
 import './WarrantyManufacturers.css'
 
 export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
@@ -87,6 +88,7 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
             </li>)}</ul>}
       </>}
     </section>
+    <WarrantyReturns ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} />
     {boxOperation && <WarrantyBoxesDialog manufacturer={boxOperation.manufacturer} direction={boxOperation.direction}
       onClose={() => setBoxOperation(null)} onSaved={(feedback) => { setBoxOperation(null); setMessage(feedback); setError(''); setRevision((value) => value + 1) }} />}
   </>

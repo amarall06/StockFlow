@@ -6,7 +6,7 @@ Situação em 24/10/2026. Estimativa de prontidão para uso diário real na empr
 | --- | --- | --- |
 | 1. Base do sistema | Concluída no protótipo | Login, Supabase, perfil, cargos básicos e tema claro/escuro. |
 | 2. Catálogo e estoque | Funcionando com exemplos | Amortecedores e molas em caixas, consulta por código, entradas e transferências. Aplicações de veículos/anos e tipos somente para amortecedores. Históricos de estoque e alterações de aplicações. |
-| 3. Garantia por fabricante | Em andamento | Fabricantes cadastrados. Adicionar/retirar caixas por fabricante e categoria está preparado; falta confirmar a migração 008 e testar a persistência. Depois completar identificação, recebimento e destino de cada devolução. |
+| 3. Garantia por fabricante | Fluxo básico concluído com dados fictícios | Recebimento, identificação, localização, andamento e destino; entrada e encerramento atualizam o saldo do fabricante. Conferidos amortecedores e molas sem testagem no Supabase. Verificações adicionais de concorrência/acesso e evoluções operacionais documentadas no guia. Projeto pausado a pedido do usuário. |
 | 4. Testagem e etiquetas | Pendente | Teste de caixa inteira de amortecedores, QR único por caixa, nome do testador e data. Molas não passam por teste. |
 | 5. Fotos e identificação | Pendente | Foto pequena do produto e ampliação ao clicar, para ajudar quando a etiqueta se perde. |
 | 6. Entradas e saídas completas | Pendente | Fornecedores, lotes e saídas por motivo. Vendas, transferências, garantia e ajustes tratados como operações diferentes. |
