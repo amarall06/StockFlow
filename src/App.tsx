@@ -163,6 +163,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
   const [storageMessage, setStorageMessage] = useState('Salvando dados...')
   const [dataMode, setDataMode] = useState<'demo' | 'database'>('demo')
   const [inventoryApiVersion, setInventoryApiVersion] = useState(0)
+  const [databaseError, setDatabaseError] = useState('')
   const [testingRow, setTestingRow] = useState<StockRow | null>(null)
 
   // Reaproveita a mesma tela de estoque, filtrando somente amortecedores ou molas.
@@ -191,6 +192,10 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
     loadInventorySnapshot().then((snapshot) => {
       if (!isMounted) return
       if (snapshot.locations.length === 0 && Object.keys(snapshot.catalog).length === 0) {
+        if (import.meta.env.PROD) {
+          setDatabaseError('O banco ainda não possui cadastros de estoque. Peça ao administrador para conferir a configuração.')
+          return
+        }
         setStorageMessage('Banco vazio; usando dados fictícios')
         return
       }
@@ -201,12 +206,17 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
       setDataMode('database')
       setStorageMessage('Conectado ao Supabase')
     }).catch(() => {
-      if (isMounted) setStorageMessage('Supabase indisponível; usando dados fictícios')
+      if (isMounted) {
+        if (import.meta.env.PROD) setDatabaseError('Não foi possível carregar o estoque. Confira a conexão e tente novamente.')
+        else setStorageMessage('Supabase indisponível; usando dados fictícios')
+      }
     })
     return () => { isMounted = false }
   }, [])
 
   useEffect(() => {
+    // A versão publicada só usa o Supabase; não grava uma cópia local durante a carga.
+    if (import.meta.env.PROD) return
     if (dataMode === 'database') {
       setStorageMessage('Conectado ao Supabase')
       return
@@ -448,6 +458,12 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
     setNewLocation('')
     setNewQuantity('1')
   }
+
+  // Aguarda os dados antes de liberar os formulários na versão publicada.
+  if (import.meta.env.PROD && dataMode !== 'database' && !databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Carregando estoque...</h1><p role="status">Consultando os dados do Supabase.</p></section></AuthScreen>
+
+  // Na publicação, uma falha do banco nunca vira um estoque local que parece salvo online.
+  if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p><button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
 
   return (
     <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
@@ -725,7 +741,7 @@ function App() {
 
   useEffect(() => {
     if (!supabase) {
-      setAuthView({ status: 'error', message: 'A configuração local do Supabase está ausente. Confira o arquivo .env.local.' })
+      setAuthView({ status: 'error', message: import.meta.env.PROD ? 'A conexão com o serviço de dados não está configurada. Peça ao administrador para verificar a publicação.' : 'A configuração local do Supabase está ausente. Confira o arquivo .env.local.' })
       return
     }
 
