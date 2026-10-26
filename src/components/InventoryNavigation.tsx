@@ -6,6 +6,8 @@ import {StockAlerts} from './StockAlerts'
 import {dashboardStockSummary} from '../lib/dashboard-summary'
 import {searchableProductText} from '../lib/product-details'
 import {ProductPhoto} from './ProductPhotos'
+import {ExportCsvButton} from './ExportCsvButton'
+import './InventoryDashboard.css'
 
 type Page='inventory'|'springs'|'catalog'
 
@@ -14,7 +16,7 @@ export function AllStockOverview({catalog,stock,onOpen}:{catalog:Record<string,P
   const rows=stock.filter((row)=>row.boxes>0&&(isSpringCode(row.code)?row.status==='Em estoque':['Aguardando testagem','Liberado para venda'].includes(row.status))).sort((a,b)=>a.code.localeCompare(b.code)||a.location.localeCompare(b.location)||a.status.localeCompare(b.status))
   return <>
     <div className="page-heading"><div><p className="eyebrow">CONSULTA</p><h1>Estoque geral</h1><p className="subtitle">{rows.reduce((sum,row)=>sum+row.boxes,0)} caixas de amortecedores e molas. Garantia contabilizada separadamente.</p></div></div>
-    <section className="inventory-panel dashboard-panel"><div className="dashboard-tools"><button className="theme-toggle" type="button" onClick={()=>onOpen('inventory')}>Estoque de amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Estoque de molas</button></div>
+    <section className="inventory-panel dashboard-panel"><div className="dashboard-tools"><button className="theme-toggle" type="button" onClick={()=>onOpen('inventory')}>Estoque de amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Estoque de molas</button><ExportCsvButton name="liber-estoque" headers={['Código','Categoria','Aplicação','Local padrão','Local atual','Situação','Caixas']} rows={rows.map(row=>[row.code,isSpringCode(row.code)?'Mola':'Amortecedor',searchableProductText(catalog[row.code]),catalog[row.code]?.defaultLocation,row.location,row.status,row.boxes])}/></div>
       <div className="combined-stock-scroll"><table className="combined-stock-table"><thead><tr><th>Código</th><th>Categoria</th><th>Local</th><th>Situação</th><th>Caixas</th></tr></thead><tbody>{rows.map((row)=><tr key={`${row.code}-${row.location}-${row.status}`}><td><div className="combined-stock-product"><ProductPhoto code={row.code}/><div><strong>{row.code}</strong><ProductApplications product={catalog[row.code]}/></div></div></td><td>{isSpringCode(row.code)?'Mola':'Amortecedor'}</td><td>{row.location}</td><td>{row.status}</td><td><strong>{row.boxes}</strong></td></tr>)}</tbody></table></div>
       {!rows.length&&<p>Nenhuma caixa no estoque normal.</p>}
     </section>

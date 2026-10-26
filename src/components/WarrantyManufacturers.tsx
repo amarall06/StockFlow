@@ -3,6 +3,7 @@ import { loadWarrantyManufacturers, saveWarrantyManufacturer, type WarrantyManuf
 import { WarrantyBoxesDialog } from './WarrantyBoxesDialog'
 import { EditButton } from './EditButton'
 import { WarrantyReturns } from './WarrantyReturns'
+import { ExportCsvButton } from './ExportCsvButton'
 import './WarrantyManufacturers.css'
 
 export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
@@ -68,6 +69,7 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
     <div className="page-heading"><div><p className="eyebrow">AMORTECEDORES E MOLAS</p><h1>Garantia</h1><p className="subtitle">Controle as caixas em garantia de cada fabricante.</p></div></div>
     <section className="inventory-panel warranty-manufacturers" aria-labelledby="manufacturers-title">
       <div className="panel-heading"><div><h2 id="manufacturers-title">Fabricantes das peças</h2><p>Cadastro compartilhado entre amortecedores e molas.</p></div>{ready && !loading && !result.error && <span className="row-count">{result.rows.length} fabricantes</span>}</div>
+      {boxesReady && !loading && !result.error && <ExportCsvButton name="liber-garantia-fabricantes" headers={['Fabricante','Amortecedores (caixas)','Molas (caixas)','Total (caixas)']} rows={filtered.map(row=>[row.name,row.shock_boxes??0,row.spring_boxes??0,(row.shock_boxes??0)+(row.spring_boxes??0)])}/>}
       {!ready ? <p className="manufacturer-notice" role="status">O cadastro de fabricantes aguarda ativação no banco. Depois da atualização, recarregue o site.</p> : <>
         {!boxesReady && <p className="manufacturer-notice" role="status">O saldo de caixas por fabricante aguarda ativação no banco. O cadastro dos fabricantes continua disponível.</p>}
         {isAdministrator && <form className="manufacturer-form" onSubmit={saveManufacturer}>

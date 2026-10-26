@@ -17,3 +17,18 @@ body { min-width: 320px; min-height: 100vh; margin: 0; }
 button, input { font: inherit; }
 
 ::selection { color: #fff; background: #168d7d; }
+
+/* Foco de teclado consistente, sem depender apenas da mudança de cor. */
+:focus-visible { outline: 3px solid #98502f; outline-offset: 3px; }
+.theme-dark :focus-visible { outline-color: #e4bf72; }
+.skip-link { position: fixed; left: 12px; top: 12px; z-index: 1000; padding: 12px 16px; color: #fff; background: #49372f; border-radius: 6px; transform: translateY(-160%); }
+.skip-link:focus { transform: translateY(0); }
+.module-state { padding: 24px; line-height: 1.6; }
+.module-state h1 { font-size: 20px; }
+.csv-export { display: grid; gap: 6px; justify-items: start; }
+.csv-export button { display: inline-flex; align-items: center; gap: 7px; }
+.csv-export small { max-width: 260px; font-size: 11px; line-height: 1.5; }
+.csv-export button:disabled { opacity: .55; cursor: not-allowed; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

@@ -1,5 +1,13 @@
 # Ponto de retomada — atualizado em 26/10/2026
 
+## Continuação: desempenho e exportações
+
+Giro/ABC 89a5d07 foi enviado pelo usuário e confirmado Ready/Latest/Production/Current no deployment 3FkzihuLp3XebgDh4Pu7cxd7D1vZ, em 26/10 às 20:38:01 BRT. Filtros de 180 dias e as duas categorias conferidos no site publicado sem escrita. A seleção final voltou a todas/90 dias.
+
+Depois disso, o usuário autorizou desempenho, interface, testes, CSV, estudo e preparação do piloto, em sequência, e pediu salvar o progresso se o uso acabar. Implementados localmente App/InventoryApp separados e módulos lazy, espera/erro, exemplos WebP, foco/skip link, CSV de estoque/garantia/ABC, testes de CSV e orçamento do build. Fonte explicada em `estudo-desempenho-exportacao.md`. Não foi publicado este novo conjunto. Verificar commit/status local antes de retomar.
+
+Verificações feitas e próximas pendências estão no guia; não repetir rodadas de banco. No navegador local os módulos abriram e o CSV de estoque exibiu arquivo preparado. Laboratório de carregamento passou. Falta conferir downloads reais de garantia/ABC, ampliação WebP, revisão de teclado/mobile, sessão expirada/consulta vazia e roteiro do piloto. Preservar os dados fictícios e os itens adiados. O usuário informou 5% de uso restante durante esta continuação.
+
 ## Situação mais recente — prevalece sobre os registros históricos abaixo
 
 O usuário autorizou continuar as etapas em sequência, avisando ao concluir. Itens explicitamente adiados continuam adiados: etiquetas/QR por caixa, gestão de usuários, logins reais dos outros cargos e restauração do backup. Dados reais e piloto dependem da empresa.

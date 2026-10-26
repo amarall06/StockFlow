@@ -78,7 +78,8 @@ function PhotoDialog({code,onClose}:{code:string;onClose:()=>void}){
   </dialog>
 }
 
-function examplePhoto(code:string){return isSpringCode(code)?'/images/spring-example.png':'/images/shock-example.png'}
+// A lista baixa só 1–2 KB por exemplo; a versão maior é pedida ao abrir o diálogo.
+function examplePhoto(code:string,thumbnail=false){return `/images/${isSpringCode(code)?'spring':'shock'}-example${thumbnail?'-thumb':''}.webp`}
 
 // O botão real permite abrir a ampliação por clique, Enter ou Espaço.
 export function ProductPhoto({code}:{code:string}){
@@ -86,9 +87,9 @@ export function ProductPhoto({code}:{code:string}){
   const [open,setOpen]=useState(false)
   const [failedSource,setFailedSource]=useState('')
   const photo=photos[code]
-  const source=photo?.url||examplePhoto(code)
+  const source=photo?.url||examplePhoto(code,true)
   return <><button className="product-photo-thumb" type="button" aria-label={`Ampliar foto de ${code}${photo?'':' — exemplo ilustrativo'}`} onClick={()=>setOpen(true)} title={photo?'Ampliar foto':'Imagem ilustrativa · clique para ampliar'}>
-    {failedSource===source?<span aria-hidden="true">Foto</span>:<img src={source} alt="" width="48" height="48" loading="lazy" onError={()=>setFailedSource(source)}/>}
+    {failedSource===source?<span aria-hidden="true">Foto</span>:<img src={source} alt="" width="48" height="48" loading="lazy" decoding="async" onError={()=>setFailedSource(source)}/>}
     {!photo&&<span className="photo-example-badge">Exemplo</span>}
   </button>{open&&<PhotoDialog code={code} onClose={()=>setOpen(false)}/>}</>
 }

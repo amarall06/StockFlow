@@ -4,6 +4,8 @@ Este índice organiza o código e os guias para estudar com o projeto aberto. Os
 
 ## Como as partes se conectam
 
+Continuação nova: [desempenho, carregamento por módulo e CSV](estudo-desempenho-exportacao.md). A autenticação permanece em `App.tsx`; a interface operacional foi movida para `InventoryApp.tsx`.
+
 | Parte | Função no projeto | Onde começar |
 | --- | --- | --- |
 | HTML | Documento inicial e ponto de montagem do aplicativo. | `index.html` |
