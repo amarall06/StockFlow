@@ -51,6 +51,8 @@ node --test tests/outflow-lab/server.test.mjs
 
 ## Rodada de recarga: falha encontrada
 
+**Atualização posterior:** a falha foi corrigida e validada no laboratório para recarga na mesma aba, com amortecedores e molas. UUID e conteúdo agora são recuperados do sessionStorage por conta. Veja `docs/estudo-recuperacao-saidas.md`. A descrição a seguir registra o comportamento da versão anterior.
+
 Em 25/10/2026, no laboratório, foi testada uma recarga após aparecer a mensagem de confirmação incerta. Para cada categoria:
 
 1. O servidor aceitou uma caixa, mas cortou a confirmação; o saldo local foi de duas para uma caixa.

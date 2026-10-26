@@ -5,7 +5,7 @@ import type { StockRow } from '../../src/lib/inventory-api'
 import './style.css'
 
 type LabState = { balances: Record<string,number>; events: {id:string;code:string;requestId:string}[]; attempts: {requestId:string;code:string;repeated:boolean;responseLost?:boolean}[] }
-function Lab() {
+export function Lab() {
   const [state,setState] = useState<LabState|null>(null)
   const [stock,setStock] = useState<StockRow[]>([])
   const [error,setError] = useState('')
@@ -14,6 +14,8 @@ function Lab() {
       // Apaga somente a memória do laboratório, antes de uma nova rodada.
       const response=await fetch('/__outflow_lab/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
       if(!response.ok) throw new Error('Falha ao reiniciar laboratório.')
+      // A conta fictícia do laboratório nunca compartilha pedidos com o site real.
+      sessionStorage.removeItem('liber.outflow.pending.v1:lab-administrator')
       window.location.reload()
     } catch {setError('Não foi possível reiniciar o laboratório local.')}
   }
@@ -32,10 +34,12 @@ function Lab() {
       if(updateStock) setStock(Object.entries(next.balances).filter(([,boxes])=>boxes>0).map(([code,boxes])=>({
         code,location:'LAB',status:code==='MGM-35'?'Em estoque':'Liberado para venda',boxes,
       })) as StockRow[])
-    } catch { setError('Não foi possível consultar o servidor local do laboratório.') }
+    } catch { setError('Não foi possível consultar o servidor local do laboratório.'); if(updateStock) throw new Error('Consulta local falhou.') }
   }
   useEffect(()=>{
-    void read(true)
+    // A sincronização faz fetch; os setters só executam após a resposta assíncrona.
+    // oxlint-disable-next-line react/set-state-in-effect
+    void read(true).catch(()=>{})
     // A observação não atualiza o saldo do formulário durante uma confirmação incerta.
     const timer=setInterval(()=>void read(),800)
     return ()=>clearInterval(timer)
@@ -52,7 +56,7 @@ function Lab() {
       {' '}<button onClick={()=>void restart()}>Reiniciar somente os dados do laboratório</button>
       <ol>{state.attempts.map((attempt,index)=><li key={index}>{attempt.code} · ID {attempt.requestId} · {attempt.responseLost?'Retirada aceita; confirmação cortada':attempt.repeated?'Reenvio: mesmo evento, sem nova retirada':'Resposta entregue'}</li>)}</ol>
     </aside>}
-    <StockOutflows stock={stock} catalog={{}} ready={Boolean(state)} isAdministrator={true} onRefresh={()=>read(true)}/>
+    <StockOutflows userId="lab-administrator" stock={stock} catalog={{}} ready={Boolean(state)} isAdministrator={true} onRefresh={()=>read(true)}/>
   </main>
 }
 createRoot(document.getElementById('root')!).render(<Lab/> )

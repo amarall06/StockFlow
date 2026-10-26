@@ -8,6 +8,7 @@ import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ReceiptForm } from './components/ReceiptForm'
 import { StockOutflows } from './components/StockOutflows'
+import { readPendingOutflow } from './lib/pending-outflow'
 import { StockAlerts } from './components/StockAlerts'
 import { NavigationIcon } from './components/NavigationIcon'
 import { InventoryDashboard } from './components/InventoryDashboard'
@@ -131,13 +132,16 @@ function readSavedDemoData(): SavedDemoData | null {
   }
 }
 
-function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfileUpdated, isDarkMode, onToggleTheme }: {
-  onSignOut: () => void; displayName: string; userRole: string; profileName: string | null
+function DemoApp({ userId, onSignOut, displayName, userRole, profileName, email, onProfileUpdated, isDarkMode, onToggleTheme }: {
+  userId: string; onSignOut: () => void; displayName: string; userRole: string; profileName: string | null
   email: string; onProfileUpdated: (name: string) => void
   isDarkMode: boolean; onToggleTheme: () => void
 }) {
   // Controla qual módulo está aberto na demonstração.
-  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock'>('dashboard')
+  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock'>(()=>{
+    const recovery=userRole==='administrator'?readPendingOutflow(userId):null
+    return recovery?.pending||recovery?.error?'outflow':'dashboard'
+  })
   const showInventoryPage = activePage === 'inventory' || activePage === 'springs'
   // O catálogo guarda os dados do produto, separados dos saldos por localização.
   const [catalog, setCatalog] = useState<Record<string, ProductInfo>>(() => readSavedDemoData()?.catalog ?? allDemoCatalog)
@@ -704,7 +708,7 @@ function DemoApp({ onSignOut, displayName, userRole, profileName, email, onProfi
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {
@@ -732,7 +736,7 @@ type AuthView =
   | { status: 'loading' }
   | { status: 'signed-out' }
   | { status: 'inactive'; email: string }
-  | { status: 'ready'; email: string; displayName: string | null; role: string }
+  | { status: 'ready'; userId: string; email: string; displayName: string | null; role: string }
   | { status: 'error'; message: string }
 
 // Confere no banco se a conta autenticada tem um perfil ativo antes de exibir a interface.
@@ -758,15 +762,17 @@ function App() {
 
     let isMounted = true
 
+    let profileRevision=0
     async function loadUserProfile(user: User) {
       if (!supabase) return
+      const revision=++profileRevision
       const { data, error } = await supabase
         .from('profiles')
         .select('is_active, display_name, role')
         .eq('id', user.id)
         .maybeSingle()
 
-      if (!isMounted) return
+      if (!isMounted || revision!==profileRevision) return
       if (error) {
         setAuthView({ status: 'error', message: `Não foi possível carregar seu perfil: ${error.message}` })
         return
@@ -779,7 +785,7 @@ function App() {
         setAuthView({ status: 'inactive', email: user.email ?? '' })
         return
       }
-      setAuthView({ status: 'ready', email: user.email ?? '', displayName: data.display_name, role: data.role })
+      setAuthView({ status: 'ready', userId: user.id, email: user.email ?? '', displayName: data.display_name, role: data.role })
     }
 
     supabase.auth.getSession().then(({ data, error }) => {
@@ -797,8 +803,12 @@ function App() {
       // O microtask evita iniciar uma consulta Supabase dentro do callback interno de autenticação.
       queueMicrotask(() => {
         if (!isMounted) return
-        if (session?.user) void loadUserProfile(session.user)
-        else setAuthView({ status: 'signed-out' })
+        if (session?.user) {
+          const nextUser=session.user
+          // Não conservar a tela/pedido da conta anterior enquanto carrega outro perfil.
+          setAuthView(current=>current.status==='ready'&&current.userId===nextUser.id?current:{status:'loading'})
+          void loadUserProfile(nextUser)
+        } else {profileRevision++;setAuthView({ status: 'signed-out' })}
       })
     })
 
@@ -830,7 +840,7 @@ function App() {
   }
 
   if (authView.status === 'ready') {
-    return <DemoApp onSignOut={handleSignOut} displayName={authView.displayName || authView.email || 'Usuário'} userRole={authView.role}
+    return <DemoApp key={authView.userId} userId={authView.userId} onSignOut={handleSignOut} displayName={authView.displayName || authView.email || 'Usuário'} userRole={authView.role}
       profileName={authView.displayName} email={authView.email}
       isDarkMode={isDarkMode} onToggleTheme={toggleTheme}
       onProfileUpdated={(name) => setAuthView((current) => current.status === 'ready' ? { ...current, displayName: name } : current)} />

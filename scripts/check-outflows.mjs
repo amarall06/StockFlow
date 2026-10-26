@@ -40,11 +40,14 @@ await assert.rejects(api.registerOutflow(input,'id'),/saldo mudou/)
 response={data:null,error:{code:'42501'}}
 await assert.rejects(api.registerOutflow(input,'id'),/Administrador/)
 globalThis.__outflowApi=api
+source=await readFile(new URL('src/lib/pending-outflow.ts',root),'utf8')
+source=source.replace(/^import .*from '.\/outflow-api'$/m,'const {normalizeOutflow}=globalThis.__outflowApi')
+globalThis.__pendingOutflow=await importSource(compile(source))
 source=await readFile(new URL('src/components/StockOutflows.tsx',root),'utf8')
-source=source.replace(/^import type .*$/gm,'').replace(/^import .*from '\.\.\/lib\/outflow-api'$/m,'const {eligibleOutflows,outflowLabels,registerOutflow}=globalThis.__outflowApi').replace(/^import '\.\/StockOutflows.css'$/m,'')
+source=source.replace(/^import type .*$/gm,'').replace(/^import .*from '\.\.\/lib\/outflow-api'$/m,'const {eligibleOutflows,outflowLabels,registerOutflow,normalizeOutflow,OutflowRejectedError}=globalThis.__outflowApi').replace(/^import .*from '..\/lib\/pending-outflow'$/m,'const {readPendingOutflow,savePendingOutflow,clearPendingOutflow}=globalThis.__pendingOutflow').replace(/^import '\.\/StockOutflows.css'$/m,'')
 source=compile(source,ts.JsxEmit.ReactJSX).replaceAll('from "react/jsx-runtime"',`from ${JSON.stringify(import.meta.resolve('react/jsx-runtime'))}`).replaceAll("from 'react'",`from ${JSON.stringify(import.meta.resolve('react'))}`)
 const {StockOutflows}=await importSource(source)
-const props={stock:[waiting,released,spring],catalog:{},ready:true,isAdministrator:true,onRefresh:async()=>{}}
+const props={userId:'test-user',stock:[waiting,released,spring],catalog:{},ready:true,isAdministrator:true,onRefresh:async()=>{}}
 const render=(overrides={})=>renderToStaticMarkup(React.createElement(StockOutflows,{...props,...overrides}))
 const html=render()
 assert(html.includes('AGM-35 · A01 · Liberado para venda · 1 caixas'))
@@ -54,4 +57,5 @@ assert(!render({ready:false}).includes('<form'))
 assert(render({stock:[waiting]}).includes('Não há caixas de amortecedores liberadas para venda.'))
 delete globalThis.__outflowClient
 delete globalThis.__outflowApi
-console.log('OK: venda só de liberados, molas Em estoque, saldo/inteiros, observação de descarte/devolução, reenvio, autoria do servidor e interface por cargo. SQL ainda aguarda aplicação e ensaio no Supabase.')
+delete globalThis.__pendingOutflow
+console.log('OK: venda só de liberados, molas Em estoque, saldo/inteiros, observação de descarte/devolução, reenvio, autoria do servidor e interface por cargo. Este script é uma regressão local; não executa SQL ou contas reais.')

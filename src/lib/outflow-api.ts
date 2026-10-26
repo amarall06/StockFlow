@@ -9,6 +9,8 @@ export function eligibleOutflows(rows: StockRow[], springs: boolean, reason: Out
     && (springs ? row.status==='Em estoque' : reason==='sale' ? row.status==='Liberado para venda' : ['Aguardando testagem','Liberado para venda'].includes(row.status)))
 }
 export type OutflowInput = { row: StockRow; boxes: number; reason: OutflowReason; notes: string; reference: string }
+// Somente recusas explícitas do servidor permitem liberar o formulário sem confirmação.
+export class OutflowRejectedError extends Error {}
 export function normalizeOutflow(input: OutflowInput) {
   const notes=input.notes.trim(), reference=input.reference.trim()
   if (!Number.isInteger(input.boxes) || input.boxes<1 || input.boxes>input.row.boxes) throw new Error('Informe caixas inteiras dentro do saldo disponível.')
@@ -21,10 +23,11 @@ export async function registerOutflow(input: OutflowInput, requestId: string) {
   if (!supabase) throw new Error('Banco não configurado.')
   const {data,error}=await supabase.rpc('register_stock_outflow',{...payload,p_request_id:requestId})
   if (error) {
-    if (error.code==='P0001') throw new Error('O saldo mudou ou é insuficiente. Atualize o estoque antes de tentar novamente.')
-    if (error.code==='42501') throw new Error('Somente Administrador pode registrar saídas nesta etapa.')
-    if (error.code==='P0003') throw new Error('Preencha seu nome em Meu perfil antes de registrar a saída.')
-    if (error.code==='22023') throw new Error('Confira a situação, quantidade e motivo da saída.')
+    if (error.code==='P0001') throw new OutflowRejectedError('O saldo mudou ou é insuficiente. Atualize o estoque antes de tentar novamente.')
+    if (error.code==='42501') throw new OutflowRejectedError('Somente Administrador pode registrar saídas nesta etapa.')
+    if (error.code==='P0003') throw new OutflowRejectedError('Preencha seu nome em Meu perfil antes de registrar a saída.')
+    if (error.code==='22023') throw new OutflowRejectedError('Confira a situação, quantidade e motivo da saída.')
+    if (error.code==='P0002') throw new OutflowRejectedError('Produto ou localização indisponível. Atualize o estoque.')
     throw new Error('Não foi possível confirmar. Repita com os mesmos dados para conferir o envio.')
   }
   if (!data?.id) throw new Error('A confirmação não chegou. Repita com os mesmos dados para conferir o envio.')

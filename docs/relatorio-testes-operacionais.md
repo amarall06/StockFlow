@@ -71,6 +71,14 @@ Esses resultados são uma validação operacional das regras testadas, não uma 
 
 ## Material para estudo
 
+### Correção de recuperação após recarga — aprovada localmente
+
+Posterior à rodada reprovada abaixo: a tela agora salva UUID e conteúdo original no sessionStorage, antes do envio, separados por conta e aba. Ao retornar à tela Saídas, exibe pedido pendente e impede nova operação até conferi-lo. A mesma RPC recebe UUID/conteúdo originais, inclusive com saldo atual zero. Não há reenvio automático. Pedidos confirmados com consulta falha repetem só a consulta.
+
+No laboratório, amortecedores e molas tiveram retirada de duas caixas, resposta interrompida, recarga e conferência com UUID preservado. Resultado: zero caixa de cada categoria e **dois eventos**, um por produto; a versão anterior gerava quatro eventos ao repetir manualmente. Evidências privadas `outputs/verifications/outflow-reload-fixed-result.png` e `.txt`. Nenhum dado de produção acessado ou alterado nesse ensaio. Dezesseis cenários do script de recuperação passaram, incluindo regressão, armazenamento indisponível, dados inválidos, separação de conta e saldo zero. Guia: `docs/estudo-recuperacao-saidas.md`.
+
+Escopo: mesma aba/origem e conta; fechar aba ou limpar dados não é coberto. O caso do navegador usa servidor local em memória, não o endpoint Supabase publicado. Correção ainda precisa de envio ao GitHub/deploy para chegar ao domínio publicado. A reprovação abaixo é o registro histórico anterior à correção.
+
 ### Recarga durante confirmação incerta — reprovado no laboratório
 
 Rodada de 25/10/2026, posterior ao ensaio sem recarga. Em AGM-35 e MGM-35, uma retirada aceita em memória perdeu a confirmação; depois de recarregar, o formulário não recuperou o pedido. Preencher e enviar manualmente a mesma retirada criou outro UUID e um segundo evento. O saldo fictício foi de duas para uma e depois para zero caixa de cada produto, quatro eventos no total. A recarga sozinha não retirou nada. Falha: a interface perde o contexto da operação pendente e não impede que uma repetição manual seja tratada como nova intenção.
