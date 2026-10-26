@@ -1,6 +1,6 @@
 # Recuperação de saída após recarregar
 
-Correção local de 25/10/2026 para amortecedores e molas. Nenhuma migração SQL necessária. Publicação depende de enviar a revisão ao GitHub e conferir o deploy.
+Correção local de 25/10/2026 para amortecedores e molas. Nenhuma migração SQL necessária. Publicação confirmada em 26/10/2026: revisão 1247050 no GitHub e Vercel Ready/Current. Ver verificacao-publicacao-mobile.md.
 
 ## Como funciona
 

@@ -77,7 +77,7 @@ Posterior à rodada reprovada abaixo: a tela agora salva UUID e conteúdo origin
 
 No laboratório, amortecedores e molas tiveram retirada de duas caixas, resposta interrompida, recarga e conferência com UUID preservado. Resultado: zero caixa de cada categoria e **dois eventos**, um por produto; a versão anterior gerava quatro eventos ao repetir manualmente. Evidências privadas `outputs/verifications/outflow-reload-fixed-result.png` e `.txt`. Nenhum dado de produção acessado ou alterado nesse ensaio. Dezesseis cenários do script de recuperação passaram, incluindo regressão, armazenamento indisponível, dados inválidos, separação de conta e saldo zero. Guia: `docs/estudo-recuperacao-saidas.md`.
 
-Escopo: mesma aba/origem e conta; fechar aba ou limpar dados não é coberto. O caso do navegador usa servidor local em memória, não o endpoint Supabase publicado. Correção ainda precisa de envio ao GitHub/deploy para chegar ao domínio publicado. A reprovação abaixo é o registro histórico anterior à correção.
+Escopo: mesma aba/origem e conta; fechar aba ou limpar dados não é coberto. O caso do navegador usa servidor local em memória, não o endpoint Supabase publicado. Atualização em 26/10: correção publicada na revisão 1247050, confirmada no GitHub e Vercel Ready/Current; detalhes em docs/verificacao-publicacao-mobile.md. A reprovação abaixo é o registro histórico anterior à correção.
 
 ### Recarga durante confirmação incerta — reprovado no laboratório
 

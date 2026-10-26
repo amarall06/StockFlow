@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>LIBER — Conferência de tela móvel</title>
+  <style>
+    body{margin:0;padding:18px;background:#e9e5df;font:14px system-ui;color:#302c29}
+    header{margin-bottom:14px;max-width:700px}h1{font-size:20px;margin:0 0 8px}
+    button{padding:8px 12px;margin-right:6px;cursor:pointer}
+    iframe{display:block;width:390px;height:844px;border:1px solid #9d9387;background:white}
+  </style>
+</head>
+<body>
+  <header><h1>Conferência móvel local</h1><p>Interface real dentro de uma tela estreita. A sessão é a mesma do site local; use somente consultas. Isto não é um iPhone físico.</p>
+    <button type="button" data-width="390">Largura de 390 pixels</button>
+    <button type="button" data-width="360">Largura de 360 pixels</button>
+  </header>
+  <iframe title="LIBER em tela móvel" src="/"></iframe>
+  <script>
+    // A largura do iframe determina as media queries reais do documento interno.
+    document.querySelectorAll('button[data-width]').forEach(button=>{
+      button.addEventListener('click',()=>{document.querySelector('iframe').style.width=button.dataset.width+'px'})
+    })
+  </script>
+</body>
+</html>
