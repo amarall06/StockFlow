@@ -55,8 +55,14 @@ Relatório local: `outputs/verifications/concurrency-20261025-214146-4d9f60/repo
 
 ## O que continua pendente antes do uso real
 
+O cenário novo após COMMIT foi **executado e aprovado** com `scripts/check-committed-concurrency.ps1`. Relatório privado conferido: `outputs/verifications/committed-concurrency-20261025-220316-d3f50d/report.json`, status `passed`. As seis confirmações ocorreram: primeira retirada confirmada, segunda recusada após COMMIT e reenvio preservando um único evento, para amortecedores e molas. O schema isolado foi removido. Quantidades, produtos, perfis e histórico público coincidiram antes/depois: 53 caixas, 8 produtos, 26 movimentos e hashes iguais. A execução anterior parou na autenticação, antes da preparação dos dados.
+
+O script cria um schema com UUID próprio, copia a estrutura de saldos e movimentos e a definição atual da função de saída, redirecionando somente suas duas tabelas de escrita. Não copia triggers, políticas RLS ou chaves estrangeiras para as tabelas isoladas; este teste cobre a lógica concorrente da função, não essas integrações. Produtos, locais e perfil são apenas consultados. Para cada categoria, semeia uma caixa isolada; a primeira conexão confirma a retirada e a segunda precisa encontrar bloqueio e depois saldo insuficiente. O reenvio da primeira requisição deve conservar somente um evento. O bloco `finally` tenta remover apenas o schema gerado por essa execução e compara os dados públicos antes/depois. Uma falha de conexão pode impedir a limpeza; nesse caso o relatório informa o schema para revisão, sem declarar sucesso. São usadas conexões TLS verificadas.
+
+Os resultados e a remoção foram conferidos no JSON e nos marcadores de saída das duas conexões. O NOTICE de DROP CASCADE lista apenas as duas tabelas e a função do schema de teste; não é falha. O endpoint público original não é chamado nesta modalidade isolada. Os limites descritos na seção da rodada inicial permanecem históricos; o cenário após COMMIT está agora coberto nesta modalidade isolada.
+
 - Piloto com a equipe e logins reais de contas de cada cargo, incluindo visibilidade dos controles na interface.
-- Cenários adicionais de concorrência após COMMIT e perda de resposta HTTP com repetição pelo navegador. O reenvio idempotente foi testado no banco, sem simular queda real da internet.
+- Perda de resposta HTTP com repetição pelo navegador. O reenvio idempotente foi testado no banco e após COMMIT na cópia isolada, sem simular queda real da internet.
 - Upload/substituição de foto real e sua persistência, quando houver imagem apropriada.
 - Conferência física e autorização dos dados reais da empresa.
 - Restauração do backup em ambiente separado, adiada pelo usuário; não foi realizada nesta rodada.
@@ -64,6 +70,18 @@ Relatório local: `outputs/verifications/concurrency-20261025-214146-4d9f60/repo
 Esses resultados são uma validação operacional das regras testadas, não uma auditoria completa de segurança ou uma declaração de prontidão para produção real.
 
 ## Material para estudo
+
+### Sessão real de Administrador — 25/10/2026
+
+O usuário entrou pessoalmente no site publicado. O perfil exibiu Administrador. Pela interface foram conferidos os controles de saída, edição de aplicações, entrada de amortecedores/molas, transferência, configuração de mínimo e o diálogo de aprovação de amortecedores. Nenhum formulário de escrita foi confirmado. Na página de molas, entrada usa Em estoque e as linhas não exibem testagem. Essa conferência prova visibilidade dos controles da conta real; não é repetição das operações já testadas no banco.
+
+Consulta agregada de perfis mostrou somente uma conta ativa de Administrador; não existem contas dos outros quatro cargos para login real. Testes desses logins continuam pendentes, sem alterar o cargo da conta existente.
+
+### Interrupção real durante consulta — 25/10/2026
+
+O usuário realizou a desconexão manual e informou o aviso: “Não foi possível atualizar o estoque. Os valores da consulta anterior permanecem na tela.” O aviso foi conferido no navegador, junto dos valores anteriores de 53 caixas e 8 produtos. Após a reconexão, foi clicado Atualizar painel: o botão passou por Atualizando…, o aviso desapareceu e a data da consulta mudou de 22:08 para 22:10 (America/Bahia), mantendo 53 caixas e 8 produtos. A sessão continuou autenticada. Nenhuma operação de escrita foi enviada.
+
+Resultado: falha e recuperação de **consulta** aprovadas no navegador publicado. Evidências privadas em `outputs/verifications/connection-query-offline-20261025.png` e `connection-query-recovered-20261025.png`. Isso não cobre perda de confirmação de uma retirada já enviada, nem recarregar a página durante envio incerto; esses cenários continuam pendentes no navegador.
 
 ### Continuação: recuperação da interface — 25/10/2026
 
