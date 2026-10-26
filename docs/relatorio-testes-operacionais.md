@@ -71,6 +71,12 @@ Esses resultados são uma validação operacional das regras testadas, não uma 
 
 ## Material para estudo
 
+### Recarga durante confirmação incerta — reprovado no laboratório
+
+Rodada de 25/10/2026, posterior ao ensaio sem recarga. Em AGM-35 e MGM-35, uma retirada aceita em memória perdeu a confirmação; depois de recarregar, o formulário não recuperou o pedido. Preencher e enviar manualmente a mesma retirada criou outro UUID e um segundo evento. O saldo fictício foi de duas para uma e depois para zero caixa de cada produto, quatro eventos no total. A recarga sozinha não retirou nada. Falha: a interface perde o contexto da operação pendente e não impede que uma repetição manual seja tratada como nova intenção.
+
+Os casos sem recarga continuam aprovados. Este cenário com recarga está **reprovado e sem correção nesta rodada**. Causa: `requestId` vive somente em `useRef` no componente. Próxima correção: persistir e recuperar UUID/conteúdo pendente por usuário, conferir o registro anterior e evitar nova retirada até resolver a confirmação; cobrir saldo já zerado. Detalhes em `docs/laboratorio-perda-confirmacao.md`. Evidências privadas `outputs/verifications/outflow-reload-result.png` e `.txt`. Nenhuma operação foi enviada ao Supabase.
+
 ### Confirmação perdida no navegador local — 25/10/2026
 
 Ambiente isolado preparado em `tests/outflow-lab/`, iniciado por `node scripts/serve-outflow-lab.mjs`. Conferido no navegador com componente real, hooks React reais e API de validação real; transporte exclusivamente local, sem Supabase e sem carregar `.env`. O servidor aceita uma retirada em memória e corta o socket HTTP antes da confirmação. Após restabelecer as respostas pelo controle do laboratório, o mesmo formulário reenvia o mesmo UUID.

@@ -49,6 +49,21 @@ Para verificar o servidor do laboratório por HTTP, sem navegador:
 node --test tests/outflow-lab/server.test.mjs
 ```
 
+## Rodada de recarga: falha encontrada
+
+Em 25/10/2026, no laboratório, foi testada uma recarga após aparecer a mensagem de confirmação incerta. Para cada categoria:
+
+1. O servidor aceitou uma caixa, mas cortou a confirmação; o saldo local foi de duas para uma caixa.
+2. A página foi recarregada. A seleção e a mensagem pendente desapareceram; nenhum pedido foi retomado automaticamente.
+3. Depois de restabelecer as respostas, foi preenchida manualmente a mesma retirada de uma caixa.
+4. O cliente gerou outro UUID e o servidor aceitou uma **nova** retirada. O saldo local foi de uma para zero, com dois eventos daquele produto.
+
+Resultado: **recuperação após recarga reprovada**, para amortecedores e molas. A recarga sozinha não duplica a saída; o risco ocorre se a pessoa repetir manualmente a operação pensando que a primeira falhou. O servidor não pode reconhecer a intenção anterior quando recebe um novo identificador. A proteção de reenvio da mesma requisição continua válida, como demonstrado na rodada sem recarga.
+
+O botão Reiniciar somente os dados do laboratório foi adicionado para começar esta rodada com quatro caixas fictícias. Resultado final observado: zero caixa de cada categoria e quatro eventos no servidor local. Nenhum dado do Supabase foi acessado ou alterado. Evidências privadas: `outputs/verifications/outflow-reload-result.png` e `outflow-reload-result.txt`.
+
+Causa no componente atual: o identificador está somente em `useRef`; uma recarga destrói essa memória. Correção ainda não implementada nesta rodada de testes: preservar o identificador e o conteúdo pendente por conta, recuperar a operação após recarga e conferir o evento existente antes de permitir uma nova saída. Deve considerar também uma retirada que zerou o saldo e não aparece mais na lista disponível. Testar novamente somente depois da correção.
+
 ## Para estudar o código
 
 `Map` relaciona cada UUID ao evento já aceito. Antes de descontar, o servidor procura esse UUID; se já existe, devolve o evento e conserva a quantidade. A comparação do conteúdo impede usar o mesmo UUID para uma retirada diferente.

@@ -9,6 +9,14 @@ function Lab() {
   const [state,setState] = useState<LabState|null>(null)
   const [stock,setStock] = useState<StockRow[]>([])
   const [error,setError] = useState('')
+  async function restart() {
+    try {
+      // Apaga somente a memória do laboratório, antes de uma nova rodada.
+      const response=await fetch('/__outflow_lab/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})
+      if(!response.ok) throw new Error('Falha ao reiniciar laboratório.')
+      window.location.reload()
+    } catch {setError('Não foi possível reiniciar o laboratório local.')}
+  }
   async function resume(code:string) {
     try {
       const response=await fetch('/__outflow_lab/resume',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})})
@@ -41,6 +49,7 @@ function Lab() {
       <p>Amortecedores: <strong>{state.balances['AGM-35']}</strong> caixas · Molas: <strong>{state.balances['MGM-35']}</strong> caixas · Retiradas registradas: <strong>{state.events.length}</strong></p>
       <button onClick={()=>void resume('AGM-35')}>Restabelecer respostas de amortecedores</button>{' '}
       <button onClick={()=>void resume('MGM-35')}>Restabelecer respostas de molas</button>
+      {' '}<button onClick={()=>void restart()}>Reiniciar somente os dados do laboratório</button>
       <ol>{state.attempts.map((attempt,index)=><li key={index}>{attempt.code} · ID {attempt.requestId} · {attempt.responseLost?'Retirada aceita; confirmação cortada':attempt.repeated?'Reenvio: mesmo evento, sem nova retirada':'Resposta entregue'}</li>)}</ol>
     </aside>}
     <StockOutflows stock={stock} catalog={{}} ready={Boolean(state)} isAdministrator={true} onRefresh={()=>read(true)}/>
