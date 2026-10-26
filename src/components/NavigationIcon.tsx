@@ -4,6 +4,7 @@ const paths:Record<string,string>={
   inventory:'M3 7l9-4 9 4v10l-9 4-9-4z M3 7l9 4 9-4 M12 11v10',
   alerts:'M12 3L2 21h20L12 3z M12 9v5 M12 17h.01',
   products:'M5 3h14v18H5z M8 7h8 M8 11h8 M8 15h5',
+  turnover:'M3 3v18h18 M7 16v-4 M12 16V8 M17 16V5 M5 9l5-4 5 2 5-4',
   warranty:'M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6z M8 12l3 3 5-6',
   springs:'M7 3h10 M7 7l10 3-10 4 10 3-10 4 M7 3v4 M17 17v4',
   outflow:'M4 5h9v14H4z M10 12h11 M17 8l4 4-4 4',

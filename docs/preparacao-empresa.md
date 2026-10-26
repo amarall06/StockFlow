@@ -1,4 +1,12 @@
-# Preparação para uso na empresa — 25/10/2026
+# Preparação para uso na empresa — atualizado em 26/10/2026
+
+## Atualização atual
+
+Produção confirmada em 1247050, Ready/Current, com validação autenticada do painel após o usuário entrar pessoalmente. Totais 38/15/53, oito produtos e dois alertas preservados; catálogo, ampliação de fotos de exemplo, fontes de saídas e recarga da sessão conferidos sem escrita. Disputa após COMMIT em cópia isolada e recuperação de confirmação perdida no laboratório local também foram concluídas; os parágrafos antigos abaixo são registros históricos, não pedidos para repetir esses testes.
+
+Giro/ABC implementado por volume vendido, API 14 aplicada e 19 testes transacionais adicionais aprovados. Nova tela ainda depende do envio do commit e deploy. Guias organizados em `guia-estudo.md`. Exportação de backup permanece íntegra, mas anterior à migração API 14; o código da migração está versionado. Restauração continua adiada. Sem conta administrativa de banco nesta sessão, nova exportação com senha oculta depende do usuário.
+
+Para iniciar o piloto, ainda são necessárias fotos/dados autorizados, conferência física com o responsável e participação da equipe. Não apagar exemplos ou histórico para “limpar” a produção sem planejar a transição. Logins dos demais cargos, gestão de usuários e etiquetas permanecem adiados. O navegador local pode usar o mesmo banco do publicado; testes de escrita devem permanecer isolados.
 
 Esta lista registra a situação real; não significa que o sistema está liberado para operação real.
 

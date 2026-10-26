@@ -24,10 +24,14 @@ npm run lint
 - Aplicações de veículos/anos e tipos de amortecedor, com histórico de modificações.
 - Cadastro de fabricantes da garantia.
 - Tema claro/escuro por ícones em todas as telas.
-- Adicionar/retirar caixas da garantia por fabricante preparado no código; aguarda confirmar a migração 008 e o teste no banco.
+- Adicionar/retirar caixas da garantia por fabricante, com fluxo de devoluções.
+- Fotos ilustrativas, miniatura/ampliação e envio privado por Administrador.
+- Alertas de mínimo, resumo por categoria e saídas com recuperação após recarga na mesma aba.
+- Giro e Curva ABC por caixas vendidas em 30/90/180 dias; backend API 14 ativo. Consultar as etapas para a situação da publicação do frontend.
 
 ## Documentação
 
+- [Guia de estudo organizado, conceitos e exemplos comentados](docs/guia-estudo.md).
 - [Ponto de retomada](docs/ponto-retomada.md).
 - [Etapas do projeto e situação atual](docs/etapas-projeto.md).
 - [Configuração Supabase](docs/primeiro-projeto-supabase.md).

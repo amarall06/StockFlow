@@ -1,4 +1,14 @@
-# Ponto de retomada — 24/10/2026
+# Ponto de retomada — atualizado em 26/10/2026
+
+## Situação mais recente — prevalece sobre os registros históricos abaixo
+
+O usuário autorizou continuar as etapas em sequência, avisando ao concluir. Itens explicitamente adiados continuam adiados: etiquetas/QR por caixa, gestão de usuários, logins reais dos outros cargos e restauração do backup. Dados reais e piloto dependem da empresa.
+
+GitHub e Vercel confirmados na revisão 1247050, Ready/Current em 26/10 às 19:59:18. Usuário entrou no domínio publicado; painel, catálogo, imagens de exemplo, fontes de saídas e sessão após recarga conferidos sem escrita. Teste de confirmação perdida após recarga corrigido e publicado; laboratório isolado passou para as duas categorias. Limite: mesma aba/origem/conta, não fechar aba ou limpar armazenamento.
+
+Nova etapa Giro/ABC concluída no código local e backend API 14 ativo: 30/90/180 dias, volume em caixas, categorias, empates, busca por aplicação e estoque sem vendas. Dezenove testes do banco aprovados com rollback e referência 53/8/26 e hashes preservados. Build/testes locais passaram; lint só tem três avisos anteriores. Nova tela ainda precisa de push e confirmação do deploy. Não repetir SQL já aplicado. Guia `estudo-giro-abc.md` e índice `guia-estudo.md`.
+
+Pendências que exigem participação: envio ao GitHub quando as credenciais da sessão não funcionarem; foto apropriada para conferir upload/persistência; iPhone físico; autorização dos dados reais e piloto com equipe. Exportação privada do backup foi conferida, restauração adiada. Não declarar prontidão de produção ou conclusão de todas as linhas comentadas com base nos guias.
 
 ## Projeto e dados
 

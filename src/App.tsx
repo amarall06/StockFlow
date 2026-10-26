@@ -12,6 +12,7 @@ import { readPendingOutflow } from './lib/pending-outflow'
 import { StockAlerts } from './components/StockAlerts'
 import { NavigationIcon } from './components/NavigationIcon'
 import { InventoryDashboard } from './components/InventoryDashboard'
+import { InventoryTurnover } from './components/InventoryTurnover'
 import { AllStockOverview, InventoryAlerts, ProductsOverview } from './components/InventoryNavigation'
 import { dashboardStockSummary } from './lib/dashboard-summary'
 import { ProductApplications } from './components/ProductApplications'
@@ -138,7 +139,7 @@ function DemoApp({ userId, onSignOut, displayName, userRole, profileName, email,
   isDarkMode: boolean; onToggleTheme: () => void
 }) {
   // Controla qual módulo está aberto na demonstração.
-  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock'>(()=>{
+  const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock'>(()=>{
     const recovery=userRole==='administrator'?readPendingOutflow(userId):null
     return recovery?.pending||recovery?.error?'outflow':'dashboard'
   })
@@ -292,7 +293,7 @@ function DemoApp({ userId, onSignOut, displayName, userRole, profileName, email,
   }
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
-  function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
+  function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
     setActivePage(page)
     setScanResult(null)
     setScanMessage('')
@@ -489,6 +490,7 @@ function DemoApp({ userId, onSignOut, displayName, userRole, profileName, email,
         <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel</button>
         <button className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> Alertas <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
         <button className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" onClick={() => changePage('products')}><NavigationIcon name="products"/> Produtos</button>
+        <button className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> Giro e ABC</button>
         <button className={`nav-item${activePage === 'inventory' ? ' active' : ''}`} type="button" onClick={() => changePage('inventory')}>
           <NavigationIcon name="inventory"/> Visão geral
         </button>
@@ -519,7 +521,7 @@ function DemoApp({ userId, onSignOut, displayName, userRole, profileName, email,
 
       <section className="main-panel" id="inicio">
         <header className="topbar">
-          <span className="breadcrumb">Estoque <span>/</span> {activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
+          <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
           <div className="user-chip"><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /><button className="profile-open-button" type="button" onClick={() => changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar">{displayName.slice(0, 1).toUpperCase()}</span><span className="profile-name-text">{displayName}<small>Meu perfil</small></span></button><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button></div>
         </header>
 
@@ -708,7 +710,7 @@ function DemoApp({ userId, onSignOut, displayName, userRole, profileName, email,
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {

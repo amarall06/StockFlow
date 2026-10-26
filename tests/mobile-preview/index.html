@@ -8,6 +8,7 @@
     header{margin-bottom:14px;max-width:700px}h1{font-size:20px;margin:0 0 8px}
     button{padding:8px 12px;margin-right:6px;cursor:pointer}
     iframe{display:block;width:390px;height:844px;border:1px solid #9d9387;background:white}
+    iframe[hidden]{display:none}
   </style>
 </head>
 <body>
@@ -15,8 +16,14 @@
     <button type="button" data-width="390">Largura de 390 pixels</button>
     <button type="button" data-width="360">Largura de 360 pixels</button>
   </header>
+  <p id="local-warning" hidden>Esta prévia precisa do servidor local. <a href="http://127.0.0.1:5173/tests/mobile-preview/index.html">Abrir a prévia pelo endereço correto</a>.</p>
   <iframe title="LIBER em tela móvel" src="/"></iframe>
   <script>
+    if(location.protocol==='file:'){
+      document.querySelector('iframe').hidden=true
+      document.getElementById('local-warning').hidden=false
+      document.querySelectorAll('button').forEach(button=>{button.disabled=true})
+    }
     // A largura do iframe determina as media queries reais do documento interno.
     document.querySelectorAll('button[data-width]').forEach(button=>{
       button.addEventListener('click',()=>{document.querySelector('iframe').style.width=button.dataset.width+'px'})

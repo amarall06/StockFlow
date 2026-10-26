@@ -6,7 +6,7 @@ O envio executado pelo usuário publicou a revisão `12470504289516194f343c4d5cb
 
 A Vercel mostrou o deployment `Dq5q9U2pgvtkn4kXA4aAv7SfptoY` como **Ready / Latest / Production / Current**, criado em 26/10/2026 às 19:59:18 (America/Bahia), com duração de 14 segundos. O domínio atual atribuído é `https://liber-automotive.vercel.app/`. A fonte corresponde ao mesmo commit `1247050` da main. Não foi necessário redeploy manual nem alteração de permissões ou variáveis.
 
-O domínio principal abriu a tela de login. Nesta rodada, a conta estava autenticada no endereço local, mas não no domínio publicado. A conferência autenticada online depende de o usuário entrar nessa aba; não transferir tokens/senhas entre origens e não declarar testes autenticados de produção sem essa entrada.
+O usuário entrou pessoalmente no domínio publicado. A conferência autenticada confirmou 38 caixas de amortecedores, 15 de molas, total 53, oito produtos e dois alertas. O cartão Produtos abriu o catálogo; miniaturas e ampliação das duas categorias funcionaram. Saídas mostrou fontes liberadas para amortecedores e Em estoque para molas. A recarga preservou a sessão e os totais. Não houve envio de formulários, upload ou movimentação. Evidência privada adicional: `outputs/verifications/online-panel-authenticated-20261026.png`.
 
 Evidência privada: `outputs/verifications/production-1247050-ready-20261026.png`.
 
@@ -31,7 +31,13 @@ Evidências privadas: `outputs/verifications/mobile-panel-390-20261026.png`, `mo
 
 Esta é uma conferência de layout local com a revisão publicada. Não é emulação completa de iOS nem teste de toque, teclado, câmera ou Safari em iPhone físico. Não cobre todas as telas ou operações em celular. O controle de viewport da ferramenta não mudou a largura efetiva da aba; por isso foi usado o quadro de largura fixa. Não declarar ausência global de overflow com base somente nesses testes visuais.
 
-Continuam pendentes: entrar na versão publicada para validação autenticada; testar no iPhone real; upload/substituição e persistência de foto apropriada; piloto com equipe e dados autorizados. Testes de contas dos demais cargos, gestão de usuários, etiquetas e restauração continuam adiados conforme instrução do usuário.
+Continuam pendentes: testar no iPhone real; upload/substituição e persistência de foto apropriada; piloto com equipe e dados autorizados. Testes de contas dos demais cargos, gestão de usuários, etiquetas e restauração continuam adiados conforme instrução do usuário.
+
+## Giro e ABC — conferência local adicional
+
+Conferidos filtros por categoria, 30/90 dias, busca por aplicação, filtro de estoque sem vendas e temas claro/escuro. A busca por Corsa preservou a participação de 50% calculada antes da busca. Molas apresentou quatro códigos, uma caixa vendida e três códigos com estoque sem vendas. No conjunto, duas caixas vendidas e seis códigos com estoque sem vendas. O período de 180 dias passou nos testes de lógica e no banco.
+
+Em quadro local de 360 pixels, filtros e cartões ficam em coluna; gráfico e tabela têm rolagem própria. Evidências privadas `turnover-mobile-360-20261026.png`, `turnover-mobile-bars-360-20261026.png` e `turnover-mobile-chart-360-20261026.png`. Isso não substitui ensaio em iPhone real. Backend API 14 ativo; frontend desta etapa ainda depende da publicação do novo commit.
 
 ## Para estudar
 

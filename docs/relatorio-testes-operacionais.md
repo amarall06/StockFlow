@@ -2,6 +2,10 @@
 
 ## Resultado
 
+Atualização de 26/10: **19 verificações adicionais de Giro/ABC aprovadas**, além das 56 abaixo, sem repetir a rodada anterior. A função real do Supabase foi chamada com os cinco cargos ativos; conta inativa e anônima foram recusadas. Conferidos períodos 30/90/180, inclusão exata da borda, exclusão de datas futuras/peças/movimentos que não são vendas, saldo normal sem garantia, produtos sem vendas e parâmetros inválidos. Arquivo: `supabase/tests/operational-turnover.sql`, encerrado com ROLLBACK. API 14 ativa. Evidências privadas `outputs/verifications/turnover-sql-tests-20261026.json` e `turnover-preservation-20261026.json`: 53 caixas, oito produtos e 26 movimentos, com hashes de saldos, perfis e histórico preservados. Não equivale a login real com cinco contas distintas.
+
+Testes locais novos: `node scripts/check-turnover.mjs`, incluindo limites de classe, empates, zeros, dados inválidos, resposta de API e renderização. Build passou; lint terminou sem erros, com três avisos preexistentes. Conferência do navegador local incluiu categorias, períodos 30/90, busca por aplicação preservando classificação, filtros, claro/escuro e quadro de 360 pixels. Ver `estudo-giro-abc.md` e `verificacao-publicacao-mobile.md`.
+
 **56 verificações do banco aprovadas**, mais um ensaio com duas conexões reais e retomada após bloqueio. Os testes usaram o projeto atual com dados fictícios e transações encerradas com ROLLBACK. Não criaram contas, não alteraram cargos permanentemente e não deixaram retiradas ou eventos novos no histórico.
 
 Referência inicial e final: **53 caixas normais, 8 produtos e 26 movimentações**. Conferidos também os hashes das linhas de saldo e de perfil. No ensaio concorrente, o hash de todo o histórico também foi comparado e permaneceu igual.
