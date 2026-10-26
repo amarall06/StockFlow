@@ -48,4 +48,4 @@ Compilação passou e lint não trouxe avisos novos. Conferido no Supabase: vend
 
 Após recarregar: 38 caixas de amortecedores, sendo 25 aguardando e 13 liberadas; 15 caixas de molas. Os eventos de venda foram preservados no histórico com origem, situação, referência, observação e responsável. Não desfazer esses testes apagando eventos.
 
-Ainda não ensaiados no Supabase: gravação efetiva de descarte/devolução com nota, conta sem permissão, concorrência e repetição em falha de rede. Não declarar esses ensaios adicionais como já executados. Ajustes/estornos continuam futuros.
+Atualização de 25/10: descarte e devolução nas duas categorias, conta sem permissão, reenvio no banco e concorrência por bloqueio foram ensaiados em transações com rollback. Foram 19 verificações de saídas, mais 37 da matriz de cargos, e duas conexões reais no ensaio de bloqueio/retomada. Saldos, perfis e histórico foram preservados. Não foi simulado reenvio após queda HTTP real nem disputa com COMMIT do vencedor. Ver `relatorio-testes-operacionais.md` para evidências e limites. O item associado de correções/estornos saiu da pauta por pedido posterior do usuário.
