@@ -65,6 +65,20 @@ Esses resultados são uma validação operacional das regras testadas, não uma 
 
 ## Material para estudo
 
+### Continuação: recuperação da interface — 25/10/2026
+
+Seis cenários adicionais passaram com `node scripts/check-outflow-recovery.mjs`. Os 56 casos anteriores não foram reexecutados nesta continuação. Não houve alteração no código operacional ou nos dados do Supabase.
+
+Para amortecedores e molas, foram executados os handlers reais de `StockOutflows` e a função real `registerOutflow`, usando hooks em memória e transporte simulado:
+
+- Resposta perdida depois de uma aceitação simulada: o segundo envio mantém o mesmo UUID e conteúdo, recebe a confirmação e encerra o formulário.
+- Saída confirmada seguida de falha na atualização da consulta: o formulário permanece bloqueado; atualizar o estoque novamente não chama a retirada.
+- Resposta demorada: após renderizar o estado de envio em andamento, os campos ficam desabilitados e uma nova submissão não chama a API novamente.
+
+O teste verifica o comportamento do cliente nesses cenários. O registro idempotente do servidor é simulado nesta rodada; sua regra real foi verificada na rodada anterior. Não é teste de navegador, rede real ou ciclo completo do React. Também não cobre recarregar/fechar a página durante um envio incerto. Permanecem pendentes os logins reais por cargo, a disputa após COMMIT e a perda real de conexão.
+
+Para estudar: `useRef` mantém o UUID entre renderizações; `useState` mantém os estados de envio e confirmação. `onSubmit` usa esses estados para bloquear uma nova chamada. Depois de uma confirmação, o botão de atualização consulta os dados sem executar a retirada outra vez.
+
 `BEGIN` inicia a transação; `ROLLBACK` desfaz as alterações. `SET LOCAL ROLE authenticated` faz a chamada usar o papel da API, enquanto o contexto de usuário permite testar a função efetiva do perfil. Os blocos `EXCEPTION` capturam o código SQLSTATE de uma recusa esperada. Um teste passa quando a operação permitida funciona ou a operação proibida retorna o código previsto.
 
 No PowerShell, duas instâncias de `psql` são iniciadas com leitura assíncrona de stdout/stderr. O sinal de bloqueio da conexão A é conferido antes de iniciar a tentativa concorrente. O bloco `finally` encerra processos próprios ainda ativos e remove a senha do ambiente do processo. O relatório distingue sucesso, falha e os limites do teste.
