@@ -71,6 +71,14 @@ Esses resultados são uma validação operacional das regras testadas, não uma 
 
 ## Material para estudo
 
+### Confirmação perdida no navegador local — 25/10/2026
+
+Ambiente isolado preparado em `tests/outflow-lab/`, iniciado por `node scripts/serve-outflow-lab.mjs`. Conferido no navegador com componente real, hooks React reais e API de validação real; transporte exclusivamente local, sem Supabase e sem carregar `.env`. O servidor aceita uma retirada em memória e corta o socket HTTP antes da confirmação. Após restabelecer as respostas pelo controle do laboratório, o mesmo formulário reenvia o mesmo UUID.
+
+Para AGM-35 e MGM-35 foram observados o aviso de confirmação incerta, reenvio com UUID preservado, confirmação final e apenas um evento por produto. Estoque local de duas para uma caixa em cada categoria, dois eventos no total. O navegador também fez tentativas automáticas com o mesmo UUID durante a falha, sem retirar novamente. Teste HTTP do servidor passou, incluindo recusa de origem externa, falha real de socket e rejeição de conteúdo diferente com UUID reutilizado.
+
+Guia e limites em `docs/laboratorio-perda-confirmacao.md`. Isso valida o cliente no navegador e a integração com o servidor local de laboratório; não é perda de resposta do endpoint Supabase publicado. O armazenamento local é simulado em memória, e a regra PostgreSQL foi testada separadamente. Recarga/fechamento da página durante envio incerto e logins reais dos demais cargos permanecem pendentes. Nenhum saldo atual foi usado ou alterado pelo laboratório.
+
 ### Sessão real de Administrador — 25/10/2026
 
 O usuário entrou pessoalmente no site publicado. O perfil exibiu Administrador. Pela interface foram conferidos os controles de saída, edição de aplicações, entrada de amortecedores/molas, transferência, configuração de mínimo e o diálogo de aprovação de amortecedores. Nenhum formulário de escrita foi confirmado. Na página de molas, entrada usa Em estoque e as linhas não exibem testagem. Essa conferência prova visibilidade dos controles da conta real; não é repetição das operações já testadas no banco.
