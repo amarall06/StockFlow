@@ -1,3 +1,15 @@
+> **GitHub liberado e correções enviadas:**
+> PR https://github.com/amarall06/StockFlow/pull/1
+> Branch remota `fix/site-review-2026-10-27`, commit
+> `23d3ef569cd935a3ab764c793a6e17bdb37ce4ea` (mesmo código da revisão local).
+> CI `Verificar projeto` run 40601247285 terminou com sucesso: build/regressões,
+> lint, navegador e banco descartável. Vercel marcou a prévia como success.
+> O pedido de merge foi interrompido; conferência posterior confirmou PR ainda aberta,
+> mergeable=true, main ainda na base dcc621a. Não afirmar produção atualizada.
+> A API da Vercel ainda retorna 403 para listar deployments; Git integration funciona.
+> Próximo passo: concluir a integração da PR e verificar a publicação no domínio público.
+> Banco já atualizado para API 15; não repetir a migração.
+
 > **Estado mais recente — Supabase conectado:** a migração
 > `202610270001_idempotent_transfers.sql` já foi aplicada ao projeto
 > `tfatagbhmkeelbvstcvb`, confirmado como o banco do site publicado.
