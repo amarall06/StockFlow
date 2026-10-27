@@ -1,3 +1,17 @@
+> **Estado mais recente — Supabase conectado:** a migração
+> `202610270001_idempotent_transfers.sql` já foi aplicada ao projeto
+> `tfatagbhmkeelbvstcvb`, confirmado como o banco do site publicado.
+> **Não repetir esta migração.** API 15; ensaio autenticado com ROLLBACK aprovado;
+> 53 caixas, 26 movimentações e zero pedidos de teste retidos.
+> O frontend ainda não foi enviado ao GitHub nem publicado. A Vercel identifica
+> o projeto, mas recusa listagem de publicações e logs com HTTP 403.
+> Os bloqueios de conexão citados abaixo são históricos quando contrariam esta nota.
+
+> **Atualização de 27/10/2026:** o ponto vigente desta revisão está em
+> [retomada-revisao-2026-10-27.md](retomada-revisao-2026-10-27.md).
+> Branch local `fix/site-review-2026-10-27`; ainda sem envio ao GitHub ou publicação.
+> Os registros abaixo são históricos e não substituem esse ponto de retomada.
+
 # Ponto de retomada — atualizado em 26/10/2026
 
 ## Continuação: desempenho e exportações

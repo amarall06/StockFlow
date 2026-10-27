@@ -39,3 +39,28 @@ npm run lint
 - [Planejamento das etapas](docs/planejamento-proximas-etapas.md).
 - [Acesso e administração](docs/regras-acesso-administracao.md).
 
+
+## Verificações automatizadas
+
+```sh
+npm ci
+npm test
+npm run lint
+npx playwright install chromium
+npm run test:browser
+```
+
+`npm test` compila o projeto, executa os scripts de regressão e o laboratório HTTP isolado.
+Os testes de navegador usam configuração e respostas fictícias do Supabase; não fazem login
+nem alteram dados no serviço real. Execute-os com a porta 4175 livre, para que o Playwright
+inicie o Vite com a configuração de teste. Testes automatizados não substituem a validação
+da publicação com contas dos cargos e um banco de homologação.
+
+### Transferências recuperáveis (API 15)
+
+Antes de publicar esta revisão, aplicar e validar em homologação a migração
+`supabase/migrations/202610270001_idempotent_transfers.sql`. A nova interface bloqueia
+transferências em versões anteriores do banco. Não repetir migrações já aplicadas.
+
+Com Docker local disponível, `npm run test:database` cria e apaga um PostgreSQL 17
+isolado, aplica as migrações e testa reenvios concorrentes. Não usa o banco hospedado.

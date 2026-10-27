@@ -297,7 +297,7 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 .auth-brand .brand-mark { width: 34px; height: 34px; margin: 0; }
 .auth-eyebrow { margin: 29px 0 7px; color: #a95c46; font-size: 10px; font-weight: 750; letter-spacing: 1px; }
 .auth-card h1 { margin: 0; color: #263c48; font-size: 25px; letter-spacing: -.6px; }
-.auth-description, .auth-card > p:not(.auth-eyebrow):not(.auth-error) { color: #74818a; font-size: 12px; line-height: 1.6; }
+.auth-description, .auth-card > p:not(.auth-eyebrow):not(.auth-error) { color: #596873; font-size: 12px; line-height: 1.6; }
 .auth-form { display: grid; gap: 9px; margin-top: 23px; }
 .auth-form label { margin-top: 5px; color: #566671; font-size: 11px; font-weight: 650; }
 .auth-form input { height: 41px; padding: 0 11px; border: 1px solid #dfe5e7; border-radius: 6px; background: #fff; color: #263c48; font-size: 12px; }
@@ -320,3 +320,15 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 .auth-screen.theme-dark .auth-card h1, .auth-screen.theme-dark .auth-brand { color: #f1e7df; }
 .auth-screen.theme-dark .auth-form input { border-color: #5b4841; background: #382c28; color: #f1e7df; }
 .auth-screen.theme-dark .auth-form label, .auth-screen.theme-dark .auth-card > p:not(.auth-error) { color: #c0aca1; }
+
+/* A marca no cartão claro precisa de contraste próprio; a barra lateral é escura. */
+.auth-brand .brand-light { color: #80572b; }
+.auth-screen.theme-dark .auth-brand .brand-light { color: #e8c178; }
+
+/* O formulário recuperável mantém o grupo inteiro dentro da coluna disponível. */
+.transfer-form > form { grid-column: 1 / -1; min-width: 0; }
+.transfer-form fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.transfer-form fieldset > p { color: #596873; font-size: 11px; }
+.transfer-form form button, .transfer-form .transfer-message button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 5px; background: #a95c46; color: white; cursor: pointer; }
+.transfer-form button:disabled { cursor: not-allowed; opacity: .55; }
+.theme-dark .transfer-form fieldset > p { color: #c0aca1; }
