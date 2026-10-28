@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 async function navigate(page: Page, name: string) {
+  if ((page.viewportSize()?.width ?? 1440) <= 1024) await page.getByRole('button', { name: 'Menu', exact: true }).click()
   if ((page.viewportSize()?.width ?? 1440) > 1024 && (name==='Molas'||name==='Giro e ABC')) {
     await page.getByLabel('Opções da conta').click()
     await page.locator('.account-options').getByRole('button',{name,exact:true}).click()
@@ -70,6 +71,18 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Painel inicial' })).toBeVisible()
+  await page.setViewportSize({width:768,height:900})
+  const menuButton = page.getByRole('button', {name:'Menu',exact:true})
+  await menuButton.click()
+  await expect(page.getByRole('dialog', {name:'Menu de navegação'})).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(menuButton).toBeFocused()
+  await menuButton.click()
+  await page.getByRole('button', {name:'Fechar menu ×'}).click()
+  await expect(menuButton).toBeFocused()
+  await menuButton.click()
+  await page.mouse.click(740,450)
+  await expect(page.getByRole('dialog', {name:'Menu de navegação'})).not.toBeVisible()
   for (const width of [360, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: width===1920?1088:900 })
     for (const name of ['Produtos', 'Giro e ABC', 'Visão geral', 'Garantia', 'Molas', 'Saídas', 'Histórico', 'Aplicações', 'Painel']) {
@@ -77,10 +90,9 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
       await expect(page.locator('#consulta h1')).toBeVisible()
       await expect(page.getByText('Não foi possível abrir esta tela', { exact: true })).toHaveCount(0)
       if (width <= 1024) {
-        await expect(page.getByRole('navigation', {name:'Menu principal'})).toBeVisible()
-        const sidebar = await page.locator('.sidebar').boundingBox()
-        const content = await page.locator('.main-panel').boundingBox()
-        expect(sidebar!.x + sidebar!.width).toBeLessThanOrEqual(content!.x + 1)
+        await expect(page.getByRole('dialog', {name:'Menu de navegação'})).not.toBeVisible()
+        await expect(page.getByRole('button', {name:'Menu',exact:true})).toHaveAttribute('aria-expanded','false')
+        expect((await page.locator('.main-panel').boundingBox())!.x).toBe(0)
         expect(await page.getByRole('button', {name:'Abrir meu perfil'}).evaluate(element => element.getBoundingClientRect().top)).toBeLessThan(100)
         if (name === 'Molas') {
           await expect(page.locator('#scan-code')).not.toBeFocused()

@@ -51,7 +51,9 @@ A função de limpeza impede que uma resposta atrasada sobrescreva a página já
 `useMemo` reaproveita um cálculo quando suas entradas não mudam.
 
 Os botões do menu lateral chamam `changePage`, que muda a página e limpa buscas antigas.
-No celular, a lateral fica compacta; no tablet, mostra ícones e nomes. No celular não há mais foco automático no campo:
+No celular e tablet, o botão Menu abre a lateral sobre o conteúdo. Ela fecha ao escolher
+um módulo, tocar fora, apertar Escape ou usar Fechar menu. O navegador controla o foco
+com um elemento `dialog`, mantendo o teclado dentro do menu enquanto ele estiver aberto. No celular não há mais foco automático no campo:
 isso evita abrir o teclado e deslocar a tela ao escolher Molas. Campos com pelo menos 16 px
 reduzem o zoom de edição do Safari; o zoom manual de acessibilidade continua permitido.
 
@@ -743,7 +745,7 @@ function App() {
 
 export default App
 </code></pre></details>
-<details id="file-2" class="file"><summary>src/Design.css</summary><p>Define aparência, organização e adaptação de Design. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>348 linhas · SHA-256 f58247dae593c5e4</p><pre><code>/* Identidade comum inspirada nas referências enviadas. Nenhum valor de negócio é visual. */
+<details id="file-2" class="file"><summary>src/Design.css</summary><p>Define aparência, organização e adaptação de Design. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>364 linhas · SHA-256 af3743dc217828d2</p><pre><code>/* Identidade comum inspirada nas referências enviadas. Nenhum valor de negócio é visual. */
 :root { --liber-canvas: #f7f5f1; --liber-surface: #fff; --liber-ink: #24211e; --liber-muted: #655f58; --liber-line: #e7e1d9; --liber-accent: #b34d14; --liber-soft: #fff2df; --liber-shadow: 0 3px 16px #392b1808; }
 .theme-dark { --liber-canvas: #1c1b19; --liber-surface: #282622; --liber-ink: #f5eee4; --liber-muted: #d0c3b3; --liber-line: #4b443b; --liber-accent: #f3b078; --liber-soft: #3b3022; --liber-shadow: none; }
 body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -1090,8 +1092,24 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSyst
  .app-shell .activity-chart text { font-size: 24px; }
  .app-shell .sales-empty-chart { height: 100px; }
 }
+.mobile-menu-trigger { display: none; }
+.mobile-navigation-dialog { padding: 0; border: 0; margin: 0; width: min(300px,85vw); max-width: none; height: 100dvh; max-height: 100dvh; background: #302820; color: #fff; }
+.mobile-navigation-dialog::backdrop { background: #0007; }
+body:has(.mobile-navigation-dialog[open]) { overflow: hidden; }
+.app-shell .mobile-navigation-dialog .sidebar { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; flex-wrap: nowrap; position: static; width: 100%; height: 100%; padding: max(16px,env(safe-area-inset-top)) 16px 24px; overflow-y: auto; }
+.app-shell .mobile-menu-close { align-self: flex-end; min-height: 44px; padding: 8px 12px; margin-bottom: 16px; border: 1px solid #ffffff50; border-radius: 8px; background: transparent; color: white; cursor: pointer; font-size: 16px; }
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell { display: block; }
+ .app-shell &gt; .sidebar { display: none; }
+ .app-shell .mobile-menu-trigger { display: flex; align-items: center; gap: 8px; order: -2; padding: 8px 10px; min-height: 44px; border: 1px solid var(--liber-line); border-radius: 8px; background: var(--liber-surface); color: var(--liber-ink); font-size: 14px; cursor: pointer; }
+ .app-shell .topbar .profile-name-text { max-width: 120px; }
+ .app-shell .mobile-navigation-dialog .brand &gt; span:last-child { display: flex; font-size: 28px; }
+ .app-shell .mobile-navigation-dialog .brand-light { font-size: 11px; margin: 3px 0 0; text-indent: 0; letter-spacing: 0; }
+ .app-shell .mobile-navigation-dialog .brand { justify-content: flex-start; gap: 12px; }
+ .app-shell .mobile-navigation-dialog .nav-item { flex-direction: row; justify-content: flex-start; text-align: left; font-size: 16px; min-height: 48px; gap: 14px; padding: 10px 12px; }
+}
 </code></pre></details>
-<details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>764 linhas · SHA-256 cc731b732e6e8e43</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+<details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>780 linhas · SHA-256 cf33c683cbd6f7a6</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
@@ -1255,6 +1273,14 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [scanCode, setScanCode] = useState('')
   const scanInputRef = useRef&lt;HTMLInputElement&gt;(null)
   const accountMenuRef = useRef&lt;HTMLDetailsElement&gt;(null)
+  const mobileMenuRef = useRef&lt;HTMLDialogElement&gt;(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  useEffect(() =&gt; {
+    const compact = window.matchMedia('(max-width: 1024px), (pointer: coarse) and (max-width: 1366px)')
+    const closeOnDesktop = () =&gt; { if (!compact.matches) mobileMenuRef.current?.close() }
+    compact.addEventListener('change', closeOnDesktop)
+    return () =&gt; compact.removeEventListener('change', closeOnDesktop)
+  }, [])
   const [scanResult, setScanResult] = useState&lt;(ProductInfo &amp; { code: string }) | null&gt;(null)
   const [scanMessage, setScanMessage] = useState('')
   // useState guarda o texto digitado na busca enquanto a tela está aberta.
@@ -1401,6 +1427,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
   function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
+    mobileMenuRef.current?.close()
     accountMenuRef.current?.removeAttribute('open')
     setActivePage(page)
     setScanResult(null)
@@ -1583,12 +1610,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   // Na publicação, uma falha do banco nunca vira um estoque local que parece salvo online.
   if (databaseError) return &lt;AuthScreen dark={isDarkMode} onToggle={onToggleTheme}&gt;&lt;section className=&quot;auth-card&quot;&gt;&lt;Brand /&gt;&lt;h1&gt;Estoque indisponível&lt;/h1&gt;&lt;p role=&quot;alert&quot;&gt;{databaseError}&lt;/p&gt;{signOutError &amp;&amp; &lt;p role=&quot;alert&quot;&gt;{signOutError}&lt;/p&gt;}&lt;button type=&quot;button&quot; className=&quot;auth-secondary-button&quot; onClick={() =&gt; window.location.reload()}&gt;Tentar novamente&lt;/button&gt;&lt;button type=&quot;button&quot; className=&quot;auth-secondary-button&quot; onClick={onSignOut}&gt;Sair&lt;/button&gt;&lt;/section&gt;&lt;/AuthScreen&gt;
 
-  return (
-    &lt;ProductPhotosProvider canEdit={isAdministrator}&gt;
-    &lt;main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}&gt;
-      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
-      &lt;a className=&quot;skip-link&quot; href=&quot;#consulta&quot;&gt;Ir para o conteúdo&lt;/a&gt;
-      &lt;aside className=&quot;sidebar&quot;&gt;
+  const sidebarContent = &lt;&gt;
+
         &lt;a className=&quot;brand&quot; href=&quot;#inicio&quot; aria-label=&quot;LIBER automotive, início&quot; aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() =&gt; changePage('dashboard')}&gt;
           &lt;span className=&quot;brand-mark&quot;&gt;L&lt;/span&gt;
           &lt;span&gt;LIBER&lt;span className=&quot;brand-light&quot;&gt;SOLUÇÕES EM&lt;br/&gt; ESTOQUE AUTOMOTIVO&lt;/span&gt;&lt;/span&gt;
@@ -1625,12 +1648,23 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         &lt;div className=&quot;sidebar-bottom&quot;&gt;
           &lt;span&gt;Estoque que&lt;br/&gt;move o seu negócio.&lt;/span&gt;
         &lt;/div&gt;
-      &lt;/aside&gt;
+
+  &lt;/&gt;
+
+  return (
+    &lt;ProductPhotosProvider canEdit={isAdministrator}&gt;
+    &lt;main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}&gt;
+      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
+      &lt;a className=&quot;skip-link&quot; href=&quot;#consulta&quot;&gt;Ir para o conteúdo&lt;/a&gt;
+      &lt;aside className=&quot;sidebar&quot;&gt;{sidebarContent}&lt;/aside&gt;
+      &lt;dialog ref={mobileMenuRef} id=&quot;mobile-navigation&quot; className=&quot;mobile-navigation-dialog&quot; aria-label=&quot;Menu de navegação&quot; onClose={() =&gt; setMobileMenuOpen(false)} onClick={event =&gt; { if (event.target === event.currentTarget) mobileMenuRef.current?.close() }}&gt;
+        &lt;aside className=&quot;sidebar&quot;&gt;&lt;button type=&quot;button&quot; className=&quot;mobile-menu-close&quot; onClick={() =&gt; mobileMenuRef.current?.close()}&gt;Fechar menu ×&lt;/button&gt;{sidebarContent}&lt;/aside&gt;
+      &lt;/dialog&gt;
 
       &lt;section className=&quot;main-panel&quot; id=&quot;inicio&quot;&gt;
         &lt;header className=&quot;topbar&quot;&gt;
           &lt;span className=&quot;breadcrumb&quot;&gt;Estoque &lt;span&gt;/&lt;/span&gt; {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}&lt;/span&gt;
-          &lt;div className=&quot;user-chip&quot;&gt;&lt;button className=&quot;profile-open-button&quot; type=&quot;button&quot; onClick={()=&gt;changePage('profile')} aria-label=&quot;Abrir meu perfil&quot; title={displayName}&gt;&lt;span className=&quot;user-avatar&quot;&gt;&lt;svg width=&quot;28&quot; height=&quot;28&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.7&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M4 21v-2a8 8 0 0 1 16 0v2&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;span className=&quot;profile-name-text&quot;&gt;{displayName}&lt;/span&gt;&lt;/button&gt;&lt;details ref={accountMenuRef} className=&quot;account-options&quot;&gt;&lt;summary aria-label=&quot;Opções da conta&quot;&gt;⌄&lt;/summary&gt;&lt;div&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('profile')}&gt;Minha conta&lt;/button&gt;&lt;ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/&gt;&lt;button className=&quot;sign-out-button&quot; type=&quot;button&quot; onClick={onSignOut}&gt;Sair&lt;/button&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('springs')}&gt;Molas&lt;/button&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('turnover')}&gt;Giro e ABC&lt;/button&gt;&lt;/div&gt;&lt;/details&gt;&lt;/div&gt;
+          &lt;div className=&quot;user-chip&quot;&gt;&lt;button type=&quot;button&quot; className=&quot;mobile-menu-trigger&quot; aria-controls=&quot;mobile-navigation&quot; aria-haspopup=&quot;dialog&quot; aria-expanded={mobileMenuOpen} onClick={() =&gt; { mobileMenuRef.current?.showModal(); setMobileMenuOpen(true) }}&gt;&lt;span aria-hidden=&quot;true&quot;&gt;☰&lt;/span&gt; Menu&lt;/button&gt;&lt;button className=&quot;profile-open-button&quot; type=&quot;button&quot; onClick={()=&gt;changePage('profile')} aria-label=&quot;Abrir meu perfil&quot; title={displayName}&gt;&lt;span className=&quot;user-avatar&quot;&gt;&lt;svg width=&quot;28&quot; height=&quot;28&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.7&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M4 21v-2a8 8 0 0 1 16 0v2&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;span className=&quot;profile-name-text&quot;&gt;{displayName}&lt;/span&gt;&lt;/button&gt;&lt;details ref={accountMenuRef} className=&quot;account-options&quot;&gt;&lt;summary aria-label=&quot;Opções da conta&quot;&gt;⌄&lt;/summary&gt;&lt;div&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('profile')}&gt;Minha conta&lt;/button&gt;&lt;ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/&gt;&lt;button className=&quot;sign-out-button&quot; type=&quot;button&quot; onClick={onSignOut}&gt;Sair&lt;/button&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('springs')}&gt;Molas&lt;/button&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('turnover')}&gt;Giro e ABC&lt;/button&gt;&lt;/div&gt;&lt;/details&gt;&lt;/div&gt;
           &lt;label className=&quot;mobile-module-menu&quot;&gt;Ir para
             &lt;select aria-label=&quot;Escolher módulo&quot; value={activePage} onChange={event =&gt; changePage(event.target.value as typeof activePage)}&gt;
               &lt;option value=&quot;dashboard&quot;&gt;Painel&lt;/option&gt;&lt;option value=&quot;alerts&quot;&gt;Alertas ({alertCount})&lt;/option&gt;
@@ -8665,10 +8699,11 @@ console.log('Laboratório isolado: http://127.0.0.1:5180/tests/outflow-lab/index
 console.log('Sem .env, login, Supabase ou saldos reais. Dados apagados ao encerrar.')
 for(const signal of ['SIGINT','SIGTERM']) process.once(signal,async()=&gt;{await server.close();process.exit(0)})
 </code></pre></details>
-<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>154 linhas · SHA-256 44b2177e4683630a</p><pre><code>import { test, expect, type Page } from '@playwright/test'
+<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>166 linhas · SHA-256 c3fa3d5ae1d8040b</p><pre><code>import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 async function navigate(page: Page, name: string) {
+  if ((page.viewportSize()?.width ?? 1440) &lt;= 1024) await page.getByRole('button', { name: 'Menu', exact: true }).click()
   if ((page.viewportSize()?.width ?? 1440) &gt; 1024 &amp;&amp; (name==='Molas'||name==='Giro e ABC')) {
     await page.getByLabel('Opções da conta').click()
     await page.locator('.account-options').getByRole('button',{name,exact:true}).click()
@@ -8737,6 +8772,18 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Painel inicial' })).toBeVisible()
+  await page.setViewportSize({width:768,height:900})
+  const menuButton = page.getByRole('button', {name:'Menu',exact:true})
+  await menuButton.click()
+  await expect(page.getByRole('dialog', {name:'Menu de navegação'})).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(menuButton).toBeFocused()
+  await menuButton.click()
+  await page.getByRole('button', {name:'Fechar menu ×'}).click()
+  await expect(menuButton).toBeFocused()
+  await menuButton.click()
+  await page.mouse.click(740,450)
+  await expect(page.getByRole('dialog', {name:'Menu de navegação'})).not.toBeVisible()
   for (const width of [360, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: width===1920?1088:900 })
     for (const name of ['Produtos', 'Giro e ABC', 'Visão geral', 'Garantia', 'Molas', 'Saídas', 'Histórico', 'Aplicações', 'Painel']) {
@@ -8744,10 +8791,9 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
       await expect(page.locator('#consulta h1')).toBeVisible()
       await expect(page.getByText('Não foi possível abrir esta tela', { exact: true })).toHaveCount(0)
       if (width &lt;= 1024) {
-        await expect(page.getByRole('navigation', {name:'Menu principal'})).toBeVisible()
-        const sidebar = await page.locator('.sidebar').boundingBox()
-        const content = await page.locator('.main-panel').boundingBox()
-        expect(sidebar!.x + sidebar!.width).toBeLessThanOrEqual(content!.x + 1)
+        await expect(page.getByRole('dialog', {name:'Menu de navegação'})).not.toBeVisible()
+        await expect(page.getByRole('button', {name:'Menu',exact:true})).toHaveAttribute('aria-expanded','false')
+        expect((await page.locator('.main-panel').boundingBox())!.x).toBe(0)
         expect(await page.getByRole('button', {name:'Abrir meu perfil'}).evaluate(element =&gt; element.getBoundingClientRect().top)).toBeLessThan(100)
         if (name === 'Molas') {
           await expect(page.locator('#scan-code')).not.toBeFocused()

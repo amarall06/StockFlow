@@ -162,6 +162,14 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [scanCode, setScanCode] = useState('')
   const scanInputRef = useRef<HTMLInputElement>(null)
   const accountMenuRef = useRef<HTMLDetailsElement>(null)
+  const mobileMenuRef = useRef<HTMLDialogElement>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  useEffect(() => {
+    const compact = window.matchMedia('(max-width: 1024px), (pointer: coarse) and (max-width: 1366px)')
+    const closeOnDesktop = () => { if (!compact.matches) mobileMenuRef.current?.close() }
+    compact.addEventListener('change', closeOnDesktop)
+    return () => compact.removeEventListener('change', closeOnDesktop)
+  }, [])
   const [scanResult, setScanResult] = useState<(ProductInfo & { code: string }) | null>(null)
   const [scanMessage, setScanMessage] = useState('')
   // useState guarda o texto digitado na busca enquanto a tela está aberta.
@@ -308,6 +316,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
   function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
+    mobileMenuRef.current?.close()
     accountMenuRef.current?.removeAttribute('open')
     setActivePage(page)
     setScanResult(null)
@@ -490,12 +499,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   // Na publicação, uma falha do banco nunca vira um estoque local que parece salvo online.
   if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p>{signOutError && <p role="alert">{signOutError}</p>}<button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
 
-  return (
-    <ProductPhotosProvider canEdit={isAdministrator}>
-    <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
-      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
-      <a className="skip-link" href="#consulta">Ir para o conteúdo</a>
-      <aside className="sidebar">
+  const sidebarContent = <>
+
         <a className="brand" href="#inicio" aria-label="LIBER automotive, início" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}>
           <span className="brand-mark">L</span>
           <span>LIBER<span className="brand-light">SOLUÇÕES EM<br/> ESTOQUE AUTOMOTIVO</span></span>
@@ -532,12 +537,23 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         <div className="sidebar-bottom">
           <span>Estoque que<br/>move o seu negócio.</span>
         </div>
-      </aside>
+
+  </>
+
+  return (
+    <ProductPhotosProvider canEdit={isAdministrator}>
+    <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
+      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
+      <a className="skip-link" href="#consulta">Ir para o conteúdo</a>
+      <aside className="sidebar">{sidebarContent}</aside>
+      <dialog ref={mobileMenuRef} id="mobile-navigation" className="mobile-navigation-dialog" aria-label="Menu de navegação" onClose={() => setMobileMenuOpen(false)} onClick={event => { if (event.target === event.currentTarget) mobileMenuRef.current?.close() }}>
+        <aside className="sidebar"><button type="button" className="mobile-menu-close" onClick={() => mobileMenuRef.current?.close()}>Fechar menu ×</button>{sidebarContent}</aside>
+      </dialog>
 
       <section className="main-panel" id="inicio">
         <header className="topbar">
           <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
-          <div className="user-chip"><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
+          <div className="user-chip"><button type="button" className="mobile-menu-trigger" aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={mobileMenuOpen} onClick={() => { mobileMenuRef.current?.showModal(); setMobileMenuOpen(true) }}><span aria-hidden="true">☰</span> Menu</button><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
           <label className="mobile-module-menu">Ir para
             <select aria-label="Escolher módulo" value={activePage} onChange={event => changePage(event.target.value as typeof activePage)}>
               <option value="dashboard">Painel</option><option value="alerts">Alertas ({alertCount})</option>

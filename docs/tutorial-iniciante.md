@@ -51,7 +51,9 @@ A função de limpeza impede que uma resposta atrasada sobrescreva a página já
 `useMemo` reaproveita um cálculo quando suas entradas não mudam.
 
 Os botões do menu lateral chamam `changePage`, que muda a página e limpa buscas antigas.
-No celular, a lateral fica compacta; no tablet, mostra ícones e nomes. No celular não há mais foco automático no campo:
+No celular e tablet, o botão Menu abre a lateral sobre o conteúdo. Ela fecha ao escolher
+um módulo, tocar fora, apertar Escape ou usar Fechar menu. O navegador controla o foco
+com um elemento `dialog`, mantendo o teclado dentro do menu enquanto ele estiver aberto. No celular não há mais foco automático no campo:
 isso evita abrir o teclado e deslocar a tela ao escolher Molas. Campos com pelo menos 16 px
 reduzem o zoom de edição do Safari; o zoom manual de acessibilidade continua permitido.
 

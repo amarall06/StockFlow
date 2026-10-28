@@ -345,3 +345,19 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSyst
  .app-shell .activity-chart text { font-size: 24px; }
  .app-shell .sales-empty-chart { height: 100px; }
 }
+.mobile-menu-trigger { display: none; }
+.mobile-navigation-dialog { padding: 0; border: 0; margin: 0; width: min(300px,85vw); max-width: none; height: 100dvh; max-height: 100dvh; background: #302820; color: #fff; }
+.mobile-navigation-dialog::backdrop { background: #0007; }
+body:has(.mobile-navigation-dialog[open]) { overflow: hidden; }
+.app-shell .mobile-navigation-dialog .sidebar { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; flex-wrap: nowrap; position: static; width: 100%; height: 100%; padding: max(16px,env(safe-area-inset-top)) 16px 24px; overflow-y: auto; }
+.app-shell .mobile-menu-close { align-self: flex-end; min-height: 44px; padding: 8px 12px; margin-bottom: 16px; border: 1px solid #ffffff50; border-radius: 8px; background: transparent; color: white; cursor: pointer; font-size: 16px; }
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell { display: block; }
+ .app-shell > .sidebar { display: none; }
+ .app-shell .mobile-menu-trigger { display: flex; align-items: center; gap: 8px; order: -2; padding: 8px 10px; min-height: 44px; border: 1px solid var(--liber-line); border-radius: 8px; background: var(--liber-surface); color: var(--liber-ink); font-size: 14px; cursor: pointer; }
+ .app-shell .topbar .profile-name-text { max-width: 120px; }
+ .app-shell .mobile-navigation-dialog .brand > span:last-child { display: flex; font-size: 28px; }
+ .app-shell .mobile-navigation-dialog .brand-light { font-size: 11px; margin: 3px 0 0; text-indent: 0; letter-spacing: 0; }
+ .app-shell .mobile-navigation-dialog .brand { justify-content: flex-start; gap: 12px; }
+ .app-shell .mobile-navigation-dialog .nav-item { flex-direction: row; justify-content: flex-start; text-align: left; font-size: 16px; min-height: 48px; gap: 14px; padding: 10px 12px; }
+}
