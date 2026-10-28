@@ -50,16 +50,17 @@ A função de limpeza impede que uma resposta atrasada sobrescreva a página já
 `useRef` guarda referências sem precisar redesenhar a tela, como um bloqueio de envio.
 `useMemo` reaproveita um cálculo quando suas entradas não mudam.
 
-No seletor de módulos, `value` representa a página atual. `onChange` chama `changePage`,
-que muda a página e limpa buscas antigas. No celular não há mais foco automático no campo:
+Os botões do menu lateral chamam `changePage`, que muda a página e limpa buscas antigas.
+No celular, a lateral fica compacta; no tablet, mostra ícones e nomes. No celular não há mais foco automático no campo:
 isso evita abrir o teclado e deslocar a tela ao escolher Molas. Campos com pelo menos 16 px
 reduzem o zoom de edição do Safari; o zoom manual de acessibilidade continua permitido.
 
 ## Aula 5 — O painel e os gráficos
 
 Os blocos de amortecedores, molas e total são botões. Eles abrem a consulta correspondente.
-Os atalhos levam a alertas, garantia e saídas (ou histórico para cargos sem permissão de saída).
-No celular/tablet, indicadores detalhados ficam recolhidos até clicar para expandir.
+O menu lateral leva a alertas, garantia e saídas (conforme as permissões da conta).
+No celular/tablet, os gráficos aparecem diretamente, sem precisar expandir o painel.
+As opções de série e visualização também ficam visíveis. Sem vendas, o gráfico mostra zero, sem inventar registros.
 
 `InventoryDashboard` combina o estoque atual com o relatório de vendas e recebimentos.
 `dashboard-summary.ts` calcula os números do estoque que já foram consultados.
@@ -742,7 +743,7 @@ function App() {
 
 export default App
 </code></pre></details>
-<details id="file-2" class="file"><summary>src/Design.css</summary><p>Define aparência, organização e adaptação de Design. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>286 linhas · SHA-256 17eb28cc6aa10687</p><pre><code>/* Identidade comum inspirada nas referências enviadas. Nenhum valor de negócio é visual. */
+<details id="file-2" class="file"><summary>src/Design.css</summary><p>Define aparência, organização e adaptação de Design. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>348 linhas · SHA-256 f58247dae593c5e4</p><pre><code>/* Identidade comum inspirada nas referências enviadas. Nenhum valor de negócio é visual. */
 :root { --liber-canvas: #f7f5f1; --liber-surface: #fff; --liber-ink: #24211e; --liber-muted: #655f58; --liber-line: #e7e1d9; --liber-accent: #b34d14; --liber-soft: #fff2df; --liber-shadow: 0 3px 16px #392b1808; }
 .theme-dark { --liber-canvas: #1c1b19; --liber-surface: #282622; --liber-ink: #f5eee4; --liber-muted: #d0c3b3; --liber-line: #4b443b; --liber-accent: #f3b078; --liber-soft: #3b3022; --liber-shadow: none; }
 body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -1027,6 +1028,68 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSyst
 .reference-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .app-shell .reference-section-heading button { border: 0; font-size: 12px; padding: 0; background: transparent; }
 @media(min-width:1600px) { .app-shell .brand-light { margin-top: -19px; text-indent: 80px; } }
+/* Menu sempre lateral e indicadores visíveis também nas telas de toque. */
+.sales-empty-chart { display: block; width: 100%; height: 170px; color: var(--liber-muted); }
+.activity-chart-controls { display: flex; gap: 12px; flex-wrap: wrap; }
+.app-shell .activity-chart-controls .activity-filter { margin: 0; display: flex; gap: 8px; align-items: center; }
+.app-shell .activity-chart-controls select { min-height: 32px; padding: 4px; }
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell { display: grid; grid-template-columns: 82px minmax(0,1fr); align-items: start; }
+ .app-shell &gt; .sidebar { display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; position: sticky; top: 0; height: 100dvh; min-height: 0; padding: 14px 6px; overflow-y: auto; overscroll-behavior: contain; }
+ .app-shell .sidebar .brand { padding: 0; margin: 0; justify-content: center; }
+ .app-shell .sidebar .brand-mark { width: 44px; height: 44px; flex-basis: 44px; font-size: 30px; }
+ .app-shell .sidebar .brand &gt; span:last-child, .app-shell .sidebar-bottom { display: none; }
+ .app-shell .sidebar-navigation { flex: none; flex-direction: column; overflow: visible; margin-top: 20px; padding: 0; gap: 4px; }
+ .app-shell .sidebar-navigation .nav-item { display: flex; flex-direction: column; flex: none; align-items: center; justify-content: center; white-space: normal; min-height: 58px; gap: 5px; padding: 8px 2px; font-size: 10px; line-height: 1.25; text-align: center; width: 100%; margin: 0; border-radius: 8px; }
+ .app-shell .sidebar-navigation .nav-icon { width: 22px; height: 22px; flex: none; }
+ .app-shell .nav-alert-count { min-width: 18px; height: 18px; font-size: 10px; }
+ .app-shell .mobile-module-menu { display: none; }
+ .app-shell .topbar { padding: 10px 12px; }
+ .app-shell .topbar .profile-name-text { max-width: 130px; font-size: 14px; }
+ .app-shell .topbar .user-chip { gap: 4px; }
+ .app-shell .content { padding: 20px 12px 30px; }
+ .app-shell .dashboard-detail:not(.is-expanded), .app-shell .dashboard-detail.is-expanded { display: block; }
+ .app-shell .dashboard-panel { padding: 16px 12px; }
+ .app-shell .activity-panel { min-height: 0; }
+ .app-shell .activity-panel h2, .app-shell .dashboard-sales-panel h2 { padding-right: 0; font-size: 19px; }
+ .app-shell .activity-panel &gt; .activity-filter { position: static; display: flex; margin: 12px 0; }
+ .app-shell .activity-chart { margin-top: 0; height: auto; min-height: 130px; }
+ .app-shell .activity-chart text { font-size: 20px; }
+ .app-shell .activity-chart-controls { gap: 8px; }
+ .app-shell .activity-chart-controls .activity-filter { flex-wrap: wrap; font-size: 12px; }
+ .app-shell .dashboard-sales-panel &gt; h2::after { position: static; display: block; margin-top: 8px; }
+ .app-shell .dashboard-shortcuts { display: none; }
+}
+@media(min-width:768px) and (max-width:1024px), (pointer:coarse) and (min-width:768px) and (max-width:1366px) {
+ .app-shell { grid-template-columns: 210px minmax(0,1fr); }
+ .app-shell &gt; .sidebar { padding: 24px 12px; }
+ .app-shell .sidebar .brand { gap: 8px; }
+ .app-shell .sidebar .brand &gt; span:last-child { display: flex; font-size: 24px; }
+ .app-shell .sidebar .brand-light { font-size: 10px; letter-spacing: 0; margin: 3px 0 0; text-indent: 0; }
+ .app-shell .sidebar-navigation .nav-item { flex-direction: row; justify-content: flex-start; text-align: left; min-height: 48px; padding: 10px; gap: 12px; font-size: 14px; }
+ .app-shell .sidebar-bottom { display: block; }
+}
+@media(max-width:767px) {
+ .app-shell .location-tools { grid-template-columns: minmax(0,1fr); }
+ .app-shell :is(.location-create-form,.transfer-form,.location-workspace-heading &gt; div,.scan-heading &gt; div) { min-width: 0; }
+ .app-shell :is(.location-create-form,.transfer-form) :is(input,select) { width: 100%; max-width: 100%; }
+ .app-shell .location-workspace-heading { flex-wrap: wrap; }
+ .app-shell .table-wrap { max-width: 100%; }
+}
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell .sidebar-navigation .nav-item:nth-child(4) { order: 9; }
+ .app-shell .sidebar-navigation .nav-item:nth-child(7) { order: 10; }
+ .app-shell .dashboard-detail.is-expanded { display: flex; flex-direction: column; gap: 16px; }
+ .app-shell .dashboard-detail &gt; *, .app-shell .dashboard-columns &gt; section { margin-bottom: 0; }
+ .app-shell .activity-panel { order: 1; }
+ .app-shell .dashboard-sales-panel { order: 2; }
+ .app-shell .dashboard-replenishment { order: 3; }
+ .app-shell .dashboard-receipts-panel { order: 4; }
+ .app-shell .dashboard-alert-panel { order: 5; }
+ .app-shell .activity-chart { height: 160px; }
+ .app-shell .activity-chart text { font-size: 24px; }
+ .app-shell .sales-empty-chart { height: 100px; }
+}
 </code></pre></details>
 <details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>764 linhas · SHA-256 cc731b732e6e8e43</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
@@ -1980,7 +2043,7 @@ export function ExportCsvButton({ name, headers, rows, disabled = false }: {
   &lt;/div&gt;
 }
 </code></pre></details>
-<details id="file-11" class="file"><summary>src/components/InventoryActivity.tsx</summary><p>Consulta e desenha a série diária real; período, série, controle de dia e tabela permitem conferir os valores.</p><p><strong>Funções para localizar:</strong> ActivityChart, InventoryActivity.</p><p>45 linhas · SHA-256 c7901e68eb883ac9</p><pre><code>import { useEffect, useState } from 'react'
+<details id="file-11" class="file"><summary>src/components/InventoryActivity.tsx</summary><p>Consulta e desenha a série diária real; período, série, controle de dia e tabela permitem conferir os valores.</p><p><strong>Funções para localizar:</strong> ActivityChart, InventoryActivity.</p><p>46 linhas · SHA-256 ca2b14bd547f1155</p><pre><code>import { useEffect, useState } from 'react'
 import { loadActivity, type ActivityDay } from '../lib/activity-api'
 import type { DashboardCategory } from '../lib/dashboard-api'
 const date = (day: string) =&gt; new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' }).format(new Date(day+'T12:00:00Z'))
@@ -2003,8 +2066,9 @@ export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
       {rows.length&gt;0 &amp;&amp; (rows.length&lt;=7?rows.map((row,index)=&gt;&lt;text key={row.day} x={45+(index+.5)/rows.length*535} y=&quot;170&quot; textAnchor=&quot;middle&quot; fill=&quot;currentColor&quot; fontSize=&quot;11&quot;&gt;{date(row.day)}&lt;/text&gt;):&lt;&gt;&lt;text x=&quot;40&quot; y=&quot;174&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{date(rows[0].day)}&lt;/text&gt;&lt;text x=&quot;580&quot; y=&quot;174&quot; textAnchor=&quot;end&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{date(rows.at(-1)!.day)}&lt;/text&gt;&lt;/&gt;)}
     &lt;/svg&gt;
 
-    &lt;details className=&quot;activity-values&quot;&gt;&lt;summary&gt;Ver tabela de valores&lt;/summary&gt;    &lt;label className=&quot;activity-filter&quot;&gt;Mostrar&lt;select aria-label=&quot;Série do gráfico&quot; value={series} onChange={event=&gt;setSeries(event.target.value as typeof series)}&gt;&lt;option value=&quot;sold_boxes&quot;&gt;Vendas&lt;/option&gt;&lt;option value=&quot;received_boxes&quot;&gt;Entradas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-    &lt;label className=&quot;activity-filter&quot;&gt;Visualização&lt;select aria-label=&quot;Visualização do gráfico&quot; value={chartType} onChange={event=&gt;setChartType(event.target.value as typeof chartType)}&gt;&lt;option value=&quot;bars&quot;&gt;Barras&lt;/option&gt;&lt;option value=&quot;line&quot;&gt;Linhas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;div className=&quot;activity-chart-controls&quot;&gt;&lt;label className=&quot;activity-filter&quot;&gt;Mostrar&lt;select aria-label=&quot;Série do gráfico&quot; value={series} onChange={event=&gt;setSeries(event.target.value as typeof series)}&gt;&lt;option value=&quot;sold_boxes&quot;&gt;Vendas&lt;/option&gt;&lt;option value=&quot;received_boxes&quot;&gt;Entradas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;label className=&quot;activity-filter&quot;&gt;Visualização&lt;select aria-label=&quot;Visualização do gráfico&quot; value={chartType} onChange={event=&gt;setChartType(event.target.value as typeof chartType)}&gt;&lt;option value=&quot;bars&quot;&gt;Barras&lt;/option&gt;&lt;option value=&quot;line&quot;&gt;Linhas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;/div&gt;
+    &lt;details className=&quot;activity-values&quot;&gt;&lt;summary&gt;Ver tabela de valores&lt;/summary&gt;
     &lt;p&gt;{rows.reduce((sum,row)=&gt;sum+row[series],0)} caixas · {title.toLowerCase()} no período selecionado.&lt;/p&gt;
 {current &amp;&amp; &lt;label className=&quot;activity-day&quot;&gt;Consultar dia&lt;input aria-label=&quot;Dia do gráfico&quot; type=&quot;range&quot; min=&quot;0&quot; max={rows.length-1} value={Math.min(selected,rows.length-1)} onChange={event=&gt;setSelected(Number(event.target.value))}/&gt;&lt;output aria-live=&quot;polite&quot;&gt;{date(current.day)}: {current[series]} caixas&lt;/output&gt;&lt;/label&gt;}&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Vendas (cx.)&lt;/th&gt;&lt;th&gt;Entradas (cx.)&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{rows.map(row=&gt;&lt;tr key={row.day}&gt;&lt;td&gt;{date(row.day)}&lt;/td&gt;&lt;td&gt;{row.sold_boxes}&lt;/td&gt;&lt;td&gt;{row.received_boxes}&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;&lt;/table&gt;&lt;/details&gt;
   &lt;/&gt;
@@ -2126,7 +2190,7 @@ export function InventoryActivity({ category, revision }: { category: DashboardC
 .dashboard-stat-link, .dashboard-stock-totals strong small { color: #66564b; }
 .theme-dark .dashboard-stat-link, .theme-dark .dashboard-stock-totals strong small { color: #d3beb2; }
 </code></pre></details>
-<details id="file-13" class="file"><summary>src/components/InventoryDashboard.tsx</summary><p>Combina totais atuais e relatórios; blocos são botões e o detalhamento pode ser recolhido no celular.</p><p><strong>Funções para localizar:</strong> MetricIcon, DashboardActivity, InventoryDashboard, refresh.</p><p>95 linhas · SHA-256 08b35a199024d0f3</p><pre><code>import {useEffect,useState} from 'react'
+<details id="file-13" class="file"><summary>src/components/InventoryDashboard.tsx</summary><p>Combina totais atuais e relatórios; blocos são botões e o detalhamento pode ser recolhido no celular.</p><p><strong>Funções para localizar:</strong> MetricIcon, DashboardActivity, InventoryDashboard, refresh.</p><p>93 linhas · SHA-256 8d357df14068d1fa</p><pre><code>import {useEffect,useState} from 'react'
 import type {ProductInfo,StockRow} from '../lib/inventory-api'
 import {loadDashboardReport,type DashboardCategory,type DashboardReport} from '../lib/dashboard-api'
 import {dashboardStockSummary} from '../lib/dashboard-summary'
@@ -2147,7 +2211,7 @@ export function DashboardActivity({report,onHistory=()=&gt;{}}:{report:Dashboard
     &lt;section className=&quot;inventory-panel dashboard-panel dashboard-sales-panel&quot; aria-labelledby=&quot;dashboard-sales-title&quot;&gt;&lt;h2 id=&quot;dashboard-sales-title&quot;&gt;Vendas por código&lt;/h2&gt;
       &lt;p&gt;{report.sold_boxes} {report.sold_boxes===1?'caixa vendida':'caixas vendidas'} em {report.sales_count} {report.sales_count===1?'registro de venda':'registros de venda'}.&lt;/p&gt;
       &lt;p&gt;Período: {dateFormat.format(new Date(report.period_start))} até {dateFormat.format(new Date(report.as_of))}. Até 10 códigos com mais caixas vendidas.&lt;/p&gt;
-      {!report.sales_by_product.length?&lt;p className=&quot;dashboard-empty&quot;&gt;Nenhuma venda registrada neste período e categoria.&lt;/p&gt;:&lt;table className=&quot;dashboard-sales-table&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Caixas vendidas&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{report.sales_by_product.map((row)=&gt;&lt;tr key={row.code}&gt;&lt;td&gt;{row.code}&lt;/td&gt;&lt;td&gt;&lt;span className=&quot;dashboard-bar-track&quot; aria-hidden=&quot;true&quot;&gt;&lt;span style={{width:`${row.boxes/maximum*100}%`}}/&gt;&lt;/span&gt;&lt;strong&gt;{row.boxes}&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;&lt;/table&gt;}
+      {!report.sales_by_product.length?&lt;div className=&quot;dashboard-empty&quot;&gt;&lt;svg className=&quot;sales-empty-chart&quot; viewBox=&quot;0 0 500 150&quot; role=&quot;img&quot; aria-label=&quot;Vendas por código: zero caixas vendidas no período&quot;&gt;&lt;path d=&quot;M30 20V120H480&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; opacity=&quot;.3&quot;/&gt;&lt;path d=&quot;M30 70H480M30 20H480&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; opacity=&quot;.12&quot;/&gt;&lt;text x=&quot;250&quot; y=&quot;80&quot; textAnchor=&quot;middle&quot; fill=&quot;currentColor&quot; fontSize=&quot;18&quot;&gt;0 caixas vendidas&lt;/text&gt;&lt;/svg&gt;&lt;p&gt;Nenhuma venda registrada neste período e categoria.&lt;/p&gt;&lt;/div&gt;:&lt;table className=&quot;dashboard-sales-table&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Caixas vendidas&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{report.sales_by_product.map((row)=&gt;&lt;tr key={row.code}&gt;&lt;td&gt;{row.code}&lt;/td&gt;&lt;td&gt;&lt;span className=&quot;dashboard-bar-track&quot; aria-hidden=&quot;true&quot;&gt;&lt;span style={{width:`${row.boxes/maximum*100}%`}}/&gt;&lt;/span&gt;&lt;strong&gt;{row.boxes}&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;&lt;/table&gt;}
       &lt;p className=&quot;dashboard-footnote&quot;&gt;Transferências, descartes e devoluções não entram na contagem de vendas.&lt;/p&gt;
     &lt;/section&gt;
     &lt;section className=&quot;inventory-panel dashboard-panel dashboard-receipts-panel&quot; aria-labelledby=&quot;dashboard-receipts-title&quot;&gt;&lt;div className=&quot;reference-section-heading&quot;&gt;&lt;h2 id=&quot;dashboard-receipts-title&quot;&gt;Entradas recentes&lt;/h2&gt;&lt;button type=&quot;button&quot; className=&quot;theme-toggle&quot; onClick={onHistory}&gt;Ver todas →&lt;/button&gt;&lt;/div&gt;&lt;p&gt;Últimos 10 recebimentos da categoria selecionada, independentemente do período de vendas.&lt;/p&gt;
@@ -2161,7 +2225,6 @@ export function DashboardActivity({report,onHistory=()=&gt;{}}:{report:Dashboard
 export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false}:{
   activityReady?:boolean;isAdministrator?:boolean;catalog:Record&lt;string,ProductInfo&gt;;stock:StockRow[];ready:boolean;onRefresh:()=&gt;Promise&lt;void&gt;;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=&gt;void
 }){
-  const [expanded,setExpanded]=useState(false)
   const [category,setCategory]=useState&lt;DashboardCategory&gt;('all')
   const [revision,setRevision]=useState(0)
   const [refreshing,setRefreshing]=useState(false)
@@ -2201,8 +2264,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
         &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('warranty')}&gt;&lt;span&gt;Garantia&lt;/span&gt;&lt;strong&gt;Consultar →&lt;/strong&gt;&lt;small&gt;Fabricantes e devoluções&lt;/small&gt;&lt;/button&gt;
         &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen(isAdministrator?'outflow':'history')}&gt;&lt;span&gt;{isAdministrator?'Saídas':'Histórico'}&lt;/span&gt;&lt;strong&gt;Abrir →&lt;/strong&gt;&lt;small&gt;{isAdministrator?'Registrar retirada':'Ver movimentações'}&lt;/small&gt;&lt;/button&gt;
       &lt;/section&gt;
-      &lt;button type=&quot;button&quot; className=&quot;dashboard-expand theme-toggle&quot; aria-expanded={expanded} aria-controls=&quot;dashboard-detail&quot; onClick={()=&gt;setExpanded(value=&gt;!value)}&gt;{expanded?'Resumir painel':'Ver indicadores e atividade'}&lt;/button&gt;
-      &lt;div id=&quot;dashboard-detail&quot; className={`dashboard-detail${expanded?' is-expanded':''}`}&gt;
+      &lt;div id=&quot;dashboard-detail&quot; className=&quot;dashboard-detail is-expanded&quot;&gt;
       &lt;details className=&quot;dashboard-controls&quot;&gt;&lt;summary&gt;Filtros do painel&lt;/summary&gt;&lt;div className=&quot;dashboard-tools&quot;&gt;&lt;label&gt;Filtrar indicadores&lt;select value={category} disabled={refreshing} onChange={(event)=&gt;setCategory(event.target.value as DashboardCategory)}&gt;&lt;option value=&quot;all&quot;&gt;Amortecedores e molas&lt;/option&gt;&lt;option value=&quot;shocks&quot;&gt;Amortecedores&lt;/option&gt;&lt;option value=&quot;springs&quot;&gt;Molas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;button className=&quot;theme-toggle&quot; type=&quot;button&quot; disabled={refreshing||loading} onClick={()=&gt;void refresh()}&gt;{refreshing?'Atualizando…':'Atualizar painel'}&lt;/button&gt;&lt;/div&gt;&lt;/details&gt;
       {refreshError&amp;&amp;&lt;p className=&quot;dashboard-error auth-error&quot; role=&quot;alert&quot;&gt;{refreshError}&lt;/p&gt;}
       &lt;section className=&quot;dashboard-totals&quot; aria-label=&quot;Resumo do estoque normal&quot;&gt;
@@ -8603,13 +8665,11 @@ console.log('Laboratório isolado: http://127.0.0.1:5180/tests/outflow-lab/index
 console.log('Sem .env, login, Supabase ou saldos reais. Dados apagados ao encerrar.')
 for(const signal of ['SIGINT','SIGTERM']) process.once(signal,async()=&gt;{await server.close();process.exit(0)})
 </code></pre></details>
-<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>151 linhas · SHA-256 d752a9bbb3883b35</p><pre><code>import { test, expect, type Page } from '@playwright/test'
+<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>154 linhas · SHA-256 44b2177e4683630a</p><pre><code>import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 async function navigate(page: Page, name: string) {
-  const modules: Record&lt;string,string&gt; = {'Painel':'dashboard','Produtos':'products','Giro e ABC':'turnover','Visão geral':'inventory','Garantia':'warranty','Molas':'springs','Saídas':'outflow','Histórico':'history','Aplicações':'catalog'}
-  if ((page.viewportSize()?.width ?? 1440) &lt;= 1024) await page.getByLabel('Escolher módulo').selectOption(modules[name])
-  else if (name==='Molas'||name==='Giro e ABC') {
+  if ((page.viewportSize()?.width ?? 1440) &gt; 1024 &amp;&amp; (name==='Molas'||name==='Giro e ABC')) {
     await page.getByLabel('Opções da conta').click()
     await page.locator('.account-options').getByRole('button',{name,exact:true}).click()
   } else await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name: name==='Painel'?'Painel inicial':name, exact: true }).click()
@@ -8684,21 +8744,26 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
       await expect(page.locator('#consulta h1')).toBeVisible()
       await expect(page.getByText('Não foi possível abrir esta tela', { exact: true })).toHaveCount(0)
       if (width &lt;= 1024) {
-        await expect(page.getByLabel('Escolher módulo')).toBeVisible()
+        await expect(page.getByRole('navigation', {name:'Menu principal'})).toBeVisible()
+        const sidebar = await page.locator('.sidebar').boundingBox()
+        const content = await page.locator('.main-panel').boundingBox()
+        expect(sidebar!.x + sidebar!.width).toBeLessThanOrEqual(content!.x + 1)
         expect(await page.getByRole('button', {name:'Abrir meu perfil'}).evaluate(element =&gt; element.getBoundingClientRect().top)).toBeLessThan(100)
         if (name === 'Molas') {
           await expect(page.locator('#scan-code')).not.toBeFocused()
           expect(await page.locator('#scan-code').evaluate(element =&gt; parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16)
         }
         if (name === 'Painel') {
-          await expect(page.getByRole('button', {name:'Ver indicadores e atividade'})).toBeVisible()
-          await expect(page.locator('#dashboard-detail')).not.toBeVisible()
+          await expect(page.locator('#dashboard-detail')).toBeVisible()
+          await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
+          await expect(page.getByRole('img', {name:/Vendas por código: zero/})).toBeVisible()
         }
       }
       if (name === 'Painel' &amp;&amp; width === 360) {
         const audit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
         expect(audit.violations.map(v=&gt;({id:v.id,targets:v.nodes.map(n=&gt;n.target)}))).toEqual([])
       }
+      if (name === 'Painel' &amp;&amp; width === 360) await page.screenshot({path:'/tmp/stockflow-lateral-mobile.png',fullPage:true,animations:'disabled'})
       if (name === 'Painel' &amp;&amp; width === 1920) await page.screenshot({path:'/tmp/stockflow-exact-1920.png',fullPage:true,animations:'disabled'})
       if (name === 'Painel' &amp;&amp; width === 1440) {
         await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()

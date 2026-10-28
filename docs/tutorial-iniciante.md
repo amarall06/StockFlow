@@ -50,16 +50,17 @@ A função de limpeza impede que uma resposta atrasada sobrescreva a página já
 `useRef` guarda referências sem precisar redesenhar a tela, como um bloqueio de envio.
 `useMemo` reaproveita um cálculo quando suas entradas não mudam.
 
-No seletor de módulos, `value` representa a página atual. `onChange` chama `changePage`,
-que muda a página e limpa buscas antigas. No celular não há mais foco automático no campo:
+Os botões do menu lateral chamam `changePage`, que muda a página e limpa buscas antigas.
+No celular, a lateral fica compacta; no tablet, mostra ícones e nomes. No celular não há mais foco automático no campo:
 isso evita abrir o teclado e deslocar a tela ao escolher Molas. Campos com pelo menos 16 px
 reduzem o zoom de edição do Safari; o zoom manual de acessibilidade continua permitido.
 
 ## Aula 5 — O painel e os gráficos
 
 Os blocos de amortecedores, molas e total são botões. Eles abrem a consulta correspondente.
-Os atalhos levam a alertas, garantia e saídas (ou histórico para cargos sem permissão de saída).
-No celular/tablet, indicadores detalhados ficam recolhidos até clicar para expandir.
+O menu lateral leva a alertas, garantia e saídas (conforme as permissões da conta).
+No celular/tablet, os gráficos aparecem diretamente, sem precisar expandir o painel.
+As opções de série e visualização também ficam visíveis. Sem vendas, o gráfico mostra zero, sem inventar registros.
 
 `InventoryDashboard` combina o estoque atual com o relatório de vendas e recebimentos.
 `dashboard-summary.ts` calcula os números do estoque que já foram consultados.

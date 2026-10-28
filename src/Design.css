@@ -283,3 +283,65 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSyst
 .reference-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .app-shell .reference-section-heading button { border: 0; font-size: 12px; padding: 0; background: transparent; }
 @media(min-width:1600px) { .app-shell .brand-light { margin-top: -19px; text-indent: 80px; } }
+/* Menu sempre lateral e indicadores visíveis também nas telas de toque. */
+.sales-empty-chart { display: block; width: 100%; height: 170px; color: var(--liber-muted); }
+.activity-chart-controls { display: flex; gap: 12px; flex-wrap: wrap; }
+.app-shell .activity-chart-controls .activity-filter { margin: 0; display: flex; gap: 8px; align-items: center; }
+.app-shell .activity-chart-controls select { min-height: 32px; padding: 4px; }
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell { display: grid; grid-template-columns: 82px minmax(0,1fr); align-items: start; }
+ .app-shell > .sidebar { display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: flex-start; position: sticky; top: 0; height: 100dvh; min-height: 0; padding: 14px 6px; overflow-y: auto; overscroll-behavior: contain; }
+ .app-shell .sidebar .brand { padding: 0; margin: 0; justify-content: center; }
+ .app-shell .sidebar .brand-mark { width: 44px; height: 44px; flex-basis: 44px; font-size: 30px; }
+ .app-shell .sidebar .brand > span:last-child, .app-shell .sidebar-bottom { display: none; }
+ .app-shell .sidebar-navigation { flex: none; flex-direction: column; overflow: visible; margin-top: 20px; padding: 0; gap: 4px; }
+ .app-shell .sidebar-navigation .nav-item { display: flex; flex-direction: column; flex: none; align-items: center; justify-content: center; white-space: normal; min-height: 58px; gap: 5px; padding: 8px 2px; font-size: 10px; line-height: 1.25; text-align: center; width: 100%; margin: 0; border-radius: 8px; }
+ .app-shell .sidebar-navigation .nav-icon { width: 22px; height: 22px; flex: none; }
+ .app-shell .nav-alert-count { min-width: 18px; height: 18px; font-size: 10px; }
+ .app-shell .mobile-module-menu { display: none; }
+ .app-shell .topbar { padding: 10px 12px; }
+ .app-shell .topbar .profile-name-text { max-width: 130px; font-size: 14px; }
+ .app-shell .topbar .user-chip { gap: 4px; }
+ .app-shell .content { padding: 20px 12px 30px; }
+ .app-shell .dashboard-detail:not(.is-expanded), .app-shell .dashboard-detail.is-expanded { display: block; }
+ .app-shell .dashboard-panel { padding: 16px 12px; }
+ .app-shell .activity-panel { min-height: 0; }
+ .app-shell .activity-panel h2, .app-shell .dashboard-sales-panel h2 { padding-right: 0; font-size: 19px; }
+ .app-shell .activity-panel > .activity-filter { position: static; display: flex; margin: 12px 0; }
+ .app-shell .activity-chart { margin-top: 0; height: auto; min-height: 130px; }
+ .app-shell .activity-chart text { font-size: 20px; }
+ .app-shell .activity-chart-controls { gap: 8px; }
+ .app-shell .activity-chart-controls .activity-filter { flex-wrap: wrap; font-size: 12px; }
+ .app-shell .dashboard-sales-panel > h2::after { position: static; display: block; margin-top: 8px; }
+ .app-shell .dashboard-shortcuts { display: none; }
+}
+@media(min-width:768px) and (max-width:1024px), (pointer:coarse) and (min-width:768px) and (max-width:1366px) {
+ .app-shell { grid-template-columns: 210px minmax(0,1fr); }
+ .app-shell > .sidebar { padding: 24px 12px; }
+ .app-shell .sidebar .brand { gap: 8px; }
+ .app-shell .sidebar .brand > span:last-child { display: flex; font-size: 24px; }
+ .app-shell .sidebar .brand-light { font-size: 10px; letter-spacing: 0; margin: 3px 0 0; text-indent: 0; }
+ .app-shell .sidebar-navigation .nav-item { flex-direction: row; justify-content: flex-start; text-align: left; min-height: 48px; padding: 10px; gap: 12px; font-size: 14px; }
+ .app-shell .sidebar-bottom { display: block; }
+}
+@media(max-width:767px) {
+ .app-shell .location-tools { grid-template-columns: minmax(0,1fr); }
+ .app-shell :is(.location-create-form,.transfer-form,.location-workspace-heading > div,.scan-heading > div) { min-width: 0; }
+ .app-shell :is(.location-create-form,.transfer-form) :is(input,select) { width: 100%; max-width: 100%; }
+ .app-shell .location-workspace-heading { flex-wrap: wrap; }
+ .app-shell .table-wrap { max-width: 100%; }
+}
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell .sidebar-navigation .nav-item:nth-child(4) { order: 9; }
+ .app-shell .sidebar-navigation .nav-item:nth-child(7) { order: 10; }
+ .app-shell .dashboard-detail.is-expanded { display: flex; flex-direction: column; gap: 16px; }
+ .app-shell .dashboard-detail > *, .app-shell .dashboard-columns > section { margin-bottom: 0; }
+ .app-shell .activity-panel { order: 1; }
+ .app-shell .dashboard-sales-panel { order: 2; }
+ .app-shell .dashboard-replenishment { order: 3; }
+ .app-shell .dashboard-receipts-panel { order: 4; }
+ .app-shell .dashboard-alert-panel { order: 5; }
+ .app-shell .activity-chart { height: 160px; }
+ .app-shell .activity-chart text { font-size: 24px; }
+ .app-shell .sales-empty-chart { height: 100px; }
+}

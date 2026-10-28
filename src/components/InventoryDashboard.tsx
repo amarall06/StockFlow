@@ -19,7 +19,7 @@ export function DashboardActivity({report,onHistory=()=>{}}:{report:DashboardRep
     <section className="inventory-panel dashboard-panel dashboard-sales-panel" aria-labelledby="dashboard-sales-title"><h2 id="dashboard-sales-title">Vendas por código</h2>
       <p>{report.sold_boxes} {report.sold_boxes===1?'caixa vendida':'caixas vendidas'} em {report.sales_count} {report.sales_count===1?'registro de venda':'registros de venda'}.</p>
       <p>Período: {dateFormat.format(new Date(report.period_start))} até {dateFormat.format(new Date(report.as_of))}. Até 10 códigos com mais caixas vendidas.</p>
-      {!report.sales_by_product.length?<p className="dashboard-empty">Nenhuma venda registrada neste período e categoria.</p>:<table className="dashboard-sales-table"><thead><tr><th>Produto</th><th>Caixas vendidas</th></tr></thead><tbody>{report.sales_by_product.map((row)=><tr key={row.code}><td>{row.code}</td><td><span className="dashboard-bar-track" aria-hidden="true"><span style={{width:`${row.boxes/maximum*100}%`}}/></span><strong>{row.boxes}</strong></td></tr>)}</tbody></table>}
+      {!report.sales_by_product.length?<div className="dashboard-empty"><svg className="sales-empty-chart" viewBox="0 0 500 150" role="img" aria-label="Vendas por código: zero caixas vendidas no período"><path d="M30 20V120H480" fill="none" stroke="currentColor" opacity=".3"/><path d="M30 70H480M30 20H480" fill="none" stroke="currentColor" opacity=".12"/><text x="250" y="80" textAnchor="middle" fill="currentColor" fontSize="18">0 caixas vendidas</text></svg><p>Nenhuma venda registrada neste período e categoria.</p></div>:<table className="dashboard-sales-table"><thead><tr><th>Produto</th><th>Caixas vendidas</th></tr></thead><tbody>{report.sales_by_product.map((row)=><tr key={row.code}><td>{row.code}</td><td><span className="dashboard-bar-track" aria-hidden="true"><span style={{width:`${row.boxes/maximum*100}%`}}/></span><strong>{row.boxes}</strong></td></tr>)}</tbody></table>}
       <p className="dashboard-footnote">Transferências, descartes e devoluções não entram na contagem de vendas.</p>
     </section>
     <section className="inventory-panel dashboard-panel dashboard-receipts-panel" aria-labelledby="dashboard-receipts-title"><div className="reference-section-heading"><h2 id="dashboard-receipts-title">Entradas recentes</h2><button type="button" className="theme-toggle" onClick={onHistory}>Ver todas →</button></div><p>Últimos 10 recebimentos da categoria selecionada, independentemente do período de vendas.</p>
@@ -33,7 +33,6 @@ export function DashboardActivity({report,onHistory=()=>{}}:{report:DashboardRep
 export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false}:{
   activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
 }){
-  const [expanded,setExpanded]=useState(false)
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
   const [refreshing,setRefreshing]=useState(false)
@@ -73,8 +72,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('warranty')}><span>Garantia</span><strong>Consultar →</strong><small>Fabricantes e devoluções</small></button>
         <button type="button" className="dashboard-stat" onClick={()=>onOpen(isAdministrator?'outflow':'history')}><span>{isAdministrator?'Saídas':'Histórico'}</span><strong>Abrir →</strong><small>{isAdministrator?'Registrar retirada':'Ver movimentações'}</small></button>
       </section>
-      <button type="button" className="dashboard-expand theme-toggle" aria-expanded={expanded} aria-controls="dashboard-detail" onClick={()=>setExpanded(value=>!value)}>{expanded?'Resumir painel':'Ver indicadores e atividade'}</button>
-      <div id="dashboard-detail" className={`dashboard-detail${expanded?' is-expanded':''}`}>
+      <div id="dashboard-detail" className="dashboard-detail is-expanded">
       <details className="dashboard-controls"><summary>Filtros do painel</summary><div className="dashboard-tools"><label>Filtrar indicadores<select value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><button className="theme-toggle" type="button" disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</button></div></details>
       {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
       <section className="dashboard-totals" aria-label="Resumo do estoque normal">
