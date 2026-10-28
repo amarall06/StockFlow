@@ -36,6 +36,7 @@ await assert.rejects(api.loadDashboardReport('unknown'),/Categoria inválida/)
 globalThis.__dashboardApi=api;globalThis.__dashboardSummary=summary
 source=await readFile(new URL('src/components/InventoryDashboard.tsx',root),'utf8')
 source=source.replace(/^import type .*$/gm,'').replace(/^import .*from '\.\.\/lib\/dashboard-api'$/m,'const {loadDashboardReport}=globalThis.__dashboardApi').replace(/^import .*from '\.\.\/lib\/dashboard-summary'$/m,'const {dashboardStockSummary}=globalThis.__dashboardSummary').replace(/^import '\.\/InventoryDashboard.css'$/m,'')
+source=source.replace("import { InventoryActivity } from './InventoryActivity'",'const InventoryActivity=()=>null')
 source=compile(source,ts.JsxEmit.ReactJSX).replaceAll('from "react/jsx-runtime"',`from ${JSON.stringify(import.meta.resolve('react/jsx-runtime'))}`).replaceAll("from 'react'",`from ${JSON.stringify(import.meta.resolve('react'))}`)
 const {DashboardActivity,InventoryDashboard}=await importSource(source)
 const rendered=renderToStaticMarkup(React.createElement(DashboardActivity,{report}))

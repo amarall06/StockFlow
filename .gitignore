@@ -30,3 +30,6 @@ backups/
 # Resultados locais dos testes de navegador
 test-results/
 playwright-report/
+
+# Metadados locais da CLI Supabase
+supabase/.temp/

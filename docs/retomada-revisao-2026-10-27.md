@@ -1,3 +1,29 @@
+> **PUBLICAÇÃO CONFIRMADA:** PR #1 integrada em `main`, commit
+> `0630d1d4fe932ddaa491acd471f6da03e0bf3477`. GitHub Actions da revisão aprovou
+> build, regressões, lint, navegador simulado e PostgreSQL descartável.
+> Status Vercel do commit de produção: success.
+> https://vercel.com/amarall06s-projects/liber-automotive/CQxwdMNjuAEqH34qrvzkFVjTGTq3
+> Domínio https://liber-automotive.vercel.app/ respondeu HTTP 200. JS inicial,
+> CSS e módulo InventoryApp novos responderam 200; o módulo publicado contém
+> `transfer_stock_once`. Assets: index-D-7Hh_nA.js, InventoryApp-JNrZs8WG.js,
+> index-JX9ObP5R.css. Banco já na API 15; não repetir a migração.
+> Teste visual remoto do Chromium bloqueado por ERR_CERT_AUTHORITY_INVALID neste
+> ambiente; acesso Python HTTPS com validação TLS passou. Não declarar esse teste
+> visual aprovado. Login real, sessão e operação autenticada no site continuam pendentes.
+> As notas abaixo são históricas quando contrariam este estado.
+
+> **GitHub liberado e correções enviadas:**
+> PR https://github.com/amarall06/StockFlow/pull/1
+> Branch remota `fix/site-review-2026-10-27`, commit
+> `23d3ef569cd935a3ab764c793a6e17bdb37ce4ea` (mesmo código da revisão local).
+> CI `Verificar projeto` run 40601247285 terminou com sucesso: build/regressões,
+> lint, navegador e banco descartável. Vercel marcou a prévia como success.
+> O pedido de merge foi interrompido; conferência posterior confirmou PR ainda aberta,
+> mergeable=true, main ainda na base dcc621a. Não afirmar produção atualizada.
+> A API da Vercel ainda retorna 403 para listar deployments; Git integration funciona.
+> Próximo passo: concluir a integração da PR e verificar a publicação no domínio público.
+> Banco já atualizado para API 15; não repetir a migração.
+
 > **Estado mais recente — Supabase conectado:** a migração
 > `202610270001_idempotent_transfers.sql` já foi aplicada ao projeto
 > `tfatagbhmkeelbvstcvb`, confirmado como o banco do site publicado.
