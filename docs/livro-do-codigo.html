@@ -742,7 +742,7 @@ function App() {
 
 export default App
 </code></pre></details>
-<details id="file-2" class="file"><summary>src/Design.css</summary><p>Define aparência, organização e adaptação de Design. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>138 linhas · SHA-256 1d22021d7105d437</p><pre><code>/* Identidade comum inspirada nas referências enviadas. Nenhum valor de negócio é visual. */
+<details id="file-2" class="file"><summary>src/Design.css</summary><p>Define aparência, organização e adaptação de Design. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>286 linhas · SHA-256 17eb28cc6aa10687</p><pre><code>/* Identidade comum inspirada nas referências enviadas. Nenhum valor de negócio é visual. */
 :root { --liber-canvas: #f7f5f1; --liber-surface: #fff; --liber-ink: #24211e; --liber-muted: #655f58; --liber-line: #e7e1d9; --liber-accent: #b34d14; --liber-soft: #fff2df; --liber-shadow: 0 3px 16px #392b1808; }
 .theme-dark { --liber-canvas: #1c1b19; --liber-surface: #282622; --liber-ink: #f5eee4; --liber-muted: #d0c3b3; --liber-line: #4b443b; --liber-accent: #f3b078; --liber-soft: #3b3022; --liber-shadow: none; }
 body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
@@ -879,8 +879,156 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSyst
 @media (prefers-reduced-motion: reduce) { .app-shell .dashboard-stat { transform: none !important; } }
 .app-shell .dashboard-detail { align-items: stretch; }
 .app-shell .activity-values .activity-day { padding: 12px 0; }
+/* Composição da referência: cabeçalho contínuo e grade 7/5 + 4/4/4. */
+.app-shell { font-family: Arial, Helvetica, sans-serif; }
+.app-shell .main-panel { position: relative; }
+.app-shell .topbar { position: absolute; top: 18px; right: 28px; height: 44px; padding: 0; background: transparent; border: 0; z-index: 25; }
+.app-shell .breadcrumb { display: none; }
+.app-shell .user-chip { gap: 12px; }
+.app-shell .user-avatar { background: #e8e3dc; color: #302920; width: 34px; height: 34px; }
+.app-shell .profile-name-text { font-size: 18px; }
+.account-options { position: relative; }
+.account-options &gt; summary { cursor: pointer; list-style: none; font-size: 24px; padding: 3px 8px; color: var(--liber-ink); }
+.account-options &gt; summary::-webkit-details-marker { display: none; }
+.account-options &gt; div { position: absolute; right: 0; top: 38px; display: grid; gap: 8px; min-width: 180px; padding: 14px; border: 1px solid var(--liber-line); border-radius: 10px; background: var(--liber-surface); box-shadow: 0 12px 30px #0002; }
+.account-options button { min-height: 38px; padding: 6px 10px; border: 1px solid var(--liber-line); border-radius: 6px; background: var(--liber-surface); color: var(--liber-ink); text-align: left; cursor: pointer; }
+.app-shell .content { max-width: none; padding-top: 26px; }
+.app-shell .page-heading { margin-bottom: 24px; }
+.app-shell .sidebar { position: sticky; top: 0; height: 100dvh; padding-top: 26px; }
+.app-shell .brand { flex-wrap: wrap; gap: 10px 16px; padding: 0 12px; }
+.app-shell .brand-mark { width: 56px; height: 56px; flex-basis: 56px; font-size: 38px; border-radius: 9px; }
+.app-shell .brand &gt; span:last-child { display: contents; font-size: 34px; font-weight: 700; }
+.app-shell .brand-light { display: block; flex: 1 0 100%; width: 100%; text-align: center; color: #c2bbb2; font-size: 14px; font-weight: 400; letter-spacing: .1px; line-height: 1.4; }
+.app-shell .sidebar-label { display: none; }
+.app-shell .sidebar-navigation { margin-top: 28px; gap: 10px; }
+.app-shell .nav-item { font-size: 17px; min-height: 48px; }
+.app-shell .nav-item:nth-child(1) { order: 1; }
+.app-shell .nav-item:nth-child(3) { order: 2; }
+.app-shell .nav-item:has(.nav-icon path[d^='M4 5']) { order: 3; }
+.app-shell .nav-item:has(.nav-icon path[d^='M3 11']) { order: 4; }
+.app-shell .nav-item:has(.nav-icon path[d^='M4 4']) { order: 5; }
+.app-shell .nav-item:nth-child(5) { order: 6; }
+.app-shell .nav-item:nth-child(6) { order: 7; }
+.app-shell .nav-item.nav-alerts { order: 8; background: transparent !important; border: 0 !important; color: #f5ede4 !important; margin: 0; }
+.app-shell .nav-item:nth-child(4), .app-shell .nav-item:nth-child(7) { display: none; }
+.app-shell .sidebar-bottom { margin-top: auto; line-height: 1.5; font-size: 17px; color: #b3aaa0; }
+.app-shell .dashboard-stock-totals .dashboard-stat-link { display: none; }
+.metric-icon { position: absolute; width: 50px; height: 64px; top: 30px; left: 24px; color: #d97735; }
+.app-shell .dashboard-stock-totals .dashboard-stat { padding: 24px 16px 22px 100px; min-height: 146px; }
+.app-shell .dashboard-stock-totals strong { font-size: 42px; line-height: 1; }
+.app-shell .dashboard-stock-totals strong small { display: block; margin-top: 4px; font-size: 17px; }
+.app-shell .dashboard-stock-totals .dashboard-stat &gt; span:first-of-type { font-size: 16px; font-weight: 500; }
+.app-shell .dashboard-detail { grid-template-columns: repeat(12,minmax(0,1fr)); gap: 24px; }
+.app-shell .dashboard-detail .dashboard-controls { grid-column: 1/-1; order: 8; font-size: 12px; color: var(--liber-muted); }
+.dashboard-controls summary { cursor: pointer; }
+.app-shell .activity-panel { position: relative; grid-column: span 7; min-width: 0; height: 350px; }
+.app-shell .dashboard-sales-panel { position: relative; grid-column: span 5; height: 350px; }
+.app-shell .dashboard-sales-panel &gt; h2 { padding-right: 70px; }
+.app-shell .dashboard-sales-panel &gt; h2::after { content: 'Últimos 30 dias'; position: absolute; right: 24px; top: 30px; font-size: 12px; font-weight: 400; }
+.app-shell .dashboard-sales-panel &gt; p:not(.dashboard-empty) { display: none; }
+.app-shell .dashboard-detail .dashboard-totals { display: none; }
+.app-shell .dashboard-replenishment { grid-column: span 4; order: 3; min-height: 270px; margin: 0; }
+.app-shell .dashboard-receipts-panel { grid-column: span 4; order: 3; min-height: 270px; }
+.app-shell .dashboard-alert-panel { grid-column: span 4; order: 3; min-height: 270px; border-left: 1px solid var(--liber-line) !important; }
+.app-shell .dashboard-alert-heading h2 { font-size: 18px; }
+.app-shell .dashboard-alert-heading .theme-toggle { font-size: 0; padding: 5px; border: 0; }
+.app-shell .dashboard-alert-heading .theme-toggle::before { content: 'Ver todas →'; font-size: 12px; }
+.app-shell .dashboard-alert-heading .theme-toggle &gt; span { display: none; }
+.dashboard-alert-callout { display: grid; gap: 8px; padding: 16px; margin-top: 24px; background: var(--liber-soft); border-radius: 9px; font-size: 13px; }
+.dashboard-alert-callout &gt; span { font-size: 11px; }
+.app-shell .dashboard-alert-list { display: grid; gap: 0; margin-top: 12px; }
+.app-shell .dashboard-alert-list li { display: flex; justify-content: space-between; gap: 8px; padding: 12px 0; border: 0; border-bottom: 1px solid var(--liber-line); background: transparent; font-size: 12px; }
+.replenishment-row { padding: 26px 0; border-bottom: 1px solid var(--liber-line); }
+.replenishment-row &gt; div { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.replenishment-row &gt; div &gt; span { color: var(--liber-muted); }
+.replenishment-meter { margin-top: 12px; align-items: center; }
+.replenishment-meter meter { flex: 1; height: 20px; min-width: 0; appearance: none; border: 0; background: var(--liber-canvas); border-radius: 8px; }
+.replenishment-meter meter::-webkit-meter-bar { background: var(--liber-canvas); border: 0; border-radius: 8px; }
+.replenishment-meter meter::-webkit-meter-optimum-value { background: linear-gradient(90deg,#e17d38,#eea45f); border-radius: 8px; }
+.replenishment-meter meter::-moz-meter-bar { background: #db7c36; border-radius: 8px; }
+.app-shell .dashboard-receipts-panel &gt; p { display: none; }
+.app-shell .dashboard-receipt-list { gap: 0; margin-top: 24px; }
+.app-shell .dashboard-receipt-list li { display: grid; grid-template-columns: 1.1fr 1fr auto; gap: 8px; padding: 10px 0; align-items: center; font-size: 13px; }
+.app-shell .dashboard-receipt-list time { margin: 0; font-size: 13px; }
+.app-shell .dashboard-receipt-list b { color: var(--liber-accent); }
+.app-shell .dashboard-receipt-list .receipt-meta { display: none; }
+.app-shell .activity-panel h2 { font-size: 20px; padding-right: 130px; }
+.app-shell .activity-panel &gt; .activity-filter { position: absolute; right: 20px; top: 12px; font-size: 0; }
+.app-shell .activity-panel &gt; .activity-filter select { font-size: 12px; border: 0; background: transparent; }
+.app-shell .activity-description { display: none; }
+.app-shell .activity-chart { height: 245px; margin-top: 26px; color: #d77531; }
+.app-shell .activity-chart &gt; text:first-of-type { display: none; }
+.app-shell .activity-values { margin: 0; font-size: 11px; }
+.app-shell .activity-values summary { padding: 0; }
+.app-shell .activity-values[open] { position: relative; z-index: 3; padding: 14px; background: var(--liber-surface); box-shadow: 0 12px 30px #0002; border-radius: 9px; }
+.app-shell .dashboard-sales-table { margin-top: 26px; }
+.app-shell .dashboard-sales-table thead { display: none; }
+.app-shell .dashboard-sales-table td { padding-block: 13px; border: 0; font-size: 16px; }
+.app-shell .dashboard-bar-track { height: 28px; }
+@media(min-width:1600px) {
+ .app-shell { grid-template-columns: 302px minmax(0,1fr); }
+ .app-shell .content { padding: 26px 28px 32px; }
+ .app-shell .brand-mark { width: 70px; height: 68px; flex-basis: 70px; font-size: 48px; }
+ .app-shell .brand &gt; span:last-child { font-size: 44px; }
+ .app-shell .brand-light { font-size: 19px; }
+ .app-shell h1 { font-size: 56px; }
+ .app-shell .eyebrow { font-size: 18px; padding: 7px 15px; margin-bottom: 12px; border-radius: 9px; }
+ .app-shell .subtitle { font-size: 22px; margin-top: 5px; line-height: 1.4; }
+ .app-shell .page-heading { margin-bottom: 26px; }
+ .app-shell .nav-item { min-height: 59px; font-size: 22px; padding-inline: 16px; }
+ .app-shell .nav-item .nav-icon { width: 28px; height: 28px; }
+ .app-shell .sidebar { padding-inline: 17px; }
+ .app-shell .sidebar-navigation { margin-top: 28px; }
+ .app-shell .sidebar-bottom { margin: auto 15px 18px; font-size: 21px; }
+ .app-shell .dashboard-stock-totals { gap: 26px; margin-bottom: 24px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat { padding-left: 145px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat &gt; span:first-of-type { font-size: 20px; }
+ .app-shell .dashboard-stock-totals strong { font-size: 48px; }
+ .app-shell .dashboard-stock-totals strong small { font-size: 20px; }
+ .metric-icon { width: 72px; height: 72px; left: 34px; top: 35px; }
+ .app-shell .dashboard-panel { padding: 26px 28px; }
+ .app-shell .dashboard-panel h2 { font-size: 25px; }
+ .app-shell .activity-panel { height: 348px; }
+ .app-shell .dashboard-sales-panel { height: 348px; }
+ .app-shell .dashboard-replenishment,.app-shell .dashboard-receipts-panel,.app-shell .dashboard-alert-panel { min-height: 314px; }
+ .app-shell .dashboard-sales-table td { font-size: 20px; }
+ .app-shell .dashboard-bar-track { height: 32px; }
+ .replenishment-row &gt; div { font-size: 20px; }
+ .app-shell .dashboard-receipt-list li,.app-shell .dashboard-receipt-list time { font-size: 19px; }
+ .app-shell .dashboard-alert-list li { font-size: 17px; }
+ .dashboard-alert-callout { font-size: 20px; }
+ .dashboard-alert-callout &gt; span { font-size: 14px; }
+}
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell .topbar { position: sticky; top: 0; right: auto; padding: 12px 16px; height: auto; background: var(--liber-canvas); }
+ .app-shell .content { padding-top: 20px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat { padding: 16px; }
+ .metric-icon { position: static; width: 26px; height: 26px; }
+ .app-shell .dashboard-stock-totals strong { font-size: 28px; }
+ .app-shell .dashboard-stock-totals strong small { display: inline; font-size: 12px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat &gt; span:first-of-type { font-size: 12px; }
+ .app-shell .dashboard-detail { display: block; }
+ .app-shell .dashboard-panel { height: auto; min-height: 0; }
+ .app-shell .activity-panel { min-height: 350px; }
+ .app-shell .dashboard-controls { margin-bottom: 18px; }
+ .app-shell .dashboard-alert-callout { margin-top: 16px; }
+}
+.app-shell .activity-chart text { fill: var(--liber-muted); }
+.app-shell .content { width: 100%; margin: 0; }
+.app-shell .activity-panel, .app-shell .dashboard-sales-panel { grid-row: 1; }
+.app-shell .dashboard-replenishment { grid-column: 1 / span 4; grid-row: 2; }
+.app-shell .dashboard-receipts-panel { grid-column: 5 / span 4; grid-row: 2; }
+.app-shell .dashboard-alert-panel { grid-column: 9 / span 4; grid-row: 2; }
+.app-shell .activity-chart { margin-top: 5px; }
+@media(min-width:1600px) { .app-shell .page-heading { margin-bottom: 22px; } }
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) { .app-shell .dashboard-panel { grid-row: auto; grid-column: auto; } }
+.app-shell h1 { color: var(--liber-ink); }
+.app-shell .subtitle { color: var(--liber-ink); }
+.reference-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.app-shell .reference-section-heading button { border: 0; font-size: 12px; padding: 0; background: transparent; }
+@media(min-width:1600px) { .app-shell .brand-light { margin-top: -19px; text-indent: 80px; } }
 </code></pre></details>
-<details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>763 linhas · SHA-256 8023984aa95d2a6f</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+<details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>764 linhas · SHA-256 cc731b732e6e8e43</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
@@ -1043,6 +1191,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [catalog, setCatalog] = useState&lt;Record&lt;string, ProductInfo&gt;&gt;(() =&gt; readSavedDemoData()?.catalog ?? allDemoCatalog)
   const [scanCode, setScanCode] = useState('')
   const scanInputRef = useRef&lt;HTMLInputElement&gt;(null)
+  const accountMenuRef = useRef&lt;HTMLDetailsElement&gt;(null)
   const [scanResult, setScanResult] = useState&lt;(ProductInfo &amp; { code: string }) | null&gt;(null)
   const [scanMessage, setScanMessage] = useState('')
   // useState guarda o texto digitado na busca enquanto a tela está aberta.
@@ -1189,6 +1338,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
   function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
+    accountMenuRef.current?.removeAttribute('open')
     setActivePage(page)
     setScanResult(null)
     setScanMessage('')
@@ -1378,12 +1528,12 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
       &lt;aside className=&quot;sidebar&quot;&gt;
         &lt;a className=&quot;brand&quot; href=&quot;#inicio&quot; aria-label=&quot;LIBER automotive, início&quot; aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() =&gt; changePage('dashboard')}&gt;
           &lt;span className=&quot;brand-mark&quot;&gt;L&lt;/span&gt;
-          &lt;span&gt;LIBER&lt;span className=&quot;brand-light&quot;&gt; automotive&lt;/span&gt;&lt;/span&gt;
+          &lt;span&gt;LIBER&lt;span className=&quot;brand-light&quot;&gt;SOLUÇÕES EM&lt;br/&gt; ESTOQUE AUTOMOTIVO&lt;/span&gt;&lt;/span&gt;
         &lt;/a&gt;
 
         &lt;div className=&quot;sidebar-label&quot;&gt;MÓDULOS&lt;/div&gt;
         &lt;nav className=&quot;sidebar-navigation&quot; aria-label=&quot;Menu principal&quot;&gt;
-        &lt;button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type=&quot;button&quot; aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() =&gt; changePage('dashboard')}&gt;&lt;NavigationIcon name=&quot;dashboard&quot;/&gt; Painel&lt;/button&gt;
+        &lt;button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type=&quot;button&quot; aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() =&gt; changePage('dashboard')}&gt;&lt;NavigationIcon name=&quot;dashboard&quot;/&gt; Painel inicial&lt;/button&gt;
         &lt;button className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type=&quot;button&quot; aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() =&gt; changePage('alerts')}&gt;&lt;NavigationIcon name=&quot;alerts&quot;/&gt; Alertas &lt;span className=&quot;nav-alert-count&quot; aria-label={`${alertCount} produtos em alerta`}&gt;{alertCount}&lt;/span&gt;&lt;/button&gt;
         &lt;button className={`nav-item${activePage === 'products' ? ' active' : ''}`} type=&quot;button&quot; aria-current={activePage === 'products' ? 'page' : undefined} onClick={() =&gt; changePage('products')}&gt;&lt;NavigationIcon name=&quot;products&quot;/&gt; Produtos&lt;/button&gt;
         &lt;button className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type=&quot;button&quot; aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() =&gt; changePage('turnover')}&gt;&lt;NavigationIcon name=&quot;turnover&quot;/&gt; Giro e ABC&lt;/button&gt;
@@ -1410,15 +1560,14 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
         &lt;/nav&gt;
         &lt;div className=&quot;sidebar-bottom&quot;&gt;
-          &lt;span className=&quot;status-dot&quot; /&gt;
-          &lt;span&gt;{dataMode === 'database' ? 'Banco Supabase' : 'Modo de demonstração'}&lt;/span&gt;
+          &lt;span&gt;Estoque que&lt;br/&gt;move o seu negócio.&lt;/span&gt;
         &lt;/div&gt;
       &lt;/aside&gt;
 
       &lt;section className=&quot;main-panel&quot; id=&quot;inicio&quot;&gt;
         &lt;header className=&quot;topbar&quot;&gt;
           &lt;span className=&quot;breadcrumb&quot;&gt;Estoque &lt;span&gt;/&lt;/span&gt; {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}&lt;/span&gt;
-          &lt;div className=&quot;user-chip&quot;&gt;&lt;ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /&gt;&lt;button className=&quot;profile-open-button&quot; type=&quot;button&quot; aria-current={activePage === 'profile' ? 'page' : undefined} onClick={() =&gt; changePage('profile')} aria-label=&quot;Abrir meu perfil&quot; title={displayName}&gt;&lt;span className=&quot;user-avatar&quot;&gt;{displayName.slice(0, 1).toUpperCase()}&lt;/span&gt;&lt;span className=&quot;profile-name-text&quot;&gt;{displayName}&lt;small&gt;Meu perfil&lt;/small&gt;&lt;/span&gt;&lt;/button&gt;&lt;button className=&quot;sign-out-button&quot; type=&quot;button&quot; onClick={onSignOut}&gt;Sair&lt;/button&gt;&lt;/div&gt;
+          &lt;div className=&quot;user-chip&quot;&gt;&lt;button className=&quot;profile-open-button&quot; type=&quot;button&quot; onClick={()=&gt;changePage('profile')} aria-label=&quot;Abrir meu perfil&quot; title={displayName}&gt;&lt;span className=&quot;user-avatar&quot;&gt;&lt;svg width=&quot;28&quot; height=&quot;28&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;1.7&quot; aria-hidden=&quot;true&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M4 21v-2a8 8 0 0 1 16 0v2&quot;/&gt;&lt;/svg&gt;&lt;/span&gt;&lt;span className=&quot;profile-name-text&quot;&gt;{displayName}&lt;/span&gt;&lt;/button&gt;&lt;details ref={accountMenuRef} className=&quot;account-options&quot;&gt;&lt;summary aria-label=&quot;Opções da conta&quot;&gt;⌄&lt;/summary&gt;&lt;div&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('profile')}&gt;Minha conta&lt;/button&gt;&lt;ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/&gt;&lt;button className=&quot;sign-out-button&quot; type=&quot;button&quot; onClick={onSignOut}&gt;Sair&lt;/button&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('springs')}&gt;Molas&lt;/button&gt;&lt;button type=&quot;button&quot; onClick={()=&gt;changePage('turnover')}&gt;Giro e ABC&lt;/button&gt;&lt;/div&gt;&lt;/details&gt;&lt;/div&gt;
           &lt;label className=&quot;mobile-module-menu&quot;&gt;Ir para
             &lt;select aria-label=&quot;Escolher módulo&quot; value={activePage} onChange={event =&gt; changePage(event.target.value as typeof activePage)}&gt;
               &lt;option value=&quot;dashboard&quot;&gt;Painel&lt;/option&gt;&lt;option value=&quot;alerts&quot;&gt;Alertas ({alertCount})&lt;/option&gt;
@@ -1831,7 +1980,7 @@ export function ExportCsvButton({ name, headers, rows, disabled = false }: {
   &lt;/div&gt;
 }
 </code></pre></details>
-<details id="file-11" class="file"><summary>src/components/InventoryActivity.tsx</summary><p>Consulta e desenha a série diária real; período, série, controle de dia e tabela permitem conferir os valores.</p><p><strong>Funções para localizar:</strong> ActivityChart, InventoryActivity.</p><p>44 linhas · SHA-256 823e9ea15aa5dcf8</p><pre><code>import { useEffect, useState } from 'react'
+<details id="file-11" class="file"><summary>src/components/InventoryActivity.tsx</summary><p>Consulta e desenha a série diária real; período, série, controle de dia e tabela permitem conferir os valores.</p><p><strong>Funções para localizar:</strong> ActivityChart, InventoryActivity.</p><p>45 linhas · SHA-256 c7901e68eb883ac9</p><pre><code>import { useEffect, useState } from 'react'
 import { loadActivity, type ActivityDay } from '../lib/activity-api'
 import type { DashboardCategory } from '../lib/dashboard-api'
 const date = (day: string) =&gt; new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' }).format(new Date(day+'T12:00:00Z'))
@@ -1845,22 +1994,23 @@ export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
   const points = rows.map((row,index)=&gt;`${20+index/Math.max(1,rows.length-1)*560},${150-row[series]/maximum*120}`).join(' ')
   const title = series === 'sold_boxes' ? 'Vendas' : 'Entradas'
   return &lt;&gt;
-    &lt;label className=&quot;activity-filter&quot;&gt;Mostrar&lt;select aria-label=&quot;Série do gráfico&quot; value={series} onChange={event=&gt;setSeries(event.target.value as typeof series)}&gt;&lt;option value=&quot;sold_boxes&quot;&gt;Vendas&lt;/option&gt;&lt;option value=&quot;received_boxes&quot;&gt;Entradas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-    &lt;label className=&quot;activity-filter&quot;&gt;Visualização&lt;select aria-label=&quot;Visualização do gráfico&quot; value={chartType} onChange={event=&gt;setChartType(event.target.value as typeof chartType)}&gt;&lt;option value=&quot;bars&quot;&gt;Barras&lt;/option&gt;&lt;option value=&quot;line&quot;&gt;Linhas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
-    &lt;p&gt;{rows.reduce((sum,row)=&gt;sum+row[series],0)} caixas · {title.toLowerCase()} no período selecionado.&lt;/p&gt;
     &lt;svg className=&quot;activity-chart&quot; viewBox=&quot;0 0 600 180&quot; role=&quot;img&quot; aria-label={`${title} em caixas por dia; os valores também estão na tabela abaixo`}&gt;
-      &lt;path d=&quot;M20 25V150H580&quot; stroke=&quot;currentColor&quot; fill=&quot;none&quot; opacity=&quot;.3&quot; /&gt;
+      {[...new Set([0,1,2,3,4].map(n=&gt;Math.round(maximum*n/4)))].map(n=&gt;&lt;g key={n}&gt;&lt;path d={`M40 ${150-n/maximum*120}H580`} stroke=&quot;currentColor&quot; opacity=&quot;.12&quot;/&gt;&lt;text x=&quot;30&quot; y={154-n/maximum*120} textAnchor=&quot;end&quot; fill=&quot;currentColor&quot; fontSize=&quot;11&quot;&gt;{n}&lt;/text&gt;&lt;/g&gt;)}
+      &lt;path d=&quot;M40 25V150H580&quot; stroke=&quot;currentColor&quot; fill=&quot;none&quot; opacity=&quot;.3&quot; /&gt;
       &lt;text x=&quot;20&quot; y=&quot;18&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{maximum} cx.&lt;/text&gt;
-      {chartType==='line'?&lt;polyline points={points} fill=&quot;none&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;3&quot; strokeLinejoin=&quot;round&quot; /&gt;:rows.map((row,index)=&gt;&lt;rect key={row.day} x={20+index/rows.length*560+2} y={150-row[series]/maximum*120} width={Math.max(1,560/rows.length-4)} height={row[series]/maximum*120} rx=&quot;3&quot; fill=&quot;currentColor&quot;&gt;&lt;title&gt;{date(row.day)}: {row[series]} caixas&lt;/title&gt;&lt;/rect&gt;)}
+      {chartType==='line'?&lt;polyline points={points} fill=&quot;none&quot; stroke=&quot;currentColor&quot; strokeWidth=&quot;3&quot; strokeLinejoin=&quot;round&quot; /&gt;:rows.map((row,index)=&gt;&lt;rect key={row.day} x={45+index/rows.length*535+4} y={150-row[series]/maximum*120} width={Math.max(1,535/rows.length-8)} height={row[series]/maximum*120} rx=&quot;3&quot; fill=&quot;currentColor&quot;&gt;&lt;title&gt;{date(row.day)}: {row[series]} caixas&lt;/title&gt;&lt;/rect&gt;)}
       {current &amp;&amp; chartType==='line' &amp;&amp; &lt;circle cx={20+Math.min(selected,rows.length-1)/Math.max(1,rows.length-1)*560} cy={150-current[series]/maximum*120} r=&quot;5&quot; fill=&quot;currentColor&quot; /&gt;}
-      {rows.length&gt;0 &amp;&amp; &lt;&gt;&lt;text x=&quot;20&quot; y=&quot;174&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{date(rows[0].day)}&lt;/text&gt;&lt;text x=&quot;580&quot; y=&quot;174&quot; textAnchor=&quot;end&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{date(rows.at(-1)!.day)}&lt;/text&gt;&lt;/&gt;}
+      {rows.length&gt;0 &amp;&amp; (rows.length&lt;=7?rows.map((row,index)=&gt;&lt;text key={row.day} x={45+(index+.5)/rows.length*535} y=&quot;170&quot; textAnchor=&quot;middle&quot; fill=&quot;currentColor&quot; fontSize=&quot;11&quot;&gt;{date(row.day)}&lt;/text&gt;):&lt;&gt;&lt;text x=&quot;40&quot; y=&quot;174&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{date(rows[0].day)}&lt;/text&gt;&lt;text x=&quot;580&quot; y=&quot;174&quot; textAnchor=&quot;end&quot; fill=&quot;currentColor&quot; fontSize=&quot;12&quot;&gt;{date(rows.at(-1)!.day)}&lt;/text&gt;&lt;/&gt;)}
     &lt;/svg&gt;
 
-    &lt;details className=&quot;activity-values&quot;&gt;&lt;summary&gt;Ver tabela de valores&lt;/summary&gt;{current &amp;&amp; &lt;label className=&quot;activity-day&quot;&gt;Consultar dia&lt;input aria-label=&quot;Dia do gráfico&quot; type=&quot;range&quot; min=&quot;0&quot; max={rows.length-1} value={Math.min(selected,rows.length-1)} onChange={event=&gt;setSelected(Number(event.target.value))}/&gt;&lt;output aria-live=&quot;polite&quot;&gt;{date(current.day)}: {current[series]} caixas&lt;/output&gt;&lt;/label&gt;}&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Vendas (cx.)&lt;/th&gt;&lt;th&gt;Entradas (cx.)&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{rows.map(row=&gt;&lt;tr key={row.day}&gt;&lt;td&gt;{date(row.day)}&lt;/td&gt;&lt;td&gt;{row.sold_boxes}&lt;/td&gt;&lt;td&gt;{row.received_boxes}&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;&lt;/table&gt;&lt;/details&gt;
+    &lt;details className=&quot;activity-values&quot;&gt;&lt;summary&gt;Ver tabela de valores&lt;/summary&gt;    &lt;label className=&quot;activity-filter&quot;&gt;Mostrar&lt;select aria-label=&quot;Série do gráfico&quot; value={series} onChange={event=&gt;setSeries(event.target.value as typeof series)}&gt;&lt;option value=&quot;sold_boxes&quot;&gt;Vendas&lt;/option&gt;&lt;option value=&quot;received_boxes&quot;&gt;Entradas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;label className=&quot;activity-filter&quot;&gt;Visualização&lt;select aria-label=&quot;Visualização do gráfico&quot; value={chartType} onChange={event=&gt;setChartType(event.target.value as typeof chartType)}&gt;&lt;option value=&quot;bars&quot;&gt;Barras&lt;/option&gt;&lt;option value=&quot;line&quot;&gt;Linhas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;p&gt;{rows.reduce((sum,row)=&gt;sum+row[series],0)} caixas · {title.toLowerCase()} no período selecionado.&lt;/p&gt;
+{current &amp;&amp; &lt;label className=&quot;activity-day&quot;&gt;Consultar dia&lt;input aria-label=&quot;Dia do gráfico&quot; type=&quot;range&quot; min=&quot;0&quot; max={rows.length-1} value={Math.min(selected,rows.length-1)} onChange={event=&gt;setSelected(Number(event.target.value))}/&gt;&lt;output aria-live=&quot;polite&quot;&gt;{date(current.day)}: {current[series]} caixas&lt;/output&gt;&lt;/label&gt;}&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Dia&lt;/th&gt;&lt;th&gt;Vendas (cx.)&lt;/th&gt;&lt;th&gt;Entradas (cx.)&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{rows.map(row=&gt;&lt;tr key={row.day}&gt;&lt;td&gt;{date(row.day)}&lt;/td&gt;&lt;td&gt;{row.sold_boxes}&lt;/td&gt;&lt;td&gt;{row.received_boxes}&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;&lt;/table&gt;&lt;/details&gt;
   &lt;/&gt;
 }
 export function InventoryActivity({ category, revision }: { category: DashboardCategory; revision: number }) {
-  const [days,setDays] = useState(30)
+  const [days,setDays] = useState(7)
   const key = `${category}:${days}:${revision}`
   const [result,setResult] = useState&lt;{key:string;rows:ActivityDay[];error:string}&gt;({key:'',rows:[],error:''})
   useEffect(()=&gt;{
@@ -1869,8 +2019,8 @@ export function InventoryActivity({ category, revision }: { category: DashboardC
     return ()=&gt;{current=false}
   },[category,days,key])
   return &lt;section className=&quot;inventory-panel dashboard-panel activity-panel&quot; aria-label=&quot;Atividade diária&quot;&gt;
-    &lt;h2&gt;Atividade diária&lt;/h2&gt;&lt;p&gt;Dias do calendário na Bahia, incluindo hoje, que ainda pode estar incompleto. Somente movimentos registrados; transferências e garantia ficam fora.&lt;/p&gt;
-    &lt;label className=&quot;activity-filter&quot;&gt;Período&lt;select aria-label=&quot;Período do gráfico&quot; value={days} onChange={event=&gt;setDays(Number(event.target.value))}&gt;&lt;option value={7}&gt;7 dias&lt;/option&gt;&lt;option value={30}&gt;30 dias&lt;/option&gt;&lt;option value={90}&gt;90 dias&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+    &lt;h2&gt;Movimentação de estoque&lt;/h2&gt;&lt;p className=&quot;activity-description&quot;&gt;Dias do calendário na Bahia, incluindo hoje, que ainda pode estar incompleto. Somente movimentos registrados; transferências e garantia ficam fora.&lt;/p&gt;
+    &lt;label className=&quot;activity-filter&quot;&gt;Período&lt;select aria-label=&quot;Período do gráfico&quot; value={days} onChange={event=&gt;setDays(Number(event.target.value))}&gt;&lt;option value={7}&gt;Últimos 7 dias&lt;/option&gt;&lt;option value={30}&gt;Últimos 30 dias&lt;/option&gt;&lt;option value={90}&gt;Últimos 90 dias&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
     {result.key!==key?&lt;p role=&quot;status&quot;&gt;Carregando atividade…&lt;/p&gt;:result.error?&lt;p className=&quot;auth-error&quot; role=&quot;alert&quot;&gt;{result.error}&lt;/p&gt;:&lt;ActivityChart key={key} rows={result.rows}/&gt;}
   &lt;/section&gt;
 }
@@ -1976,29 +2126,33 @@ export function InventoryActivity({ category, revision }: { category: DashboardC
 .dashboard-stat-link, .dashboard-stock-totals strong small { color: #66564b; }
 .theme-dark .dashboard-stat-link, .theme-dark .dashboard-stock-totals strong small { color: #d3beb2; }
 </code></pre></details>
-<details id="file-13" class="file"><summary>src/components/InventoryDashboard.tsx</summary><p>Combina totais atuais e relatórios; blocos são botões e o detalhamento pode ser recolhido no celular.</p><p><strong>Funções para localizar:</strong> DashboardActivity, InventoryDashboard, refresh.</p><p>90 linhas · SHA-256 22b7a2ccc22041da</p><pre><code>import {useEffect,useState} from 'react'
+<details id="file-13" class="file"><summary>src/components/InventoryDashboard.tsx</summary><p>Combina totais atuais e relatórios; blocos são botões e o detalhamento pode ser recolhido no celular.</p><p><strong>Funções para localizar:</strong> MetricIcon, DashboardActivity, InventoryDashboard, refresh.</p><p>95 linhas · SHA-256 08b35a199024d0f3</p><pre><code>import {useEffect,useState} from 'react'
 import type {ProductInfo,StockRow} from '../lib/inventory-api'
 import {loadDashboardReport,type DashboardCategory,type DashboardReport} from '../lib/dashboard-api'
 import {dashboardStockSummary} from '../lib/dashboard-summary'
-import { NavigationIcon } from './NavigationIcon'
+
 import { InventoryActivity } from './InventoryActivity'
 import './InventoryDashboard.css'
 
+function MetricIcon({kind}:{kind:string}) {
+ const paths:Record&lt;string,string&gt;={shock:'M15 5l4-3m-4 3 5 5m-13 8-4 4m4-4-5-5m3 1 8-8 6 6-8 8z M9 9l8 8 M7 12l7 7 M12 6l7 7',spring:'M9 2h8 M7 5l11 3-13 3 13 3-13 3 11 3 M6 23h9',boxes:'M9 2h7v7H9z M1 13h9v9H1z M14 13h9v9h-9z',barcode:'M3 3h18v18H3z M6 6v12 M9 6v12 M13 6v12 M17 6v12'}
+ return &lt;svg className=&quot;metric-icon&quot; viewBox=&quot;0 0 24 24&quot; fill={kind==='boxes'?'currentColor':'none'} stroke=&quot;currentColor&quot; strokeWidth={kind==='spring'?1.7:1.4} strokeLinecap=&quot;round&quot; strokeLinejoin=&quot;round&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d={paths[kind]}/&gt;&lt;/svg&gt;
+}
+
 const dateFormat=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Bahia'})
 
-export function DashboardActivity({report}:{report:DashboardReport}){
+export function DashboardActivity({report,onHistory=()=&gt;{}}:{report:DashboardReport;onHistory?:()=&gt;void}){
   const maximum=Math.max(1,...report.sales_by_product.map((row)=&gt;row.boxes))
   return &lt;div className=&quot;dashboard-columns&quot;&gt;
-    &lt;section className=&quot;inventory-panel dashboard-panel dashboard-sales-panel&quot; aria-labelledby=&quot;dashboard-sales-title&quot;&gt;&lt;h2 id=&quot;dashboard-sales-title&quot;&gt;Vendas por código · últimos 30 dias&lt;/h2&gt;
+    &lt;section className=&quot;inventory-panel dashboard-panel dashboard-sales-panel&quot; aria-labelledby=&quot;dashboard-sales-title&quot;&gt;&lt;h2 id=&quot;dashboard-sales-title&quot;&gt;Vendas por código&lt;/h2&gt;
       &lt;p&gt;{report.sold_boxes} {report.sold_boxes===1?'caixa vendida':'caixas vendidas'} em {report.sales_count} {report.sales_count===1?'registro de venda':'registros de venda'}.&lt;/p&gt;
       &lt;p&gt;Período: {dateFormat.format(new Date(report.period_start))} até {dateFormat.format(new Date(report.as_of))}. Até 10 códigos com mais caixas vendidas.&lt;/p&gt;
       {!report.sales_by_product.length?&lt;p className=&quot;dashboard-empty&quot;&gt;Nenhuma venda registrada neste período e categoria.&lt;/p&gt;:&lt;table className=&quot;dashboard-sales-table&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Produto&lt;/th&gt;&lt;th&gt;Caixas vendidas&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;{report.sales_by_product.map((row)=&gt;&lt;tr key={row.code}&gt;&lt;td&gt;{row.code}&lt;/td&gt;&lt;td&gt;&lt;span className=&quot;dashboard-bar-track&quot; aria-hidden=&quot;true&quot;&gt;&lt;span style={{width:`${row.boxes/maximum*100}%`}}/&gt;&lt;/span&gt;&lt;strong&gt;{row.boxes}&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;)}&lt;/tbody&gt;&lt;/table&gt;}
       &lt;p className=&quot;dashboard-footnote&quot;&gt;Transferências, descartes e devoluções não entram na contagem de vendas.&lt;/p&gt;
     &lt;/section&gt;
-    &lt;section className=&quot;inventory-panel dashboard-panel dashboard-receipts-panel&quot; aria-labelledby=&quot;dashboard-receipts-title&quot;&gt;&lt;h2 id=&quot;dashboard-receipts-title&quot;&gt;Entradas recentes&lt;/h2&gt;&lt;p&gt;Últimos 10 recebimentos da categoria selecionada, independentemente do período de vendas.&lt;/p&gt;
+    &lt;section className=&quot;inventory-panel dashboard-panel dashboard-receipts-panel&quot; aria-labelledby=&quot;dashboard-receipts-title&quot;&gt;&lt;div className=&quot;reference-section-heading&quot;&gt;&lt;h2 id=&quot;dashboard-receipts-title&quot;&gt;Entradas recentes&lt;/h2&gt;&lt;button type=&quot;button&quot; className=&quot;theme-toggle&quot; onClick={onHistory}&gt;Ver todas →&lt;/button&gt;&lt;/div&gt;&lt;p&gt;Últimos 10 recebimentos da categoria selecionada, independentemente do período de vendas.&lt;/p&gt;
       {!report.receipts.length?&lt;p className=&quot;dashboard-empty&quot;&gt;Nenhum recebimento registrado nesta categoria.&lt;/p&gt;:&lt;ol className=&quot;dashboard-receipt-list&quot;&gt;{report.receipts.map((row)=&gt;&lt;li key={row.id}&gt;
-        &lt;div&gt;&lt;strong&gt;{row.code}&lt;/strong&gt;&lt;span&gt;{row.boxes} {row.boxes===1?'caixa':'caixas'} · {row.location??'Local não informado'}&lt;/span&gt;&lt;/div&gt;&lt;time dateTime={row.created_at}&gt;{dateFormat.format(new Date(row.created_at))}&lt;/time&gt;
-        &lt;p&gt;Fornecedor: {row.supplier??'Não informado'} · Lote: {row.lot??'Não informado'}&lt;/p&gt;
+        &lt;time dateTime={row.created_at}&gt;{new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia'}).format(new Date(row.created_at))}&lt;/time&gt;&lt;strong&gt;{row.code}&lt;/strong&gt;&lt;b&gt;+ {row.boxes}&lt;/b&gt;&lt;p className=&quot;receipt-meta&quot;&gt;Fornecedor: {row.supplier??'Não informado'} · Lote: {row.lot??'Não informado'} · Local: {row.location??'—'}&lt;/p&gt;
       &lt;/li&gt;)}&lt;/ol&gt;}
     &lt;/section&gt;
   &lt;/div&gt;
@@ -2037,10 +2191,10 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
     &lt;div className=&quot;page-heading&quot;&gt;&lt;div&gt;&lt;p className=&quot;eyebrow&quot;&gt;VISÃO GERAL&lt;/p&gt;&lt;h1&gt;Painel inicial&lt;/h1&gt;&lt;p className=&quot;subtitle&quot;&gt;Acompanhe seu estoque, movimentações e principais indicadores.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;
     {!ready?&lt;section className=&quot;inventory-panel dashboard-panel&quot;&gt;&lt;p role=&quot;status&quot;&gt;O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.&lt;/p&gt;&lt;button className=&quot;add-product-button&quot; type=&quot;button&quot; onClick={()=&gt;onOpen('inventory')}&gt;Consultar amortecedores&lt;/button&gt;&lt;button className=&quot;theme-toggle&quot; type=&quot;button&quot; onClick={()=&gt;onOpen('springs')}&gt;Consultar molas&lt;/button&gt;&lt;/section&gt;:&lt;&gt;
       &lt;section className=&quot;dashboard-stock-totals&quot; aria-label=&quot;Total de caixas por categoria&quot;&gt;
-        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('inventory')}&gt;&lt;NavigationIcon name=&quot;inventory&quot;/&gt;&lt;span&gt;Amortecedores&lt;/span&gt;&lt;strong&gt;{shockBoxes}&lt;small&gt; caixas&lt;/small&gt;&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Consultar estoque &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
-        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('springs')}&gt;&lt;NavigationIcon name=&quot;springs&quot;/&gt;&lt;span&gt;Molas&lt;/span&gt;&lt;strong&gt;{springBoxes}&lt;small&gt; caixas&lt;/small&gt;&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Consultar estoque &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
-        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat dashboard-stat-total&quot; onClick={()=&gt;onOpen('stock')}&gt;&lt;NavigationIcon name=&quot;inventory&quot;/&gt;&lt;span&gt;Total no estoque normal&lt;/span&gt;&lt;strong&gt;{shockBoxes+springBoxes}&lt;small&gt; caixas&lt;/small&gt;&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Amortecedores + molas · sem garantia &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
-        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat dashboard-stat-products&quot; onClick={()=&gt;onOpen('products')}&gt;&lt;NavigationIcon name=&quot;products&quot;/&gt;&lt;span&gt;Produtos cadastrados&lt;/span&gt;&lt;strong&gt;{Object.keys(catalog).length}&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Abrir catálogo de produtos &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('inventory')}&gt;&lt;MetricIcon kind=&quot;shock&quot;/&gt;&lt;span&gt;Amortecedores&lt;/span&gt;&lt;strong&gt;{shockBoxes}&lt;small&gt; caixas&lt;/small&gt;&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Consultar estoque &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('springs')}&gt;&lt;MetricIcon kind=&quot;spring&quot;/&gt;&lt;span&gt;Molas&lt;/span&gt;&lt;strong&gt;{springBoxes}&lt;small&gt; caixas&lt;/small&gt;&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Consultar estoque &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat dashboard-stat-total&quot; onClick={()=&gt;onOpen('stock')}&gt;&lt;MetricIcon kind=&quot;boxes&quot;/&gt;&lt;span&gt;Total em estoque&lt;/span&gt;&lt;strong&gt;{shockBoxes+springBoxes}&lt;small&gt; caixas&lt;/small&gt;&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Amortecedores + molas · sem garantia &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
+        &lt;button type=&quot;button&quot; className=&quot;dashboard-stat dashboard-stat-products&quot; onClick={()=&gt;onOpen('products')}&gt;&lt;MetricIcon kind=&quot;barcode&quot;/&gt;&lt;span&gt;Produtos cadastrados&lt;/span&gt;&lt;strong&gt;{Object.keys(catalog).length}&lt;/strong&gt;&lt;span className=&quot;dashboard-stat-link&quot;&gt;Abrir catálogo de produtos &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/span&gt;&lt;/button&gt;
       &lt;/section&gt;
       &lt;section className=&quot;dashboard-shortcuts&quot; aria-label=&quot;Atalhos de trabalho&quot;&gt;
         &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('alerts')}&gt;&lt;span&gt;Alertas&lt;/span&gt;&lt;strong&gt;{summary.alerts.length}&lt;/strong&gt;&lt;small&gt;Conferir reposição →&lt;/small&gt;&lt;/button&gt;
@@ -2049,18 +2203,19 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       &lt;/section&gt;
       &lt;button type=&quot;button&quot; className=&quot;dashboard-expand theme-toggle&quot; aria-expanded={expanded} aria-controls=&quot;dashboard-detail&quot; onClick={()=&gt;setExpanded(value=&gt;!value)}&gt;{expanded?'Resumir painel':'Ver indicadores e atividade'}&lt;/button&gt;
       &lt;div id=&quot;dashboard-detail&quot; className={`dashboard-detail${expanded?' is-expanded':''}`}&gt;
-      &lt;div className=&quot;dashboard-tools&quot;&gt;&lt;label&gt;Filtrar indicadores&lt;select value={category} disabled={refreshing} onChange={(event)=&gt;setCategory(event.target.value as DashboardCategory)}&gt;&lt;option value=&quot;all&quot;&gt;Amortecedores e molas&lt;/option&gt;&lt;option value=&quot;shocks&quot;&gt;Amortecedores&lt;/option&gt;&lt;option value=&quot;springs&quot;&gt;Molas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;button className=&quot;theme-toggle&quot; type=&quot;button&quot; disabled={refreshing||loading} onClick={()=&gt;void refresh()}&gt;{refreshing?'Atualizando…':'Atualizar painel'}&lt;/button&gt;&lt;/div&gt;
+      &lt;details className=&quot;dashboard-controls&quot;&gt;&lt;summary&gt;Filtros do painel&lt;/summary&gt;&lt;div className=&quot;dashboard-tools&quot;&gt;&lt;label&gt;Filtrar indicadores&lt;select value={category} disabled={refreshing} onChange={(event)=&gt;setCategory(event.target.value as DashboardCategory)}&gt;&lt;option value=&quot;all&quot;&gt;Amortecedores e molas&lt;/option&gt;&lt;option value=&quot;shocks&quot;&gt;Amortecedores&lt;/option&gt;&lt;option value=&quot;springs&quot;&gt;Molas&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;button className=&quot;theme-toggle&quot; type=&quot;button&quot; disabled={refreshing||loading} onClick={()=&gt;void refresh()}&gt;{refreshing?'Atualizando…':'Atualizar painel'}&lt;/button&gt;&lt;/div&gt;&lt;/details&gt;
       {refreshError&amp;&amp;&lt;p className=&quot;dashboard-error auth-error&quot; role=&quot;alert&quot;&gt;{refreshError}&lt;/p&gt;}
       &lt;section className=&quot;dashboard-totals&quot; aria-label=&quot;Resumo do estoque normal&quot;&gt;
         &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen(stockPage)}&gt;&lt;span&gt;Caixas na seleção&lt;/span&gt;&lt;strong&gt;{summary.boxes}&lt;/strong&gt;&lt;small&gt;Consultar estoque ↗&lt;/small&gt;&lt;/button&gt;&lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('products')}&gt;&lt;span&gt;Produtos cadastrados&lt;/span&gt;&lt;strong&gt;{summary.products}&lt;/strong&gt;&lt;small&gt;Abrir catálogo de produtos ↗&lt;/small&gt;&lt;/button&gt;
         &lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('alerts')}&gt;&lt;span&gt;Produtos sem estoque&lt;/span&gt;&lt;strong&gt;{summary.zeros}&lt;/strong&gt;&lt;small&gt;Consultar alertas ↗&lt;/small&gt;&lt;/button&gt;&lt;button type=&quot;button&quot; className=&quot;dashboard-stat&quot; onClick={()=&gt;onOpen('alerts')}&gt;&lt;span&gt;No mínimo ou abaixo&lt;/span&gt;&lt;strong&gt;{summary.low}&lt;/strong&gt;&lt;small&gt;Consultar alertas ↗&lt;/small&gt;&lt;/button&gt;
       &lt;/section&gt;
-      &lt;section className={`inventory-panel dashboard-panel dashboard-alert-panel${summary.alerts.length?' has-alerts':''}`} aria-labelledby=&quot;dashboard-alerts-title&quot;&gt;&lt;div className=&quot;dashboard-alert-heading&quot;&gt;&lt;div&gt;&lt;span className=&quot;dashboard-section-label&quot;&gt;Reposição&lt;/span&gt;&lt;h2 id=&quot;dashboard-alerts-title&quot;&gt;{summary.alerts.length?`${summary.alerts.length} produtos precisam de atenção`:'Estoque dentro dos limites'}&lt;/h2&gt;&lt;/div&gt;&lt;button type=&quot;button&quot; className=&quot;theme-toggle&quot; onClick={()=&gt;onOpen('alerts')}&gt;Ver todos os alertas &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/button&gt;&lt;/div&gt;&lt;p&gt;Estoque normal de todas as localizações. Amortecedores aguardando teste entram no total.&lt;/p&gt;
+      &lt;section className=&quot;inventory-panel dashboard-panel dashboard-replenishment&quot; aria-label=&quot;Reposição&quot;&gt;&lt;h2&gt;Reposição&lt;/h2&gt;{summary.alerts.length?summary.alerts.slice(0,2).map(row=&gt;&lt;div className=&quot;replenishment-row&quot; key={row.code}&gt;&lt;div&gt;&lt;strong&gt;{row.code}&lt;/strong&gt;&lt;span&gt;{row.total} de {row.minimum??'—'} (mínimo)&lt;/span&gt;&lt;/div&gt;&lt;div className=&quot;replenishment-meter&quot;&gt;&lt;meter min={0} max={Math.max(1,row.minimum??1)} value={row.total} aria-label={`Estoque de ${row.code} em relação ao mínimo`}/&gt;&lt;strong&gt;{row.minimum?Math.round(row.total/row.minimum*100)+'%':'—'}&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;):&lt;p&gt;Nenhum produto necessita reposição.&lt;/p&gt;}&lt;/section&gt;
+      &lt;section className={`inventory-panel dashboard-panel dashboard-alert-panel${summary.alerts.length?' has-alerts':''}`} aria-labelledby=&quot;dashboard-alerts-title&quot;&gt;&lt;div className=&quot;dashboard-alert-heading&quot;&gt;&lt;div&gt;&lt;h2 id=&quot;dashboard-alerts-title&quot;&gt;Alertas de reposição&lt;/h2&gt;&lt;/div&gt;&lt;button type=&quot;button&quot; className=&quot;theme-toggle&quot; onClick={()=&gt;onOpen('alerts')}&gt;Ver todos os alertas &lt;span aria-hidden=&quot;true&quot;&gt;→&lt;/span&gt;&lt;/button&gt;&lt;/div&gt;&lt;div className=&quot;dashboard-alert-callout&quot;&gt;&lt;strong&gt;{summary.alerts.length?`${summary.alerts.length} produtos no limite mínimo`:'Estoque dentro dos limites'}&lt;/strong&gt;&lt;span&gt;{summary.alerts.length?'Faça a reposição para evitar falta em estoque.':'Nenhuma reposição pendente nesta consulta.'}&lt;/span&gt;&lt;/div&gt;
         {!summary.alerts.length?&lt;p&gt;Nenhum produto zerado ou no limite configurado nesta consulta.&lt;/p&gt;:&lt;ul className=&quot;dashboard-alert-list&quot;&gt;{summary.alerts.slice(0,6).map((row)=&gt;&lt;li key={row.code}&gt;&lt;strong&gt;{row.code}&lt;/strong&gt;&lt;span&gt;{row.severity==='zero'?'Sem estoque':`${row.total} caixas · mínimo ${row.minimum}`}&lt;/span&gt;&lt;/li&gt;)}&lt;/ul&gt;}
         {summary.alerts.length&gt;6&amp;&amp;&lt;p&gt;Prévia de 6 dos {summary.alerts.length} alertas. Consulte os estoques para ver todos.&lt;/p&gt;}
       &lt;/section&gt;
       {activityReady &amp;&amp; &lt;InventoryActivity category={category} revision={revision}/&gt;}
-      {loading?&lt;p className=&quot;dashboard-message&quot; role=&quot;status&quot;&gt;Carregando vendas e recebimentos…&lt;/p&gt;:result.error?&lt;p className=&quot;dashboard-error auth-error&quot; role=&quot;alert&quot;&gt;{result.error}&lt;/p&gt;:result.report&amp;&amp;&lt;&gt;&lt;p className=&quot;dashboard-message&quot;&gt;Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.&lt;/p&gt;&lt;DashboardActivity report={result.report}/&gt;&lt;/&gt;}
+      {loading?&lt;p className=&quot;dashboard-message&quot; role=&quot;status&quot;&gt;Carregando vendas e recebimentos…&lt;/p&gt;:result.error?&lt;p className=&quot;dashboard-error auth-error&quot; role=&quot;alert&quot;&gt;{result.error}&lt;/p&gt;:result.report&amp;&amp;&lt;&gt;&lt;p className=&quot;dashboard-message&quot;&gt;Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.&lt;/p&gt;&lt;DashboardActivity report={result.report} onHistory={()=&gt;onOpen('history')}/&gt;&lt;/&gt;}
       &lt;/div&gt;
     &lt;/&gt;}
   &lt;/&gt;
@@ -7645,7 +7800,7 @@ URL.createObjectURL=originalCreate;URL.revokeObjectURL=originalRevoke
 delete globalThis.document;delete globalThis.window
 console.log('OK: CSV com acentos, separador, aspas, linhas, decimais, valores vazios, proteção de fórmulas e limpeza do download. Sem rede/banco.')
 </code></pre></details>
-<details id="file-99" class="file"><summary>scripts/check-dashboard.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>62 linhas · SHA-256 7a9b473df79ea4f7</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-99" class="file"><summary>scripts/check-dashboard.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>62 linhas · SHA-256 e8d96dfd87160fbb</p><pre><code>import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
 import React from 'react'
@@ -7700,7 +7855,7 @@ const readyPanel=renderToStaticMarkup(React.createElement(InventoryDashboard,{ca
 assert(readyPanel.includes('Total de caixas por categoria'))
 assert(readyPanel.includes('Amortecedores&lt;/span&gt;&lt;strong&gt;5'))
 assert(readyPanel.includes('Molas&lt;/span&gt;&lt;strong&gt;4'))
-assert(readyPanel.includes('Total no estoque normal&lt;/span&gt;&lt;strong&gt;9'))
+assert(readyPanel.includes('Total em estoque&lt;/span&gt;&lt;strong&gt;9'))
 assert(readyPanel.includes('Abrir catálogo de produtos'))
 assert(readyPanel.includes('Ver todos os alertas'))
 assert(readyPanel.includes('dashboard-alert-panel has-alerts'))
@@ -8448,13 +8603,16 @@ console.log('Laboratório isolado: http://127.0.0.1:5180/tests/outflow-lab/index
 console.log('Sem .env, login, Supabase ou saldos reais. Dados apagados ao encerrar.')
 for(const signal of ['SIGINT','SIGTERM']) process.once(signal,async()=&gt;{await server.close();process.exit(0)})
 </code></pre></details>
-<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>143 linhas · SHA-256 76145850559147f1</p><pre><code>import { test, expect, type Page } from '@playwright/test'
+<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>151 linhas · SHA-256 d752a9bbb3883b35</p><pre><code>import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 async function navigate(page: Page, name: string) {
   const modules: Record&lt;string,string&gt; = {'Painel':'dashboard','Produtos':'products','Giro e ABC':'turnover','Visão geral':'inventory','Garantia':'warranty','Molas':'springs','Saídas':'outflow','Histórico':'history','Aplicações':'catalog'}
   if ((page.viewportSize()?.width ?? 1440) &lt;= 1024) await page.getByLabel('Escolher módulo').selectOption(modules[name])
-  else await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name, exact: true }).click()
+  else if (name==='Molas'||name==='Giro e ABC') {
+    await page.getByLabel('Opções da conta').click()
+    await page.locator('.account-options').getByRole('button',{name,exact:true}).click()
+  } else await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name: name==='Painel'?'Painel inicial':name, exact: true }).click()
 }
 
 // Todas as chamadas ao Supabase são interceptadas: nenhuma conta ou estoque real.
@@ -8463,7 +8621,7 @@ const session = { access_token: 'test-access-token', refresh_token: 'test-refres
 
 for (const width of [360, 390, 1440]) {
   test(`login, tema e acessibilidade em ${width}px`, async ({ page }) =&gt; {
-    await page.setViewportSize({ width, height: 900 })
+    await page.setViewportSize({ width, height: width===1920?1088:900 })
     await page.route('https://stockflow-test.supabase.co/**', route =&gt; route.fulfill({ status: 400, json: { code: 'invalid_credentials', message: 'Invalid login credentials' } }))
     await page.goto('/')
     await expect(page.getByRole('heading', { name: 'Entrar no sistema' })).toBeVisible()
@@ -8519,8 +8677,8 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Painel inicial' })).toBeVisible()
-  for (const width of [360, 768, 1024, 1440]) {
-    await page.setViewportSize({ width, height: 900 })
+  for (const width of [360, 768, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: width===1920?1088:900 })
     for (const name of ['Produtos', 'Giro e ABC', 'Visão geral', 'Garantia', 'Molas', 'Saídas', 'Histórico', 'Aplicações', 'Painel']) {
       await navigate(page, name)
       await expect(page.locator('#consulta h1')).toBeVisible()
@@ -8541,9 +8699,11 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
         const audit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
         expect(audit.violations.map(v=&gt;({id:v.id,targets:v.nodes.map(n=&gt;n.target)}))).toEqual([])
       }
+      if (name === 'Painel' &amp;&amp; width === 1920) await page.screenshot({path:'/tmp/stockflow-exact-1920.png',fullPage:true,animations:'disabled'})
       if (name === 'Painel' &amp;&amp; width === 1440) {
         await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
         await page.screenshot({path:'/tmp/stockflow-redesign-desktop.png',fullPage:true,animations:'disabled'})
+        if (!(await page.locator('.account-options').getAttribute('open')) &amp;&amp; !(await page.locator('.account-options').evaluate(e=&gt;e.hasAttribute('open')))) await page.getByLabel('Opções da conta').click()
         await page.getByRole('button', {name:'Ativar modo escuro'}).click()
         await page.screenshot({path:'/tmp/stockflow-redesign-dark.png',fullPage:true,animations:'disabled'})
         const darkAudit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
@@ -8555,15 +8715,17 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   }
   await navigate(page, 'Painel')
   await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
+  await page.getByText('Ver tabela de valores',{exact:true}).click()
   await page.getByLabel('Visualização do gráfico').selectOption('line')
   const points = await page.locator('.activity-chart polyline').getAttribute('points')
   await page.getByLabel('Série do gráfico').selectOption('received_boxes')
   await expect(page.locator('.activity-chart polyline')).not.toHaveAttribute('points', points!)
+  await page.getByLabel('Período do gráfico').selectOption('30')
   await page.getByLabel('Período do gráfico').selectOption('7')
   await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
   await page.getByText('Ver tabela de valores', {exact:true}).click()
   await expect(page.locator('.activity-values tbody tr')).toHaveCount(7)
-  await page.getByRole('button', { name: /Total no estoque normal/ }).click()
+  await page.getByRole('button', { name: /Total em estoque/ }).click()
   const download = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Exportar CSV' }).click()
   expect((await download).suggestedFilename()).toMatch(/\.csv$/)
@@ -8586,6 +8748,7 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   expect(transfers).toHaveLength(2)
   expect(transfers[0]).toEqual(transfers[1])
   expect(pageErrors).toEqual([])
+  if (!(await page.getByRole('button',{name:'Sair',exact:true}).isVisible())) await page.getByLabel('Opções da conta').click()
   await page.getByRole('button', { name: 'Sair', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('O serviço não confirmou a saída')
   await expect(page.getByRole('heading', { name: 'Entrar no sistema' })).toBeVisible()

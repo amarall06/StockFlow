@@ -135,3 +135,151 @@ body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSyst
 @media (prefers-reduced-motion: reduce) { .app-shell .dashboard-stat { transform: none !important; } }
 .app-shell .dashboard-detail { align-items: stretch; }
 .app-shell .activity-values .activity-day { padding: 12px 0; }
+/* Composição da referência: cabeçalho contínuo e grade 7/5 + 4/4/4. */
+.app-shell { font-family: Arial, Helvetica, sans-serif; }
+.app-shell .main-panel { position: relative; }
+.app-shell .topbar { position: absolute; top: 18px; right: 28px; height: 44px; padding: 0; background: transparent; border: 0; z-index: 25; }
+.app-shell .breadcrumb { display: none; }
+.app-shell .user-chip { gap: 12px; }
+.app-shell .user-avatar { background: #e8e3dc; color: #302920; width: 34px; height: 34px; }
+.app-shell .profile-name-text { font-size: 18px; }
+.account-options { position: relative; }
+.account-options > summary { cursor: pointer; list-style: none; font-size: 24px; padding: 3px 8px; color: var(--liber-ink); }
+.account-options > summary::-webkit-details-marker { display: none; }
+.account-options > div { position: absolute; right: 0; top: 38px; display: grid; gap: 8px; min-width: 180px; padding: 14px; border: 1px solid var(--liber-line); border-radius: 10px; background: var(--liber-surface); box-shadow: 0 12px 30px #0002; }
+.account-options button { min-height: 38px; padding: 6px 10px; border: 1px solid var(--liber-line); border-radius: 6px; background: var(--liber-surface); color: var(--liber-ink); text-align: left; cursor: pointer; }
+.app-shell .content { max-width: none; padding-top: 26px; }
+.app-shell .page-heading { margin-bottom: 24px; }
+.app-shell .sidebar { position: sticky; top: 0; height: 100dvh; padding-top: 26px; }
+.app-shell .brand { flex-wrap: wrap; gap: 10px 16px; padding: 0 12px; }
+.app-shell .brand-mark { width: 56px; height: 56px; flex-basis: 56px; font-size: 38px; border-radius: 9px; }
+.app-shell .brand > span:last-child { display: contents; font-size: 34px; font-weight: 700; }
+.app-shell .brand-light { display: block; flex: 1 0 100%; width: 100%; text-align: center; color: #c2bbb2; font-size: 14px; font-weight: 400; letter-spacing: .1px; line-height: 1.4; }
+.app-shell .sidebar-label { display: none; }
+.app-shell .sidebar-navigation { margin-top: 28px; gap: 10px; }
+.app-shell .nav-item { font-size: 17px; min-height: 48px; }
+.app-shell .nav-item:nth-child(1) { order: 1; }
+.app-shell .nav-item:nth-child(3) { order: 2; }
+.app-shell .nav-item:has(.nav-icon path[d^='M4 5']) { order: 3; }
+.app-shell .nav-item:has(.nav-icon path[d^='M3 11']) { order: 4; }
+.app-shell .nav-item:has(.nav-icon path[d^='M4 4']) { order: 5; }
+.app-shell .nav-item:nth-child(5) { order: 6; }
+.app-shell .nav-item:nth-child(6) { order: 7; }
+.app-shell .nav-item.nav-alerts { order: 8; background: transparent !important; border: 0 !important; color: #f5ede4 !important; margin: 0; }
+.app-shell .nav-item:nth-child(4), .app-shell .nav-item:nth-child(7) { display: none; }
+.app-shell .sidebar-bottom { margin-top: auto; line-height: 1.5; font-size: 17px; color: #b3aaa0; }
+.app-shell .dashboard-stock-totals .dashboard-stat-link { display: none; }
+.metric-icon { position: absolute; width: 50px; height: 64px; top: 30px; left: 24px; color: #d97735; }
+.app-shell .dashboard-stock-totals .dashboard-stat { padding: 24px 16px 22px 100px; min-height: 146px; }
+.app-shell .dashboard-stock-totals strong { font-size: 42px; line-height: 1; }
+.app-shell .dashboard-stock-totals strong small { display: block; margin-top: 4px; font-size: 17px; }
+.app-shell .dashboard-stock-totals .dashboard-stat > span:first-of-type { font-size: 16px; font-weight: 500; }
+.app-shell .dashboard-detail { grid-template-columns: repeat(12,minmax(0,1fr)); gap: 24px; }
+.app-shell .dashboard-detail .dashboard-controls { grid-column: 1/-1; order: 8; font-size: 12px; color: var(--liber-muted); }
+.dashboard-controls summary { cursor: pointer; }
+.app-shell .activity-panel { position: relative; grid-column: span 7; min-width: 0; height: 350px; }
+.app-shell .dashboard-sales-panel { position: relative; grid-column: span 5; height: 350px; }
+.app-shell .dashboard-sales-panel > h2 { padding-right: 70px; }
+.app-shell .dashboard-sales-panel > h2::after { content: 'Últimos 30 dias'; position: absolute; right: 24px; top: 30px; font-size: 12px; font-weight: 400; }
+.app-shell .dashboard-sales-panel > p:not(.dashboard-empty) { display: none; }
+.app-shell .dashboard-detail .dashboard-totals { display: none; }
+.app-shell .dashboard-replenishment { grid-column: span 4; order: 3; min-height: 270px; margin: 0; }
+.app-shell .dashboard-receipts-panel { grid-column: span 4; order: 3; min-height: 270px; }
+.app-shell .dashboard-alert-panel { grid-column: span 4; order: 3; min-height: 270px; border-left: 1px solid var(--liber-line) !important; }
+.app-shell .dashboard-alert-heading h2 { font-size: 18px; }
+.app-shell .dashboard-alert-heading .theme-toggle { font-size: 0; padding: 5px; border: 0; }
+.app-shell .dashboard-alert-heading .theme-toggle::before { content: 'Ver todas →'; font-size: 12px; }
+.app-shell .dashboard-alert-heading .theme-toggle > span { display: none; }
+.dashboard-alert-callout { display: grid; gap: 8px; padding: 16px; margin-top: 24px; background: var(--liber-soft); border-radius: 9px; font-size: 13px; }
+.dashboard-alert-callout > span { font-size: 11px; }
+.app-shell .dashboard-alert-list { display: grid; gap: 0; margin-top: 12px; }
+.app-shell .dashboard-alert-list li { display: flex; justify-content: space-between; gap: 8px; padding: 12px 0; border: 0; border-bottom: 1px solid var(--liber-line); background: transparent; font-size: 12px; }
+.replenishment-row { padding: 26px 0; border-bottom: 1px solid var(--liber-line); }
+.replenishment-row > div { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.replenishment-row > div > span { color: var(--liber-muted); }
+.replenishment-meter { margin-top: 12px; align-items: center; }
+.replenishment-meter meter { flex: 1; height: 20px; min-width: 0; appearance: none; border: 0; background: var(--liber-canvas); border-radius: 8px; }
+.replenishment-meter meter::-webkit-meter-bar { background: var(--liber-canvas); border: 0; border-radius: 8px; }
+.replenishment-meter meter::-webkit-meter-optimum-value { background: linear-gradient(90deg,#e17d38,#eea45f); border-radius: 8px; }
+.replenishment-meter meter::-moz-meter-bar { background: #db7c36; border-radius: 8px; }
+.app-shell .dashboard-receipts-panel > p { display: none; }
+.app-shell .dashboard-receipt-list { gap: 0; margin-top: 24px; }
+.app-shell .dashboard-receipt-list li { display: grid; grid-template-columns: 1.1fr 1fr auto; gap: 8px; padding: 10px 0; align-items: center; font-size: 13px; }
+.app-shell .dashboard-receipt-list time { margin: 0; font-size: 13px; }
+.app-shell .dashboard-receipt-list b { color: var(--liber-accent); }
+.app-shell .dashboard-receipt-list .receipt-meta { display: none; }
+.app-shell .activity-panel h2 { font-size: 20px; padding-right: 130px; }
+.app-shell .activity-panel > .activity-filter { position: absolute; right: 20px; top: 12px; font-size: 0; }
+.app-shell .activity-panel > .activity-filter select { font-size: 12px; border: 0; background: transparent; }
+.app-shell .activity-description { display: none; }
+.app-shell .activity-chart { height: 245px; margin-top: 26px; color: #d77531; }
+.app-shell .activity-chart > text:first-of-type { display: none; }
+.app-shell .activity-values { margin: 0; font-size: 11px; }
+.app-shell .activity-values summary { padding: 0; }
+.app-shell .activity-values[open] { position: relative; z-index: 3; padding: 14px; background: var(--liber-surface); box-shadow: 0 12px 30px #0002; border-radius: 9px; }
+.app-shell .dashboard-sales-table { margin-top: 26px; }
+.app-shell .dashboard-sales-table thead { display: none; }
+.app-shell .dashboard-sales-table td { padding-block: 13px; border: 0; font-size: 16px; }
+.app-shell .dashboard-bar-track { height: 28px; }
+@media(min-width:1600px) {
+ .app-shell { grid-template-columns: 302px minmax(0,1fr); }
+ .app-shell .content { padding: 26px 28px 32px; }
+ .app-shell .brand-mark { width: 70px; height: 68px; flex-basis: 70px; font-size: 48px; }
+ .app-shell .brand > span:last-child { font-size: 44px; }
+ .app-shell .brand-light { font-size: 19px; }
+ .app-shell h1 { font-size: 56px; }
+ .app-shell .eyebrow { font-size: 18px; padding: 7px 15px; margin-bottom: 12px; border-radius: 9px; }
+ .app-shell .subtitle { font-size: 22px; margin-top: 5px; line-height: 1.4; }
+ .app-shell .page-heading { margin-bottom: 26px; }
+ .app-shell .nav-item { min-height: 59px; font-size: 22px; padding-inline: 16px; }
+ .app-shell .nav-item .nav-icon { width: 28px; height: 28px; }
+ .app-shell .sidebar { padding-inline: 17px; }
+ .app-shell .sidebar-navigation { margin-top: 28px; }
+ .app-shell .sidebar-bottom { margin: auto 15px 18px; font-size: 21px; }
+ .app-shell .dashboard-stock-totals { gap: 26px; margin-bottom: 24px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat { padding-left: 145px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat > span:first-of-type { font-size: 20px; }
+ .app-shell .dashboard-stock-totals strong { font-size: 48px; }
+ .app-shell .dashboard-stock-totals strong small { font-size: 20px; }
+ .metric-icon { width: 72px; height: 72px; left: 34px; top: 35px; }
+ .app-shell .dashboard-panel { padding: 26px 28px; }
+ .app-shell .dashboard-panel h2 { font-size: 25px; }
+ .app-shell .activity-panel { height: 348px; }
+ .app-shell .dashboard-sales-panel { height: 348px; }
+ .app-shell .dashboard-replenishment,.app-shell .dashboard-receipts-panel,.app-shell .dashboard-alert-panel { min-height: 314px; }
+ .app-shell .dashboard-sales-table td { font-size: 20px; }
+ .app-shell .dashboard-bar-track { height: 32px; }
+ .replenishment-row > div { font-size: 20px; }
+ .app-shell .dashboard-receipt-list li,.app-shell .dashboard-receipt-list time { font-size: 19px; }
+ .app-shell .dashboard-alert-list li { font-size: 17px; }
+ .dashboard-alert-callout { font-size: 20px; }
+ .dashboard-alert-callout > span { font-size: 14px; }
+}
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) {
+ .app-shell .topbar { position: sticky; top: 0; right: auto; padding: 12px 16px; height: auto; background: var(--liber-canvas); }
+ .app-shell .content { padding-top: 20px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat { padding: 16px; }
+ .metric-icon { position: static; width: 26px; height: 26px; }
+ .app-shell .dashboard-stock-totals strong { font-size: 28px; }
+ .app-shell .dashboard-stock-totals strong small { display: inline; font-size: 12px; }
+ .app-shell .dashboard-stock-totals .dashboard-stat > span:first-of-type { font-size: 12px; }
+ .app-shell .dashboard-detail { display: block; }
+ .app-shell .dashboard-panel { height: auto; min-height: 0; }
+ .app-shell .activity-panel { min-height: 350px; }
+ .app-shell .dashboard-controls { margin-bottom: 18px; }
+ .app-shell .dashboard-alert-callout { margin-top: 16px; }
+}
+.app-shell .activity-chart text { fill: var(--liber-muted); }
+.app-shell .content { width: 100%; margin: 0; }
+.app-shell .activity-panel, .app-shell .dashboard-sales-panel { grid-row: 1; }
+.app-shell .dashboard-replenishment { grid-column: 1 / span 4; grid-row: 2; }
+.app-shell .dashboard-receipts-panel { grid-column: 5 / span 4; grid-row: 2; }
+.app-shell .dashboard-alert-panel { grid-column: 9 / span 4; grid-row: 2; }
+.app-shell .activity-chart { margin-top: 5px; }
+@media(min-width:1600px) { .app-shell .page-heading { margin-bottom: 22px; } }
+@media(max-width:1024px), (pointer:coarse) and (max-width:1366px) { .app-shell .dashboard-panel { grid-row: auto; grid-column: auto; } }
+.app-shell h1 { color: var(--liber-ink); }
+.app-shell .subtitle { color: var(--liber-ink); }
+.reference-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.app-shell .reference-section-heading button { border: 0; font-size: 12px; padding: 0; background: transparent; }
+@media(min-width:1600px) { .app-shell .brand-light { margin-top: -19px; text-indent: 80px; } }
