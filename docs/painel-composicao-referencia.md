@@ -3,7 +3,7 @@
 Topo contínuo, sem barra branca nem breadcrumb, com conta no canto superior direito.
 Marca, tagline e rodapé da navegação seguem a referência. No computador, o menu principal
 mostra a ordem da imagem; Molas e Giro/ABC continuam disponíveis nas opções da conta e
-na lateral compacta do celular. O menu da conta também mantém tema, perfil e saída.
+no menu lateral aberto pelo botão Menu no celular e tablet. O menu da conta também mantém tema, perfil e saída.
 
 Quatro cartões principais usam dados reais e ícones SVG. A grade do painel tem proporção
 7/5 para movimento/vendas e três blocos inferiores: reposição, entradas e alertas.
