@@ -2,9 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 async function navigate(page: Page, name: string) {
-  const modules: Record<string,string> = {'Painel':'dashboard','Produtos':'products','Giro e ABC':'turnover','Visão geral':'inventory','Garantia':'warranty','Molas':'springs','Saídas':'outflow','Histórico':'history','Aplicações':'catalog'}
-  if ((page.viewportSize()?.width ?? 1440) <= 1024) await page.getByLabel('Escolher módulo').selectOption(modules[name])
-  else if (name==='Molas'||name==='Giro e ABC') {
+  if ((page.viewportSize()?.width ?? 1440) > 1024 && (name==='Molas'||name==='Giro e ABC')) {
     await page.getByLabel('Opções da conta').click()
     await page.locator('.account-options').getByRole('button',{name,exact:true}).click()
   } else await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name: name==='Painel'?'Painel inicial':name, exact: true }).click()
@@ -79,21 +77,26 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
       await expect(page.locator('#consulta h1')).toBeVisible()
       await expect(page.getByText('Não foi possível abrir esta tela', { exact: true })).toHaveCount(0)
       if (width <= 1024) {
-        await expect(page.getByLabel('Escolher módulo')).toBeVisible()
+        await expect(page.getByRole('navigation', {name:'Menu principal'})).toBeVisible()
+        const sidebar = await page.locator('.sidebar').boundingBox()
+        const content = await page.locator('.main-panel').boundingBox()
+        expect(sidebar!.x + sidebar!.width).toBeLessThanOrEqual(content!.x + 1)
         expect(await page.getByRole('button', {name:'Abrir meu perfil'}).evaluate(element => element.getBoundingClientRect().top)).toBeLessThan(100)
         if (name === 'Molas') {
           await expect(page.locator('#scan-code')).not.toBeFocused()
           expect(await page.locator('#scan-code').evaluate(element => parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(16)
         }
         if (name === 'Painel') {
-          await expect(page.getByRole('button', {name:'Ver indicadores e atividade'})).toBeVisible()
-          await expect(page.locator('#dashboard-detail')).not.toBeVisible()
+          await expect(page.locator('#dashboard-detail')).toBeVisible()
+          await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
+          await expect(page.getByRole('img', {name:/Vendas por código: zero/})).toBeVisible()
         }
       }
       if (name === 'Painel' && width === 360) {
         const audit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
         expect(audit.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([])
       }
+      if (name === 'Painel' && width === 360) await page.screenshot({path:'/tmp/stockflow-lateral-mobile.png',fullPage:true,animations:'disabled'})
       if (name === 'Painel' && width === 1920) await page.screenshot({path:'/tmp/stockflow-exact-1920.png',fullPage:true,animations:'disabled'})
       if (name === 'Painel' && width === 1440) {
         await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
