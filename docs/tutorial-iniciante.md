@@ -194,3 +194,19 @@ Use apenas os dados fictícios e o banco descartável dos testes.
 
 Quando encontrar algo desconhecido no livro, procure primeiro o arquivo da função importada,
 leia o tipo de entrada e o resultado esperado, e só depois entre no corpo da função.
+
+## Continuação — Entendendo o novo visual
+
+As imagens enviadas guiaram o estilo, mas o site continua sendo composto de controles reais.
+`src/Design.css` concentra cores e dimensões compartilhadas. Uma variável CSS como
+`--liber-surface` é um nome para uma cor: no tema claro ela vale branco; no escuro vale
+uma superfície escura. O mesmo componente passa a respeitar as duas paletas.
+
+O layout do painel usa CSS Grid para organizar os módulos no computador. As media queries
+mudam essa organização no celular e tablet; não criam outro estoque e não duplicam dados.
+Os cartões chamam os mesmos handlers de navegação. Ícones SVG acompanham o tamanho da tela.
+
+Em `InventoryActivity.tsx`, a escolha Barras/Linhas muda a representação dos mesmos dados.
+Para cada dia, a altura da barra depende de `caixas / maior valor`. A linha usa os mesmos
+valores convertidos em coordenadas. A tabela permite conferir os números sem depender da
+visão do gráfico. Não é necessário instalar outra biblioteca para desenhar esses SVGs.

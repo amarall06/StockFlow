@@ -91,11 +91,21 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
         const audit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
         expect(audit.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([])
       }
+      if (name === 'Painel' && width === 1440) {
+        await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
+        await page.screenshot({path:'/tmp/stockflow-redesign-desktop.png',fullPage:true,animations:'disabled'})
+        await page.getByRole('button', {name:'Ativar modo escuro'}).click()
+        await page.screenshot({path:'/tmp/stockflow-redesign-dark.png',fullPage:true,animations:'disabled'})
+        const darkAudit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
+        expect(darkAudit.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([])
+        await page.getByRole('button', {name:'Ativar modo claro'}).click()
+      }
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${name}: overflow em ${width}px`).toBe(true)
     }
   }
   await navigate(page, 'Painel')
   await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
+  await page.getByLabel('Visualização do gráfico').selectOption('line')
   const points = await page.locator('.activity-chart polyline').getAttribute('points')
   await page.getByLabel('Série do gráfico').selectOption('received_boxes')
   await expect(page.locator('.activity-chart polyline')).not.toHaveAttribute('points', points!)
