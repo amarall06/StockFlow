@@ -161,6 +161,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [catalog, setCatalog] = useState<Record<string, ProductInfo>>(() => readSavedDemoData()?.catalog ?? allDemoCatalog)
   const [scanCode, setScanCode] = useState('')
   const scanInputRef = useRef<HTMLInputElement>(null)
+  const accountMenuRef = useRef<HTMLDetailsElement>(null)
   const [scanResult, setScanResult] = useState<(ProductInfo & { code: string }) | null>(null)
   const [scanMessage, setScanMessage] = useState('')
   // useState guarda o texto digitado na busca enquanto a tela está aberta.
@@ -307,6 +308,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
   function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
+    accountMenuRef.current?.removeAttribute('open')
     setActivePage(page)
     setScanResult(null)
     setScanMessage('')
@@ -496,12 +498,12 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
       <aside className="sidebar">
         <a className="brand" href="#inicio" aria-label="LIBER automotive, início" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}>
           <span className="brand-mark">L</span>
-          <span>LIBER<span className="brand-light"> automotive</span></span>
+          <span>LIBER<span className="brand-light">SOLUÇÕES EM<br/> ESTOQUE AUTOMOTIVO</span></span>
         </a>
 
         <div className="sidebar-label">MÓDULOS</div>
         <nav className="sidebar-navigation" aria-label="Menu principal">
-        <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel</button>
+        <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel inicial</button>
         <button className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> Alertas <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
         <button className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" aria-current={activePage === 'products' ? 'page' : undefined} onClick={() => changePage('products')}><NavigationIcon name="products"/> Produtos</button>
         <button className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> Giro e ABC</button>
@@ -528,15 +530,14 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
         </nav>
         <div className="sidebar-bottom">
-          <span className="status-dot" />
-          <span>{dataMode === 'database' ? 'Banco Supabase' : 'Modo de demonstração'}</span>
+          <span>Estoque que<br/>move o seu negócio.</span>
         </div>
       </aside>
 
       <section className="main-panel" id="inicio">
         <header className="topbar">
           <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
-          <div className="user-chip"><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /><button className="profile-open-button" type="button" aria-current={activePage === 'profile' ? 'page' : undefined} onClick={() => changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar">{displayName.slice(0, 1).toUpperCase()}</span><span className="profile-name-text">{displayName}<small>Meu perfil</small></span></button><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button></div>
+          <div className="user-chip"><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
           <label className="mobile-module-menu">Ir para
             <select aria-label="Escolher módulo" value={activePage} onChange={event => changePage(event.target.value as typeof activePage)}>
               <option value="dashboard">Painel</option><option value="alerts">Alertas ({alertCount})</option>

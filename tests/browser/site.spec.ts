@@ -4,7 +4,10 @@ import AxeBuilder from '@axe-core/playwright'
 async function navigate(page: Page, name: string) {
   const modules: Record<string,string> = {'Painel':'dashboard','Produtos':'products','Giro e ABC':'turnover','Visão geral':'inventory','Garantia':'warranty','Molas':'springs','Saídas':'outflow','Histórico':'history','Aplicações':'catalog'}
   if ((page.viewportSize()?.width ?? 1440) <= 1024) await page.getByLabel('Escolher módulo').selectOption(modules[name])
-  else await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name, exact: true }).click()
+  else if (name==='Molas'||name==='Giro e ABC') {
+    await page.getByLabel('Opções da conta').click()
+    await page.locator('.account-options').getByRole('button',{name,exact:true}).click()
+  } else await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name: name==='Painel'?'Painel inicial':name, exact: true }).click()
 }
 
 // Todas as chamadas ao Supabase são interceptadas: nenhuma conta ou estoque real.
@@ -13,7 +16,7 @@ const session = { access_token: 'test-access-token', refresh_token: 'test-refres
 
 for (const width of [360, 390, 1440]) {
   test(`login, tema e acessibilidade em ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 })
+    await page.setViewportSize({ width, height: width===1920?1088:900 })
     await page.route('https://stockflow-test.supabase.co/**', route => route.fulfill({ status: 400, json: { code: 'invalid_credentials', message: 'Invalid login credentials' } }))
     await page.goto('/')
     await expect(page.getByRole('heading', { name: 'Entrar no sistema' })).toBeVisible()
@@ -69,8 +72,8 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   })
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Painel inicial' })).toBeVisible()
-  for (const width of [360, 768, 1024, 1440]) {
-    await page.setViewportSize({ width, height: 900 })
+  for (const width of [360, 768, 1024, 1440, 1920]) {
+    await page.setViewportSize({ width, height: width===1920?1088:900 })
     for (const name of ['Produtos', 'Giro e ABC', 'Visão geral', 'Garantia', 'Molas', 'Saídas', 'Histórico', 'Aplicações', 'Painel']) {
       await navigate(page, name)
       await expect(page.locator('#consulta h1')).toBeVisible()
@@ -91,9 +94,11 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
         const audit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
         expect(audit.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([])
       }
+      if (name === 'Painel' && width === 1920) await page.screenshot({path:'/tmp/stockflow-exact-1920.png',fullPage:true,animations:'disabled'})
       if (name === 'Painel' && width === 1440) {
         await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
         await page.screenshot({path:'/tmp/stockflow-redesign-desktop.png',fullPage:true,animations:'disabled'})
+        if (!(await page.locator('.account-options').getAttribute('open')) && !(await page.locator('.account-options').evaluate(e=>e.hasAttribute('open')))) await page.getByLabel('Opções da conta').click()
         await page.getByRole('button', {name:'Ativar modo escuro'}).click()
         await page.screenshot({path:'/tmp/stockflow-redesign-dark.png',fullPage:true,animations:'disabled'})
         const darkAudit = await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
@@ -105,15 +110,17 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   }
   await navigate(page, 'Painel')
   await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
+  await page.getByText('Ver tabela de valores',{exact:true}).click()
   await page.getByLabel('Visualização do gráfico').selectOption('line')
   const points = await page.locator('.activity-chart polyline').getAttribute('points')
   await page.getByLabel('Série do gráfico').selectOption('received_boxes')
   await expect(page.locator('.activity-chart polyline')).not.toHaveAttribute('points', points!)
+  await page.getByLabel('Período do gráfico').selectOption('30')
   await page.getByLabel('Período do gráfico').selectOption('7')
   await expect(page.getByRole('img', {name:/Vendas em caixas por dia/})).toBeVisible()
   await page.getByText('Ver tabela de valores', {exact:true}).click()
   await expect(page.locator('.activity-values tbody tr')).toHaveCount(7)
-  await page.getByRole('button', { name: /Total no estoque normal/ }).click()
+  await page.getByRole('button', { name: /Total em estoque/ }).click()
   const download = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Exportar CSV' }).click()
   expect((await download).suggestedFilename()).toMatch(/\.csv$/)
@@ -136,6 +143,7 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   expect(transfers).toHaveLength(2)
   expect(transfers[0]).toEqual(transfers[1])
   expect(pageErrors).toEqual([])
+  if (!(await page.getByRole('button',{name:'Sair',exact:true}).isVisible())) await page.getByLabel('Opções da conta').click()
   await page.getByRole('button', { name: 'Sair', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('O serviço não confirmou a saída')
   await expect(page.getByRole('heading', { name: 'Entrar no sistema' })).toBeVisible()

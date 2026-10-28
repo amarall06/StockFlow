@@ -53,7 +53,7 @@ const readyPanel=renderToStaticMarkup(React.createElement(InventoryDashboard,{ca
 assert(readyPanel.includes('Total de caixas por categoria'))
 assert(readyPanel.includes('Amortecedores</span><strong>5'))
 assert(readyPanel.includes('Molas</span><strong>4'))
-assert(readyPanel.includes('Total no estoque normal</span><strong>9'))
+assert(readyPanel.includes('Total em estoque</span><strong>9'))
 assert(readyPanel.includes('Abrir catálogo de produtos'))
 assert(readyPanel.includes('Ver todos os alertas'))
 assert(readyPanel.includes('dashboard-alert-panel has-alerts'))
