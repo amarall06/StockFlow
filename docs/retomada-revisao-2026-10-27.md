@@ -1,3 +1,19 @@
+> **Entrega móvel/empresa publicada:** PR #2 integrada; commit de produção
+> `b2a8e37acec73e8dd535a527a77d3da498f9b566`. Vercel confirmou success:
+> https://vercel.com/amarall06s-projects/liber-automotive/H5EudPbDowcZqTBxio5DKUMNFBgH
+> O domínio público respondeu 200 com menu móvel e gráfico diário novos;
+> robots.txt, meta robots e cabeçalho X-Robots-Tag confirmados.
+> Banco na API 16; não repetir migrações. Cadastro exige e-mail autorizado;
+> contas novas permanecem inativas até aprovação. Conta, saldos e histórico existentes preservados.
+> CI da PR #2: run 40611400055, todas as etapas aprovadas.
+> Backup privado confirmado em https://github.com/amarall06/StockFlow-backup-privado
+> (visibilidade private; o commit testado 13909fcc foi conferido antes deste relatório final).
+> Aulas: tutorial-iniciante.md. Livro offline: livro-do-codigo.html, 136 arquivos.
+> Capacidade medida e limites: capacidade-e-acesso.md. Relatório: entrega-mobile-empresa.md.
+> Não declarar teste de Safari físico ou login real no navegador como realizado.
+> O backup do código não substitui backup do banco, das contas ou das fotos do Supabase.
+> As notas antigas abaixo não substituem este estado.
+
 > **PUBLICAÇÃO CONFIRMADA:** PR #1 integrada em `main`, commit
 > `0630d1d4fe932ddaa491acd471f6da03e0bf3477`. GitHub Actions da revisão aprovou
 > build, regressões, lint, navegador simulado e PostgreSQL descartável.

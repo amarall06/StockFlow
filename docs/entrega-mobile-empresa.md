@@ -1,3 +1,19 @@
+> **Entrega móvel/empresa publicada:** PR #2 integrada; commit de produção
+> `b2a8e37acec73e8dd535a527a77d3da498f9b566`. Vercel confirmou success:
+> https://vercel.com/amarall06s-projects/liber-automotive/H5EudPbDowcZqTBxio5DKUMNFBgH
+> O domínio público respondeu 200 com menu móvel e gráfico diário novos;
+> robots.txt, meta robots e cabeçalho X-Robots-Tag confirmados.
+> Banco na API 16; não repetir migrações. Cadastro exige e-mail autorizado;
+> contas novas permanecem inativas até aprovação. Conta, saldos e histórico existentes preservados.
+> CI da PR #2: run 40611400055, todas as etapas aprovadas.
+> Backup privado confirmado em https://github.com/amarall06/StockFlow-backup-privado
+> (visibilidade private; o commit testado 13909fcc foi conferido antes deste relatório final).
+> Aulas: tutorial-iniciante.md. Livro offline: livro-do-codigo.html, 136 arquivos.
+> Capacidade medida e limites: capacidade-e-acesso.md. Relatório: entrega-mobile-empresa.md.
+> Não declarar teste de Safari físico ou login real no navegador como realizado.
+> O backup do código não substitui backup do banco, das contas ou das fotos do Supabase.
+> As notas antigas abaixo não substituem este estado.
+
 # Entrega móvel e uso interno
 
 ## Mudanças
@@ -52,3 +68,18 @@ O backup privado do código não é uma exportação das contas, tabelas e fotos
 
 Documentação: tutorial-iniciante.md (aulas) e livro-do-codigo.html (arquivos completos com
 responsabilidade, símbolos e código). O livro funciona offline e pode ser regenerado.
+
+## Confirmação final
+
+PR #2 integrada com CI aprovado. Status Vercel do commit de produção: success.
+No domínio principal: HTTP 200, arquivo InventoryApp-DdlfIhy-.js e chamada da atividade
+confirmados, meta e cabeçalho noindex presentes e robots.txt com Disallow: /.
+O repositório externo privado recebeu o commit testado; o relatório final foi acrescentado
+na cópia privada em seguida. A origem pública do código permanece pública.
+
+A revisão de segurança mantém avisos contextuais de funções SECURITY DEFINER, tabelas
+privadas com RLS sem políticas (acesso direto intencionalmente negado) e proteção de
+senhas vazadas ainda desativada. Não foram apresentados como erros de funcionamento
+resolvidos. Referências de revisão:
+https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable
+https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
