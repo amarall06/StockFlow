@@ -1,6 +1,7 @@
 -- Dados e identidades fictícios exclusivamente no container descartável.
-insert into auth.users(id) values
- ('11111111-1111-4111-8111-111111111111'),('22222222-2222-4222-8222-222222222222'),('33333333-3333-4333-8333-333333333333');
+insert into private.company_allowed_emails(email) values('admin@test.invalid'),('viewer@test.invalid'),('stock@test.invalid');
+insert into auth.users(id,email) values
+ ('11111111-1111-4111-8111-111111111111','admin@test.invalid'),('22222222-2222-4222-8222-222222222222','viewer@test.invalid'),('33333333-3333-4333-8333-333333333333','stock@test.invalid');
 update public.profiles set is_active=true,display_name='Pessoa de Teste',role=case id
  when '22222222-2222-4222-8222-222222222222' then 'viewer'::public.app_role
  when '33333333-3333-4333-8333-333333333333' then 'stockkeeper'::public.app_role

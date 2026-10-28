@@ -2,6 +2,7 @@ import {useEffect,useState} from 'react'
 import type {ProductInfo,StockRow} from '../lib/inventory-api'
 import {loadDashboardReport,type DashboardCategory,type DashboardReport} from '../lib/dashboard-api'
 import {dashboardStockSummary} from '../lib/dashboard-summary'
+import { InventoryActivity } from './InventoryActivity'
 import './InventoryDashboard.css'
 
 const dateFormat=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Bahia'})
@@ -24,9 +25,10 @@ export function DashboardActivity({report}:{report:DashboardReport}){
   </div>
 }
 
-export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen}:{
-  catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock')=>void
+export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false}:{
+  activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
 }){
+  const [expanded,setExpanded]=useState(false)
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
   const [refreshing,setRefreshing]=useState(false)
@@ -60,6 +62,13 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen}:{
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('springs')}><span>Molas</span><strong>{springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">↗</span></span></button>
         <button type="button" className="dashboard-stat dashboard-stat-total" onClick={()=>onOpen('stock')}><span>Total no estoque normal</span><strong>{shockBoxes+springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Amortecedores + molas · sem garantia <span aria-hidden="true">↗</span></span></button>
       </section>
+      <section className="dashboard-shortcuts" aria-label="Atalhos de trabalho">
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>Alertas</span><strong>{summary.alerts.length}</strong><small>Conferir reposição →</small></button>
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen('warranty')}><span>Garantia</span><strong>Consultar →</strong><small>Fabricantes e devoluções</small></button>
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen(isAdministrator?'outflow':'history')}><span>{isAdministrator?'Saídas':'Histórico'}</span><strong>Abrir →</strong><small>{isAdministrator?'Registrar retirada':'Ver movimentações'}</small></button>
+      </section>
+      <button type="button" className="dashboard-expand theme-toggle" aria-expanded={expanded} aria-controls="dashboard-detail" onClick={()=>setExpanded(value=>!value)}>{expanded?'Resumir painel':'Ver indicadores e atividade'}</button>
+      <div id="dashboard-detail" className={`dashboard-detail${expanded?' is-expanded':''}`}>
       <div className="dashboard-tools"><label>Filtrar indicadores<select value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><button className="theme-toggle" type="button" disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</button></div>
       {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
       <section className="dashboard-totals" aria-label="Resumo do estoque normal">
@@ -70,7 +79,9 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen}:{
         {!summary.alerts.length?<p>Nenhum produto zerado ou no limite configurado nesta consulta.</p>:<ul className="dashboard-alert-list">{summary.alerts.slice(0,6).map((row)=><li key={row.code}><strong>{row.code}</strong><span>{row.severity==='zero'?'Sem estoque':`${row.total} caixas · mínimo ${row.minimum}`}</span></li>)}</ul>}
         {summary.alerts.length>6&&<p>Prévia de 6 dos {summary.alerts.length} alertas. Consulte os estoques para ver todos.</p>}
       </section>
+      {activityReady && <InventoryActivity category={category} revision={revision}/>}
       {loading?<p className="dashboard-message" role="status">Carregando vendas e recebimentos…</p>:result.error?<p className="dashboard-error auth-error" role="alert">{result.error}</p>:result.report&&<><p className="dashboard-message">Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.</p><DashboardActivity report={result.report}/></>}
+      </div>
     </>}
   </>
 }

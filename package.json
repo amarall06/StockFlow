@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "test": "npm run build && node scripts/run-checks.mjs",
     "test:browser": "playwright test",
-    "test:database": "node tests/database/run-local.mjs"
+    "test:database": "node tests/database/run-local.mjs",
+    "docs:code": "node scripts/build-codebook.mjs",
+    "test:capacity": "node tests/database/run-local.mjs --capacity"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

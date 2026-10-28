@@ -34,6 +34,7 @@ try {
   const migrations=readdirSync(new URL('supabase/migrations/',root)).filter(name=>name.endsWith('.sql')).sort()
   for(const name of migrations)sql(readFileSync(new URL(`supabase/migrations/${name}`,root),'utf8'))
   sql(readFileSync(new URL('tests/database/transfers.sql',root),'utf8'))
+  sql(readFileSync(new URL('tests/database/company-activity.sql',root),'utf8'))
   const uid='11111111-1111-4111-8111-111111111111'
   const request=randomUUID()
   const call=`select public.transfer_stock_once('AGM-100','TEST-A','TEST-B','released_for_sale',2,'${request}');`
@@ -41,6 +42,7 @@ try {
   await Promise.all([asyncSql(transaction),asyncSql(transaction)])
   const counts=sql("select count(*) from public.stock_movements where movement_type='transfer';select sum(quantity) from public.stock_balances;select quantity from public.stock_balances b join public.locations l on l.id=b.location_id join public.products p on p.id=b.product_id where l.code='TEST-A' and p.code='AGM-100';").trim().split('\n')
   if(JSON.stringify(counts)!==JSON.stringify(['1','20','8']))throw new Error(`Concorrência alterou saldo/auditoria: ${counts}`)
+  if(process.argv.includes('--capacity'))console.log('CAPACITY_RESULT '+sql(readFileSync(new URL('tests/database/capacity.sql',root),'utf8')).trim())
   console.log(`OK: ${migrations.length} migrações em PostgreSQL 17 isolado; contratos, permissões e dois reenvios simultâneos geram uma transferência e conservam 20 caixas.`)
 } finally {
   command(['rm','-f',container])

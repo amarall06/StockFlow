@@ -64,3 +64,12 @@ transferências em versões anteriores do banco. Não repetir migrações já ap
 
 Com Docker local disponível, `npm run test:database` cria e apaga um PostgreSQL 17
 isolado, aplica as migrações e testa reenvios concorrentes. Não usa o banco hospedado.
+
+## Celular, acesso da empresa e estudo
+
+- Em celular/tablet: conta no topo, seletor de módulo e painel compacto com detalhes expansíveis.
+- Atividade diária: gráfico calculado com movimentos reais, filtro de período/série e tabela dos valores.
+- API 16: migração `20261028003756_company_access_and_activity.sql` aplicada no Supabase do site e verificada sem mudar os saldos. Não repetir no mesmo banco.
+- [Aulas para iniciantes](docs/tutorial-iniciante.md) e [livro navegável com código completo](docs/livro-do-codigo.html).
+- [Ensaio de capacidade, regras de acesso e limites do backup](docs/capacidade-e-acesso.md).
+- `npm run docs:code` atualiza o livro; `npm run test:capacity` executa o volume sintético no PostgreSQL descartável.

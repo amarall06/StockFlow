@@ -332,3 +332,26 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 .transfer-form form button, .transfer-form .transfer-message button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 5px; background: #a95c46; color: white; cursor: pointer; }
 .transfer-form button:disabled { cursor: not-allowed; opacity: .55; }
 .theme-dark .transfer-form fieldset > p { color: #c0aca1; }
+
+.mobile-module-menu { display: none; }
+@media (max-width: 1024px), (pointer: coarse) and (max-width: 1366px) {
+  .app-shell { display: block; }
+  .app-shell > .sidebar { display: none; }
+  .topbar { position: sticky; top: 0; z-index: 20; height: auto; padding: max(10px, env(safe-area-inset-top)) 16px 12px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; }
+  .topbar .breadcrumb { display: none; }
+  .topbar .user-chip { width: 100%; justify-content: flex-end; gap: 12px; }
+  .topbar .profile-open-button { margin-right: auto; order: -1; min-height: 44px; }
+  .topbar .profile-name-text { display: block; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topbar .sign-out-button, .topbar .theme-toggle { min-height: 44px; }
+  .mobile-module-menu { display: grid; gap: 5px; color: #49372f; font-size: 12px; font-weight: 600; }
+  .mobile-module-menu select { width: 100%; min-height: 46px; padding: 8px 12px; border: 1px solid #bfb0a5; border-radius: 8px; background: #fff; color: #49372f; }
+  .theme-dark .mobile-module-menu { color: #f1e7df; }
+  .theme-dark .mobile-module-menu select { background: #382c28; color: #f1e7df; border-color: #81685c; }
+  /* 16 px evita o zoom automático de edição no Safari sem bloquear o zoom manual. */
+  .app-shell input, .app-shell select, .app-shell textarea, .auth-screen input { font-size: 16px !important; }
+  .content { padding: 20px 16px 36px; }
+}
+
+.content .subtitle { color: #596873; }
+.topbar .profile-name-text small { color: #596873; }
+.theme-dark .content .subtitle, .theme-dark .topbar .profile-name-text small { color: #d3beb2; }

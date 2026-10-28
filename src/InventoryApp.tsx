@@ -206,7 +206,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Deixa o campo de leitura pronto para um leitor USB configurado como teclado.
   useEffect(() => {
-    scanInputRef.current?.focus()
+    if (window.matchMedia('(min-width: 1025px) and (pointer: fine)').matches) scanInputRef.current?.focus()
   }, [activePage])
 
   // Salva catálogo, saldos e localizações no navegador sempre que forem alterados.
@@ -537,6 +537,16 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         <header className="topbar">
           <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
           <div className="user-chip"><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /><button className="profile-open-button" type="button" aria-current={activePage === 'profile' ? 'page' : undefined} onClick={() => changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar">{displayName.slice(0, 1).toUpperCase()}</span><span className="profile-name-text">{displayName}<small>Meu perfil</small></span></button><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button></div>
+          <label className="mobile-module-menu">Ir para
+            <select aria-label="Escolher módulo" value={activePage} onChange={event => changePage(event.target.value as typeof activePage)}>
+              <option value="dashboard">Painel</option><option value="alerts">Alertas ({alertCount})</option>
+              <option value="products">Produtos</option><option value="stock">Estoque geral</option><option value="inventory">Visão geral</option>
+              <option value="springs">Molas</option><option value="warranty">Garantia</option>
+              {isAdministrator && <option value="outflow">Saídas</option>}
+              <option value="history">Histórico</option><option value="turnover">Giro e ABC</option>
+              <option value="catalog">Aplicações</option><option value="profile">Minha conta</option>
+            </select>
+          </label>
         </header>
 
         <div className="content" id="consulta" tabIndex={-1}>
@@ -726,7 +736,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {
