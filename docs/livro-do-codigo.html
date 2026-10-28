@@ -8670,7 +8670,7 @@ do $$ declare response jsonb; begin
 end $$;
 rollback;
 </code></pre></details>
-<details id="file-116" class="file"><summary>tests/database/run-local.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> command, asyncSql.</p><p>50 linhas · SHA-256 9ff47cbd9900a9d1</p><pre><code>// Cria e apaga seu próprio PostgreSQL. Nunca usa URL/credencial de produção.
+<details id="file-116" class="file"><summary>tests/database/run-local.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> command, asyncSql.</p><p>51 linhas · SHA-256 5e91939f471bbdeb</p><pre><code>// Cria e apaga seu próprio PostgreSQL. Nunca usa URL/credencial de produção.
 import { spawnSync, spawn } from 'node:child_process'
 import { readdirSync, readFileSync } from 'node:fs'
 import { randomUUID } from 'node:crypto'
@@ -8698,7 +8698,8 @@ try {
   command(['run','-d','--name',container,'-e','POSTGRES_PASSWORD=isolated-test-only','-e','POSTGRES_DB=stockflow_test','postgres:17-alpine'])
   let ready=false
   for(let attempt=0;attempt&lt;60;attempt++) {
-    try { command(['exec',container,'pg_isready','-U','postgres']);ready=true;break } catch { await new Promise(resolve=&gt;setTimeout(resolve,500)) }
+    // O servidor temporário de inicialização só aceita socket; aguarda o TCP final.
+    try { command(['exec',container,'pg_isready','-h','127.0.0.1','-U','postgres','-d','stockflow_test']);sql('select 1;');ready=true;break } catch { await new Promise(resolve=&gt;setTimeout(resolve,500)) }
   }
   if(!ready)throw new Error('PostgreSQL não iniciou em 30 segundos.')
   const root=new URL('../../',import.meta.url)

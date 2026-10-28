@@ -26,7 +26,8 @@ try {
   command(['run','-d','--name',container,'-e','POSTGRES_PASSWORD=isolated-test-only','-e','POSTGRES_DB=stockflow_test','postgres:17-alpine'])
   let ready=false
   for(let attempt=0;attempt<60;attempt++) {
-    try { command(['exec',container,'pg_isready','-U','postgres']);ready=true;break } catch { await new Promise(resolve=>setTimeout(resolve,500)) }
+    // O servidor temporário de inicialização só aceita socket; aguarda o TCP final.
+    try { command(['exec',container,'pg_isready','-h','127.0.0.1','-U','postgres','-d','stockflow_test']);sql('select 1;');ready=true;break } catch { await new Promise(resolve=>setTimeout(resolve,500)) }
   }
   if(!ready)throw new Error('PostgreSQL não iniciou em 30 segundos.')
   const root=new URL('../../',import.meta.url)
