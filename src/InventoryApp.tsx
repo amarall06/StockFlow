@@ -1,7 +1,9 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ReceiptForm } from './components/ReceiptForm'
+import { readPendingTransfer } from './lib/pending-transfer'
 import { readPendingOutflow } from './lib/pending-outflow'
 import { StockAlerts } from './components/StockAlerts'
 import { NavigationIcon } from './components/NavigationIcon'
@@ -141,15 +143,18 @@ function readSavedDemoData(): SavedDemoData | null {
   }
 }
 
-export default function InventoryApp({ userId, onSignOut, displayName, userRole, profileName, email, onProfileUpdated, isDarkMode, onToggleTheme }: {
+export default function InventoryApp({ userId, onSignOut, displayName, userRole, profileName, email, onProfileUpdated, isDarkMode, onToggleTheme, signOutError }: {
   userId: string; onSignOut: () => void; displayName: string; userRole: string; profileName: string | null
   email: string; onProfileUpdated: (name: string) => void
-  isDarkMode: boolean; onToggleTheme: () => void
+  isDarkMode: boolean; onToggleTheme: () => void; signOutError?: string
 }) {
   // Controla qual módulo está aberto na demonstração.
   const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock'>(()=>{
     const recovery=userRole==='administrator'?readPendingOutflow(userId):null
-    return recovery?.pending||recovery?.error?'outflow':'dashboard'
+    if (recovery?.pending || recovery?.error) return 'outflow'
+    const transfer = ['administrator', 'stockkeeper'].includes(userRole) ? readPendingTransfer(userId) : null
+    if (transfer?.pending) return isSpringCode(transfer.pending.input.row.code) ? 'springs' : 'inventory'
+    return transfer?.error ? 'inventory' : 'dashboard'
   })
   const showInventoryPage = activePage === 'inventory' || activePage === 'springs'
   // O catálogo guarda os dados do produto, separados dos saldos por localização.
@@ -481,7 +486,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   if (import.meta.env.PROD && dataMode !== 'database' && !databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Carregando estoque...</h1><p role="status">Consultando os dados do Supabase.</p></section></AuthScreen>
 
   // Na publicação, uma falha do banco nunca vira um estoque local que parece salvo online.
-  if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p><button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
+  if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p>{signOutError && <p role="alert">{signOutError}</p>}<button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
 
   return (
     <ProductPhotosProvider canEdit={isAdministrator}>
@@ -535,6 +540,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         </header>
 
         <div className="content" id="consulta" tabIndex={-1}>
+          {signOutError && <p className="auth-error" role="alert">{signOutError}</p>}
           <ModuleBoundary key={activePage}><Suspense fallback={<ModuleLoading />}>
           {showInventoryPage ? <>
           <div className="page-heading">
@@ -605,7 +611,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
                 <label htmlFor="new-location">Código da localização</label>
               <div className="location-action-row"><input id="new-location" value={newLocationCode} onChange={(event) => setNewLocationCode(event.target.value)} placeholder="Ex.: E01" required /><button type="submit" disabled={dataMode === 'database' && !isAdministrator}>Adicionar local</button></div>
               </form>
-              <form className="transfer-form" onSubmit={handleTransfer}>
+              <>{dataMode === 'database' ? <StockTransfers userId={userId} stock={activeStock} locations={locations} canTransfer={canTransferStock} ready={inventoryApiVersion >= 15} onRefresh={refreshDatabaseSnapshot} /> : <form className="transfer-form" onSubmit={handleTransfer}>
                 <h3>Transferir entre prateleiras</h3>
                 <p>A quantidade transferida mantém a situação operacional.</p>
                 <label>Produto<select value={effectiveMoveCode} onChange={(event) => {
@@ -628,9 +634,9 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
                 <label>Situação<select value={movementStatuses.includes(moveStatus) ? moveStatus : ''} onChange={(event) => setMoveStatus(event.target.value as StockRow['status'])} required><option value="">Escolha a situação</option>{movementStatuses.map((status) => <option key={status}>{status}</option>)}</select></label>
                 <label>Quantidade (caixas)<input type="number" min="1" max={availableForTransfer} step="1" value={moveQuantity} onChange={(event) => setMoveQuantity(event.target.value)} required /></label>
                 <p className="transfer-available">Disponível na origem nesta situação: <strong>{availableForTransfer} caixas</strong></p>
-                <button type="submit" disabled={springUpdatePending || (dataMode === 'database' && !canTransferStock)}>Registrar transferência</button>
+                <button type="submit" disabled={springUpdatePending || !canTransferStock}>Registrar transferência</button>
                 {transferMessage && <p className="transfer-message" role="status">{transferMessage}</p>}
-              </form>
+              </form>}</>
             </div>
           </section>
 

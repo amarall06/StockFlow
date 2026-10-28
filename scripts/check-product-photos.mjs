@@ -48,7 +48,7 @@ source=source.replace("import {isSpringCode} from '../lib/product-category'","co
 source=source.replace(/^import .*from '\.\.\/lib\/product-photos'$/m,'const {loadProductPhotos,preparePhoto,saveProductPhoto}=globalThis.__photoApi').replace("import './ProductPhotos.css'",'')
 source=compile(source,ts.JsxEmit.ReactJSX).replaceAll('from "react/jsx-runtime"',`from ${JSON.stringify(import.meta.resolve('react/jsx-runtime'))}`).replaceAll("from 'react'",`from ${JSON.stringify(import.meta.resolve('react'))}`)
 const {ProductPhoto}=await importSource(source)
-for(const [code,file] of [['AGM-35','shock-example.png'],['MGM-35','spring-example.png']]){
+for(const [code,file] of [['AGM-35','shock-example-thumb.webp'],['MGM-35','spring-example-thumb.webp']]){
   const markup=renderToStaticMarkup(React.createElement(ProductPhoto,{code}))
   assert(markup.includes(file));assert(markup.includes('exemplo ilustrativo'));assert(markup.includes('type="button"'));assert(markup.includes('Exemplo'))
 }
