@@ -43,6 +43,21 @@ try {
   await Promise.all([asyncSql(transaction),asyncSql(transaction)])
   const counts=sql("select count(*) from public.stock_movements where movement_type='transfer';select sum(quantity) from public.stock_balances;select quantity from public.stock_balances b join public.locations l on l.id=b.location_id join public.products p on p.id=b.product_id where l.code='TEST-A' and p.code='AGM-100';").trim().split('\n')
   if(JSON.stringify(counts)!==JSON.stringify(['1','20','8']))throw new Error(`Concorrência alterou saldo/auditoria: ${counts}`)
+  sql(readFileSync(new URL('tests/database/demo-stock.sql',root),'utf8'))
+  const demoSeed=readFileSync(new URL('supabase/seeds/demo-stock-88.sql',root),'utf8')
+  const firstDemo=sql(demoSeed).trim().split('\n').at(-1)
+  const secondDemo=sql(demoSeed).trim().split('\n').at(-1)
+  if(firstDemo!==secondDemo)throw new Error('Reimportação duplicou o lote fictício.')
+  sql(`do $$ begin
+    if exists(select 1 from private.existing_demo_test_products old join public.products p using(id) where old.original<>to_jsonb(p)) then raise exception 'Produto existente alterado';end if;
+    if exists(select 1 from private.existing_demo_test_balances old join public.stock_balances b using(id) where old.original<>to_jsonb(b)) then raise exception 'Saldo existente alterado';end if;
+    if (select count(*) from private.demo_stock_import_items where batch_id='demo-stock-88-v1')<>88 then raise exception 'Quantidade de códigos inesperada';end if;
+    if exists(select 1 from private.demo_stock_import_items i join public.stock_balances b using(product_id) where b.quantity<>i.quantity or b.status_code<>'awaiting_test') then raise exception 'Saldo fictício incorreto';end if;
+    if has_table_privilege('authenticated','private.demo_stock_import_items','select') then raise exception 'Registro privado exposto';end if;
+    if not ('AFI-08' ~ '^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$') or 'AFI-101' ~ '^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$' then raise exception 'Validação de código incorreta';end if;
+  end $$;`)
+  sql(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${uid}',true);select public.receive_stock_with_supplier('AVW-04',null,'SUL',1,'awaiting_test',null,null,'${randomUUID()}');rollback;`)
+  console.log('OK: lote fictício de 88 códigos, reexecução sem duplicação, saldos preservados e rastreamento privado.')
   if(process.argv.includes('--capacity'))console.log('CAPACITY_RESULT '+sql(readFileSync(new URL('tests/database/capacity.sql',root),'utf8')).trim())
   console.log(`OK: ${migrations.length} migrações em PostgreSQL 17 isolado; contratos, permissões e dois reenvios simultâneos geram uma transferência e conservam 20 caixas.`)
 } finally {

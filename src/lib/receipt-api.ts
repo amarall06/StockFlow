@@ -7,7 +7,7 @@ export type ReceiptInput = { code: string; application: string; location: string
 export function normalizeReceipt(input: ReceiptInput) {
   const code = input.code.trim().toUpperCase()
   const lot = input.lot.trim()
-  if (!/^[A-Z]{3}-(100|[1-9][0-9]?)$/.test(code) || !input.location.trim() || !Number.isInteger(input.boxes) || input.boxes < 1 || input.boxes > 2147483647) throw new Error('Confira código, local e quantidade inteira positiva.')
+  if (!/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(code) || !input.location.trim() || !Number.isInteger(input.boxes) || input.boxes < 1 || input.boxes > 2147483647) throw new Error('Confira código, local e quantidade inteira positiva.')
   if (lot.length > 100 || (lot && !input.supplierId)) throw new Error('Para informar um lote, selecione seu fornecedor. Use até 100 caracteres.')
   const status = isSpringCode(code) ? 'in_stock' : input.status
   if (!['awaiting_test','released_for_sale','in_stock'].includes(status) || (!isSpringCode(code) && status === 'in_stock')) throw new Error('Situação inválida para este produto.')

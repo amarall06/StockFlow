@@ -19,7 +19,7 @@ export function readPendingOutflow(userId:string):{pending:PendingOutflow|null;e
     const pending=JSON.parse(raw) as PendingOutflow
     if (pending.version!==1 || pending.userId!==userId || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(pending.requestId)
       || !['uncertain','confirmed'].includes(pending.phase)
-      || !pending.input || !/^(AGM|AFI|ARE|AFR|MGM|MFI|MRE|MFR)-(100|[1-9][0-9]?)$/.test(pending.input.row.code)
+      || !pending.input || !/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(pending.input.row.code)
       || typeof pending.input.row.location!=='string' || !pending.input.row.location.trim()
       || !['Em estoque','Aguardando testagem','Liberado para venda'].includes(pending.input.row.status)
       || !Number.isInteger(pending.input.row.boxes) || pending.input.row.boxes<1) throw new Error('Pedido inválido.')

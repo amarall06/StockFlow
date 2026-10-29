@@ -7,7 +7,7 @@ export class TransferRejectedError extends Error {}
 export function normalizeTransfer(input: TransferInput) {
   const { row } = input
   const to = input.to.trim().toUpperCase()
-  if (!/^(AGM|AFI|ARE|AFR|MGM|MFI|MRE|MFR)-(100|[1-9][0-9]?)$/.test(row.code)
+  if (!/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(row.code)
     || !row.location.trim() || !to || to === row.location.trim().toUpperCase()
     || !Number.isSafeInteger(row.boxes) || row.boxes < 1
     || !Number.isSafeInteger(input.boxes) || input.boxes < 1 || input.boxes > row.boxes
