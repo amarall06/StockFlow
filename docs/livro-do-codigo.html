@@ -213,7 +213,7 @@ Em `InventoryActivity.tsx`, a escolha Barras/Linhas muda a representação dos m
 Para cada dia, a altura da barra depende de `caixas / maior valor`. A linha usa os mesmos
 valores convertidos em coordenadas. A tabela permite conferir os números sem depender da
 visão do gráfico. Não é necessário instalar outra biblioteca para desenhar esses SVGs.
-</pre></details><label for="search">Procurar arquivo, função ou palavra do código</label><p><input id="search" type="search" placeholder="Ex.: StockTransfers, RLS, onClick…"></p><button id="expand">Abrir arquivos encontrados</button> <button id="collapse">Recolher arquivos</button><p id="count" role="status">137 arquivos</p><details id="file-0" class="file"><summary>src/App.css</summary><p>Define aparência, organização e adaptação de App. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>358 linhas · SHA-256 74b32a72f27a5780</p><pre><code>#root { min-height: 100vh; }
+</pre></details><label for="search">Procurar arquivo, função ou palavra do código</label><p><input id="search" type="search" placeholder="Ex.: StockTransfers, RLS, onClick…"></p><button id="expand">Abrir arquivos encontrados</button> <button id="collapse">Recolher arquivos</button><p id="count" role="status">141 arquivos</p><details id="file-0" class="file"><summary>src/App.css</summary><p>Define aparência, organização e adaptação de App. CSS não concede permissão e não grava dados; a lógica está nos TSX e no servidor.</p><p>358 linhas · SHA-256 74b32a72f27a5780</p><pre><code>#root { min-height: 100vh; }
 
 .app-shell { min-height: 100vh; display: grid; grid-template-columns: 238px minmax(0, 1fr); }
 .sidebar { background: #352c2b; color: #f1e8e2; display: flex; flex-direction: column; padding: 27px 17px 20px; }
@@ -1109,7 +1109,7 @@ body:has(.mobile-navigation-dialog[open]) { overflow: hidden; }
  .app-shell .mobile-navigation-dialog .nav-item { flex-direction: row; justify-content: flex-start; text-align: left; font-size: 16px; min-height: 48px; gap: 14px; padding: 10px 12px; }
 }
 </code></pre></details>
-<details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>780 linhas · SHA-256 cf33c683cbd6f7a6</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+<details id="file-3" class="file"><summary>src/InventoryApp.tsx</summary><p>Organiza navegação, conta, consultas e módulos operacionais. A distinção entre demonstração e banco evita aparentar uma gravação online que só aconteceu no navegador.</p><p><strong>Funções para localizar:</strong> readSavedDemoData, InventoryApp, refreshDatabaseSnapshot, restoreDemoData, changePage, handleAddLocation, handleTransfer, handleScan, handleAddProduct.</p><p>780 linhas · SHA-256 d7f8149756339d81</p><pre><code>import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
@@ -1549,7 +1549,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     event.preventDefault() // Evita que o navegador recarregue a página.
     if (springUpdatePending) return
     const normalizedCode = newCode.trim().toUpperCase()
-    const codeIsValid = /^[A-Z]{3}-(100|[1-9]\d?)$/.test(normalizedCode)
+    const codeIsValid = /^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(normalizedCode)
     const codeMatchesPage = isSpringCode(normalizedCode) === isSpringPage
     const quantity = Number(newQuantity)
 
@@ -4397,7 +4397,7 @@ export async function registerOutflow(input: OutflowInput, requestId: string) {
   if (!data?.id) throw new Error('A confirmação não chegou. Repita com os mesmos dados para conferir o envio.')
 }
 </code></pre></details>
-<details id="file-51" class="file"><summary>src/lib/pending-outflow.ts</summary><p>Recupera o pedido de saída por conta e aba; dados corrompidos bloqueiam novo envio.</p><p><strong>Funções para localizar:</strong> storage, readPendingOutflow, savePendingOutflow, clearPendingOutflow.</p><p>44 linhas · SHA-256 a2417dab53b7aaec</p><pre><code>import { normalizeOutflow, type OutflowInput } from './outflow-api'
+<details id="file-51" class="file"><summary>src/lib/pending-outflow.ts</summary><p>Recupera o pedido de saída por conta e aba; dados corrompidos bloqueiam novo envio.</p><p><strong>Funções para localizar:</strong> storage, readPendingOutflow, savePendingOutflow, clearPendingOutflow.</p><p>44 linhas · SHA-256 ec934bc3cda38bf9</p><pre><code>import { normalizeOutflow, type OutflowInput } from './outflow-api'
 
 export type PendingOutflow = {
   version: 1; userId: string; requestId: string
@@ -4418,7 +4418,7 @@ export function readPendingOutflow(userId:string):{pending:PendingOutflow|null;e
     const pending=JSON.parse(raw) as PendingOutflow
     if (pending.version!==1 || pending.userId!==userId || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(pending.requestId)
       || !['uncertain','confirmed'].includes(pending.phase)
-      || !pending.input || !/^(AGM|AFI|ARE|AFR|MGM|MFI|MRE|MFR)-(100|[1-9][0-9]?)$/.test(pending.input.row.code)
+      || !pending.input || !/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(pending.input.row.code)
       || typeof pending.input.row.location!=='string' || !pending.input.row.location.trim()
       || !['Em estoque','Aguardando testagem','Liberado para venda'].includes(pending.input.row.status)
       || !Number.isInteger(pending.input.row.boxes) || pending.input.row.boxes&lt;1) throw new Error('Pedido inválido.')
@@ -4511,7 +4511,7 @@ export function searchableProductText(product?: ProductInfo): string {
   return `${product.application} ${product.shockType ? shockTypeLabels[product.shockType] : ''} ${(product.vehicleApplications ?? []).map((application) =&gt; `${application.vehicleModel} ${formatVehicleYears(application)}`).join(' ')}`
 }
 </code></pre></details>
-<details id="file-55" class="file"><summary>src/lib/product-photos.ts</summary><p>Valida conteúdo de imagem, reduz pixels e faz upload/consulta privada.</p><p><strong>Funções para localizar:</strong> photoObjectName, validatePhoto, preparePhoto, loadProductPhotos, saveProductPhoto.</p><p>74 linhas · SHA-256 9e42787a491cc9c1</p><pre><code>import {supabase} from './supabase'
+<details id="file-55" class="file"><summary>src/lib/product-photos.ts</summary><p>Valida conteúdo de imagem, reduz pixels e faz upload/consulta privada.</p><p><strong>Funções para localizar:</strong> photoObjectName, validatePhoto, preparePhoto, loadProductPhotos, saveProductPhoto.</p><p>74 linhas · SHA-256 abe121fc16e62826</p><pre><code>import {supabase} from './supabase'
 
 export const PHOTO_BUCKET='product-photos'
 export const MAX_SOURCE_BYTES=8*1024*1024
@@ -4519,7 +4519,7 @@ export const MAX_PHOTO_BYTES=2*1024*1024
 export type SavedPhoto={url:string;updatedAt:string}
 
 export function photoObjectName(code:string){
-  if(!/^[A-Z]{3}-([1-9][0-9]?|100)$/.test(code))throw new Error('Código de produto inválido.')
+  if(!/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(code))throw new Error('Código de produto inválido.')
   return `${code}.webp`
 }
 
@@ -4613,7 +4613,7 @@ export async function readAllRows&lt;T&gt;(query: (from: number, to: number) =&g
   }
 }
 </code></pre></details>
-<details id="file-58" class="file"><summary>src/lib/receipt-api.ts</summary><p>Normaliza fornecedor/lote/caixas e chama a RPC de recebimento com identificação do pedido.</p><p><strong>Funções para localizar:</strong> normalizeReceipt, loadSuppliers, createSupplier, receiveWithSupplier.</p><p>45 linhas · SHA-256 ccb7a0aa2466f8c0</p><pre><code>import { supabase } from './supabase'
+<details id="file-58" class="file"><summary>src/lib/receipt-api.ts</summary><p>Normaliza fornecedor/lote/caixas e chama a RPC de recebimento com identificação do pedido.</p><p><strong>Funções para localizar:</strong> normalizeReceipt, loadSuppliers, createSupplier, receiveWithSupplier.</p><p>45 linhas · SHA-256 7f7cf9f9fb959fa1</p><pre><code>import { supabase } from './supabase'
 import { isSpringCode } from './product-category'
 
 export type Supplier = { id: string; name: string }
@@ -4622,7 +4622,7 @@ export type ReceiptInput = { code: string; application: string; location: string
 export function normalizeReceipt(input: ReceiptInput) {
   const code = input.code.trim().toUpperCase()
   const lot = input.lot.trim()
-  if (!/^[A-Z]{3}-(100|[1-9][0-9]?)$/.test(code) || !input.location.trim() || !Number.isInteger(input.boxes) || input.boxes &lt; 1 || input.boxes &gt; 2147483647) throw new Error('Confira código, local e quantidade inteira positiva.')
+  if (!/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(code) || !input.location.trim() || !Number.isInteger(input.boxes) || input.boxes &lt; 1 || input.boxes &gt; 2147483647) throw new Error('Confira código, local e quantidade inteira positiva.')
   if (lot.length &gt; 100 || (lot &amp;&amp; !input.supplierId)) throw new Error('Para informar um lote, selecione seu fornecedor. Use até 100 caracteres.')
   const status = isSpringCode(code) ? 'in_stock' : input.status
   if (!['awaiting_test','released_for_sale','in_stock'].includes(status) || (!isSpringCode(code) &amp;&amp; status === 'in_stock')) throw new Error('Situação inválida para este produto.')
@@ -4757,7 +4757,7 @@ export const supabase = hasSupabaseConfiguration
 // Permite que a interface saiba se os valores locais foram preenchidos.
 export const isSupabaseConfigured = hasSupabaseConfiguration
 </code></pre></details>
-<details id="file-63" class="file"><summary>src/lib/transfer-api.ts</summary><p>Valida/normaliza a transferência e envia UUID para a função idempotente.</p><p><strong>Funções para localizar:</strong> normalizeTransfer, registerTransfer.</p><p>30 linhas · SHA-256 652ca546a066ab46</p><pre><code>import { supabase } from './supabase'
+<details id="file-63" class="file"><summary>src/lib/transfer-api.ts</summary><p>Valida/normaliza a transferência e envia UUID para a função idempotente.</p><p><strong>Funções para localizar:</strong> normalizeTransfer, registerTransfer.</p><p>30 linhas · SHA-256 7c495bd5ceb43f02</p><pre><code>import { supabase } from './supabase'
 import { isSpringCode } from './product-category'
 import type { StockRow } from './inventory-api'
 
@@ -4766,7 +4766,7 @@ export class TransferRejectedError extends Error {}
 export function normalizeTransfer(input: TransferInput) {
   const { row } = input
   const to = input.to.trim().toUpperCase()
-  if (!/^(AGM|AFI|ARE|AFR|MGM|MFI|MRE|MFR)-(100|[1-9][0-9]?)$/.test(row.code)
+  if (!/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(row.code)
     || !row.location.trim() || !to || to === row.location.trim().toUpperCase()
     || !Number.isSafeInteger(row.boxes) || row.boxes &lt; 1
     || !Number.isSafeInteger(input.boxes) || input.boxes &lt; 1 || input.boxes &gt; row.boxes
@@ -4800,7 +4800,7 @@ export async function loadTurnover(category:TurnoverCategory,days:TurnoverDays){
   return report
 }
 </code></pre></details>
-<details id="file-65" class="file"><summary>src/lib/turnover.ts</summary><p>Valida o relatório e calcula participação, acumulado e classes ABC, tratando empates.</p><p><strong>Funções para localizar:</strong> validateTurnoverReport, rankTurnover, daysWithoutSale.</p><p>49 linhas · SHA-256 cabace34fc8efce2</p><pre><code>export type TurnoverCategory='all'|'shocks'|'springs'
+<details id="file-65" class="file"><summary>src/lib/turnover.ts</summary><p>Valida o relatório e calcula participação, acumulado e classes ABC, tratando empates.</p><p><strong>Funções para localizar:</strong> validateTurnoverReport, rankTurnover, daysWithoutSale.</p><p>49 linhas · SHA-256 32b9b777ad99e531</p><pre><code>export type TurnoverCategory='all'|'shocks'|'springs'
 export type TurnoverDays=30|90|180
 export type TurnoverProduct={code:string;registered_at:string;sold_boxes:number;sales_count:number;last_sale_at:string|null;stock_boxes:number}
 export type TurnoverReport={as_of:string;period_start:string;days:TurnoverDays;category:TurnoverCategory;products:TurnoverProduct[]}
@@ -4819,7 +4819,7 @@ export function validateTurnoverReport(value:unknown):TurnoverReport {
   if(Math.abs(end-start-report.days*86400000)&gt;1000)return fail()
   const codes=new Set&lt;string&gt;()
   for(const row of report.products){
-    if(!row||typeof row.code!=='string'||! /^[A-Z]{3}-(100|[1-9][0-9]?)$/.test(row.code)
+    if(!row||typeof row.code!=='string'||! /^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(row.code)
       ||codes.has(row.code)||!date(row.registered_at)||Date.parse(row.registered_at)&gt;end
       ||!integer(row.sold_boxes)||!integer(row.sales_count)||!integer(row.stock_boxes)
       ||row.sales_count&gt;row.sold_boxes||(row.sold_boxes===0)!==(row.sales_count===0)
@@ -6751,7 +6751,104 @@ do $$ begin
 end $$;
 commit;
 </code></pre></details>
-<details id="file-88" class="file"><summary>supabase/seed_demo.sql</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>74 linhas · SHA-256 cf85e014efb2dedb</p><pre><code>-- Dados fictícios para testar a integração em um banco de demonstração vazio.
+<details id="file-88" class="file"><summary>supabase/migrations/20261029021257_demo_stock_import.sql</summary><p>Mudança versionada do banco. Aplicar na ordem e uma única vez. As instruções SQL abaixo criam/alteram tabelas, funções, índices e permissões; os comentários explicam as decisões específicas.</p><p>18 linhas · SHA-256 fcbccd86593abf89</p><pre><code>begin;
+alter table public.products drop constraint products_code_check;
+alter table public.products add constraint products_code_check
+ check (code ~ '^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$');
+-- Registro privado dos IDs reais: identifica o lote sem expor uma API de importação.
+create table if not exists private.demo_stock_import_items (
+ batch_id text not null,
+ product_id uuid not null references public.products(id),
+ movement_id uuid not null references public.stock_movements(id),
+ quantity integer not null check (quantity &gt; 50),
+ created_at timestamptz not null default now(),
+ primary key (batch_id,product_id),
+ unique (movement_id)
+);
+alter table private.demo_stock_import_items enable row level security;
+revoke all on private.demo_stock_import_items from public,anon,authenticated;
+commit;
+</code></pre></details>
+<details id="file-89" class="file"><summary>supabase/migrations/20261029021730_expanded_product_codes.sql</summary><p>Mudança versionada do banco. Aplicar na ordem e uma única vez. As instruções SQL abaixo criam/alteram tabelas, funções, índices e permissões; os comentários explicam as decisões específicas.</p><p><strong>Funções para localizar:</strong> public.receive_stock_with_supplier, public.</p><p>79 linhas · SHA-256 2176930975139592</p><pre><code>begin;
+create or replace function public.receive_stock_with_supplier(
+  p_code text, p_application text, p_location text, p_boxes integer, p_status text,
+  p_supplier_id uuid, p_lot_reference text, p_request_id uuid
+)
+returns jsonb language plpgsql security definer set search_path = '' as $$
+declare
+  v_role public.app_role := private.current_user_role();
+  v_code text := upper(trim(p_code));
+  v_location text := upper(trim(p_location));
+  v_application text := nullif(trim(coalesce(p_application,'')),'');
+  v_lot text := nullif(trim(coalesce(p_lot_reference,'')),'');
+  v_status text;
+  v_supplier_name text;
+  v_product uuid;
+  v_location_id uuid;
+  v_payload jsonb;
+  v_movement public.stock_movements%rowtype;
+begin
+  if v_role is null or v_role not in ('administrator'::public.app_role,'receiving'::public.app_role) then
+    raise exception 'Sem permissão para receber estoque.' using errcode='42501';
+  end if;
+  if v_code is null or v_code !~ '^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$' or p_boxes is null or p_boxes &lt; 1
+     or p_request_id is null or coalesce(v_location,'')='' or length(v_lot)&gt;100 then
+    raise exception 'Confira código, local, caixas e lote.' using errcode='22023';
+  end if;
+  v_status := case when split_part(v_code,'-',1) in ('MGM','MFI','MRE','MFR') then 'in_stock' else p_status end;
+  if v_status is null or v_status not in ('awaiting_test','released_for_sale','in_stock')
+     or (split_part(v_code,'-',1) not in ('MGM','MFI','MRE','MFR') and v_status='in_stock') then
+    raise exception 'Situação inválida para o produto.' using errcode='22023';
+  end if;
+  if v_role='receiving'::public.app_role and v_status='released_for_sale' then
+    raise exception 'Recebimento de amortecedores começa aguardando teste.' using errcode='42501';
+  end if;
+  if v_lot is not null and p_supplier_id is null then
+    raise exception 'Selecione o fornecedor para informar o lote.' using errcode='22023';
+  end if;
+  v_payload := jsonb_build_object('code',v_code,'application',v_application,'location',v_location,'boxes',p_boxes,
+    'status',v_status,'supplier_id',p_supplier_id,'lot_reference',v_lot);
+  perform pg_advisory_xact_lock(hashtextextended(p_request_id::text,0));
+  select * into v_movement from public.stock_movements where receipt_request_id=p_request_id;
+  if found then
+    if v_movement.receipt_payload is distinct from v_payload or v_movement.performed_by is distinct from auth.uid() then
+      raise exception 'Envio já utilizado para outra entrada.' using errcode='22023';
+    end if;
+    return to_jsonb(v_movement);
+  end if;
+  if p_supplier_id is not null then
+    select name into v_supplier_name from public.suppliers where id=p_supplier_id;
+    if not found then raise exception 'Fornecedor não encontrado.' using errcode='P0002'; end if;
+  end if;
+  select id into v_location_id from public.locations where code=v_location and is_active;
+  if v_location_id is null then raise exception 'Local inexistente ou inativo.' using errcode='P0002'; end if;
+  select id into v_product from public.products where code=v_code;
+  if v_product is null then
+    if v_role &lt;&gt; 'administrator'::public.app_role then
+      raise exception 'Somente administradores cadastram produto novo.' using errcode='42501';
+    end if;
+    if v_application is null or length(v_application)&gt;500 then
+      raise exception 'Informe a aplicação do produto novo.' using errcode='22023';
+    end if;
+    insert into public.products(code,application,default_location_id) values(v_code,v_application,v_location_id)
+      on conflict(code) do nothing returning id into v_product;
+    if v_product is null then select id into v_product from public.products where code=v_code; end if;
+  end if;
+  insert into public.stock_balances(product_id,location_id,status_code,unit_type,quantity)
+  values(v_product,v_location_id,v_status,'box',p_boxes)
+  on conflict(product_id,location_id,status_code,unit_type)
+  do update set quantity=public.stock_balances.quantity+excluded.quantity, updated_at=clock_timestamp();
+  insert into public.stock_movements(product_id,movement_type,unit_type,quantity,status_after,to_location_id,performed_by,
+    supplier_id,supplier_name,lot_reference,receipt_request_id,receipt_payload)
+  values(v_product,'receipt','box',p_boxes,v_status,v_location_id,auth.uid(),p_supplier_id,v_supplier_name,v_lot,p_request_id,v_payload)
+  returning * into v_movement;
+  return to_jsonb(v_movement);
+end; $$;
+revoke all on function public.receive_stock_with_supplier(text,text,text,integer,text,uuid,text,uuid) from public,anon;
+grant execute on function public.receive_stock_with_supplier(text,text,text,integer,text,uuid,text,uuid) to authenticated;
+commit;
+</code></pre></details>
+<details id="file-90" class="file"><summary>supabase/seed_demo.sql</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>74 linhas · SHA-256 cf85e014efb2dedb</p><pre><code>-- Dados fictícios para testar a integração em um banco de demonstração vazio.
 -- Não execute em um banco que já tenha dados de estoque: o bloco inicial cancela nesse caso.
 
 do $$
@@ -6825,7 +6922,137 @@ from (values
 join public.products as product on product.code = sample.code
 join public.locations as location on location.code = sample.location_code;
 </code></pre></details>
-<details id="file-89" class="file"><summary>supabase/tests/operational-outflows.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>198 linhas · SHA-256 aee555c6d7a1dd35</p><pre><code>-- ENSAIO, NÃO MIGRAÇÃO. Todos os dados e alterações de perfil são desfeitos no ROLLBACK.
+<details id="file-91" class="file"><summary>supabase/seeds/demo-stock-88.sql</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>130 linhas · SHA-256 144b82580c17c4a4</p><pre><code>-- Lote fictício autorizado pelo proprietário. Não executado automaticamente na aplicação.
+-- Transação única: falhas desfazem todo o lote. Códigos existentes são preservados.
+begin;
+select pg_advisory_xact_lock(hashtextextended('stockflow:demo-stock-88:v1',0));
+create temporary table demo_stock_candidates (
+ code text primary key, manufacturer text not null, location text not null,
+ quantity integer not null check(quantity between 51 and 150)
+) on commit drop;
+insert into demo_stock_candidates values
+ ('AVW-04','Volkswagen','SUL',51),
+ ('AVW-12','Volkswagen','NORTE',68),
+ ('AVW-27','Volkswagen','LESTE',85),
+ ('AVW-38','Volkswagen','OESTE',102),
+ ('AVW-59','Volkswagen','SUL',119),
+ ('AVW-64','Volkswagen','NORTE',136),
+ ('AVW-76','Volkswagen','LESTE',53),
+ ('AVW-93','Volkswagen','OESTE',70),
+ ('AFI-08','Fiat','SUL',87),
+ ('AFI-20','Fiat','NORTE',104),
+ ('AFI-21','Fiat','LESTE',121),
+ ('AFI-35','Fiat','OESTE',138),
+ ('AFI-43','Fiat','SUL',55),
+ ('AFI-56','Fiat','NORTE',72),
+ ('AFI-72','Fiat','LESTE',89),
+ ('AFI-91','Fiat','OESTE',106),
+ ('ARE-06','Renault','SUL',123),
+ ('ARE-14','Renault','NORTE',140),
+ ('ARE-23','Renault','LESTE',57),
+ ('ARE-37','Renault','OESTE',74),
+ ('ARE-48','Renault','SUL',91),
+ ('ARE-61','Renault','NORTE',108),
+ ('ARE-79','Renault','LESTE',125),
+ ('ARE-96','Renault','OESTE',142),
+ ('ACI-03','Citroën','SUL',59),
+ ('ACI-11','Citroën','NORTE',76),
+ ('ACI-26','Citroën','LESTE',93),
+ ('ACI-34','Citroën','OESTE',110),
+ ('ACI-47','Citroën','SUL',127),
+ ('ACI-58','Citroën','NORTE',144),
+ ('ACI-73','Citroën','LESTE',61),
+ ('ACI-88','Citroën','OESTE',78),
+ ('AHO-07','Honda','SUL',95),
+ ('AHO-16','Honda','NORTE',112),
+ ('AHO-24','Honda','LESTE',129),
+ ('AHO-39','Honda','OESTE',146),
+ ('AHO-52','Honda','SUL',63),
+ ('AHO-63','Honda','NORTE',80),
+ ('AHO-81','Honda','LESTE',97),
+ ('AHO-94','Honda','OESTE',114),
+ ('AKI-05','Kia','SUL',131),
+ ('AKI-18','Kia','NORTE',148),
+ ('AKI-29','Kia','LESTE',65),
+ ('AKI-41','Kia','OESTE',82),
+ ('AKI-54','Kia','SUL',99),
+ ('AKI-67','Kia','NORTE',116),
+ ('AKI-78','Kia','LESTE',133),
+ ('AKI-92','Kia','OESTE',150),
+ ('AFR-09','Ford','SUL',67),
+ ('AFR-17','Ford','NORTE',84),
+ ('AFR-28','Ford','LESTE',101),
+ ('AFR-34','Ford','OESTE',118),
+ ('AFR-46','Ford','SUL',135),
+ ('AFR-64','Ford','NORTE',52),
+ ('AFR-75','Ford','LESTE',69),
+ ('AFR-89','Ford','OESTE',86),
+ ('AGM-02','Chevrolet','SUL',103),
+ ('AGM-15','Chevrolet','NORTE',120),
+ ('AGM-25','Chevrolet','LESTE',137),
+ ('AGM-35','Chevrolet','OESTE',54),
+ ('AGM-49','Chevrolet','SUL',71),
+ ('AGM-62','Chevrolet','NORTE',88),
+ ('AGM-77','Chevrolet','LESTE',105),
+ ('AGM-95','Chevrolet','OESTE',122),
+ ('AJE-02','Jeep','SUL',139),
+ ('AJE-13','Jeep','NORTE',56),
+ ('AJE-22','Jeep','LESTE',73),
+ ('AJE-36','Jeep','OESTE',90),
+ ('AJE-51','Jeep','SUL',107),
+ ('AJE-66','Jeep','NORTE',124),
+ ('AJE-83','Jeep','LESTE',141),
+ ('AJE-97','Jeep','OESTE',58),
+ ('AJC-04','JAC','SUL',75),
+ ('AJC-19','JAC','NORTE',92),
+ ('AJC-31','JAC','LESTE',109),
+ ('AJC-42','JAC','OESTE',126),
+ ('AJC-55','JAC','SUL',143),
+ ('AJC-68','JAC','NORTE',60),
+ ('AJC-74','JAC','LESTE',77),
+ ('AJC-86','JAC','OESTE',94),
+ ('AHY-06','Hyundai','SUL',111),
+ ('AHY-18','Hyundai','NORTE',128),
+ ('AHY-32','Hyundai','LESTE',145),
+ ('AHY-44','Hyundai','OESTE',62),
+ ('AHY-57','Hyundai','SUL',79),
+ ('AHY-69','Hyundai','NORTE',96),
+ ('AHY-82','Hyundai','LESTE',113),
+ ('AHY-98','Hyundai','OESTE',130);
+-- Uma prateleira inativa é um bloqueio deliberado; não é reativada silenciosamente.
+do $$ begin
+ if exists(select 1 from public.locations where code in ('SUL','NORTE','LESTE','OESTE') and not is_active) then
+  raise exception 'Há uma prateleira do lote inativa; importação cancelada.';
+ end if;
+end $$;
+insert into public.locations(code)
+ values ('SUL'),('NORTE'),('LESTE'),('OESTE') on conflict(code) do nothing;
+create temporary table demo_stock_created on commit drop as
+ with inserted as (
+  insert into public.products(code,application,default_location_id)
+   select c.code,'[DEMONSTRAÇÃO] '||c.manufacturer||' — aplicação, posição e lado a confirmar',l.id
+   from demo_stock_candidates c join public.locations l on l.code=c.location and l.is_active
+   order by c.code
+   on conflict(code) do nothing
+   returning id,code
+ )
+ select i.id as product_id,c.code,l.id as location_id,c.quantity,gen_random_uuid() as movement_id
+ from inserted i join demo_stock_candidates c on c.code=i.code
+ join public.locations l on l.code=c.location;
+insert into public.stock_balances(product_id,location_id,status_code,unit_type,quantity)
+ select product_id,location_id,'awaiting_test','box',quantity from demo_stock_created;
+insert into public.stock_movements(id,product_id,movement_type,unit_type,quantity,status_after,to_location_id,notes)
+ select movement_id,product_id,'receipt','box',quantity,'awaiting_test',location_id,
+ 'DEMONSTRAÇÃO: lote demo-stock-88-v1; quantidades fictícias autorizadas pelo proprietário via administração do banco.'
+ from demo_stock_created;
+insert into private.demo_stock_import_items(batch_id,product_id,movement_id,quantity)
+ select 'demo-stock-88-v1',product_id,movement_id,quantity from demo_stock_created;
+commit;
+-- Resultado persistente; executar novamente não soma caixas aos produtos existentes.
+select count(*) as imported_products,coalesce(sum(quantity),0) as imported_boxes
+ from private.demo_stock_import_items where batch_id='demo-stock-88-v1';
+</code></pre></details>
+<details id="file-92" class="file"><summary>supabase/tests/operational-outflows.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>198 linhas · SHA-256 aee555c6d7a1dd35</p><pre><code>-- ENSAIO, NÃO MIGRAÇÃO. Todos os dados e alterações de perfil são desfeitos no ROLLBACK.
 begin;
 set local statement_timeout='45s';
 set local lock_timeout='5s';
@@ -7023,7 +7250,7 @@ end $$;
 select test,passed,detail from operational_results order by test;
 rollback;
 </code></pre></details>
-<details id="file-90" class="file"><summary>supabase/tests/operational-role-matrix.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>92 linhas · SHA-256 5a690ae7ebbdd703</p><pre><code>-- ENSAIO, NÃO MIGRAÇÃO. Perfis, saldos e eventos são desfeitos ao final.
+<details id="file-93" class="file"><summary>supabase/tests/operational-role-matrix.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>92 linhas · SHA-256 5a690ae7ebbdd703</p><pre><code>-- ENSAIO, NÃO MIGRAÇÃO. Perfis, saldos e eventos são desfeitos ao final.
 begin;
 set local statement_timeout='45s';
 set local lock_timeout='5s';
@@ -7115,7 +7342,7 @@ end $$;
 select role,operation,passed,detail from role_test_results order by role,operation;
 rollback;
 </code></pre></details>
-<details id="file-91" class="file"><summary>supabase/tests/operational-turnover.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>115 linhas · SHA-256 fba6e46daa527f35</p><pre><code>-- ENSAIO, NÃO MIGRAÇÃO. Fixtures, perfis e histórico são desfeitos no ROLLBACK.
+<details id="file-94" class="file"><summary>supabase/tests/operational-turnover.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>115 linhas · SHA-256 fba6e46daa527f35</p><pre><code>-- ENSAIO, NÃO MIGRAÇÃO. Fixtures, perfis e histórico são desfeitos no ROLLBACK.
 begin;
 set local statement_timeout='45s';
 set local lock_timeout='5s';
@@ -7230,7 +7457,7 @@ end $$;
 select * from turnover_test_results order by test;
 rollback;
 </code></pre></details>
-<details id="file-92" class="file"><summary>scripts/backup-database.ps1</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p><strong>Funções para localizar:</strong> Invoke.</p><p>111 linhas · SHA-256 2afabee532dd1682</p><pre><code># Exportação somente de leitura. A senha nunca é escrita no comando ou no arquivo.
+<details id="file-95" class="file"><summary>scripts/backup-database.ps1</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p><strong>Funções para localizar:</strong> Invoke.</p><p>111 linhas · SHA-256 2afabee532dd1682</p><pre><code># Exportação somente de leitura. A senha nunca é escrita no comando ou no arquivo.
 [CmdletBinding()]
 param()
 
@@ -7341,7 +7568,7 @@ finally {
     Write-Host 'Não envie os arquivos de backup ao GitHub nem ao chat.'
 }
 </code></pre></details>
-<details id="file-93" class="file"><summary>scripts/build-codebook.mjs</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p><strong>Funções para localizar:</strong> walk.</p><p>79 linhas · SHA-256 0a6902e6405055ee</p><pre><code>import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs'
+<details id="file-96" class="file"><summary>scripts/build-codebook.mjs</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p><strong>Funções para localizar:</strong> walk.</p><p>79 linhas · SHA-256 0a6902e6405055ee</p><pre><code>import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { join, relative } from 'node:path'
@@ -7420,7 +7647,7 @@ const html=`&lt;!doctype html&gt;&lt;html lang=&quot;pt-BR&quot;&gt;&lt;meta cha
 writeFileSync(join(root,'docs/livro-do-codigo.html'),html)
 console.log(`Livro gerado: ${files.length} arquivos completos, sem arquivos de ambiente privados.`)
 </code></pre></details>
-<details id="file-94" class="file"><summary>scripts/check-activity.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>12 linhas · SHA-256 c87996d7161a50f1</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-97" class="file"><summary>scripts/check-activity.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>12 linhas · SHA-256 c87996d7161a50f1</p><pre><code>import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
 let source=await readFile(new URL('../src/lib/activity-api.ts',import.meta.url),'utf8')
@@ -7432,7 +7659,7 @@ assert.deepEqual(validateActivity(rows.toReversed(),7),rows)
 for(const bad of [null,rows.slice(1),rows.map(r=&gt;({...r,sold_boxes:-1})),rows.map(r=&gt;({...r,received_boxes:1.2})),[rows[0],...rows.slice(0,6)],rows.map(r=&gt;({...r,day:'2026-02-31'})),rows.map((r,i)=&gt;i===0?{...r,day:'2026-09-01'}:r)])assert.throws(()=&gt;validateActivity(bad,7))
 console.log('OK: atividade diária ordenada, campos válidos, dias consecutivos, duplicação, datas impossíveis e resposta incompleta.')
 </code></pre></details>
-<details id="file-95" class="file"><summary>scripts/check-backup.ps1</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>39 linhas · SHA-256 4a1411a883c7640d</p><pre><code># Testes locais: não solicitam senha e não conectam ao Supabase.
+<details id="file-98" class="file"><summary>scripts/check-backup.ps1</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>39 linhas · SHA-256 4a1411a883c7640d</p><pre><code># Testes locais: não solicitam senha e não conectam ao Supabase.
 $ErrorActionPreference = 'Stop'
 $tokens = $null
 $parseErrors = $null
@@ -7471,7 +7698,7 @@ foreach ($item in @(@('connectionArgs', 'pg_dump.exe'), @('roleConnectionArgs', 
 }
 Write-Output 'OK: sintaxe, aviso com saída zero, falha com saída não zero e parâmetros aceitos pelas duas ferramentas. Nenhuma senha usada ou conexão ao Supabase realizada.'
 </code></pre></details>
-<details id="file-96" class="file"><summary>scripts/check-committed-concurrency.ps1</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> SqlLiteral, Start, Complete, copies.</p><p>227 linhas · SHA-256 fef097725a045976</p><pre><code># Disputa com COMMIT em tabelas isoladas; não registra retiradas no estoque público.
+<details id="file-99" class="file"><summary>scripts/check-committed-concurrency.ps1</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> SqlLiteral, Start, Complete, copies.</p><p>227 linhas · SHA-256 fef097725a045976</p><pre><code># Disputa com COMMIT em tabelas isoladas; não registra retiradas no estoque público.
 # Copia a função atual, executa dois clientes e remove apenas o schema criado por este ensaio.
 [CmdletBinding()]
 param()
@@ -7698,7 +7925,7 @@ select 'ONE_EVENT_ZERO_BALANCE';
     Write-Host &quot;Relatório privado: $reportDirectory&quot;
 }
 </code></pre></details>
-<details id="file-97" class="file"><summary>scripts/check-concurrency.ps1</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> SqlLiteral, Start, Complete.</p><p>166 linhas · SHA-256 297c7ec3c565f382</p><pre><code># Ensaio com duas conexões REAIS; todas as retiradas terminam em ROLLBACK.
+<details id="file-100" class="file"><summary>scripts/check-concurrency.ps1</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> SqlLiteral, Start, Complete.</p><p>166 linhas · SHA-256 297c7ec3c565f382</p><pre><code># Ensaio com duas conexões REAIS; todas as retiradas terminam em ROLLBACK.
 # Não cria contas, não muda cargos e não grava movimentações permanentes.
 [CmdletBinding()]
 param()
@@ -7864,7 +8091,7 @@ rollback;
     Write-Host &quot;Relatório privado: $reportDirectory&quot;
 }
 </code></pre></details>
-<details id="file-98" class="file"><summary>scripts/check-csv.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>32 linhas · SHA-256 3ea3ee07e42a832a</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-101" class="file"><summary>scripts/check-csv.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>32 linhas · SHA-256 3ea3ee07e42a832a</p><pre><code>import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import ts from 'typescript'
 const source = await readFile(new URL('../src/lib/csv.ts', import.meta.url), 'utf8')
@@ -7896,7 +8123,7 @@ URL.createObjectURL=originalCreate;URL.revokeObjectURL=originalRevoke
 delete globalThis.document;delete globalThis.window
 console.log('OK: CSV com acentos, separador, aspas, linhas, decimais, valores vazios, proteção de fórmulas e limpeza do download. Sem rede/banco.')
 </code></pre></details>
-<details id="file-99" class="file"><summary>scripts/check-dashboard.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>62 linhas · SHA-256 e8d96dfd87160fbb</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-102" class="file"><summary>scripts/check-dashboard.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>62 linhas · SHA-256 e8d96dfd87160fbb</p><pre><code>import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
 import React from 'react'
@@ -7958,7 +8185,7 @@ assert(readyPanel.includes('dashboard-alert-panel has-alerts'))
 delete globalThis.__dashboardAlerts;delete globalThis.__dashboardClient;delete globalThis.__dashboardApi;delete globalThis.__dashboardSummary
 console.log('OK: filtros de estoque, alertas, relatório inválido, categoria RPC, barras e quantidades, entradas, estado vazio e ativação pendente. A agregação SQL ainda exige ensaio no Supabase.')
 </code></pre></details>
-<details id="file-100" class="file"><summary>scripts/check-inventory-pagination.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>20 linhas · SHA-256 d558276b24b8c08c</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-103" class="file"><summary>scripts/check-inventory-pagination.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>20 linhas · SHA-256 d558276b24b8c08c</p><pre><code>import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import ts from 'typescript'
 const source = await readFile(new URL('../src/lib/read-all-rows.ts', import.meta.url), 'utf8')
@@ -7978,7 +8205,7 @@ assert.deepEqual(result.data, [], 'Uma falha não pode fornecer estoque parcial 
 assert((await readAllRows(async () =&gt; ({data: null, error: null}))).error)
 console.log('OK: 1205 registros, limites menores no servidor, vazio e falha sem publicação de dados parciais.')
 </code></pre></details>
-<details id="file-101" class="file"><summary>scripts/check-outflow-recovery.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>183 linhas · SHA-256 89989e8ace3db985</p><pre><code>// Executa os handlers reais com hooks em memória e transporte simulado.
+<details id="file-104" class="file"><summary>scripts/check-outflow-recovery.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>183 linhas · SHA-256 89989e8ace3db985</p><pre><code>// Executa os handlers reais com hooks em memória e transporte simulado.
 // Não usa credenciais, não acessa a rede e não prova o comportamento do servidor.
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
@@ -8161,7 +8388,7 @@ delete globalThis.__recovery
 delete globalThis.window
 console.log(JSON.stringify({ scope: 'Handlers reais; transporte e hooks simulados; sem rede ou escrita no banco', results }, null, 2))
 </code></pre></details>
-<details id="file-102" class="file"><summary>scripts/check-outflows.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>62 linhas · SHA-256 39997d52e651d785</p><pre><code>// Testes locais sem alterar estoque ou consultar contas reais.
+<details id="file-105" class="file"><summary>scripts/check-outflows.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>62 linhas · SHA-256 39997d52e651d785</p><pre><code>// Testes locais sem alterar estoque ou consultar contas reais.
 import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
@@ -8223,7 +8450,7 @@ delete globalThis.__outflowApi
 delete globalThis.__pendingOutflow
 console.log('OK: venda só de liberados, molas Em estoque, saldo/inteiros, observação de descarte/devolução, reenvio, autoria do servidor e interface por cargo. Este script é uma regressão local; não executa SQL ou contas reais.')
 </code></pre></details>
-<details id="file-103" class="file"><summary>scripts/check-performance.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> visit.</p><p>28 linhas · SHA-256 113a1636c6890c87</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-106" class="file"><summary>scripts/check-performance.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> visit.</p><p>28 linhas · SHA-256 113a1636c6890c87</p><pre><code>import assert from 'node:assert/strict'
 import { readFile, stat } from 'node:fs/promises'
 import { gzipSync } from 'node:zlib'
 
@@ -8251,7 +8478,7 @@ for(const kind of ['shock','spring'])for(const suffix of ['-thumb','']){
 }
 console.log(JSON.stringify({scope:'Grafo real do build; não mede tempo de rede/aparelho',initialJavascriptBytes:bytes,initialGzipBytes:gzip,previousSingleJavascriptBytes:582690,reductionPercent:+((1-bytes/582690)*100).toFixed(1),images},null,2))
 </code></pre></details>
-<details id="file-104" class="file"><summary>scripts/check-product-photos.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>57 linhas · SHA-256 9df5eeca03e5e1ef</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-107" class="file"><summary>scripts/check-product-photos.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>58 linhas · SHA-256 67327bfe79b9aaaa</p><pre><code>import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
 import React from 'react'
@@ -8274,6 +8501,7 @@ let source=await readFile(new URL('src/lib/product-photos.ts',root),'utf8')
 source=source.replace(&quot;import {supabase} from './supabase'&quot;,'const supabase=globalThis.__photoClient')
 const api=await importSource(compile(source))
 assert.equal(api.photoObjectName('MGM-100'),'MGM-100.webp')
+for(const code of ['AVW-04','AFI-35ABS','AJE-02D'])assert.equal(api.photoObjectName(code),code+'.webp')
 for(const code of ['AGM-0','AGM-001','AGM-101','../AGM-1','agm-1'])assert.throws(()=&gt;api.photoObjectName(code))
 const png=new File([new Uint8Array([137,80,78,71,13,10,26,10,0,0,0,0])],'foto.png',{type:'image/png'})
 await api.validatePhoto(png)
@@ -8308,7 +8536,7 @@ for(const [code,file] of [['AGM-35','shock-example-thumb.webp'],['MGM-35','sprin
 delete globalThis.__photoClient;delete globalThis.__photoApi
 console.log('OK: arquivos inválidos/grandes, códigos, paginação, links privados, substituição, falhas de acesso e exemplos distintos. Regras SQL e upload real exigem ativação e ensaio no Supabase.')
 </code></pre></details>
-<details id="file-105" class="file"><summary>scripts/check-receipts.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>57 linhas · SHA-256 c469b4f510fdb288</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-108" class="file"><summary>scripts/check-receipts.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>58 linhas · SHA-256 effce64d7950bea3</p><pre><code>import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import ts from 'typescript'
 import React from 'react'
@@ -8326,6 +8554,7 @@ source=source.replace(&quot;import { supabase } from './supabase'&quot;,'const s
 const api=await importSource(compile(source))
 const input={code:' agm-35 ',application:'',location:' a03 ',boxes:2,status:'awaiting_test',supplierId:'supplier-id',lot:' LOTE-DEMO '}
 assert.equal(api.normalizeReceipt(input).p_code,'AGM-35')
+for(const code of ['AVW-04','ACI-11AD','AFI-35ABS','AJE-02E','AHY-98'])assert.equal(api.normalizeReceipt({...input,code}).p_code,code)
 assert.equal(api.normalizeReceipt(input).p_lot_reference,'LOTE-DEMO')
 assert.equal(api.normalizeReceipt(input).p_location,'A03')
 assert.throws(()=&gt;api.normalizeReceipt({...input,supplierId:''}),/selecione seu fornecedor/)
@@ -8365,7 +8594,7 @@ delete globalThis.__receiptClient
 delete globalThis.__receiptApi
 console.log('OK: lote exige fornecedor, normalização, caixas inteiras, molas sem teste, reenvio, cadastro por administrador e formulário por cargo. SQL e persistência ainda exigem validação após ativar.')
 </code></pre></details>
-<details id="file-106" class="file"><summary>scripts/check-shock-testing.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>58 linhas · SHA-256 8ce50aed702c87e1</p><pre><code>// Não acessa o banco: verifica permissões de interface, paginação e limites dos envios.
+<details id="file-109" class="file"><summary>scripts/check-shock-testing.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>58 linhas · SHA-256 8ce50aed702c87e1</p><pre><code>// Não acessa o banco: verifica permissões de interface, paginação e limites dos envios.
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import ts from 'typescript'
@@ -8423,7 +8652,7 @@ delete globalThis.__shockTestClient
 delete globalThis.__shockTestApi
 console.log('OK: molas, quantidades inválidas, reenvio, autoria do servidor, paginação e visibilidade do formulário. Migração ainda precisa de teste no Supabase.')
 </code></pre></details>
-<details id="file-107" class="file"><summary>scripts/check-stock-alerts.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>69 linhas · SHA-256 e37be45a6cd240c9</p><pre><code>import assert from 'node:assert/strict'
+<details id="file-110" class="file"><summary>scripts/check-stock-alerts.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>69 linhas · SHA-256 e37be45a6cd240c9</p><pre><code>import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
 import React from 'react'
@@ -8492,7 +8721,7 @@ delete globalThis.__alertClient
 delete globalThis.__alertApi
 console.log('OK: limites inclusivos, vazio/zero, todas as localizações, catálogo sem saldo, garantia excluída, molas, prateleira inativa, compatibilidade API anterior e acesso da interface. SQL ainda exige ativação/ensaio no Supabase.')
 </code></pre></details>
-<details id="file-108" class="file"><summary>scripts/check-turnover.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>92 linhas · SHA-256 5746237e217939ef</p><pre><code>// Indicadores locais: limites ABC, empates, períodos, contratos da API e renderização.
+<details id="file-111" class="file"><summary>scripts/check-turnover.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p>93 linhas · SHA-256 c27ca3ef2d4af6b3</p><pre><code>// Indicadores locais: limites ABC, empates, períodos, contratos da API e renderização.
 import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import ts from 'typescript'
@@ -8505,6 +8734,7 @@ const pure=await load(compile(await readFile(new URL('src/lib/turnover.ts',root)
 const end='2026-10-26T23:00:00.000Z'
 const product=(code,sold,stock=2)=&gt;({code,registered_at:'2026-01-01T12:00:00Z',sold_boxes:sold,sales_count:sold?1:0,last_sale_at:sold?'2026-10-25T12:00:00Z':null,stock_boxes:stock})
 const report=(quantities,days=90)=&gt;({as_of:end,period_start:new Date(Date.parse(end)-days*86400000).toISOString(),days,category:'all',products:quantities.map((quantity,index)=&gt;product(`AGM-${index+1}`,quantity))})
+for(const code of ['AVW-04','AFI-35ABS','AJE-02D'])pure.validateTurnoverReport({...report([]),products:[product(code,0)]})
 const classes=quantities=&gt;pure.rankTurnover(pure.validateTurnoverReport(report(quantities))).map(row=&gt;row.abc)
 assert.deepEqual(classes([80,15,5]),['A','B','C'])
 assert.deepEqual(classes([79,10,6,5]),['A','A','B','C'])
@@ -8523,7 +8753,7 @@ assert.equal(pure.daysWithoutSale(product('AGM-35',1),end),1)
 for(const days of [30,90,180])assert.equal(pure.validateTurnoverReport(report([1],days)).days,days)
 const base=report([1])
 for(const bad of [null,{}, {...base,days:60},{...base,period_start:end},{...base,category:'other'},
-  {...base,products:[product('AGM-01',1)]},{...base,products:[product('AGM-101',1)]},
+  {...base,products:[product('AGM-001',1)]},{...base,products:[product('AGM-101',1)]},
   {...base,products:[product('AGM-1',1),product('AGM-1',1)]},
   {...base,products:[{...product('AGM-1',1),sold_boxes:1.5}]},
   {...base,products:[{...product('AGM-1',1),stock_boxes:-1}]},
@@ -8584,7 +8814,7 @@ delete globalThis.__turnoverPure;delete globalThis.__turnoverClient;delete globa
 delete globalThis.__turnoverDetails;delete globalThis.__turnoverApplications
 console.log('OK: ABC 80/95%, cruzamento de limite, empates, ausência de vendas, contratos inválidos, categorias/períodos, recusa de acesso, gráfico e estados da interface. Nenhum banco alterado.')
 </code></pre></details>
-<details id="file-109" class="file"><summary>scripts/check-warranty-returns.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> ReturnDialog.</p><p>64 linhas · SHA-256 664c79781a26a36b</p><pre><code>// Verificação sem conexão ao Supabase: não cria contas ou movimentações reais.
+<details id="file-112" class="file"><summary>scripts/check-warranty-returns.mjs</summary><p>Regressão automatizada: importa o código real ou uma transpilação e usa assert para recusar resultados inesperados. Onde há mocks, a verificação não comprova a rede/serviço hospedado.</p><p><strong>Funções para localizar:</strong> ReturnDialog.</p><p>64 linhas · SHA-256 664c79781a26a36b</p><pre><code>// Verificação sem conexão ao Supabase: não cria contas ou movimentações reais.
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import ts from 'typescript'
@@ -8648,7 +8878,7 @@ delete globalThis.__warrantyTestClient
 delete globalThis.__warrantyTestApi
 console.log('OK: categorias, itens desconhecidos, repetição do identificador, erros, formulário de molas, destino e acesso à interface. SQL ainda exige aplicação e teste no Supabase.')
 </code></pre></details>
-<details id="file-110" class="file"><summary>scripts/run-checks.mjs</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>15 linhas · SHA-256 c86cd37bc6aba519</p><pre><code>import { readdirSync } from 'node:fs'
+<details id="file-113" class="file"><summary>scripts/run-checks.mjs</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>15 linhas · SHA-256 c86cd37bc6aba519</p><pre><code>import { readdirSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
@@ -8663,7 +8893,7 @@ const lab = spawnSync(process.execPath, ['--test', 'tests/outflow-lab/server.tes
 if (lab.status !== 0) failures++
 if (failures) process.exitCode = 1
 </code></pre></details>
-<details id="file-111" class="file"><summary>scripts/serve-outflow-lab.mjs</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>36 linhas · SHA-256 eccdfab681f4ae4a</p><pre><code>// Inicie com node scripts/serve-outflow-lab.mjs. Encerrar apaga os dados em memória.
+<details id="file-114" class="file"><summary>scripts/serve-outflow-lab.mjs</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>36 linhas · SHA-256 eccdfab681f4ae4a</p><pre><code>// Inicie com node scripts/serve-outflow-lab.mjs. Encerrar apaga os dados em memória.
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -8699,7 +8929,7 @@ console.log('Laboratório isolado: http://127.0.0.1:5180/tests/outflow-lab/index
 console.log('Sem .env, login, Supabase ou saldos reais. Dados apagados ao encerrar.')
 for(const signal of ['SIGINT','SIGTERM']) process.once(signal,async()=&gt;{await server.close();process.exit(0)})
 </code></pre></details>
-<details id="file-112" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>166 linhas · SHA-256 c3fa3d5ae1d8040b</p><pre><code>import { test, expect, type Page } from '@playwright/test'
+<details id="file-115" class="file"><summary>tests/browser/site.spec.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> navigate.</p><p>166 linhas · SHA-256 c3fa3d5ae1d8040b</p><pre><code>import { test, expect, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 async function navigate(page: Page, name: string) {
@@ -8865,7 +9095,7 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   await expect(page.getByRole('heading', { name: 'Entrar no sistema' })).toBeVisible()
 })
 </code></pre></details>
-<details id="file-113" class="file"><summary>tests/database/bootstrap.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> auth.uid, auth.</p><p>16 linhas · SHA-256 8a47cb31d20ffda3</p><pre><code>-- SOMENTE PostgreSQL descartável. Substitutos mínimos de Auth/Storage para testar SQL.
+<details id="file-116" class="file"><summary>tests/database/bootstrap.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> auth.uid, auth.</p><p>16 linhas · SHA-256 8a47cb31d20ffda3</p><pre><code>-- SOMENTE PostgreSQL descartável. Substitutos mínimos de Auth/Storage para testar SQL.
 create role anon nologin;
 create role authenticated nologin;
 create schema auth;
@@ -8881,7 +9111,7 @@ create table storage.buckets(id text primary key,name text,public boolean,file_s
 create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text,name text);
 alter table storage.objects enable row level security;
 </code></pre></details>
-<details id="file-114" class="file"><summary>tests/database/capacity.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>32 linhas · SHA-256 5c1528cf9c476399</p><pre><code>-- Volume sintético descartável: 180 dias de 500 vendas/dia e ~900 entradas/semana.
+<details id="file-117" class="file"><summary>tests/database/capacity.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>32 linhas · SHA-256 5c1528cf9c476399</p><pre><code>-- Volume sintético descartável: 180 dias de 500 vendas/dia e ~900 entradas/semana.
 insert into public.stock_movements(product_id,movement_type,unit_type,quantity,status_after,to_location_id,created_at)
 select p.id,case when n&lt;=500 then 'sale' else 'receipt' end,'box',1,'released_for_sale',l.id,
  ((now() at time zone 'America/Bahia')::date-d)::timestamp at time zone 'America/Bahia'+interval '12 hours'
@@ -8913,7 +9143,7 @@ select json_build_object('history_rows',(select count(*) from public.stock_movem
  (select json_agg(t) from (select operation,count(*) as calls,round(avg(ms),3) as avg_ms,
  round(percentile_cont(.95) within group(order by ms)::numeric,3) as p95_ms from timings group by operation order by operation) t));
 </code></pre></details>
-<details id="file-115" class="file"><summary>tests/database/company-activity.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>31 linhas · SHA-256 c22ea0abb4a90704</p><pre><code>begin;
+<details id="file-118" class="file"><summary>tests/database/company-activity.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>31 linhas · SHA-256 c22ea0abb4a90704</p><pre><code>begin;
 do $$ declare response jsonb; begin
  begin
   insert into auth.users(id,email) values(gen_random_uuid(),'outsider@test.invalid');
@@ -8944,7 +9174,11 @@ do $$ declare response jsonb; begin
 end $$;
 rollback;
 </code></pre></details>
-<details id="file-116" class="file"><summary>tests/database/run-local.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> command, asyncSql.</p><p>51 linhas · SHA-256 5e91939f471bbdeb</p><pre><code>// Cria e apaga seu próprio PostgreSQL. Nunca usa URL/credencial de produção.
+<details id="file-119" class="file"><summary>tests/database/demo-stock.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>4 linhas · SHA-256 0117bf6969e6c174</p><pre><code>-- Guarda o estado anterior: o lote não pode tocar em produtos/saldos existentes.
+create table private.existing_demo_test_products as select id,to_jsonb(p) as original from public.products p;
+create table private.existing_demo_test_balances as select id,to_jsonb(b) as original from public.stock_balances b;
+</code></pre></details>
+<details id="file-120" class="file"><summary>tests/database/run-local.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> command, asyncSql.</p><p>66 linhas · SHA-256 ca07f4ee9a1fe8bd</p><pre><code>// Cria e apaga seu próprio PostgreSQL. Nunca usa URL/credencial de produção.
 import { spawnSync, spawn } from 'node:child_process'
 import { readdirSync, readFileSync } from 'node:fs'
 import { randomUUID } from 'node:crypto'
@@ -8989,13 +9223,28 @@ try {
   await Promise.all([asyncSql(transaction),asyncSql(transaction)])
   const counts=sql(&quot;select count(*) from public.stock_movements where movement_type='transfer';select sum(quantity) from public.stock_balances;select quantity from public.stock_balances b join public.locations l on l.id=b.location_id join public.products p on p.id=b.product_id where l.code='TEST-A' and p.code='AGM-100';&quot;).trim().split('\n')
   if(JSON.stringify(counts)!==JSON.stringify(['1','20','8']))throw new Error(`Concorrência alterou saldo/auditoria: ${counts}`)
+  sql(readFileSync(new URL('tests/database/demo-stock.sql',root),'utf8'))
+  const demoSeed=readFileSync(new URL('supabase/seeds/demo-stock-88.sql',root),'utf8')
+  const firstDemo=sql(demoSeed).trim().split('\n').at(-1)
+  const secondDemo=sql(demoSeed).trim().split('\n').at(-1)
+  if(firstDemo!==secondDemo)throw new Error('Reimportação duplicou o lote fictício.')
+  sql(`do $$ begin
+    if exists(select 1 from private.existing_demo_test_products old join public.products p using(id) where old.original&lt;&gt;to_jsonb(p)) then raise exception 'Produto existente alterado';end if;
+    if exists(select 1 from private.existing_demo_test_balances old join public.stock_balances b using(id) where old.original&lt;&gt;to_jsonb(b)) then raise exception 'Saldo existente alterado';end if;
+    if (select count(*) from private.demo_stock_import_items where batch_id='demo-stock-88-v1')&lt;&gt;88 then raise exception 'Quantidade de códigos inesperada';end if;
+    if exists(select 1 from private.demo_stock_import_items i join public.stock_balances b using(product_id) where b.quantity&lt;&gt;i.quantity or b.status_code&lt;&gt;'awaiting_test') then raise exception 'Saldo fictício incorreto';end if;
+    if has_table_privilege('authenticated','private.demo_stock_import_items','select') then raise exception 'Registro privado exposto';end if;
+    if not ('AFI-08' ~ '^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$') or 'AFI-101' ~ '^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$' then raise exception 'Validação de código incorreta';end if;
+  end $$;`)
+  sql(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${uid}',true);select public.receive_stock_with_supplier('AVW-04',null,'SUL',1,'awaiting_test',null,null,'${randomUUID()}');rollback;`)
+  console.log('OK: lote fictício de 88 códigos, reexecução sem duplicação, saldos preservados e rastreamento privado.')
   if(process.argv.includes('--capacity'))console.log('CAPACITY_RESULT '+sql(readFileSync(new URL('tests/database/capacity.sql',root),'utf8')).trim())
   console.log(`OK: ${migrations.length} migrações em PostgreSQL 17 isolado; contratos, permissões e dois reenvios simultâneos geram uma transferência e conservam 20 caixas.`)
 } finally {
   command(['rm','-f',container])
 }
 </code></pre></details>
-<details id="file-117" class="file"><summary>tests/database/transfers.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>62 linhas · SHA-256 831c7dadd144dee6</p><pre><code>-- Dados e identidades fictícios exclusivamente no container descartável.
+<details id="file-121" class="file"><summary>tests/database/transfers.sql</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>62 linhas · SHA-256 831c7dadd144dee6</p><pre><code>-- Dados e identidades fictícios exclusivamente no container descartável.
 insert into private.company_allowed_emails(email) values('admin@test.invalid'),('viewer@test.invalid'),('stock@test.invalid');
 insert into auth.users(id,email) values
  ('11111111-1111-4111-8111-111111111111','admin@test.invalid'),('22222222-2222-4222-8222-222222222222','viewer@test.invalid'),('33333333-3333-4333-8333-333333333333','stock@test.invalid');
@@ -9057,7 +9306,7 @@ begin
 end $$;
 rollback;
 </code></pre></details>
-<details id="file-118" class="file"><summary>tests/mobile-preview/index.html</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>34 linhas · SHA-256 637f08daaa0e3614</p><pre><code>&lt;!doctype html&gt;
+<details id="file-122" class="file"><summary>tests/mobile-preview/index.html</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>34 linhas · SHA-256 637f08daaa0e3614</p><pre><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;pt-BR&quot;&gt;
 &lt;head&gt;
   &lt;meta charset=&quot;UTF-8&quot;/&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;/&gt;
@@ -9091,10 +9340,10 @@ rollback;
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre></details>
-<details id="file-119" class="file"><summary>tests/module-loading/index.html</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>3 linhas · SHA-256 7e031a5daf5cb645</p><pre><code>&lt;!doctype html&gt;
+<details id="file-123" class="file"><summary>tests/module-loading/index.html</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>3 linhas · SHA-256 7e031a5daf5cb645</p><pre><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;pt-BR&quot;&gt;&lt;head&gt;&lt;meta charset=&quot;UTF-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;&lt;title&gt;LIBER — laboratório de carregamento&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;&lt;script type=&quot;module&quot; src=&quot;./main.tsx&quot;&gt;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;
 </code></pre></details>
-<details id="file-120" class="file"><summary>tests/module-loading/main.tsx</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> Lab.</p><p>21 linhas · SHA-256 20efaf18f07513dd</p><pre><code>/* oxlint-disable react/only-export-components -- entrada isolada do laboratório, fora do produto. */
+<details id="file-124" class="file"><summary>tests/module-loading/main.tsx</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> Lab.</p><p>21 linhas · SHA-256 20efaf18f07513dd</p><pre><code>/* oxlint-disable react/only-export-components -- entrada isolada do laboratório, fora do produto. */
 import {lazy,Suspense,useState,type ReactNode} from 'react'
 import {createRoot} from 'react-dom/client'
 import {ModuleBoundary,ModuleLoading} from '../../src/components/ModuleBoundary'
@@ -9115,7 +9364,7 @@ function Lab(){
 }
 createRoot(document.getElementById('root')!).render(&lt;Lab/&gt; )
 </code></pre></details>
-<details id="file-121" class="file"><summary>tests/outflow-lab/client.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>16 linhas · SHA-256 d4b684697624e330</p><pre><code>// Substitui somente o transporte no servidor local de laboratório.
+<details id="file-125" class="file"><summary>tests/outflow-lab/client.ts</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>16 linhas · SHA-256 d4b684697624e330</p><pre><code>// Substitui somente o transporte no servidor local de laboratório.
 // O componente e a validação de saídas continuam sendo os arquivos reais do projeto.
 export const supabase = {
   async rpc(functionName: string, payload: Record&lt;string, unknown&gt;) {
@@ -9131,13 +9380,13 @@ export const supabase = {
   },
 }
 </code></pre></details>
-<details id="file-122" class="file"><summary>tests/outflow-lab/index.html</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>6 linhas · SHA-256 007854e8e6915a56</p><pre><code>&lt;!doctype html&gt;
+<details id="file-126" class="file"><summary>tests/outflow-lab/index.html</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>6 linhas · SHA-256 007854e8e6915a56</p><pre><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;pt-BR&quot;&gt;
   &lt;head&gt;&lt;meta charset=&quot;UTF-8&quot;/&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;/&gt;&lt;title&gt;LIBER — Laboratório isolado&lt;/title&gt;&lt;/head&gt;
   &lt;body&gt;&lt;div id=&quot;root&quot;&gt;&lt;/div&gt;&lt;script type=&quot;module&quot; src=&quot;/tests/outflow-lab/main.tsx&quot;&gt;&lt;/script&gt;&lt;/body&gt;
 &lt;/html&gt;
 </code></pre></details>
-<details id="file-123" class="file"><summary>tests/outflow-lab/main.tsx</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> Lab, restart, resume, read.</p><p>63 linhas · SHA-256 19b84ce60e3e1d64</p><pre><code>import { useEffect, useState } from 'react'
+<details id="file-127" class="file"><summary>tests/outflow-lab/main.tsx</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> Lab, restart, resume, read.</p><p>63 linhas · SHA-256 19b84ce60e3e1d64</p><pre><code>import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { StockOutflows } from '../../src/components/StockOutflows'
 import type { StockRow } from '../../src/lib/inventory-api'
@@ -9200,7 +9449,7 @@ export function Lab() {
 }
 createRoot(document.getElementById('root')!).render(&lt;Lab/&gt; )
 </code></pre></details>
-<details id="file-124" class="file"><summary>tests/outflow-lab/server.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> createOutflowLab, reset.</p><p>74 linhas · SHA-256 80511769cc9481c7</p><pre><code>// Servidor de laboratório: tudo vive em memória. Não importa Supabase ou .env.
+<details id="file-128" class="file"><summary>tests/outflow-lab/server.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p><strong>Funções para localizar:</strong> createOutflowLab, reset.</p><p>74 linhas · SHA-256 80511769cc9481c7</p><pre><code>// Servidor de laboratório: tudo vive em memória. Não importa Supabase ou .env.
 import { randomUUID } from 'node:crypto'
 
 export function createOutflowLab() {
@@ -9274,7 +9523,7 @@ export function createOutflowLab() {
   }
 }
 </code></pre></details>
-<details id="file-125" class="file"><summary>tests/outflow-lab/server.test.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>41 linhas · SHA-256 b23ad3d139c460b8</p><pre><code>// Verifica o isolamento e a falha HTTP real do servidor descartável.
+<details id="file-129" class="file"><summary>tests/outflow-lab/server.test.mjs</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>41 linhas · SHA-256 b23ad3d139c460b8</p><pre><code>// Verifica o isolamento e a falha HTTP real do servidor descartável.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
@@ -9315,9 +9564,9 @@ test('laboratório corta a resposta após aceite e não duplica o pedido',async(
   }
 })
 </code></pre></details>
-<details id="file-126" class="file"><summary>tests/outflow-lab/style.css</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>2 linhas · SHA-256 3adcc13089e96408</p><pre><code>body{margin:0;background:#f6f3ee;color:#302c29;font:15px system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:24px}header,aside,.inventory-panel{padding:22px;background:white;border:1px solid #ded8ce;border-radius:8px;margin-bottom:18px}header&gt;p:first-child{font-size:12px;font-weight:700;color:#795f24;letter-spacing:.08em}h1{font-size:25px}h2{font-size:18px}p,li{line-height:1.6}li{font-size:12px;overflow-wrap:anywhere}button{padding:9px 14px;border:1px solid #d0c4b8;border-radius:6px;background:#faf7f2;color:#43352d;cursor:pointer}.add-product-button{background:#8d4837;color:white}.auth-error{color:#a02828}.outflow-success{color:#426749}.page-heading h1{font-size:22px}.eyebrow{font-size:11px}
+<details id="file-130" class="file"><summary>tests/outflow-lab/style.css</summary><p>Ensaio isolado: cria dados/respostas de teste para verificar comportamentos. Não deve ser usado como uma migração do banco de produção.</p><p>2 linhas · SHA-256 3adcc13089e96408</p><pre><code>body{margin:0;background:#f6f3ee;color:#302c29;font:15px system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:24px}header,aside,.inventory-panel{padding:22px;background:white;border:1px solid #ded8ce;border-radius:8px;margin-bottom:18px}header&gt;p:first-child{font-size:12px;font-weight:700;color:#795f24;letter-spacing:.08em}h1{font-size:25px}h2{font-size:18px}p,li{line-height:1.6}li{font-size:12px;overflow-wrap:anywhere}button{padding:9px 14px;border:1px solid #d0c4b8;border-radius:6px;background:#faf7f2;color:#43352d;cursor:pointer}.add-product-button{background:#8d4837;color:white}.auth-error{color:#a02828}.outflow-success{color:#426749}.page-heading h1{font-size:22px}.eyebrow{font-size:11px}
 </code></pre></details>
-<details id="file-127" class="file"><summary>index.html</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>16 linhas · SHA-256 fdd8f63e6ae5ca28</p><pre><code>&lt;!doctype html&gt;
+<details id="file-131" class="file"><summary>index.html</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>16 linhas · SHA-256 fdd8f63e6ae5ca28</p><pre><code>&lt;!doctype html&gt;
 &lt;html lang=&quot;pt-BR&quot;&gt;
   &lt;head&gt;
     &lt;meta charset=&quot;UTF-8&quot; /&gt;
@@ -9333,7 +9582,7 @@ test('laboratório corta a resposta após aceite e não duplica o pedido',async(
   &lt;/body&gt;
 &lt;/html&gt;
 </code></pre></details>
-<details id="file-128" class="file"><summary>package.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>34 linhas · SHA-256 7844531382443a0e</p><pre><code>{
+<details id="file-132" class="file"><summary>package.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>34 linhas · SHA-256 7844531382443a0e</p><pre><code>{
   &quot;name&quot;: &quot;liber-automotive&quot;,
   &quot;private&quot;: true,
   &quot;version&quot;: &quot;0.0.0&quot;,
@@ -9367,7 +9616,7 @@ test('laboratório corta a resposta após aceite e não duplica o pedido',async(
   }
 }
 </code></pre></details>
-<details id="file-129" class="file"><summary>vite.config.ts</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>9 linhas · SHA-256 1bbc73125bca2fc6</p><pre><code>import react from '@vitejs/plugin-react'
+<details id="file-133" class="file"><summary>vite.config.ts</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>9 linhas · SHA-256 1bbc73125bca2fc6</p><pre><code>import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
@@ -9376,7 +9625,7 @@ export default defineConfig({
   build: { manifest: true },
 })
 </code></pre></details>
-<details id="file-130" class="file"><summary>tsconfig.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>8 linhas · SHA-256 770b4140bbb581e2</p><pre><code>{
+<details id="file-134" class="file"><summary>tsconfig.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>8 linhas · SHA-256 770b4140bbb581e2</p><pre><code>{
   &quot;files&quot;: [],
   &quot;references&quot;: [
     { &quot;path&quot;: &quot;./tsconfig.app.json&quot; },
@@ -9384,7 +9633,7 @@ export default defineConfig({
   ]
 }
 </code></pre></details>
-<details id="file-131" class="file"><summary>tsconfig.app.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>27 linhas · SHA-256 8e5d12ba330e7d86</p><pre><code>{
+<details id="file-135" class="file"><summary>tsconfig.app.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>27 linhas · SHA-256 8e5d12ba330e7d86</p><pre><code>{
   &quot;compilerOptions&quot;: {
     &quot;tsBuildInfoFile&quot;: &quot;./node_modules/.tmp/tsconfig.app.tsbuildinfo&quot;,
     &quot;target&quot;: &quot;es2023&quot;,
@@ -9411,7 +9660,7 @@ export default defineConfig({
   &quot;include&quot;: [&quot;src&quot;]
 }
 </code></pre></details>
-<details id="file-132" class="file"><summary>tsconfig.node.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>24 linhas · SHA-256 d366cc0827139db3</p><pre><code>{
+<details id="file-136" class="file"><summary>tsconfig.node.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>24 linhas · SHA-256 d366cc0827139db3</p><pre><code>{
   &quot;compilerOptions&quot;: {
     &quot;tsBuildInfoFile&quot;: &quot;./node_modules/.tmp/tsconfig.node.tsbuildinfo&quot;,
     &quot;target&quot;: &quot;es2023&quot;,
@@ -9435,13 +9684,13 @@ export default defineConfig({
   &quot;include&quot;: [&quot;vite.config.ts&quot;]
 }
 </code></pre></details>
-<details id="file-133" class="file"><summary>vercel.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>6 linhas · SHA-256 ba218a7db8fe41a4</p><pre><code>{
+<details id="file-137" class="file"><summary>vercel.json</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>6 linhas · SHA-256 ba218a7db8fe41a4</p><pre><code>{
   &quot;headers&quot;: [
     { &quot;source&quot;: &quot;/(.*)&quot;, &quot;headers&quot;: [{ &quot;key&quot;: &quot;X-Robots-Tag&quot;, &quot;value&quot;: &quot;noindex, nofollow, noarchive&quot; }] }
   ]
 }
 </code></pre></details>
-<details id="file-134" class="file"><summary>.gitignore</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>36 linhas · SHA-256 251bcde830b6ad7a</p><pre><code># Logs
+<details id="file-138" class="file"><summary>.gitignore</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>36 linhas · SHA-256 251bcde830b6ad7a</p><pre><code># Logs
 logs
 *.log
 npm-debug.log*
@@ -9477,10 +9726,10 @@ playwright-report/
 # Metadados locais da CLI Supabase
 supabase/.temp/
 </code></pre></details>
-<details id="file-135" class="file"><summary>.env.example</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>3 linhas · SHA-256 a1e4870074d81fa9</p><pre><code>VITE_SUPABASE_URL=
+<details id="file-139" class="file"><summary>.env.example</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>3 linhas · SHA-256 a1e4870074d81fa9</p><pre><code>VITE_SUPABASE_URL=
 VITE_SUPABASE_PUBLISHABLE_KEY=
 </code></pre></details>
-<details id="file-136" class="file"><summary>.github/workflows/verify.yml</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>44 linhas · SHA-256 de9f657ae577ab97</p><pre><code>name: Verificar projeto
+<details id="file-140" class="file"><summary>.github/workflows/verify.yml</summary><p>Arquivo de infraestrutura ou ferramenta de apoio. Leia os comentários e consulte a aula sobre pastas para entender onde ele participa do build, dos testes ou da publicação.</p><p>44 linhas · SHA-256 de9f657ae577ab97</p><pre><code>name: Verificar projeto
 
 on:
   push:
