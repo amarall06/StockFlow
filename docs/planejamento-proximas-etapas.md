@@ -1,5 +1,7 @@
 # Próximas etapas — anotações de 24/10/2026
 
+Complemento de 31/10: [lista completa das 26 solicitações novas](anotacoes-2026-10-31.md), com agrupamento e decisões abertas. As descrições abaixo são históricas; consultar `ponto-retomada.md` para não repetir funcionalidades ou testes já concluídos.
+
 Documento interno de planejamento. Estas notas não devem aparecer como rascunhos na interface. Usar produtos fictícios até o usuário fornecer dados autorizados da empresa. Toda funcionalidade deve considerar amortecedores e molas, respeitando suas diferenças.
 
 ## O que já funciona

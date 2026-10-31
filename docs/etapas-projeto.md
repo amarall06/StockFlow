@@ -1,5 +1,7 @@
 # Etapas do LIBER automotive
 
+Atualização de planejamento em 31/10/2026: [26 novas anotações e dependências](anotacoes-2026-10-31.md). Incluem alertas na tela, relatórios PDF/Excel, PWA/offline, tempo real, contagem, mapas, missões e limpeza final dos dados fictícios. São itens de planejamento, sem alteração operacional nesta atualização. A situação de código mais recente está em `ponto-retomada.md`; trechos abaixo preservam o registro de 26/10.
+
 Situação atualizada em 26/10/2026. Os dados continuam fictícios. Não usar estimativas antigas de porcentagem como garantia de prontidão.
 
 | Etapa | Situação | Conteúdo |

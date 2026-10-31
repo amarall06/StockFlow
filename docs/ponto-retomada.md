@@ -1,5 +1,7 @@
 # Ponto de retomada — atualizado em 26/10/2026
 
+Atualização de planejamento em 31/10/2026: usuário forneceu 26 anotações, registradas integralmente em `anotacoes-2026-10-31.md`. Apenas documentação nesta rodada. Preservar questões abertas (retorno dos Correios, cancelamentos/reservas, capacidade física, áreas testadas/não testadas). Estoque fictício só será zerado na transição final, após plano e confirmação de qualquer exclusão irreversível. Nenhum saldo, conta ou configuração foi alterado. Continuar a entrega local dcc621a antes de novas funcionalidades e não repetir os testes concluídos.
+
 ## Continuação: desempenho e exportações
 
 Giro/ABC 89a5d07 foi enviado pelo usuário e confirmado Ready/Latest/Production/Current no deployment 3FkzihuLp3XebgDh4Pu7cxd7D1vZ, em 26/10 às 20:38:01 BRT. Filtros de 180 dias e as duas categorias conferidos no site publicado sem escrita. A seleção final voltou a todas/90 dias.
