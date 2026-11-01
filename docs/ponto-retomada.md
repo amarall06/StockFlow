@@ -1,3 +1,14 @@
+> **Publicação confirmada em 01/11/2026:** revisão de código `4355b58dccce7d90af228c33c0173a99ce51ad43`
+> enviada à main. Vercel success para essa revisão:
+> https://vercel.com/amarall06s-projects/liber-automotive/EjEwCVa4L2bYv14K2hQgNXNzjmW4
+> Domínio respondeu 200; hashes SHA-256 do JS inicial, InventoryApp, ProductCatalog
+> e WarrantyManufacturers publicados coincidiram com a compilação local aprovada.
+> Não houve login autenticado real nem escrita no banco nesta confirmação.
+> A revisão local/publicação está encerrada. Dependências humanas que permanecem:
+> foto real (sem material disponível), iPhone/Safari físico e execução do roteiro com equipe.
+> Roteiro: `roteiro-piloto.md`; relatório: `revisao-teclado-2026-11-01.md`.
+> Próxima pauta solicitada: 26 anotações, mantendo essas dependências como não executadas.
+>
 > **Revisão local de 01/11/2026:** pendências de teclado dos diálogos restantes,
 > validação de formulários e menu móvel revisadas; 15 casos novos aprovados no Chrome
 > com respostas simuladas, sem repetir os casos anteriormente concluídos. Build aprovado;

@@ -50,4 +50,6 @@ Antes do piloto, preencher autorização e referência física dos dados. Usuár
 
 ## Próxima pauta
 
+Publicação confirmada: código `4355b58dccce7d90af228c33c0173a99ce51ad43` enviado à main; status Vercel success em https://vercel.com/amarall06s-projects/liber-automotive/EjEwCVa4L2bYv14K2hQgNXNzjmW4. Domínio https://liber-automotive.vercel.app/ respondeu 200 e serviu index-CQa1ozZH.js. SHA-256 dos arquivos públicos index-CQa1ozZH.js, InventoryApp-CILRn8tu.js, ProductCatalog-DAngCTkS.js e WarrantyManufacturers-CV9V2R25.js coincidiram com o build local aprovado. Essa conferência foi leitura pública de arquivos, sem repetir casos de navegador nem acessar dados autenticados. O registro documental posterior não altera o código compilado.
+
 Após a entrega local e a conferência da publicação, consultar `docs/anotacoes-2026-10-31.md`. Há 26 anotações, com itens já parciais, novos e dependentes da empresa. A revisão local não transforma esses itens em funcionalidades implementadas. As dependências humanas acima permanecem visíveis mesmo se o usuário optar por evoluir as anotações enquanto aguarda material e equipe.
