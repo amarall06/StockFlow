@@ -3,6 +3,7 @@ import { applicationChangeLines, type ApplicationHistoryRecord, type Application
 import { loadApplicationHistory } from '../lib/inventory-api'
 import { ProductApplications } from './ProductApplications'
 import './ApplicationHistory.css'
+import { useModalDialog } from '../lib/use-modal-dialog'
 
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 
@@ -48,7 +49,7 @@ export function ApplicationHistory({ code, databaseMode, apiVersion, revision }:
           <div className="application-history-actions"><button className="add-product-button" type="button" disabled={history.loading || !history.rows.length} aria-label={`Ver histórico completo de ${code}`} onClick={() => setExpanded(true)}>Ver histórico completo</button></div>
           <p className="application-history-footnote">O histórico começa na sua ativação. Cadastros anteriores aparecem como situação inicial, sem atribuir autor ou data às edições antigas.</p>
         </>}
-    {expanded && <HistoryDialog code={code} revision={revision} onClose={() => { setExpanded(false); setRefresh((value) => value + 1) }} />}
+    {expanded && <HistoryDialog code={code} revision={revision} onClose={() => setExpanded(false)} />}
   </section>
 }
 
@@ -58,11 +59,7 @@ function HistoryDialog({ code, revision, onClose }: { code: string; revision: nu
   const [refresh, setRefresh] = useState(0)
   const history = useApplicationHistory(code, true, page, 10, revision + refresh)
 
-  useEffect(() => {
-    const dialog = dialogRef.current
-    dialog?.showModal()
-    return () => { dialog?.close() }
-  }, [])
+  useModalDialog(dialogRef)
 
   return <dialog className="application-history-dialog" ref={dialogRef} aria-labelledby="complete-history-title" onCancel={(event) => { event.preventDefault(); onClose() }}>
     <div className="application-history-dialog-heading"><div><h2 id="complete-history-title">Histórico completo · {code}</h2><p>Alterações de veículos, anos e tipo de amortecedor.</p></div><button className="theme-toggle" type="button" aria-label="Fechar histórico completo" onClick={onClose}>Fechar</button></div>

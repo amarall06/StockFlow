@@ -1,4 +1,5 @@
-import {useEffect,useRef,useState,type FormEvent} from 'react'
+import {useRef,useState,type FormEvent} from 'react'
+import {useModalDialog} from '../lib/use-modal-dialog'
 import type {ProductInfo,StockRow} from '../lib/inventory-api'
 import {calculateStockAlerts} from '../lib/stock-alerts'
 import {saveStockMinimum} from '../lib/stock-minimum-api'
@@ -12,7 +13,7 @@ function MinimumDialog({catalog,codes,initialCode,onClose,onSaved}:{catalog:Reco
   const [draft,setDraft]=useState(()=>({code:initialCode,value:catalog[initialCode]?.minimumBoxes?.toString()??'',expected:catalog[initialCode]?.minimumUpdatedAt??''}))
   const [saving,setSaving]=useState(false)
   const [error,setError]=useState('')
-  useEffect(()=>{const dialog=dialogRef.current;dialog?.showModal();return()=>{dialog?.close()}},[])
+  useModalDialog(dialogRef)
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault()
     if(saving||!draft.expected)return

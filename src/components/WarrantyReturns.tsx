@@ -3,6 +3,7 @@ import { allowedReturnStatuses, loadWarrantyReturns, returnStatusLabels, saveWar
 import type { WarrantyManufacturer } from '../lib/warranty-api'
 import { EditButton } from './EditButton'
 import './WarrantyReturns.css'
+import { useModalDialog } from '../lib/use-modal-dialog'
 
 const initialReturn: WarrantyReturnInput = {
   manufacturer_id: null, product_kind: 'unknown', product_code: '', description: '', boxes: 1,
@@ -24,7 +25,7 @@ function ReturnDialog({ previous, manufacturers, onClose, onSaved }: {
   const locked = previous?.status === 'warranty'
   const statuses = locked ? ['warranty', 'closed'] as const : allowedReturnStatuses(input)
 
-  useEffect(() => { const element = dialog.current; element?.showModal(); return () => { element?.close() } }, [])
+  useModalDialog(dialog)
 
   function change<K extends keyof WarrantyReturnInput>(key: K, value: WarrantyReturnInput[K]) {
     requestId.current = null

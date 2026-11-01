@@ -45,7 +45,16 @@ function PhotoDialog({code,onClose}:{code:string;onClose:()=>void}){
   const [error,setError]=useState('')
   const [failedImage,setFailedImage]=useState(false)
   const source=preview||photo?.url||examplePhoto(code)
-  useEffect(()=>{const element=dialog.current;element?.showModal();return()=>{element?.close()}},[])
+  useEffect(()=>{
+    const element=dialog.current
+    const opener=document.activeElement instanceof HTMLElement?document.activeElement:null
+    element?.showModal()
+    return()=>{
+      element?.close()
+      // React remove o diálogo ao fechar; devolve o teclado à miniatura de origem.
+      if(opener?.isConnected)opener.focus()
+    }
+  },[])
   useEffect(()=>()=>{if(draft)URL.revokeObjectURL(draft.url)},[draft])
   async function selectFile(file?:File){
     if(!file||busy)return

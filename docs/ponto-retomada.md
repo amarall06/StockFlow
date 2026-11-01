@@ -1,3 +1,16 @@
+> **Revisão local de 01/11/2026:** pendências de teclado dos diálogos restantes,
+> validação de formulários e menu móvel revisadas; 15 casos novos aprovados no Chrome
+> com respostas simuladas, sem repetir os casos anteriormente concluídos. Build aprovado;
+> lint conserva os três avisos conhecidos. Retorno de foco padronizado em
+> `src/lib/use-modal-dialog.ts`; fechamento do histórico não desabilita mais a origem.
+> Relatório: `revisao-teclado-2026-11-01.md`. Roteiro preparado: `roteiro-piloto.md`.
+> Usuário informou ausência de fotos reais: persistência de foto real não testada.
+> iPhone/Safari físico e execução do piloto com equipe continuam dependentes de participação.
+> Envio/publicação desta revisão: conferir resultado do commit mais recente, sem tomar
+> as publicações históricas abaixo como prova de que estas correções estão online.
+> Próxima pauta: as 26 anotações de `anotacoes-2026-10-31.md`, mantendo as dependências
+> humanas explícitas e sem retomar usuários/etiquetas/restauração adiados.
+>
 > **Entrega móvel/empresa publicada:** PR #2 integrada; commit de produção
 > `b2a8e37acec73e8dd535a527a77d3da498f9b566`. Vercel confirmou success:
 > https://vercel.com/amarall06s-projects/liber-automotive/H5EudPbDowcZqTBxio5DKUMNFBgH

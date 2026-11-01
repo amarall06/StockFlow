@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
+import { useModalDialog } from '../lib/use-modal-dialog'
 import { changeWarrantyBoxes, type WarrantyManufacturer } from '../lib/warranty-api'
 
 export function WarrantyBoxesDialog({ manufacturer, direction, onClose, onSaved }: {
@@ -13,11 +14,7 @@ export function WarrantyBoxesDialog({ manufacturer, direction, onClose, onSaved 
   const [error, setError] = useState('')
   const available = kind === 'shock' ? manufacturer.shock_boxes ?? 0 : manufacturer.spring_boxes ?? 0
 
-  useEffect(() => {
-    const dialog = dialogRef.current
-    dialog?.showModal()
-    return () => { dialog?.close() }
-  }, [])
+  useModalDialog(dialogRef)
 
   function changed() { requestId.current = null; setError('') }
 

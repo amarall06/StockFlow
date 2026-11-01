@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { StockRow } from '../lib/inventory-api'
 import { approveShockBoxes, loadShockApprovals, type ShockApproval } from '../lib/shock-testing'
 import './ShockTesting.css'
+import { useModalDialog } from '../lib/use-modal-dialog'
 
 // Ícone sem texto visível, mas com nome acessível para teclado e leitores de tela.
 export function ShockTestButton({ code, onClick }: { code: string; onClick: () => void }) {
@@ -27,7 +28,7 @@ export function ShockTestingDialog({ row, ready, canApprove, onClose, onRecorded
   const loading = ready && (result.page !== page || result.revision !== revision)
   const waiting = row.status === 'Aguardando testagem'
 
-  useEffect(() => { const dialog = dialogRef.current; dialog?.showModal(); return () => { dialog?.close() } }, [])
+  useModalDialog(dialogRef)
   useEffect(() => {
     if (!ready) return
     let current = true

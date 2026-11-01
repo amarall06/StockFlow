@@ -163,3 +163,247 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   await expect(page.getByRole('alert')).toContainText('O serviço não confirmou a saída')
   await expect(page.getByRole('heading', { name: 'Entrar no sistema' })).toBeVisible()
 })
+
+test('sessão vencida sem renovação retorna ao login', async ({ page }) => {
+    let refreshAttempts = 0
+    const dataRequests: string[]
+= []
+
+  const expiredSession = {
+    ...session,
+    expires_at:
+Math.floor(Date.now() / 1000) -
+3600,
+  }
+
+  await
+ page.addInitScript(value => {
+    localStorage.setItem(
+      'sb-stockflow-test-auth-token',
+      JSON.stringify(value),
+    )
+  }, expiredSession)
+
+  await page.route('https://stockflow-test.supabase.co/**', async route => {
+    const url = new URL(route.request().url())
+
+    if (
+      url.pathname === '/auth/v1/token'
+      && url.searchParams.get('grant_type') === 'refresh_token'
+    ) {
+      refreshAttempts++
+      return route.fulfill({
+        status: 400,
+        json: {
+          code: 'refresh_token_not_found',
+          message: 'Invalid Refresh Token: Refresh Token Not Found',
+        },
+      })
+    }
+
+    if (url.pathname.startsWith('/rest/v1/')) {
+      dataRequests.push(url.pathname)
+    }
+
+    return route.fulfill({
+      status: 401,
+      json: { message: 'Sessão inválida no teste' },
+    })
+  })
+
+  await page.goto('/')
+
+  await expect(
+    page.getByRole('heading', { name: 'Entrar no sistema' }),
+  ).toBeVisible()
+
+  expect(refreshAttempts).toBeGreaterThan(0)
+  expect(dataRequests).toEqual([])
+
+  await expect(
+    page.getByRole('heading', { name: 'Painel inicial', exact: true }),
+  ).toHaveCount(0)
+
+  await expect.poll(() =>
+    page.evaluate(() =>
+      localStorage.getItem('sb-stockflow-test-auth-token'),
+    ),
+  ).toBeNull()
+})
+
+test('Giro ABC mostra mensagens de consulta vazia', async ({ page }) => {
+  await page.addInitScript(value => {
+    localStorage.setItem('sb-stockflow-test-auth-token', JSON.stringify(value))
+  }, { ...session, expires_at: Math.floor(Date.now() / 1000) + 3600 })
+
+  // Respostas isoladas: nenhum estoque ou conta real é consultado.
+  await page.route('https://stockflow-test.supabase.co/**', async route => {
+    const url = new URL(route.request().url())
+    if (url.pathname.endsWith('/user')) return route.fulfill({ json: user })
+    if (url.pathname.endsWith('/profiles')) {
+      return route.fulfill({ json: { is_active: true, display_name: 'Conta de Teste', role: 'administrator' } })
+    }
+    if (url.pathname.endsWith('/inventory_api_version')) return route.fulfill({ json: 16 })
+    if (Number(url.searchParams.get('offset')) > 0) return route.fulfill({ json: [] })
+    if (url.pathname.endsWith('/products')) {
+      return route.fulfill({ json: [{ id: 'p1', code: 'AGM-35', application: 'Teste', default_location_id: 'l1', updated_at: '2026-10-27T00:00:00Z' }] })
+    }
+    if (url.pathname.endsWith('/locations')) {
+      return route.fulfill({ json: [{ id: 'l1', code: 'A01', is_active: true }] })
+    }
+    if (url.pathname.endsWith('/inventory_turnover')) {
+      const input = route.request().postDataJSON()
+      const asOf = Date.parse('2026-10-27T00:00:00Z')
+      return route.fulfill({ json: {
+        as_of: new Date(asOf).toISOString(),
+        period_start: new Date(asOf - input.p_days * 86400000).toISOString(),
+        days: input.p_days,
+        category: input.p_category,
+        products: [],
+      } })
+    }
+    return route.fulfill({ json: [] })
+  })
+
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Painel inicial', exact: true })).toBeVisible()
+  await navigate(page, 'Giro e ABC')
+  await expect(page.getByRole('heading', { name: 'Giro e Curva ABC', exact: true })).toBeVisible()
+  await expect(page.getByText('Ainda não há vendas registradas neste período e categoria.', { exact: true })).toBeVisible()
+  await expect(page.getByText('Nenhum produto corresponde aos filtros selecionados.', { exact: true })).toBeVisible()
+  await expect(page.locator('.turnover-result-count')).toHaveText('0 produtos')
+  await expect(page.locator('.turnover-table')).toHaveCount(0)
+  await expect(page.locator('.turnover-chart')).toHaveCount(0)
+})
+
+test('sessão expira durante o uso e retorna ao login', async ({ page }) => {
+  const now = new Date()
+  let refreshAttempts = 0
+
+  // Controla o tempo somente dentro deste navegador de teste.
+  await page.clock.install({ time: now })
+
+  const activeSession = {
+    ...session,
+    expires_in: 3600,
+    expires_at: Math.floor(now.getTime() / 1000) + 3600,
+  }
+
+  await page.addInitScript(value => {
+    localStorage.setItem(
+      'sb-stockflow-test-auth-token',
+      JSON.stringify(value),
+    )
+  }, activeSession)
+
+  // Todas as respostas são simuladas; o banco real não é acessado.
+  await page.route('https://stockflow-test.supabase.co/**', async route => {
+    const url = new URL(route.request().url())
+
+    if (
+      url.pathname === '/auth/v1/token'
+      && url.searchParams.get('grant_type') === 'refresh_token'
+    ) {
+      refreshAttempts++
+      return route.fulfill({
+        status: 400,
+        json: {
+          code: 'refresh_token_not_found',
+          message: 'Invalid Refresh Token: Refresh Token Not Found',
+        },
+      })
+    }
+
+    if (url.pathname.endsWith('/user')) {
+      return route.fulfill({ json: user })
+    }
+
+    if (url.pathname.endsWith('/profiles')) {
+      return route.fulfill({
+        json: {
+          is_active: true,
+          display_name: 'Conta de Teste',
+          role: 'administrator',
+        },
+      })
+    }
+
+    if (url.pathname.endsWith('/inventory_api_version')) {
+      return route.fulfill({ json: 16 })
+    }
+
+    if (Number(url.searchParams.get('offset')) > 0) {
+      return route.fulfill({ json: [] })
+    }
+
+    if (url.pathname.endsWith('/products')) {
+      return route.fulfill({
+        json: [{
+          id: 'p1',
+          code: 'AGM-35',
+          application: 'Teste',
+          default_location_id: 'l1',
+          updated_at: now.toISOString(),
+        }],
+      })
+    }
+
+    if (url.pathname.endsWith('/locations')) {
+      return route.fulfill({
+        json: [{ id: 'l1', code: 'A01', is_active: true }],
+      })
+    }
+
+    if (url.pathname.endsWith('/stock_balances')) {
+      return route.fulfill({
+        json: [{
+          product_id: 'p1',
+          location_id: 'l1',
+          status_code: 'released_for_sale',
+          quantity: 2,
+        }],
+      })
+    }
+
+    if (url.pathname.endsWith('/inventory_dashboard')) {
+      return route.fulfill({
+        json: {
+          as_of: now.toISOString(),
+          period_start: new Date(now.getTime() - 30 * 86400000).toISOString(),
+          sold_boxes: 0,
+          sales_count: 0,
+          sales_by_product: [],
+          receipts: [],
+        },
+      })
+    }
+
+    return route.fulfill({ json: [] })
+  })
+
+  await page.goto('/')
+
+  const dashboard = page.getByRole('heading', {
+    name: 'Painel inicial',
+    exact: true,
+  })
+
+  await expect(dashboard).toBeVisible()
+  expect(refreshAttempts).toBe(0)
+
+  // Passa uma hora e um minuto sem esperar esse tempo de verdade.
+  await page.clock.fastForward('01:01:00')
+
+  await expect(
+    page.getByRole('heading', { name: 'Entrar no sistema' }),
+  ).toBeVisible()
+
+  expect(refreshAttempts).toBeGreaterThan(0)
+  await expect(dashboard).toHaveCount(0)
+
+  await expect.poll(() =>
+    page.evaluate(() =>
+      localStorage.getItem('sb-stockflow-test-auth-token'),
+    ),
+  ).toBeNull()
+})
