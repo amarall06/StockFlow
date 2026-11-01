@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { readAllRows } from './read-all-rows'
 import type { ProductInfo, ShockType, VehicleApplication } from './product-details'
 import type { ApplicationHistoryRecord } from './application-history'
 export type { ProductInfo, ShockType, VehicleApplication } from './product-details'
@@ -30,17 +31,22 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
   if (apiError) throw apiError
 
   const [productsResult, locationsResult, balancesResult, applicationsResult] = await Promise.all([
-    Number(apiVersion) >= 3
-      ? client.from('products').select(`id, code, application, default_location_id, updated_at, shock_type${Number(apiVersion) >= 12 ? ', minimum_boxes, minimum_updated_at' : ''}`).order('code')
-      : client.from('products').select('id, code, application, default_location_id, updated_at').order('code'),
-    // O total também considera caixas já guardadas em locais desativados.
-    client.from('locations').select('id, code, is_active').order('code'),
-    client.from('stock_balances')
+    readAllRows<unknown>((from, to) => (Number(apiVersion) >= 3
+      ? client.from('products').select(`id, code, application, default_location_id, updated_at, shock_type${Number(apiVersion) >= 12 ? ', minimum_boxes, minimum_updated_at' : ''}`)
+      : client.from('products').select('id, code, application, default_location_id, updated_at'))
+      .order('code').range(from, to)),
+    // Inclui locais desativados para não esconder os saldos que ainda estão neles.
+    readAllRows((from, to) => client.from('locations').select('id, code, is_active')
+      .order('code').range(from, to)),
+    readAllRows((from, to) => client.from('stock_balances')
       .select('product_id, location_id, status_code, quantity')
       .eq('unit_type', 'box')
-      .in('status_code', ['awaiting_test', 'released_for_sale', 'in_stock']),
+      .in('status_code', ['awaiting_test', 'released_for_sale', 'in_stock'])
+      .order('product_id').order('location_id').order('status_code').range(from, to)),
     Number(apiVersion) >= 3
-      ? client.from('product_applications').select('product_id, vehicle_model, year_from, year_to, position').order('position')
+      ? readAllRows((from, to) => client.from('product_applications')
+        .select('product_id, vehicle_model, year_from, year_to, position')
+        .order('product_id').order('position').order('id').range(from, to))
       : Promise.resolve({ data: [], error: null }),
   ])
 

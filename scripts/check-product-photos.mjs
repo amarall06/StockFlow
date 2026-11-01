@@ -21,6 +21,7 @@ let source=await readFile(new URL('src/lib/product-photos.ts',root),'utf8')
 source=source.replace("import {supabase} from './supabase'",'const supabase=globalThis.__photoClient')
 const api=await importSource(compile(source))
 assert.equal(api.photoObjectName('MGM-100'),'MGM-100.webp')
+for(const code of ['AVW-04','AFI-35ABS','AJE-02D'])assert.equal(api.photoObjectName(code),code+'.webp')
 for(const code of ['AGM-0','AGM-001','AGM-101','../AGM-1','agm-1'])assert.throws(()=>api.photoObjectName(code))
 const png=new File([new Uint8Array([137,80,78,71,13,10,26,10,0,0,0,0])],'foto.png',{type:'image/png'})
 await api.validatePhoto(png)
@@ -48,7 +49,7 @@ source=source.replace("import {isSpringCode} from '../lib/product-category'","co
 source=source.replace(/^import .*from '\.\.\/lib\/product-photos'$/m,'const {loadProductPhotos,preparePhoto,saveProductPhoto}=globalThis.__photoApi').replace("import './ProductPhotos.css'",'')
 source=compile(source,ts.JsxEmit.ReactJSX).replaceAll('from "react/jsx-runtime"',`from ${JSON.stringify(import.meta.resolve('react/jsx-runtime'))}`).replaceAll("from 'react'",`from ${JSON.stringify(import.meta.resolve('react'))}`)
 const {ProductPhoto}=await importSource(source)
-for(const [code,file] of [['AGM-35','shock-example.png'],['MGM-35','spring-example.png']]){
+for(const [code,file] of [['AGM-35','shock-example-thumb.webp'],['MGM-35','spring-example-thumb.webp']]){
   const markup=renderToStaticMarkup(React.createElement(ProductPhoto,{code}))
   assert(markup.includes(file));assert(markup.includes('exemplo ilustrativo'));assert(markup.includes('type="button"'));assert(markup.includes('Exemplo'))
 }

@@ -6,7 +6,7 @@ export const MAX_PHOTO_BYTES=2*1024*1024
 export type SavedPhoto={url:string;updatedAt:string}
 
 export function photoObjectName(code:string){
-  if(!/^[A-Z]{3}-([1-9][0-9]?|100)$/.test(code))throw new Error('Código de produto inválido.')
+  if(!/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(code))throw new Error('Código de produto inválido.')
   return `${code}.webp`
 }
 

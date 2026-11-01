@@ -39,3 +39,37 @@ npm run lint
 - [Planejamento das etapas](docs/planejamento-proximas-etapas.md).
 - [Acesso e administração](docs/regras-acesso-administracao.md).
 
+
+## Verificações automatizadas
+
+```sh
+npm ci
+npm test
+npm run lint
+npx playwright install chromium
+npm run test:browser
+```
+
+`npm test` compila o projeto, executa os scripts de regressão e o laboratório HTTP isolado.
+Os testes de navegador usam configuração e respostas fictícias do Supabase; não fazem login
+nem alteram dados no serviço real. Execute-os com a porta 4175 livre, para que o Playwright
+inicie o Vite com a configuração de teste. Testes automatizados não substituem a validação
+da publicação com contas dos cargos e um banco de homologação.
+
+### Transferências recuperáveis (API 15)
+
+Antes de publicar esta revisão, aplicar e validar em homologação a migração
+`supabase/migrations/202610270001_idempotent_transfers.sql`. A nova interface bloqueia
+transferências em versões anteriores do banco. Não repetir migrações já aplicadas.
+
+Com Docker local disponível, `npm run test:database` cria e apaga um PostgreSQL 17
+isolado, aplica as migrações e testa reenvios concorrentes. Não usa o banco hospedado.
+
+## Celular, acesso da empresa e estudo
+
+- Em celular/tablet: conta no topo, seletor de módulo e painel compacto com detalhes expansíveis.
+- Atividade diária: gráfico calculado com movimentos reais, filtro de período/série e tabela dos valores.
+- API 16: migração `20261028003756_company_access_and_activity.sql` aplicada no Supabase do site e verificada sem mudar os saldos. Não repetir no mesmo banco.
+- [Aulas para iniciantes](docs/tutorial-iniciante.md) e [livro navegável com código completo](docs/livro-do-codigo.html).
+- [Ensaio de capacidade, regras de acesso e limites do backup](docs/capacidade-e-acesso.md).
+- `npm run docs:code` atualiza o livro; `npm run test:capacity` executa o volume sintético no PostgreSQL descartável.

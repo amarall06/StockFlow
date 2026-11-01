@@ -36,8 +36,10 @@ for(const invalid of ['-1','1.5','abc','2147483648'])assert.throws(()=>api.parse
 let version=12
 const selections=[]
 const data={products:[{id:'p',code:'AGM-35',application:'Fictício',default_location_id:'a',updated_at:'time',minimum_boxes:9,minimum_updated_at:'version'}],locations:[{id:'a',code:'A01',is_active:true},{id:'b',code:'B01',is_active:false}],stock_balances:[{product_id:'p',location_id:'a',status_code:'awaiting_test',quantity:3},{product_id:'p',location_id:'b',status_code:'released_for_sale',quantity:5}],product_applications:[]}
-globalThis.__alertClient={rpc:async()=>({data:version,error:null}),from(table){return{select(fields){selections.push([table,fields]);return this},order(){return this},eq(){return this},in(){return this},then(resolve){return Promise.resolve({data:data[table],error:null}).then(resolve)}}}}
+globalThis.__alertClient={rpc:async()=>({data:version,error:null}),from(table){return{offset:0,range(from){this.offset=from;return this},select(fields){selections.push([table,fields]);return this},order(){return this},eq(){return this},in(){return this},then(resolve){return Promise.resolve({data:data[table].slice(this.offset,this.offset+500),error:null}).then(resolve)}}}}
+const pagination=compile(await readFile(new URL('src/lib/read-all-rows.ts',root),'utf8'))
 source=await readFile(new URL('src/lib/inventory-api.ts',root),'utf8')
+source=source.replace("'./read-all-rows'",JSON.stringify('data:text/javascript;base64,'+Buffer.from(pagination).toString('base64')))
 source=source.replace("import { supabase } from './supabase'",'const supabase=globalThis.__alertClient').replace("export { shockTypeLabels } from './product-details'",'export const shockTypeLabels={}')
 const inventory=await importSource(compile(source))
 const snapshot=await inventory.loadInventorySnapshot()

@@ -17,7 +17,7 @@ export function validateTurnoverReport(value:unknown):TurnoverReport {
   if(Math.abs(end-start-report.days*86400000)>1000)return fail()
   const codes=new Set<string>()
   for(const row of report.products){
-    if(!row||typeof row.code!=='string'||! /^[A-Z]{3}-(100|[1-9][0-9]?)$/.test(row.code)
+    if(!row||typeof row.code!=='string'||! /^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(row.code)
       ||codes.has(row.code)||!date(row.registered_at)||Date.parse(row.registered_at)>end
       ||!integer(row.sold_boxes)||!integer(row.sales_count)||!integer(row.stock_boxes)
       ||row.sales_count>row.sold_boxes||(row.sold_boxes===0)!==(row.sales_count===0)

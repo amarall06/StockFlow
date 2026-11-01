@@ -16,6 +16,7 @@ source=source.replace("import { supabase } from './supabase'",'const supabase=gl
 const api=await importSource(compile(source))
 const input={code:' agm-35 ',application:'',location:' a03 ',boxes:2,status:'awaiting_test',supplierId:'supplier-id',lot:' LOTE-DEMO '}
 assert.equal(api.normalizeReceipt(input).p_code,'AGM-35')
+for(const code of ['AVW-04','ACI-11AD','AFI-35ABS','AJE-02E','AHY-98'])assert.equal(api.normalizeReceipt({...input,code}).p_code,code)
 assert.equal(api.normalizeReceipt(input).p_lot_reference,'LOTE-DEMO')
 assert.equal(api.normalizeReceipt(input).p_location,'A03')
 assert.throws(()=>api.normalizeReceipt({...input,supplierId:''}),/selecione seu fornecedor/)

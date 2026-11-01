@@ -1,3 +1,47 @@
+> **Entrega móvel/empresa publicada:** PR #2 integrada; commit de produção
+> `b2a8e37acec73e8dd535a527a77d3da498f9b566`. Vercel confirmou success:
+> https://vercel.com/amarall06s-projects/liber-automotive/H5EudPbDowcZqTBxio5DKUMNFBgH
+> O domínio público respondeu 200 com menu móvel e gráfico diário novos;
+> robots.txt, meta robots e cabeçalho X-Robots-Tag confirmados.
+> Banco na API 16; não repetir migrações. Cadastro exige e-mail autorizado;
+> contas novas permanecem inativas até aprovação. Conta, saldos e histórico existentes preservados.
+> CI da PR #2: run 40611400055, todas as etapas aprovadas.
+> Backup privado confirmado em https://github.com/amarall06/StockFlow-backup-privado
+> (visibilidade private; o commit testado 13909fcc foi conferido antes deste relatório final).
+> Aulas: tutorial-iniciante.md. Livro offline: livro-do-codigo.html, 136 arquivos.
+> Capacidade medida e limites: capacidade-e-acesso.md. Relatório: entrega-mobile-empresa.md.
+> Não declarar teste de Safari físico ou login real no navegador como realizado.
+> O backup do código não substitui backup do banco, das contas ou das fotos do Supabase.
+> As notas antigas abaixo não substituem este estado.
+
+> **PUBLICAÇÃO CONFIRMADA:** PR #1 integrada em `main`, commit
+> `0630d1d4fe932ddaa491acd471f6da03e0bf3477`. GitHub Actions da revisão aprovou
+> build, regressões, lint, navegador simulado e PostgreSQL descartável.
+> Status Vercel do commit de produção: success.
+> https://vercel.com/amarall06s-projects/liber-automotive/CQxwdMNjuAEqH34qrvzkFVjTGTq3
+> Domínio https://liber-automotive.vercel.app/ respondeu HTTP 200. JS inicial,
+> CSS e módulo InventoryApp novos responderam 200; o módulo publicado contém
+> `transfer_stock_once`. Assets: index-D-7Hh_nA.js, InventoryApp-JNrZs8WG.js,
+> index-JX9ObP5R.css. Banco já na API 15; não repetir a migração.
+> Teste visual remoto do Chromium bloqueado por ERR_CERT_AUTHORITY_INVALID neste
+> ambiente; acesso Python HTTPS com validação TLS passou. Não declarar esse teste
+> visual aprovado. Login real, sessão e operação autenticada no site continuam pendentes.
+> As notas abaixo são históricas quando contrariam este estado.
+
+> **Estado mais recente — Supabase conectado:** a migração
+> `202610270001_idempotent_transfers.sql` já foi aplicada ao projeto
+> `tfatagbhmkeelbvstcvb`, confirmado como o banco do site publicado.
+> **Não repetir esta migração.** API 15; ensaio autenticado com ROLLBACK aprovado;
+> 53 caixas, 26 movimentações e zero pedidos de teste retidos.
+> O frontend ainda não foi enviado ao GitHub nem publicado. A Vercel identifica
+> o projeto, mas recusa listagem de publicações e logs com HTTP 403.
+> Os bloqueios de conexão citados abaixo são históricos quando contrariam esta nota.
+
+> **Atualização de 27/10/2026:** o ponto vigente desta revisão está em
+> [retomada-revisao-2026-10-27.md](retomada-revisao-2026-10-27.md).
+> Branch local `fix/site-review-2026-10-27`; ainda sem envio ao GitHub ou publicação.
+> Os registros abaixo são históricos e não substituem esse ponto de retomada.
+
 # Ponto de retomada — atualizado em 26/10/2026
 
 Atualização de planejamento em 31/10/2026: usuário forneceu 26 anotações, registradas integralmente em `anotacoes-2026-10-31.md`. Apenas documentação nesta rodada. Preservar questões abertas (retorno dos Correios, cancelamentos/reservas, capacidade física, áreas testadas/não testadas). Estoque fictício só será zerado na transição final, após plano e confirmação de qualquer exclusão irreversível. Nenhum saldo, conta ou configuração foi alterado. Continuar a entrega local dcc621a antes de novas funcionalidades e não repetir os testes concluídos.

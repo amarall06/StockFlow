@@ -11,6 +11,7 @@ const pure=await load(compile(await readFile(new URL('src/lib/turnover.ts',root)
 const end='2026-10-26T23:00:00.000Z'
 const product=(code,sold,stock=2)=>({code,registered_at:'2026-01-01T12:00:00Z',sold_boxes:sold,sales_count:sold?1:0,last_sale_at:sold?'2026-10-25T12:00:00Z':null,stock_boxes:stock})
 const report=(quantities,days=90)=>({as_of:end,period_start:new Date(Date.parse(end)-days*86400000).toISOString(),days,category:'all',products:quantities.map((quantity,index)=>product(`AGM-${index+1}`,quantity))})
+for(const code of ['AVW-04','AFI-35ABS','AJE-02D'])pure.validateTurnoverReport({...report([]),products:[product(code,0)]})
 const classes=quantities=>pure.rankTurnover(pure.validateTurnoverReport(report(quantities))).map(row=>row.abc)
 assert.deepEqual(classes([80,15,5]),['A','B','C'])
 assert.deepEqual(classes([79,10,6,5]),['A','A','B','C'])
@@ -29,7 +30,7 @@ assert.equal(pure.daysWithoutSale(product('AGM-35',1),end),1)
 for(const days of [30,90,180])assert.equal(pure.validateTurnoverReport(report([1],days)).days,days)
 const base=report([1])
 for(const bad of [null,{}, {...base,days:60},{...base,period_start:end},{...base,category:'other'},
-  {...base,products:[product('AGM-01',1)]},{...base,products:[product('AGM-101',1)]},
+  {...base,products:[product('AGM-001',1)]},{...base,products:[product('AGM-101',1)]},
   {...base,products:[product('AGM-1',1),product('AGM-1',1)]},
   {...base,products:[{...product('AGM-1',1),sold_boxes:1.5}]},
   {...base,products:[{...product('AGM-1',1),stock_boxes:-1}]},

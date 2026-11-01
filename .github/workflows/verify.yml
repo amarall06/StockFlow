@@ -1,0 +1,43 @@
+name: Verificar projeto
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - name: Build e regressões
+        run: npm test
+      - name: Análise do código
+        run: npm run lint
+      - name: Preparar navegador
+        run: npx playwright install --with-deps chromium
+      - name: Testar navegador com dados simulados
+        run: npm run test:browser
+      - name: Testar banco descartável
+        run: npm run test:database
+      - name: Guardar diagnóstico de falhas no navegador
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-results
+          path: test-results/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,7 +1,9 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
 import { ShockTestButton, ShockTestingDialog } from './components/ShockTesting'
 import { ReceiptForm } from './components/ReceiptForm'
+import { readPendingTransfer } from './lib/pending-transfer'
 import { readPendingOutflow } from './lib/pending-outflow'
 import { StockAlerts } from './components/StockAlerts'
 import { NavigationIcon } from './components/NavigationIcon'
@@ -141,21 +143,33 @@ function readSavedDemoData(): SavedDemoData | null {
   }
 }
 
-export default function InventoryApp({ userId, onSignOut, displayName, userRole, profileName, email, onProfileUpdated, isDarkMode, onToggleTheme }: {
+export default function InventoryApp({ userId, onSignOut, displayName, userRole, profileName, email, onProfileUpdated, isDarkMode, onToggleTheme, signOutError }: {
   userId: string; onSignOut: () => void; displayName: string; userRole: string; profileName: string | null
   email: string; onProfileUpdated: (name: string) => void
-  isDarkMode: boolean; onToggleTheme: () => void
+  isDarkMode: boolean; onToggleTheme: () => void; signOutError?: string
 }) {
   // Controla qual módulo está aberto na demonstração.
   const [activePage, setActivePage] = useState<'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock'>(()=>{
     const recovery=userRole==='administrator'?readPendingOutflow(userId):null
-    return recovery?.pending||recovery?.error?'outflow':'dashboard'
+    if (recovery?.pending || recovery?.error) return 'outflow'
+    const transfer = ['administrator', 'stockkeeper'].includes(userRole) ? readPendingTransfer(userId) : null
+    if (transfer?.pending) return isSpringCode(transfer.pending.input.row.code) ? 'springs' : 'inventory'
+    return transfer?.error ? 'inventory' : 'dashboard'
   })
   const showInventoryPage = activePage === 'inventory' || activePage === 'springs'
   // O catálogo guarda os dados do produto, separados dos saldos por localização.
   const [catalog, setCatalog] = useState<Record<string, ProductInfo>>(() => readSavedDemoData()?.catalog ?? allDemoCatalog)
   const [scanCode, setScanCode] = useState('')
   const scanInputRef = useRef<HTMLInputElement>(null)
+  const accountMenuRef = useRef<HTMLDetailsElement>(null)
+  const mobileMenuRef = useRef<HTMLDialogElement>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  useEffect(() => {
+    const compact = window.matchMedia('(max-width: 1024px), (pointer: coarse) and (max-width: 1366px)')
+    const closeOnDesktop = () => { if (!compact.matches) mobileMenuRef.current?.close() }
+    compact.addEventListener('change', closeOnDesktop)
+    return () => compact.removeEventListener('change', closeOnDesktop)
+  }, [])
   const [scanResult, setScanResult] = useState<(ProductInfo & { code: string }) | null>(null)
   const [scanMessage, setScanMessage] = useState('')
   // useState guarda o texto digitado na busca enquanto a tela está aberta.
@@ -201,7 +215,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Deixa o campo de leitura pronto para um leitor USB configurado como teclado.
   useEffect(() => {
-    scanInputRef.current?.focus()
+    if (window.matchMedia('(min-width: 1025px) and (pointer: fine)').matches) scanInputRef.current?.focus()
   }, [activePage])
 
   // Salva catálogo, saldos e localizações no navegador sempre que forem alterados.
@@ -302,6 +316,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
   // Troca de módulo e limpa resultados para não misturar tipos de produto.
   function changePage(page: 'inventory' | 'warranty' | 'springs' | 'history' | 'catalog' | 'profile' | 'turnover' | 'outflow' | 'dashboard' | 'products' | 'alerts' | 'stock') {
+    mobileMenuRef.current?.close()
+    accountMenuRef.current?.removeAttribute('open')
     setActivePage(page)
     setScanResult(null)
     setScanMessage('')
@@ -422,7 +438,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     event.preventDefault() // Evita que o navegador recarregue a página.
     if (springUpdatePending) return
     const normalizedCode = newCode.trim().toUpperCase()
-    const codeIsValid = /^[A-Z]{3}-(100|[1-9]\d?)$/.test(normalizedCode)
+    const codeIsValid = /^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(normalizedCode)
     const codeMatchesPage = isSpringCode(normalizedCode) === isSpringPage
     const quantity = Number(newQuantity)
 
@@ -481,22 +497,18 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   if (import.meta.env.PROD && dataMode !== 'database' && !databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Carregando estoque...</h1><p role="status">Consultando os dados do Supabase.</p></section></AuthScreen>
 
   // Na publicação, uma falha do banco nunca vira um estoque local que parece salvo online.
-  if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p><button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
+  if (databaseError) return <AuthScreen dark={isDarkMode} onToggle={onToggleTheme}><section className="auth-card"><Brand /><h1>Estoque indisponível</h1><p role="alert">{databaseError}</p>{signOutError && <p role="alert">{signOutError}</p>}<button type="button" className="auth-secondary-button" onClick={() => window.location.reload()}>Tentar novamente</button><button type="button" className="auth-secondary-button" onClick={onSignOut}>Sair</button></section></AuthScreen>
 
-  return (
-    <ProductPhotosProvider canEdit={isAdministrator}>
-    <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
-      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
-      <a className="skip-link" href="#consulta">Ir para o conteúdo</a>
-      <aside className="sidebar">
+  const sidebarContent = <>
+
         <a className="brand" href="#inicio" aria-label="LIBER automotive, início" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}>
           <span className="brand-mark">L</span>
-          <span>LIBER<span className="brand-light"> automotive</span></span>
+          <span>LIBER<span className="brand-light">SOLUÇÕES EM<br/> ESTOQUE AUTOMOTIVO</span></span>
         </a>
 
         <div className="sidebar-label">MÓDULOS</div>
         <nav className="sidebar-navigation" aria-label="Menu principal">
-        <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel</button>
+        <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel inicial</button>
         <button className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> Alertas <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
         <button className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" aria-current={activePage === 'products' ? 'page' : undefined} onClick={() => changePage('products')}><NavigationIcon name="products"/> Produtos</button>
         <button className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> Giro e ABC</button>
@@ -523,18 +535,39 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
         </nav>
         <div className="sidebar-bottom">
-          <span className="status-dot" />
-          <span>{dataMode === 'database' ? 'Banco Supabase' : 'Modo de demonstração'}</span>
+          <span>Estoque que<br/>move o seu negócio.</span>
         </div>
-      </aside>
+
+  </>
+
+  return (
+    <ProductPhotosProvider canEdit={isAdministrator}>
+    <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
+      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
+      <a className="skip-link" href="#consulta">Ir para o conteúdo</a>
+      <aside className="sidebar">{sidebarContent}</aside>
+      <dialog ref={mobileMenuRef} id="mobile-navigation" className="mobile-navigation-dialog" aria-label="Menu de navegação" onClose={() => setMobileMenuOpen(false)} onClick={event => { if (event.target === event.currentTarget) mobileMenuRef.current?.close() }}>
+        <aside className="sidebar"><button type="button" className="mobile-menu-close" onClick={() => mobileMenuRef.current?.close()}>Fechar menu ×</button>{sidebarContent}</aside>
+      </dialog>
 
       <section className="main-panel" id="inicio">
         <header className="topbar">
           <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
-          <div className="user-chip"><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme} /><button className="profile-open-button" type="button" aria-current={activePage === 'profile' ? 'page' : undefined} onClick={() => changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar">{displayName.slice(0, 1).toUpperCase()}</span><span className="profile-name-text">{displayName}<small>Meu perfil</small></span></button><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button></div>
+          <div className="user-chip"><button type="button" className="mobile-menu-trigger" aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={mobileMenuOpen} onClick={() => { mobileMenuRef.current?.showModal(); setMobileMenuOpen(true) }}><span aria-hidden="true">☰</span> Menu</button><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
+          <label className="mobile-module-menu">Ir para
+            <select aria-label="Escolher módulo" value={activePage} onChange={event => changePage(event.target.value as typeof activePage)}>
+              <option value="dashboard">Painel</option><option value="alerts">Alertas ({alertCount})</option>
+              <option value="products">Produtos</option><option value="stock">Estoque geral</option><option value="inventory">Visão geral</option>
+              <option value="springs">Molas</option><option value="warranty">Garantia</option>
+              {isAdministrator && <option value="outflow">Saídas</option>}
+              <option value="history">Histórico</option><option value="turnover">Giro e ABC</option>
+              <option value="catalog">Aplicações</option><option value="profile">Minha conta</option>
+            </select>
+          </label>
         </header>
 
         <div className="content" id="consulta" tabIndex={-1}>
+          {signOutError && <p className="auth-error" role="alert">{signOutError}</p>}
           <ModuleBoundary key={activePage}><Suspense fallback={<ModuleLoading />}>
           {showInventoryPage ? <>
           <div className="page-heading">
@@ -605,7 +638,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
                 <label htmlFor="new-location">Código da localização</label>
               <div className="location-action-row"><input id="new-location" value={newLocationCode} onChange={(event) => setNewLocationCode(event.target.value)} placeholder="Ex.: E01" required /><button type="submit" disabled={dataMode === 'database' && !isAdministrator}>Adicionar local</button></div>
               </form>
-              <form className="transfer-form" onSubmit={handleTransfer}>
+              <>{dataMode === 'database' ? <StockTransfers userId={userId} stock={activeStock} locations={locations} canTransfer={canTransferStock} ready={inventoryApiVersion >= 15} onRefresh={refreshDatabaseSnapshot} /> : <form className="transfer-form" onSubmit={handleTransfer}>
                 <h3>Transferir entre prateleiras</h3>
                 <p>A quantidade transferida mantém a situação operacional.</p>
                 <label>Produto<select value={effectiveMoveCode} onChange={(event) => {
@@ -628,9 +661,9 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
                 <label>Situação<select value={movementStatuses.includes(moveStatus) ? moveStatus : ''} onChange={(event) => setMoveStatus(event.target.value as StockRow['status'])} required><option value="">Escolha a situação</option>{movementStatuses.map((status) => <option key={status}>{status}</option>)}</select></label>
                 <label>Quantidade (caixas)<input type="number" min="1" max={availableForTransfer} step="1" value={moveQuantity} onChange={(event) => setMoveQuantity(event.target.value)} required /></label>
                 <p className="transfer-available">Disponível na origem nesta situação: <strong>{availableForTransfer} caixas</strong></p>
-                <button type="submit" disabled={springUpdatePending || (dataMode === 'database' && !canTransferStock)}>Registrar transferência</button>
+                <button type="submit" disabled={springUpdatePending || !canTransferStock}>Registrar transferência</button>
                 {transferMessage && <p className="transfer-message" role="status">{transferMessage}</p>}
-              </form>
+              </form>}</>
             </div>
           </section>
 
@@ -720,7 +753,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {
