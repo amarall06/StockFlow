@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { ProductInfo } from '../lib/inventory-api'
 import { isSpringCode } from '../lib/product-category'
-import { createSupplier, loadSuppliers, receiveWithSupplier, type Supplier } from '../lib/receipt-api'
+import { createSupplier, loadSuppliers, normalizeReceipt, receiveWithSupplier, type Supplier } from '../lib/receipt-api'
+import { confirmOperation } from '../lib/confirm-operation'
 import './ReceiptForm.css'
 
 export function ReceiptForm({ catalog, locations, springs, role, onReceived }: {
@@ -25,6 +26,7 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived }: {
   const [creating,setCreating] = useState(false)
   const [recorded,setRecorded] = useState(false)
   const requestId = useRef<string | null>(null)
+  const busy = useRef(false)
   const admin = role === 'administrator'
   const canReceive = admin || role === 'receiving'
   const known = catalog[code.trim().toUpperCase()]
@@ -50,23 +52,34 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived }: {
   }
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (disabled || creating) return
+    if (disabled || creating || busy.current) return
     const normalizedCode=code.trim().toUpperCase()
     if (isSpringCode(normalizedCode)!==springs) { setError('Use um código da categoria desta página.'); return }
     if (!known && !admin) { setError('Somente administrador pode cadastrar produto novo.'); return }
     if (!known && !application.trim()) { setError('Informe a aplicação do produto novo.'); return }
+    busy.current=true
     setSaving(true); setError(''); setMessage('')
     try {
+      const input={code:normalizedCode,application:known ? '' : application,location,boxes:Number(quantity),status:springs?'in_stock':status,supplierId,lot}
+      const normalized=normalizeReceipt(input)
+      if(!confirmOperation('Confirmar entrada de estoque?', [
+        `Produto: ${normalized.p_code}`, `Localização: ${normalized.p_location}`,
+        `Quantidade: ${normalized.p_boxes} caixas`,
+        `Situação: ${springs?'Em estoque':status==='released_for_sale'?'Liberado para venda':'Aguardando testagem'}`,
+        `Fornecedor: ${suppliers.find(row=>row.id===supplierId)?.name??'Não informado'}`,
+        `Lote: ${normalized.p_lot_reference??'Não informado'}`,
+      ]))return
       requestId.current ??= crypto.randomUUID()
-      await receiveWithSupplier({code:normalizedCode,application:known ? '' : application,location,boxes:Number(quantity),status:springs?'in_stock':status,supplierId,lot},requestId.current)
+      await receiveWithSupplier(input,requestId.current)
       setRecorded(true)
       await syncSavedReceipt()
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Não foi possível registrar.') }
-    finally { setSaving(false) }
+    finally { busy.current=false; setSaving(false) }
   }
   async function addSupplier(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!admin || creating || saving || recorded) return
+    if (!admin || creating || saving || recorded || busy.current) return
+    busy.current=true
     setCreating(true); setError(''); setMessage('')
     try {
       const supplier=await createSupplier(supplierName)
@@ -74,7 +87,7 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived }: {
       setSupplierName(''); setSupplierId(supplier.id); requestId.current=null
       setMessage(`Fornecedor ${supplier.name} disponível e selecionado.`)
     } catch(caught) { setError(caught instanceof Error ? caught.message : 'Não foi possível cadastrar.') }
-    finally { setCreating(false) }
+    finally { busy.current=false; setCreating(false) }
   }
   return <div className="receipt-workspace">
     <form className="add-product-form receipt-form" onSubmit={submit} onChange={changed}>

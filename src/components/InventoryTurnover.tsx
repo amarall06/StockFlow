@@ -6,6 +6,7 @@ import {ProductPhoto} from './ProductPhotos'
 import {ProductApplications} from './ProductApplications'
 import {searchableProductText} from '../lib/product-details'
 import {ExportCsvButton} from './ExportCsvButton'
+import {startResumeRefresh} from '../lib/resume-refresh'
 import './InventoryTurnover.css'
 
 const format=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2})
@@ -59,27 +60,50 @@ export function InventoryTurnover({catalog,ready,onRefresh}:{catalog:Record<stri
   const [revision,setRevision]=useState(0)
   const [updating,setUpdating]=useState(false)
   const [refreshError,setRefreshError]=useState('')
+  const [automaticError,setAutomaticError]=useState({key:'',message:''})
+  const manualPending=useRef(false)
   const key=`${category}:${days}:${revision}`
   const [result,setResult]=useState<{key:string;report:TurnoverReport|null;error:string}>({key:'',report:null,error:''})
   const loading=ready&&result.key!==key
   useEffect(()=>{
     if(!ready)return
     let current=true
-    void loadTurnover(category,days).then(report=>{if(current)setResult({key,report,error:''})})
+    let initialPending=true
+    let hasReport=false
+    function publish(report:TurnoverReport){
+      if(!current)return
+      hasReport=true
+      setResult({key,report,error:''})
+      setAutomaticError({key,message:''})
+    }
+    void loadTurnover(category,days).then(publish)
       .catch(error=>{if(current)setResult({key,report:null,error:error instanceof Error?error.message:'Não foi possível consultar os indicadores.'})})
-    return()=>{current=false}
+      .finally(()=>{initialPending=false})
+    const stop=startResumeRefresh({
+      intervalMs:30_000,
+      load:()=>loadTurnover(category,days),
+      apply:publish,
+      canRefresh:()=>!initialPending&&!manualPending.current&&!document.querySelector('dialog[open]'),
+      onError:()=>{
+        if(hasReport)setAutomaticError({key,message:'Não foi possível atualizar os indicadores automaticamente. Os dados da consulta anterior permanecem na tela.'})
+        else setResult({key,report:null,error:'Não foi possível consultar os indicadores. Confira a conexão e tente atualizar.'})
+      },
+    })
+    return()=>{current=false;stop()}
   },[category,days,key,ready])
   async function refresh(){
-    if(updating||loading)return
+    if(updating||loading||manualPending.current)return
+    manualPending.current=true
     setUpdating(true);setRefreshError('')
     try{await onRefresh();setRevision(value=>value+1)}catch{setRefreshError('Não foi possível atualizar. Confira a conexão e tente novamente.')}
-    finally{setUpdating(false)}
+    finally{manualPending.current=false;setUpdating(false)}
   }
   return <>
     <div className="page-heading"><div><p className="eyebrow">MOVIMENTO DO ESTOQUE</p><h1>Giro e Curva ABC</h1><p className="subtitle">Identifique os códigos com mais vendas e o estoque sem saídas de venda no período.</p></div></div>
     <section className="inventory-panel turnover-panel"><div className="turnover-controls"><label>Categoria<select value={category} disabled={updating} onChange={event=>setCategory(event.target.value as TurnoverCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><label>Período<select value={days} disabled={updating} onChange={event=>setDays(Number(event.target.value) as TurnoverDays)}><option value={30}>Últimos 30 dias</option><option value={90}>Últimos 90 dias</option><option value={180}>Últimos 180 dias</option></select></label><button type="button" className="theme-toggle" disabled={loading||updating} onClick={()=>void refresh()}>{loading||updating?'Consultando…':'Atualizar indicadores'}</button></div>
       <p className="turnover-note">Classificação por quantidade de caixas vendidas. Não usa faturamento, custos ou saldo médio.</p>
       {refreshError&&<p role="alert" className="auth-error">{refreshError}</p>}
+      {automaticError.key===key&&automaticError.message&&<p role="status" className="auth-error">{automaticError.message}</p>}
     </section>
     {!ready?<section className="inventory-panel turnover-panel"><p role="status">Os indicadores ainda não estão disponíveis. Atualize para conferir novamente.</p></section>:loading?<p role="status">Consultando vendas e estoque…</p>:result.error?<p role="alert" className="auth-error">{result.error}</p>:result.report&&<><p className="turnover-as-of">Consulta em {dateFormat.format(new Date(result.report.as_of))} · Período desde {dateFormat.format(new Date(result.report.period_start))}</p><TurnoverResults key={key} report={result.report} catalog={catalog}/></>}
   </>

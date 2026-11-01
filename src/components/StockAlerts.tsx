@@ -9,6 +9,7 @@ import './StockAlerts.css'
 function MinimumDialog({catalog,codes,initialCode,onClose,onSaved}:{catalog:Record<string,ProductInfo>;codes:string[];initialCode:string;onClose:()=>void;onSaved:()=>void}){
   const dialogRef=useRef<HTMLDialogElement>(null)
   const requestId=useRef<string|null>(null)
+  const busy=useRef(false)
   // O instante da leitura fica junto do rascunho, evitando sobrescrever uma edição concorrente.
   const [draft,setDraft]=useState(()=>({code:initialCode,value:catalog[initialCode]?.minimumBoxes?.toString()??'',expected:catalog[initialCode]?.minimumUpdatedAt??''}))
   const [saving,setSaving]=useState(false)
@@ -16,11 +17,12 @@ function MinimumDialog({catalog,codes,initialCode,onClose,onSaved}:{catalog:Reco
   useModalDialog(dialogRef)
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault()
-    if(saving||!draft.expected)return
+    if(saving||!draft.expected||busy.current)return
+    busy.current=true
     setSaving(true);setError('')
     try{requestId.current??=crypto.randomUUID();await saveStockMinimum(draft.code,draft.value,draft.expected,requestId.current);onSaved()}
     catch(caught){setError(caught instanceof Error?caught.message:'Não foi possível salvar.')}
-    finally{setSaving(false)}
+    finally{busy.current=false;setSaving(false)}
   }
   return <dialog ref={dialogRef} className="minimum-dialog" aria-labelledby="minimum-title" onCancel={(event)=>{event.preventDefault();if(!saving)onClose()}}>
     <div className="minimum-heading"><h2 id="minimum-title">Configurar estoque mínimo</h2><button type="button" className="theme-toggle" disabled={saving} onClick={onClose}>Fechar</button></div>

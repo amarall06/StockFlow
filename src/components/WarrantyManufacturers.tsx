@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import { startResumeRefresh } from '../lib/resume-refresh'
 import { loadWarrantyManufacturers, saveWarrantyManufacturer, type WarrantyManufacturer } from '../lib/warranty-api'
 import { WarrantyBoxesDialog } from './WarrantyBoxesDialog'
 import { EditButton } from './EditButton'
@@ -21,21 +22,41 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const nameRef = useRef<HTMLInputElement>(null)
+  const interaction = useRef({ name: '', editing: false, saving: false })
+  const canAutoRefresh = useCallback(() => !interaction.current.name.trim() && !interaction.current.editing && !interaction.current.saving && !document.querySelector('dialog[open]'), [])
+  const reportKey = `${revision}:${boxesReady}`
+  const [automaticError, setAutomaticError] = useState({ key: '', message: '' })
   const loading = ready && (result.revision !== revision || result.withBoxes !== boxesReady)
 
   useEffect(() => {
     if (!ready) return
     let isCurrent = true
-    void loadWarrantyManufacturers(boxesReady).then((rows) => {
-      if (isCurrent) setResult({ revision, withBoxes: boxesReady, rows, error: '' })
-    }).catch((loadError) => {
+    let initialPending = true
+    let hasReport = false
+    function publish(rows: WarrantyManufacturer[]) {
+      if (!isCurrent) return
+      hasReport = true
+      setResult({ revision, withBoxes: boxesReady, rows, error: '' })
+      setAutomaticError({ key: reportKey, message: '' })
+    }
+    void loadWarrantyManufacturers(boxesReady).then(publish).catch((loadError) => {
       if (isCurrent) setResult({ revision, withBoxes: boxesReady, rows: [], error: loadError instanceof Error ? loadError.message : 'Não foi possível carregar os fabricantes.' })
+    }).finally(() => { initialPending = false })
+    const stop = startResumeRefresh({
+      intervalMs: 30_000, load: () => loadWarrantyManufacturers(boxesReady), apply: publish,
+      canRefresh: () => !initialPending && canAutoRefresh(),
+      onError: () => {
+        if (hasReport) setAutomaticError({ key: reportKey, message: 'Não foi possível atualizar os saldos da garantia automaticamente. Os dados anteriores permanecem na tela.' })
+        else setResult({ revision, withBoxes: boxesReady, rows: [], error: 'Não foi possível carregar os fabricantes e seus saldos. Tente atualizar a lista.' })
+      },
     })
-    return () => { isCurrent = false }
-  }, [ready, boxesReady, revision])
+    return () => { isCurrent = false; stop() }
+  }, [ready, boxesReady, revision, reportKey, canAutoRefresh])
 
   function editManufacturer(manufacturer: WarrantyManufacturer) {
     if (!isAdministrator || saving) return
+    interaction.current.editing = true
+    interaction.current.name = manufacturer.name
     setEditing(manufacturer)
     setName(manufacturer.name)
     setError('')
@@ -46,7 +67,8 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
 
   async function saveManufacturer(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!ready || !isAdministrator || saving) return
+    if (!ready || !isAdministrator || saving || interaction.current.saving) return
+    interaction.current.saving = true
     setSaving(true)
     setError('')
     setMessage('')
@@ -55,10 +77,13 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
       setMessage(`${saved.name}: ${editing ? 'alteração salva' : 'fabricante cadastrado'}.`)
       setEditing(null)
       setName('')
+      interaction.current.editing = false
+      interaction.current.name = ''
       setRevision((value) => value + 1)
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : 'Não foi possível salvar o fabricante.')
     } finally {
+      interaction.current.saving = false
       setSaving(false)
     }
   }
@@ -70,12 +95,13 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
     <section className="inventory-panel warranty-manufacturers" aria-labelledby="manufacturers-title">
       <div className="panel-heading"><div><h2 id="manufacturers-title">Fabricantes das peças</h2><p>Cadastro compartilhado entre amortecedores e molas.</p></div>{ready && !loading && !result.error && <span className="row-count">{result.rows.length} fabricantes</span>}</div>
       {boxesReady && !loading && !result.error && <ExportCsvButton name="liber-garantia-fabricantes" headers={['Fabricante','Amortecedores (caixas)','Molas (caixas)','Total (caixas)']} rows={filtered.map(row=>[row.name,row.shock_boxes??0,row.spring_boxes??0,(row.shock_boxes??0)+(row.spring_boxes??0)])}/>}
+      {automaticError.key === reportKey && automaticError.message && <p className="manufacturer-feedback auth-error" role="status">{automaticError.message}</p>}
       {!ready ? <p className="manufacturer-notice" role="status">O cadastro de fabricantes aguarda ativação no banco. Depois da atualização, recarregue o site.</p> : <>
         {!boxesReady && <p className="manufacturer-notice" role="status">O saldo de caixas por fabricante aguarda ativação no banco. O cadastro dos fabricantes continua disponível.</p>}
         {isAdministrator && <form className="manufacturer-form" onSubmit={saveManufacturer}>
-          <label htmlFor="manufacturer-name">{editing ? 'Editar fabricante' : 'Cadastrar fabricante'}<input ref={nameRef} id="manufacturer-name" value={name} onChange={(event) => { setName(event.target.value); setError(''); setMessage('') }} placeholder="Ex.: Moripar" maxLength={100} required disabled={saving} /></label>
+          <label htmlFor="manufacturer-name">{editing ? 'Editar fabricante' : 'Cadastrar fabricante'}<input ref={nameRef} id="manufacturer-name" value={name} onChange={(event) => { interaction.current.name = event.target.value; setName(event.target.value); setError(''); setMessage('') }} placeholder="Ex.: Moripar" maxLength={100} required disabled={saving} /></label>
           <button className="add-product-button" type="submit" disabled={saving || !name.trim()}>{saving ? 'Salvando…' : editing ? 'Salvar alteração' : 'Cadastrar'}</button>
-          {editing && <button className="theme-toggle" type="button" disabled={saving} onClick={() => { setEditing(null); setName(''); setError('') }}>Cancelar edição</button>}
+          {editing && <button className="theme-toggle" type="button" disabled={saving} onClick={() => { interaction.current.editing = false; interaction.current.name = ''; setEditing(null); setName(''); setError('') }}>Cancelar edição</button>}
         </form>}
         {error && <p className="manufacturer-feedback auth-error" role="alert">{error}</p>}
         {message && <p className="manufacturer-feedback manufacturer-success" role="status">{message}</p>}
@@ -90,7 +116,7 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
             </li>)}</ul>}
       </>}
     </section>
-    <WarrantyReturns ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} />
+    <WarrantyReturns ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} canAutoRefresh={canAutoRefresh} />
     {boxOperation && <WarrantyBoxesDialog manufacturer={boxOperation.manufacturer} direction={boxOperation.direction}
       onClose={() => setBoxOperation(null)} onSaved={(feedback) => { setBoxOperation(null); setMessage(feedback); setError(''); setRevision((value) => value + 1) }} />}
   </>

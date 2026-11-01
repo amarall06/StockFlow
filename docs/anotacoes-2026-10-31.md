@@ -1,10 +1,26 @@
 # Anotações de 31/10/2026 — evolução do estoque
 
-Registro das 26 solicitações do usuário, organizado para implementação posterior. Acrescentar à pauta; registrar uma ideia não significa que ela já foi implementada. Documento interno, sem expor rascunhos no site. Continuar do commit dcc621a e das verificações pendentes, sem repetir os testes concluídos.
+Registro das 26 solicitações do usuário, organizado para implementação posterior. Acrescentar à pauta; registrar uma ideia não significa que ela já foi implementada. Documento interno, sem expor rascunhos no site. A antiga referência dcc621a foi superada pela entrega a6b874b de 01/11/2026; consultar ponto-retomada.md e não repetir os testes concluídos.
+
+Início da implementação em 01/11/2026: grupo 1 encerrado na parte local/publicação; foto real, Safari físico e piloto seguem dependentes de material/equipe. Primeira etapa do grupo 2: confirmação final de descarte/devolução ao fornecedor (item 15), implementada localmente, com quatro casos novos de navegador aprovados. Guia: `estudo-confirmacao-saidas.md`. Os demais recortes de confiabilidade, sincronização e avisos não estão concluídos por este registro.
 
 Todas as funcionalidades devem considerar amortecedores e molas. A unidade operacional continua sendo caixa; molas não passam por testagem. Sugestões de mudança física e regras de devolução precisam de definição antes da execução. Usuários e etiquetas entram no planejamento, preservando o adiamento anterior até a retomada dessas etapas.
 
 ## Lista completa
+
+Atualização mais recente de 01/11/2026: Histórico automático concluído localmente com cinco casos novos aprovados, preservando filtros, página e rascunhos. Pode riscar essa subparte. Atualização periódica das telas previstas implementada; 16 inteira ainda parcial por publicação, definição de atualização instantânea e ensaio real entre aparelhos. Guia `estudo-historico-atualizacao-automatica.md`.
+
+Atualização mais recente de 01/11/2026: subparte da 16, Garantia automática (fabricantes/saldos/devoluções), concluída localmente com seis casos novos aprovados. Pode riscar essa subparte, preservados filtros e rascunhos. Restam Histórico e ensaio real entre aparelhos; não riscar 16 inteira. Guia `estudo-garantia-atualizacao-automatica.md`.
+
+Atualização mais recente de 01/11/2026: subparte da 16, relatórios do Painel (vendas/entradas e atividade diária), concluída localmente com cinco casos novos aprovados, sem repetir os anteriores. Pode riscar essa subparte junto com estoque e Giro/ABC. Restam Garantia/Histórico e ensaio real entre aparelhos; 16 inteira segue parcial. Guia `estudo-painel-atualizacao-automatica.md`.
+
+Atualização posterior de 01/11/2026: subparte da 16, relatório Giro/ABC automático, concluída localmente com quatro casos novos aprovados. Filtros preservados e falha conserva resultados. Ainda faltam relatórios do Painel, Garantia/Histórico e ensaio real entre aparelhos; não riscar 16 inteira. Guia `estudo-giro-atualizacao-automatica.md`.
+
+Fechamento posterior da 15 em 01/11/2026: implementação local concluída para os fluxos atuais, com confirmação final e bloqueio imediato de envio; 16 casos novos aprovados sem repetir os anteriores. Pode riscar a implementação da anotação 15, mantendo publicação/piloto pendentes. Guia `fechamento-anotacao-15.md`; esta atualização prevalece sobre as referências antigas a 15 parcial. A próxima etapa volta à 16, ainda parcial.
+
+Etapa periódica da 16 em 01/11/2026: estoque de quatro telas consulta a cada 30 segundos quando a aba está visível, com pausa sob diálogos/formulários. Cinco casos novos aprovados; não repetidos os anteriores. Essa subparte pode ser riscada; a 16 inteira e a 15 continuam parciais. Guia: `estudo-atualizacao-periodica.md`. Relatórios próprios e ensaio real entre aparelhos seguem pendentes.
+
+Progresso atualizado por número e orientação do que riscar: `progresso-26-anotacoes.md`. Em 01/11/2026, anotação 16 avançou parcialmente com retomada de consultas (três casos novos de navegador e três isolados aprovados). Anotação 24 concluída quanto à preparação do roteiro; execução do piloto segue pendente. Anotações 15, 16, 25 e 26 não devem ser riscadas como inteiramente concluídas. O usuário pediu melhoria geral do design somente depois das 26 anotações.
 
 | Nº | Solicitação | Situação e definição necessária |
 | --- | --- | --- |

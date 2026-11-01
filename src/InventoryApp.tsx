@@ -6,6 +6,7 @@ import { ReceiptForm } from './components/ReceiptForm'
 import { readPendingTransfer } from './lib/pending-transfer'
 import { readPendingOutflow } from './lib/pending-outflow'
 import { StockAlerts } from './components/StockAlerts'
+import { startResumeRefresh } from './lib/resume-refresh'
 import { NavigationIcon } from './components/NavigationIcon'
 
 import { dashboardStockSummary } from './lib/dashboard-summary'
@@ -195,6 +196,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [dataMode, setDataMode] = useState<'demo' | 'database'>('demo')
   const [inventoryApiVersion, setInventoryApiVersion] = useState(0)
   const [databaseError, setDatabaseError] = useState('')
+  const [resumeError, setResumeError] = useState('')
   const [testingRow, setTestingRow] = useState<StockRow | null>(null)
 
   // Reaproveita a mesma tela de estoque, filtrando somente amortecedores ou molas.
@@ -270,6 +272,26 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     setDataMode('database')
     setStorageMessage('Conectado ao Supabase')
   }
+
+  useEffect(() => {
+    // Primeira etapa da sincronização: somente telas de consulta. Formulários,
+    // diálogos operacionais e recuperação de pedidos conservam seu fluxo atual.
+    if (dataMode !== 'database' || !['dashboard', 'stock', 'products', 'alerts'].includes(activePage)) return
+    return startResumeRefresh({
+      load: loadInventorySnapshot,
+      intervalMs: 30_000,
+      // Não atualizar a consulta sob uma janela de edição/confirmação.
+      canRefresh: () => !document.querySelector('dialog[open]'),
+      apply: snapshot => {
+        setCatalog(snapshot.catalog)
+        setStock(snapshot.stock)
+        setLocations(snapshot.locations)
+        setInventoryApiVersion(snapshot.apiVersion)
+        setResumeError('')
+      },
+      onError: () => setResumeError('Não foi possível atualizar automaticamente. Os dados anteriores permanecem na tela; confira a conexão e retorne à janela para tentar novamente.'),
+    })
+  }, [dataMode, activePage])
 
   // As opções de transferência dependem do produto, origem e situação selecionados.
   const movementOrigins = [...new Set(activeStock.filter((row) => row.code === effectiveMoveCode && row.boxes > 0).map((row) => row.location))]
@@ -567,6 +589,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         </header>
 
         <div className="content" id="consulta" tabIndex={-1}>
+          {resumeError && <p className="auth-error" role="status">{resumeError}</p>}
           {signOutError && <p className="auth-error" role="alert">{signOutError}</p>}
           <ModuleBoundary key={activePage}><Suspense fallback={<ModuleLoading />}>
           {showInventoryPage ? <>

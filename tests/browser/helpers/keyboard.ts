@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 
-export async function prepareKeyboardPage(page: Page) {
+export async function prepareKeyboardPage(page: Page, overrides: Record<string, unknown> = {}) {
   const user = { id: '11111111-1111-4111-8111-111111111111', aud: 'authenticated', role: 'authenticated', email: 'teste@example.com', app_metadata: {}, user_metadata: {}, created_at: '2026-10-27T00:00:00Z' }
   const writes: string[] = []
   await page.addInitScript(value => {
@@ -18,6 +18,7 @@ export async function prepareKeyboardPage(page: Page) {
     if (name === 'profiles') return route.fulfill({ json: { is_active: true, display_name: 'Conta de Teste', role: 'administrator' } })
     if (name === 'inventory_api_version') return route.fulfill({ json: 16 })
     if (Number(url.searchParams.get('offset')) > 0) return route.fulfill({ json: [] })
+    if (name && Object.hasOwn(overrides, name)) return route.fulfill({ json: overrides[name] })
     if (name === 'products') return route.fulfill({ json: [
       { id: 'p1', code: 'AGM-35', application: 'Amortecedor teste', default_location_id: 'l1', updated_at: '2026-10-27T00:00:00Z', minimum_boxes: 3, minimum_updated_at: '2026-10-27T00:00:00Z' },
       { id: 'p2', code: 'MGM-35', application: 'Mola teste', default_location_id: 'l1', updated_at: '2026-10-27T00:00:00Z' },

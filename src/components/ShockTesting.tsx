@@ -3,6 +3,7 @@ import type { StockRow } from '../lib/inventory-api'
 import { approveShockBoxes, loadShockApprovals, type ShockApproval } from '../lib/shock-testing'
 import './ShockTesting.css'
 import { useModalDialog } from '../lib/use-modal-dialog'
+import { confirmOperation } from '../lib/confirm-operation'
 
 // Ícone sem texto visível, mas com nome acessível para teclado e leitores de tela.
 export function ShockTestButton({ code, onClick }: { code: string; onClick: () => void }) {
@@ -19,6 +20,7 @@ export function ShockTestingDialog({ row, ready, canApprove, onClose, onRecorded
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const requestId = useRef<string | null>(null)
+  const busy = useRef(false)
   const [quantity, setQuantity] = useState('1')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -39,18 +41,23 @@ export function ShockTestingDialog({ row, ready, canApprove, onClose, onRecorded
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!ready || !canApprove || !waiting || saving) return
+    if (!ready || !canApprove || !waiting || saving || busy.current) return
     const boxes = Number(quantity)
     if (!Number.isInteger(boxes) || boxes < 1 || boxes > row.boxes) { setError('Confira a quantidade inteira e o saldo aguardando teste.'); return }
+    busy.current=true
     setSaving(true)
     setError('')
     try {
+      if(!confirmOperation('Confirmar aprovação de amortecedores?', [
+        `Produto: ${row.code}`, `Localização: ${row.location}`, `Quantidade: ${boxes} caixas`,
+        'As caixas passam de Aguardando testagem para Liberado para venda, no mesmo local.',
+      ]))return
       // A mesma tentativa mantém o ID se a resposta falhar, evitando descontar duas vezes.
       requestId.current ??= crypto.randomUUID()
       await approveShockBoxes(row.code, row.location, boxes, requestId.current)
       onRecorded()
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Não foi possível salvar.') }
-    finally { setSaving(false) }
+    finally { busy.current=false; setSaving(false) }
   }
 
   return <dialog ref={dialogRef} className="shock-testing-dialog" aria-labelledby="shock-testing-title" onCancel={(event) => { event.preventDefault(); if (!saving) onClose() }}>

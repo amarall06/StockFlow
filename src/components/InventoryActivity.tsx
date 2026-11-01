@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
+import { startResumeRefresh } from '../lib/resume-refresh'
 import { loadActivity, type ActivityDay } from '../lib/activity-api'
 import type { DashboardCategory } from '../lib/dashboard-api'
 const date = (day: string) => new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' }).format(new Date(day+'T12:00:00Z'))
@@ -28,18 +29,38 @@ export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
 {current && <label className="activity-day">Consultar dia<input aria-label="Dia do gráfico" type="range" min="0" max={rows.length-1} value={Math.min(selected,rows.length-1)} onChange={event=>setSelected(Number(event.target.value))}/><output aria-live="polite">{date(current.day)}: {current[series]} caixas</output></label>}<table><thead><tr><th>Dia</th><th>Vendas (cx.)</th><th>Entradas (cx.)</th></tr></thead><tbody>{rows.map(row=><tr key={row.day}><td>{date(row.day)}</td><td>{row.sold_boxes}</td><td>{row.received_boxes}</td></tr>)}</tbody></table></details>
   </>
 }
-export function InventoryActivity({ category, revision }: { category: DashboardCategory; revision: number }) {
+export function InventoryActivity({ category, revision, pauseRef }: { category: DashboardCategory; revision: number; pauseRef?: RefObject<boolean> }) {
   const [days,setDays] = useState(7)
   const key = `${category}:${days}:${revision}`
   const [result,setResult] = useState<{key:string;rows:ActivityDay[];error:string}>({key:'',rows:[],error:''})
+  const [automaticError,setAutomaticError] = useState({key:'',message:''})
   useEffect(()=>{
     let current=true
-    void loadActivity(category,days).then(rows=>{if(current)setResult({key,rows,error:''})}).catch(error=>{if(current)setResult({key,rows:[],error:error instanceof Error?error.message:'Não foi possível consultar a atividade.'})})
-    return ()=>{current=false}
-  },[category,days,key])
+    let initialPending=true
+    let hasReport=false
+    function publish(rows:ActivityDay[]){
+      if(!current)return
+      hasReport=true
+      setResult({key,rows,error:''})
+      setAutomaticError({key,message:''})
+    }
+    void loadActivity(category,days).then(publish)
+      .catch(error=>{if(current)setResult({key,rows:[],error:error instanceof Error?error.message:'Não foi possível consultar a atividade.'})})
+      .finally(()=>{initialPending=false})
+    const stop=startResumeRefresh({
+      intervalMs:30_000,load:()=>loadActivity(category,days),apply:publish,
+      canRefresh:()=>!initialPending&&!pauseRef?.current&&!document.querySelector('dialog[open]'),
+      onError:()=>{
+        if(hasReport)setAutomaticError({key,message:'Não foi possível atualizar a atividade diária automaticamente. Os dados da consulta anterior permanecem na tela.'})
+        else setResult({key,rows:[],error:'Não foi possível consultar a atividade. Atualize os indicadores para tentar novamente.'})
+      },
+    })
+    return ()=>{current=false;stop()}
+  },[category,days,key,pauseRef])
   return <section className="inventory-panel dashboard-panel activity-panel" aria-label="Atividade diária">
     <h2>Movimentação de estoque</h2><p className="activity-description">Dias do calendário na Bahia, incluindo hoje, que ainda pode estar incompleto. Somente movimentos registrados; transferências e garantia ficam fora.</p>
     <label className="activity-filter">Período<select aria-label="Período do gráfico" value={days} onChange={event=>setDays(Number(event.target.value))}><option value={7}>Últimos 7 dias</option><option value={30}>Últimos 30 dias</option><option value={90}>Últimos 90 dias</option></select></label>
+    {automaticError.key===key&&automaticError.message&&<p className="auth-error" role="status">{automaticError.message}</p>}
     {result.key!==key?<p role="status">Carregando atividade…</p>:result.error?<p className="auth-error" role="alert">{result.error}</p>:<ActivityChart key={key} rows={result.rows}/>}
   </section>
 }

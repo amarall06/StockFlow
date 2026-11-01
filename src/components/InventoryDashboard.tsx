@@ -1,4 +1,5 @@
-import {useEffect,useState} from 'react'
+import {useEffect,useRef,useState} from 'react'
+import {startResumeRefresh} from '../lib/resume-refresh'
 import type {ProductInfo,StockRow} from '../lib/inventory-api'
 import {loadDashboardReport,type DashboardCategory,type DashboardReport} from '../lib/dashboard-api'
 import {dashboardStockSummary} from '../lib/dashboard-summary'
@@ -37,6 +38,9 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   const [revision,setRevision]=useState(0)
   const [refreshing,setRefreshing]=useState(false)
   const [refreshError,setRefreshError]=useState('')
+  const [automaticError,setAutomaticError]=useState({key:'',message:''})
+  const manualPending=useRef(false)
+  const reportKey=`${category}:${revision}`
   const [result,setResult]=useState<{category:DashboardCategory;revision:number;report:DashboardReport|null;error:string}>({category:'all',revision:-1,report:null,error:''})
   const loading=ready&&(result.category!==category||result.revision!==revision)
   const summary=dashboardStockSummary(catalog,stock,category)
@@ -47,16 +51,34 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   useEffect(()=>{
     if(!ready)return
     let current=true
-    void loadDashboardReport(category).then((report)=>{if(current)setResult({category,revision,report,error:''})})
+    let initialPending=true
+    let hasReport=false
+    function publish(report:DashboardReport){
+      if(!current)return
+      hasReport=true
+      setResult({category,revision,report,error:''})
+      setAutomaticError({key:reportKey,message:''})
+    }
+    void loadDashboardReport(category).then(publish)
       .catch((caught)=>{if(current)setResult({category,revision,report:null,error:caught instanceof Error?caught.message:'Não foi possível carregar o painel.'})})
-    return()=>{current=false}
-  },[ready,category,revision])
+      .finally(()=>{initialPending=false})
+    const stop=startResumeRefresh({
+      intervalMs:30_000,load:()=>loadDashboardReport(category),apply:publish,
+      canRefresh:()=>!initialPending&&!manualPending.current&&!document.querySelector('dialog[open]'),
+      onError:()=>{
+        if(hasReport)setAutomaticError({key:reportKey,message:'Não foi possível atualizar vendas e entradas automaticamente. Os dados da consulta anterior permanecem na tela.'})
+        else setResult({category,revision,report:null,error:'Não foi possível consultar vendas e entradas. Confira a conexão e tente atualizar.'})
+      },
+    })
+    return()=>{current=false;stop()}
+  },[ready,category,revision,reportKey])
   async function refresh(){
-    if(refreshing||loading)return
+    if(refreshing||loading||manualPending.current)return
+    manualPending.current=true
     setRefreshing(true);setRefreshError('')
     try{await onRefresh();setRevision((value)=>value+1)}
     catch{setRefreshError('Não foi possível atualizar o estoque. Os valores da consulta anterior permanecem na tela.')}
-    finally{setRefreshing(false)}
+    finally{manualPending.current=false;setRefreshing(false)}
   }
   return <>
     <div className="page-heading"><div><p className="eyebrow">VISÃO GERAL</p><h1>Painel inicial</h1><p className="subtitle">Acompanhe seu estoque, movimentações e principais indicadores.</p></div></div>
@@ -75,6 +97,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       <div id="dashboard-detail" className="dashboard-detail is-expanded">
       <details className="dashboard-controls"><summary>Filtros do painel</summary><div className="dashboard-tools"><label>Filtrar indicadores<select value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><button className="theme-toggle" type="button" disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</button></div></details>
       {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
+      {automaticError.key===reportKey&&automaticError.message&&<p className="dashboard-error auth-error" role="status">{automaticError.message}</p>}
       <section className="dashboard-totals" aria-label="Resumo do estoque normal">
         <button type="button" className="dashboard-stat" onClick={()=>onOpen(stockPage)}><span>Caixas na seleção</span><strong>{summary.boxes}</strong><small>Consultar estoque ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('products')}><span>Produtos cadastrados</span><strong>{summary.products}</strong><small>Abrir catálogo de produtos ↗</small></button>
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>Produtos sem estoque</span><strong>{summary.zeros}</strong><small>Consultar alertas ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>No mínimo ou abaixo</span><strong>{summary.low}</strong><small>Consultar alertas ↗</small></button>
@@ -84,7 +107,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
         {!summary.alerts.length?<p>Nenhum produto zerado ou no limite configurado nesta consulta.</p>:<ul className="dashboard-alert-list">{summary.alerts.slice(0,6).map((row)=><li key={row.code}><strong>{row.code}</strong><span>{row.severity==='zero'?'Sem estoque':`${row.total} caixas · mínimo ${row.minimum}`}</span></li>)}</ul>}
         {summary.alerts.length>6&&<p>Prévia de 6 dos {summary.alerts.length} alertas. Consulte os estoques para ver todos.</p>}
       </section>
-      {activityReady && <InventoryActivity category={category} revision={revision}/>}
+      {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
       {loading?<p className="dashboard-message" role="status">Carregando vendas e recebimentos…</p>:result.error?<p className="dashboard-error auth-error" role="alert">{result.error}</p>:result.report&&<><p className="dashboard-message">Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.</p><DashboardActivity report={result.report} onHistory={()=>onOpen('history')}/></>}
       </div>
     </>}

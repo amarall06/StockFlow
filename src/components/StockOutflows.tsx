@@ -67,6 +67,21 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
     try{
       const input={row:{...selected},boxes,reason,notes,reference}
       normalizeOutflow(input)
+      {
+        const approved=window.confirm([
+          `Confirmar ${outflowLabels[reason].toLocaleLowerCase('pt-BR')}?`,
+          `Produto: ${input.row.code}`,
+          `Localização: ${input.row.location}`,
+          `Situação: ${input.row.status}`,
+          `Quantidade: ${input.boxes} ${input.boxes===1?'caixa':'caixas'}`,
+          `Saldo consultado após a saída: ${input.row.boxes-input.boxes} caixas`,
+          `Motivo / destino: ${input.notes.trim()}`,
+          ...(input.reference.trim()?[`Referência: ${input.reference.trim()}`]:[]),
+          'Esta operação desconta caixas do estoque normal. O saldo será validado novamente pelo servidor.',
+        ].join('\n'))
+        // Cancelar não cria pedido pendente, UUID ou requisição de saída.
+        if(!approved)return
+      }
       const operation:PendingOutflow={version:1,userId,requestId:crypto.randomUUID(),input,phase:'uncertain'}
       // É obrigatório guardar o pedido ANTES de qualquer requisição ao servidor.
       savePendingOutflow(operation)

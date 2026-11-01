@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { useModalDialog } from '../lib/use-modal-dialog'
+import { confirmOperation } from '../lib/confirm-operation'
 import { changeWarrantyBoxes, type WarrantyManufacturer } from '../lib/warranty-api'
 
 export function WarrantyBoxesDialog({ manufacturer, direction, onClose, onSaved }: {
@@ -7,6 +8,7 @@ export function WarrantyBoxesDialog({ manufacturer, direction, onClose, onSaved 
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const requestId = useRef<string | null>(null)
+  const busy = useRef(false)
   const [kind, setKind] = useState<'shock' | 'spring'>(() => direction === 'out' && !manufacturer.shock_boxes && (manufacturer.spring_boxes ?? 0) > 0 ? 'spring' : 'shock')
   const [quantity, setQuantity] = useState('1')
   const [note, setNote] = useState('')
@@ -20,15 +22,21 @@ export function WarrantyBoxesDialog({ manufacturer, direction, onClose, onSaved 
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (saving) return
+    if (saving || busy.current) return
     const boxes = Number(quantity)
     if (!Number.isInteger(boxes) || boxes < 1 || (direction === 'out' && boxes > available)) {
       setError('Confira a quantidade inteira de caixas e o saldo disponível da categoria.')
       return
     }
+    busy.current=true
     setSaving(true)
     setError('')
     try {
+      if(!confirmOperation(direction==='in'?'Confirmar entrada em garantia?':'Confirmar retirada da garantia?', [
+        `Fabricante: ${manufacturer.name}`, `Categoria: ${kind==='shock'?'Amortecedores':'Molas'}`,
+        `Quantidade: ${boxes} caixas`, `Saldo consultado após a operação: ${available+(direction==='in'?boxes:-boxes)} caixas`,
+        `Observação: ${note.trim()||'Não informada'}`, 'Esta operação altera apenas o saldo em garantia.',
+      ]))return
       // Reutiliza a identificação após falha de conexão para não duplicar a movimentação.
       requestId.current ??= crypto.randomUUID()
       await changeWarrantyBoxes({ manufacturerId: manufacturer.id, direction, kind, quantity: boxes, note, requestId: requestId.current })
@@ -36,6 +44,7 @@ export function WarrantyBoxesDialog({ manufacturer, direction, onClose, onSaved 
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : 'Não foi possível registrar a operação.')
     } finally {
+      busy.current=false
       setSaving(false)
     }
   }

@@ -148,6 +148,8 @@ test('navegação, CSV, fotos e recuperação de transferência após resposta p
   const transfer = page.getByRole('region', { name: 'Transferir caixas entre prateleiras' })
   await transfer.getByLabel('Saldo de origem da transferência').selectOption({ index: 1 })
   await transfer.getByLabel('Destino da transferência').selectOption('B01')
+  // A confirmação foi acrescentada na anotação 15; mantém o cenário anterior.
+  page.once('dialog', dialog => dialog.accept())
   await transfer.getByRole('button', { name: 'Registrar transferência' }).click()
   await expect(transfer.getByRole('alert')).toContainText('Não foi possível confirmar')
   await expect(transfer.getByLabel('Saldo de origem da transferência')).toBeDisabled()

@@ -4,6 +4,8 @@ import type { WarrantyManufacturer } from '../lib/warranty-api'
 import { EditButton } from './EditButton'
 import './WarrantyReturns.css'
 import { useModalDialog } from '../lib/use-modal-dialog'
+import { confirmOperation } from '../lib/confirm-operation'
+import { startResumeRefresh } from '../lib/resume-refresh'
 
 const initialReturn: WarrantyReturnInput = {
   manufacturer_id: null, product_kind: 'unknown', product_code: '', description: '', boxes: 1,
@@ -16,6 +18,7 @@ function ReturnDialog({ previous, manufacturers, onClose, onSaved }: {
   const dialog = useRef<HTMLDialogElement>(null)
   const id = useRef(previous?.id ?? crypto.randomUUID())
   const requestId = useRef<string | null>(null)
+  const busy = useRef(false)
   // Guarda apenas os campos do formulário, sem misturar os metadados de auditoria.
   const [input, setInput] = useState<WarrantyReturnInput>(() => previous ? Object.fromEntries(
     Object.keys(initialReturn).map((key) => [key, previous[key as keyof WarrantyReturnInput]]),
@@ -40,16 +43,25 @@ function ReturnDialog({ previous, manufacturers, onClose, onSaved }: {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (saving) return
+    if (saving || busy.current) return
     if (!Number.isInteger(input.boxes) || input.boxes < 1) { setError('Informe uma quantidade inteira positiva de caixas.'); return }
+    busy.current=true
     setSaving(true)
     setError('')
     try {
+      if(!confirmOperation('Confirmar registro de devolução?', [
+        `Produto: ${input.product_code||input.description}`, `Local: ${input.location}`,
+        `Quantidade: ${input.boxes} caixas`, `Andamento: ${returnStatusLabels[input.status]}`,
+        `Fabricante: ${manufacturers.find(row=>row.id===input.manufacturer_id)?.name??'Não identificado'}`,
+        `Motivo: ${input.reason}`, ...(input.destination?[`Destino: ${input.destination}`]:[]),
+        input.status==='warranty'&&previous?.status!=='warranty'?'As caixas serão somadas à garantia do fabricante.':
+          previous?.status==='warranty'&&input.status==='closed'?'As caixas serão retiradas da garantia do fabricante.':'O estoque normal para venda não é alterado.',
+      ]))return
       requestId.current ??= crypto.randomUUID()
       await saveWarrantyReturn(id.current, input, previous?.updated_at ?? null, requestId.current)
       onSaved()
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Não foi possível salvar.') }
-    finally { setSaving(false) }
+    finally { busy.current=false; setSaving(false) }
   }
 
   return <dialog ref={dialog} className="warranty-box-dialog warranty-return-dialog" aria-labelledby="return-title"
@@ -77,22 +89,40 @@ function ReturnDialog({ previous, manufacturers, onClose, onSaved }: {
   </dialog>
 }
 
-export function WarrantyReturns({ ready, isAdministrator, manufacturers, revision, onChanged }: {
-  ready: boolean; isAdministrator: boolean; manufacturers: WarrantyManufacturer[]; revision: number; onChanged: () => void
+export function WarrantyReturns({ ready, isAdministrator, manufacturers, revision, onChanged, canAutoRefresh }: {
+  ready: boolean; isAdministrator: boolean; manufacturers: WarrantyManufacturer[]; revision: number; onChanged: () => void; canAutoRefresh?: () => boolean
 }) {
   const [result, setResult] = useState<{ revision: number; rows: WarrantyReturn[]; error: string }>({ revision: -1, rows: [], error: '' })
   const [editing, setEditing] = useState<WarrantyReturn | null | undefined>(undefined)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [message, setMessage] = useState('')
+  const [automaticError, setAutomaticError] = useState({ revision: -1, message: '' })
   const loading = ready && result.revision !== revision
   useEffect(() => {
     if (!ready) return
     let current = true
-    void loadWarrantyReturns().then((rows) => { if (current) setResult({ revision, rows, error: '' }) })
+    let initialPending = true
+    let hasReport = false
+    function publish(rows: WarrantyReturn[]) {
+      if (!current) return
+      hasReport = true
+      setResult({ revision, rows, error: '' })
+      setAutomaticError({ revision, message: '' })
+    }
+    void loadWarrantyReturns().then(publish)
       .catch((error) => { if (current) setResult({ revision, rows: [], error: error instanceof Error ? error.message : 'Não foi possível carregar.' }) })
-    return () => { current = false }
-  }, [ready, revision])
+      .finally(() => { initialPending = false })
+    const stop = startResumeRefresh({
+      intervalMs: 30_000, load: loadWarrantyReturns, apply: publish,
+      canRefresh: () => !initialPending && (canAutoRefresh?.() ?? true) && !document.querySelector('dialog[open]'),
+      onError: () => {
+        if (hasReport) setAutomaticError({ revision, message: 'Não foi possível atualizar as devoluções automaticamente. Os dados anteriores permanecem na tela.' })
+        else setResult({ revision, rows: [], error: 'Não foi possível carregar as devoluções. Tente atualizar a lista.' })
+      },
+    })
+    return () => { current = false; stop() }
+  }, [ready, revision, canAutoRefresh])
   const names = new Map(manufacturers.map((m) => [m.id, m.name]))
   const filtered = result.rows.filter((row) => (!status || row.status === status)
     && `${row.product_code} ${row.description} ${row.location} ${row.reason} ${names.get(row.manufacturer_id ?? '') ?? ''}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR')))
@@ -101,6 +131,7 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
     {!ready ? <p className="manufacturer-notice">O acompanhamento de devoluções aguarda ativação no banco.</p> : <>
       <div className="manufacturer-list-tools"><label>Buscar devolução<input type="search" value={search} onChange={(e) => setSearch(e.target.value)} /></label><label>Andamento<select value={status} onChange={(e) => setStatus(e.target.value)}><option value="">Todos</option>{Object.entries(returnStatusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><button className="theme-toggle" type="button" disabled={loading} onClick={onChanged}>Atualizar devoluções</button></div>
       {message && <p className="manufacturer-feedback manufacturer-success" role="status">{message}</p>}
+      {automaticError.revision === revision && automaticError.message && <p className="manufacturer-feedback auth-error" role="status">{automaticError.message}</p>}
       {loading ? <p className="manufacturer-feedback" role="status">Carregando devoluções…</p> : result.error ? <p className="manufacturer-feedback auth-error" role="alert">{result.error}</p> : <>
         <p className="manufacturer-feedback">Consulta limitada às 100 devoluções mais recentes. Os filtros se aplicam a esses registros.</p>
         {!filtered.length && <p className="manufacturer-feedback">Nenhuma devolução encontrada.</p>}

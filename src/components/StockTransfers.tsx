@@ -2,6 +2,7 @@ import { useRef, useState, type FormEvent } from 'react'
 import type { StockRow } from '../lib/inventory-api'
 import { normalizeTransfer, registerTransfer, TransferRejectedError } from '../lib/transfer-api'
 import { clearPendingTransfer, readPendingTransfer, savePendingTransfer, type PendingTransfer } from '../lib/pending-transfer'
+import { confirmOperation } from '../lib/confirm-operation'
 
 const keyOf = (row: StockRow) => JSON.stringify([row.code, row.location, row.status])
 
@@ -50,6 +51,11 @@ export function StockTransfers({ userId, stock, locations, canTransfer, ready, o
       const input = { row: { ...selected }, to, boxes: Number(quantity) }
       normalizeTransfer(input)
       if (!locations.includes(to)) throw new Error('Escolha um destino ativo.')
+      if (!confirmOperation('Confirmar transferência?', [
+        `Produto: ${input.row.code}`, `Origem: ${input.row.location}`, `Destino: ${input.to}`,
+        `Situação: ${input.row.status}`, `Quantidade: ${input.boxes} caixas`,
+        `Saldo consultado na origem após a transferência: ${input.row.boxes-input.boxes} caixas`,
+      ])) return
       const operation: PendingTransfer = { version: 1, userId, requestId: crypto.randomUUID(), input, phase: 'uncertain' }
       savePendingTransfer(operation)
       setRecovery({ pending: operation, error: '' })

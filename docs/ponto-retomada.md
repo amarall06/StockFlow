@@ -1,3 +1,81 @@
+> **Anotação 16 — Histórico automático, local, 01/11/2026:** página e filtros
+> aplicados atualizam a cada 30 segundos e ao retomar aba/conexão. Rascunhos não são
+> aplicados nem apagados. Falha mantém registros; respostas antigas descartadas; temporizador
+> removido ao sair. Cinco casos novos aprovados, build aprovado e aviso de análise preexistente.
+> Nenhum teste anterior repetido nem escrita real. Guia `estudo-historico-atualizacao-automatica.md`.
+> Pode riscar essa subparte. Implementação periódica das telas previstas concluída localmente:
+> estoque, Giro/ABC, Painel, Garantia e Histórico. 16 inteira ainda parcial: faltam publicação,
+> definição de atualização instantânea e ensaio real entre aparelhos. 15 concluída localmente,
+> 24 quanto ao roteiro. Design depois das 26. Acompanhamento `progresso-26-anotacoes.md`.
+>
+> **Anotação 16 — Garantia automática, local, 01/11/2026:** fabricantes/saldos e
+> devoluções recebidas atualizam a cada 30 segundos e ao retomar aba/conexão. Preservam
+> buscas/andamento, pausam durante rascunho/edição/salvamento/diálogo e mantêm dados em
+> falha. Respostas antigas descartadas após atualização manual. Seis casos novos aprovados,
+> build aprovado e análise dos dois componentes sem avisos; nenhum teste anterior repetido.
+> Sem escrita real no banco. Guia `estudo-garantia-atualizacao-automatica.md`.
+> Pode riscar essa subparte da 16; inteira ainda parcial. Próximo: Histórico e ensaio real
+> entre aparelhos. A 15 segue concluída localmente; 24 quanto ao roteiro. Conjunto ainda
+> não publicado. Acompanhamento `progresso-26-anotacoes.md`; design depois das 26.
+>
+> **Anotação 16 — relatórios do Painel automáticos, local, 01/11/2026:** resumo de
+> vendas/entradas e atividade diária consultam a cada 30 segundos e ao retomar. Preservam
+> filtros, série, visualização, dia e tabela expandida. Falhas mantêm dados; respostas antigas
+> são descartadas. Pausa durante atualização manual ou diálogo aberto. Cinco casos novos
+> aprovados, build aprovado e análise dos dois componentes sem avisos; nenhum teste antigo
+> repetido nem escrita no banco. Guia `estudo-painel-atualizacao-automatica.md`.
+> Pode riscar essa subparte da 16; 16 inteira ainda parcial. Próximo: Garantia, depois
+> Histórico e ensaio entre aparelhos. A 15 segue concluída localmente, 24 quanto ao roteiro.
+> Mudanças ainda não publicadas. Design geral depois das 26 anotações.
+>
+> **Anotação 16 — Giro/ABC automático, local, 01/11/2026:** relatório passa a consultar
+> a cada 30 segundos e ao retomar aba/conexão. Preserva filtros; falha mantém relatório;
+> resposta antiga não substitui seleção nova. Quatro casos novos aprovados, build aprovado
+> e análise do componente sem avisos. Nenhum teste anterior repetido. Código em
+> `InventoryTurnover.tsx`; guia `estudo-giro-atualizacao-automatica.md`.
+> Pode riscar essa subparte; 16 inteira ainda parcial. Próximo: relatórios do Painel,
+> depois Garantia/Histórico e ensaio entre aparelhos. A 15 segue concluída localmente;
+> 24 concluída quanto a preparar roteiro. Publicação continua pendente. Design depois das 26.
+>
+> **Anotação 15 — implementação local concluída em 01/11/2026:** confirmações finais
+> completadas para entradas, vendas, transferências, aprovações e garantia/devoluções;
+> travas imediatas nos formulários que dependiam só de estado React. Proteções de saldo,
+> UUID e recuperação existentes preservadas. 16 casos novos aprovados; build aprovado;
+> análise dos oito arquivos sem avisos. Nenhum teste anterior repetido nem escrita no banco.
+> Pode riscar a implementação da 15; publicação e piloto seguem pendentes. Guia:
+> `fechamento-anotacao-15.md`. A 24 está concluída quanto ao roteiro. A 16 segue parcial.
+> Usuário pediu encerrar 15 e só depois o próximo: retomar 16, sem iniciar outros itens.
+> Acompanhamento: `progresso-26-anotacoes.md`. Design geral depois das 26.
+>
+> **26 anotações — etapa periódica anterior, 01/11/2026:** anotação 16 agora atualiza
+> estoque de Painel/Estoque geral/Produtos/Alertas a cada 30 segundos com aba visível,
+> além da retomada por foco/conexão. Pausa sob diálogo e em formulários; não envia
+> operações. Cinco casos novos aprovados (2 navegador + 3 isolados), build aprovado;
+> nenhum teste anterior repetido. Guia `estudo-atualizacao-periodica.md`.
+> Pode riscar a subparte de atualização periódica de estoque, não a 16 inteira:
+> relatórios próprios e ensaio real entre aparelhos seguem pendentes. A 15 segue
+> parcial e a 24 concluída somente quanto a preparar roteiro. Mudanças ainda locais.
+> Acompanhamento por número: `progresso-26-anotacoes.md`. Design depois das 26.
+>
+> **26 anotações — etapa anterior, 01/11/2026:** anotação 16 parcialmente implementada:
+> estoque de Painel/Estoque geral/Produtos/Alertas atualiza ao voltar à aba/janela ou
+> recuperar conexão. Não há atualização imediata enquanto permanece na tela, nem de
+> relatórios nesta etapa. Três casos novos de navegador + três isolados aprovados;
+> build aprovado. Não repetir os casos concluídos. Alteração local, sem publicação.
+> Código: `src/lib/resume-refresh.ts`, integração `InventoryApp.tsx`. Guia:
+> `estudo-retomada-consultas.md`. Acompanhamento: `progresso-26-anotacoes.md`.
+> Dizer ao usuário os números originais: 15 e 16 parciais; 24 concluída somente quanto
+> à preparação do roteiro. Não marcar execução do piloto como feita. Design geral
+> ficará para depois das 26 anotações. Próxima etapa: continuar sincronização (16).
+>
+> **26 anotações — primeira etapa local, 01/11/2026:** grupo 2, recorte do item 15.
+> `StockOutflows.submit` agora confirma descarte/devolução ao fornecedor antes de criar
+> pedido/UUID/enviar. Cancelar preserva campos e não envia. Quatro casos novos aprovados
+> nas duas categorias; build aprovado. Nenhum teste anterior repetido, nenhuma escrita
+> no banco. Guia `estudo-confirmacao-saidas.md`. Alteração ainda local, sem publicação.
+> Continuar uma etapa por vez: confiabilidade/sincronização (16), depois avisos (1,13,22),
+> preservando as definições abertas. Foto real/Safari físico/piloto seguem pendentes.
+>
 > **Publicação confirmada em 01/11/2026:** revisão de código `4355b58dccce7d90af228c33c0173a99ce51ad43`
 > enviada à main. Vercel success para essa revisão:
 > https://vercel.com/amarall06s-projects/liber-automotive/EjEwCVa4L2bYv14K2hQgNXNzjmW4

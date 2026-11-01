@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { supabase } from '../lib/supabase'
 import { springCodePrefixes } from '../lib/product-category'
+import { startResumeRefresh } from '../lib/resume-refresh'
 import './MovementHistory.css'
 
 type Movement = {
@@ -45,9 +46,13 @@ export function MovementHistory() {
   const [hasNextPage, setHasNextPage] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const queryKey = JSON.stringify([filters, page, revision])
+  const [automaticError, setAutomaticError] = useState({ key: '', message: '' })
 
   useEffect(() => {
     let isCurrentRequest = true
+    let initialPending = true
+    let hasReport = false
     setLoading(true)
     setError('')
 
@@ -87,23 +92,38 @@ export function MovementHistory() {
           }
         }
       }
-      if (!isCurrentRequest) return
-      setRows(visibleMovements)
-      setNames(visibleNames)
-      setHasNextPage(movements.length > PAGE_SIZE)
+      return { rows: visibleMovements, names: visibleNames, hasNextPage: movements.length > PAGE_SIZE }
     }
 
-    void loadHistory().catch(() => {
+    function publish(report: Awaited<ReturnType<typeof loadHistory>>) {
+      if (!isCurrentRequest) return
+      hasReport = true
+      setRows(report.rows)
+      setNames(report.names)
+      setHasNextPage(report.hasNextPage)
+      setError('')
+      setAutomaticError({ key: queryKey, message: '' })
+    }
+    void loadHistory().then(publish).catch(() => {
       if (isCurrentRequest) {
         setRows([])
         setError('Não foi possível carregar as movimentações. Confira a conexão e tente atualizar.')
       }
     }).finally(() => {
+      initialPending = false
       if (isCurrentRequest) setLoading(false)
     })
+    const stop = startResumeRefresh({
+      intervalMs: 30_000, load: loadHistory, apply: publish,
+      canRefresh: () => !initialPending && !document.querySelector('dialog[open]'),
+      onError: () => {
+        if (hasReport) setAutomaticError({ key: queryKey, message: 'Não foi possível atualizar o histórico automaticamente. Os registros anteriores permanecem na tela.' })
+        else setError('Não foi possível carregar as movimentações. Confira a conexão e tente atualizar.')
+      },
+    })
     // Impede que uma resposta antiga substitua o resultado de um filtro mais recente.
-    return () => { isCurrentRequest = false }
-  }, [filters, page, revision])
+    return () => { isCurrentRequest = false; stop() }
+  }, [filters, page, revision, queryKey])
 
   function applyFilters(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -123,6 +143,7 @@ export function MovementHistory() {
         <label>Tipo de operação<select value={type} onChange={(event) => setType(event.target.value)}><option value="">Todos os tipos</option>{Object.entries(typeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         <button className="add-product-button" type="submit">Filtrar</button>
       </form>
+      {automaticError.key === queryKey && automaticError.message && <p className="history-message auth-error" role="status">{automaticError.message}</p>}
       {loading ? <p className="history-message" role="status">Carregando movimentações…</p>
         : error ? <p className="history-message auth-error" role="alert">{error}</p>
           : rows.length === 0 ? <p className="history-message" role="status">Nenhuma movimentação encontrada para estes filtros.</p>
