@@ -5,6 +5,7 @@
 .dashboard-panel button+button{margin-left:8px}
 .dashboard-tools button:disabled{opacity:.5;cursor:not-allowed}
 .dashboard-totals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
+.app-shell .dashboard-detail .dashboard-availability{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
 .dashboard-stat{display:grid;gap:12px;min-width:0;padding:20px;background:#fff;border:1px solid #e9dfd8;border-radius:9px;text-align:left;font:inherit;cursor:pointer;color:#49372f;transition:border-color .15s,background-color .15s}
 .dashboard-stat:hover{border-color:#b98c74;background:#fffdf9}.dashboard-stat:focus-visible{outline:3px solid #b77758;outline-offset:3px}
 .dashboard-stock-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:28px}

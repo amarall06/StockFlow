@@ -16,8 +16,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
+    "jspdf": "^4.2.1",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "write-excel-file": "^4.1.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",

@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { readAllRows } from './read-all-rows'
+import { validateBalance } from './inventory-consistency'
 import type { ProductInfo, ShockType, VehicleApplication } from './product-details'
 import type { ApplicationHistoryRecord } from './application-history'
 export type { ProductInfo, ShockType, VehicleApplication } from './product-details'
@@ -102,6 +103,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
   const stock: StockRow[] = balanceRows.flatMap((balance) => {
     const product = productById.get(balance.product_id)
     const location = locationById.get(balance.location_id)
+    validateBalance({ quantity: balance.quantity, status: balance.status_code, code: product?.code, locationKnown: Boolean(location) })
     if (!product || !location || balance.quantity < 1) return []
     return [{
       code: product.code,

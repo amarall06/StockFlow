@@ -5,6 +5,9 @@ import {loadDashboardReport,type DashboardCategory,type DashboardReport} from '.
 import {dashboardStockSummary} from '../lib/dashboard-summary'
 
 import { InventoryActivity } from './InventoryActivity'
+import { DashboardWarranty } from './DashboardWarranty'
+import { StockReportExport } from './StockReportExport'
+import { InventoryInsights } from './InventoryInsights'
 import './InventoryDashboard.css'
 
 function MetricIcon({kind}:{kind:string}) {
@@ -102,11 +105,18 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
         <button type="button" className="dashboard-stat" onClick={()=>onOpen(stockPage)}><span>Caixas na seleção</span><strong>{summary.boxes}</strong><small>Consultar estoque ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('products')}><span>Produtos cadastrados</span><strong>{summary.products}</strong><small>Abrir catálogo de produtos ↗</small></button>
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>Produtos sem estoque</span><strong>{summary.zeros}</strong><small>Consultar alertas ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>No mínimo ou abaixo</span><strong>{summary.low}</strong><small>Consultar alertas ↗</small></button>
       </section>
+      <section className="dashboard-totals dashboard-availability" aria-label="Disponibilidade por situação">
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen(stockPage)}><span>Disponível para venda</span><strong>{summary.available}<small> caixas</small></strong><small>Amortecedores liberados e molas em estoque</small></button>
+        <button type="button" className="dashboard-stat" onClick={()=>onOpen('inventory')}><span>Aguardando testagem</span><strong>{summary.awaiting}<small> caixas</small></strong><small>Somente amortecedores · não disponíveis para venda</small></button>
+      </section>
       <section className="inventory-panel dashboard-panel dashboard-replenishment" aria-label="Reposição"><h2>Reposição</h2>{summary.alerts.length?summary.alerts.slice(0,2).map(row=><div className="replenishment-row" key={row.code}><div><strong>{row.code}</strong><span>{row.total} de {row.minimum??'—'} (mínimo)</span></div><div className="replenishment-meter"><meter min={0} max={Math.max(1,row.minimum??1)} value={row.total} aria-label={`Estoque de ${row.code} em relação ao mínimo`}/><strong>{row.minimum?Math.round(row.total/row.minimum*100)+'%':'—'}</strong></div></div>):<p>Nenhum produto necessita reposição.</p>}</section>
       <section className={`inventory-panel dashboard-panel dashboard-alert-panel${summary.alerts.length?' has-alerts':''}`} aria-labelledby="dashboard-alerts-title"><div className="dashboard-alert-heading"><div><h2 id="dashboard-alerts-title">Alertas de reposição</h2></div><button type="button" className="theme-toggle" onClick={()=>onOpen('alerts')}>Ver todos os alertas <span aria-hidden="true">→</span></button></div><div className="dashboard-alert-callout"><strong>{summary.alerts.length?`${summary.alerts.length} produtos no limite mínimo`:'Estoque dentro dos limites'}</strong><span>{summary.alerts.length?'Faça a reposição para evitar falta em estoque.':'Nenhuma reposição pendente nesta consulta.'}</span></div>
         {!summary.alerts.length?<p>Nenhum produto zerado ou no limite configurado nesta consulta.</p>:<ul className="dashboard-alert-list">{summary.alerts.slice(0,6).map((row)=><li key={row.code}><strong>{row.code}</strong><span>{row.severity==='zero'?'Sem estoque':`${row.total} caixas · mínimo ${row.minimum}`}</span></li>)}</ul>}
         {summary.alerts.length>6&&<p>Prévia de 6 dos {summary.alerts.length} alertas. Consulte os estoques para ver todos.</p>}
       </section>
+      <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
+      <StockReportExport/>
+      <InventoryInsights catalog={catalog} stock={stock} category={category}/>
       {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
       {loading?<p className="dashboard-message" role="status">Carregando vendas e recebimentos…</p>:result.error?<p className="dashboard-error auth-error" role="alert">{result.error}</p>:result.report&&<><p className="dashboard-message">Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.</p><DashboardActivity report={result.report} onHistory={()=>onOpen('history')}/></>}
       </div>

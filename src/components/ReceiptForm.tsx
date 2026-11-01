@@ -4,9 +4,10 @@ import { isSpringCode } from '../lib/product-category'
 import { createSupplier, loadSuppliers, normalizeReceipt, receiveWithSupplier, type Supplier } from '../lib/receipt-api'
 import { confirmOperation } from '../lib/confirm-operation'
 import './ReceiptForm.css'
+import { saveOfflineSuppliers } from '../lib/offline-stock'
 
-export function ReceiptForm({ catalog, locations, springs, role, onReceived }: {
-  catalog: Record<string,ProductInfo>; locations: string[]; springs: boolean; role: string; onReceived: () => Promise<void>
+export function ReceiptForm({ catalog, locations, springs, role, onReceived, userId = '' }: {
+  userId?: string; catalog: Record<string,ProductInfo>; locations: string[]; springs: boolean; role: string; onReceived: () => Promise<void>
 }) {
   const [code,setCode] = useState('')
   const [application,setApplication] = useState('')
@@ -33,12 +34,17 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived }: {
   const disabled = saving || recorded || !canReceive
 
   useEffect(() => {
+    const refresh = () => setRevision(value => value + 1)
+    window.addEventListener('liber:offline-catalog', refresh)
+    return () => window.removeEventListener('liber:offline-catalog', refresh)
+  }, [])
+  useEffect(() => {
     let current = true
-    void loadSuppliers().then((rows) => { if (current) { setSuppliers(rows); setLoadError('') } })
+    void loadSuppliers().then((rows) => { if (current) { saveOfflineSuppliers(userId, rows); setSuppliers(rows); setLoadError('') } })
       .catch((caught) => { if (current) setLoadError(caught instanceof Error ? caught.message : 'Falha ao carregar fornecedores.') })
       .finally(() => { if (current) setLoading(false) })
     return () => { current = false }
-  },[revision])
+  },[revision,userId])
 
   function changed() { requestId.current=null; setError(''); setMessage('') }
   function clearForm() {

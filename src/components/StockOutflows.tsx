@@ -3,6 +3,8 @@ import type { ProductInfo, StockRow } from '../lib/inventory-api'
 import { eligibleOutflows, outflowLabels, registerOutflow, normalizeOutflow, OutflowRejectedError, type OutflowReason } from '../lib/outflow-api'
 import { readPendingOutflow, savePendingOutflow, clearPendingOutflow, type PendingOutflow } from '../lib/pending-outflow'
 import './StockOutflows.css'
+import { OfflineOperations } from './OfflineOperations'
+import { readOfflineOperations, removeOfflineOperation, type OfflineOperation } from '../lib/offline-operations'
 
 const keyOf=(row:StockRow)=>JSON.stringify([row.code,row.location,row.status])
 
@@ -19,6 +21,7 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
   const [saving,setSaving]=useState(false)
   const [error,setError]=useState('')
   const [message,setMessage]=useState('')
+  const [offlineRevision,setOfflineRevision]=useState(0)
   const busy=useRef(false)
   const pending=recovery.pending
   const eligible=eligibleOutflows(stock,springs,reason)
@@ -26,8 +29,8 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
   const boxes=Number(quantity)
   const after=selected && Number.isInteger(boxes) && boxes>0 && boxes<=selected.boxes ? selected.boxes-boxes : null
   function changed(){if(!pending){setError('');setMessage('')}}
-  async function refreshSaved(){
-    try{await onRefresh();clearPendingOutflow(userId);setRecovery({pending:null,error:''});setSource('');setQuantity('1');setNotes('');setReference('');setError('');setMessage('Saída registrada. Estoque e histórico atualizados.')}
+  async function refreshSaved(operation:PendingOutflow|null=pending){
+    try{await onRefresh();if(operation)removeOfflineOperation(userId,operation.requestId);clearPendingOutflow(userId);setOfflineRevision(value=>value+1);setRecovery({pending:null,error:''});setSource('');setQuantity('1');setNotes('');setReference('');setError('');setMessage('Saída registrada. Estoque e histórico atualizados.')}
     catch{setError('Saída já salva. Use Atualizar estoque para consultar o saldo sem retirar novamente.')}
   }
   async function refresh(){
@@ -50,7 +53,7 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
         // Se a gravação da fase falhar, o pedido original continua recuperável pelo UUID.
         try{savePendingOutflow(confirmed)}catch{ /* Reenvio do UUID original é idempotente. */ }
       }
-      await refreshSaved()
+      await refreshSaved(operation)
     }catch(caught){
       if(caught instanceof OutflowRejectedError){
         try{clearPendingOutflow(userId);setRecovery({pending:null,error:''})}catch{ /* Conserva o bloqueio se não conseguir encerrar o pedido. */ }
@@ -89,7 +92,23 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
       await resolvePending(operation)
     }catch(caught){setError(caught instanceof Error?caught.message:'Não foi possível preparar o envio.')}
   }
+  async function sendOffline(draft:OfflineOperation){
+    if(!ready||!isAdministrator||busy.current||pending||recovery.error)return
+    if(!navigator.onLine){setError('Reconecte-se antes de enviar o rascunho. Nenhuma saída foi enviada.');return}
+    try{
+      const saved=readOfflineOperations(userId).find(row=>row.id===draft.id)
+      if(!saved||JSON.stringify(saved)!==JSON.stringify(draft))throw new Error('O rascunho mudou nesta conta. Reabra Saídas para conferir.')
+      const input={row:{code:saved.code,location:saved.location,status:saved.status as StockRow['status'],boxes:saved.boxes},boxes:saved.boxes,reason:saved.reason??'sale',notes:saved.notes,reference:''}
+      normalizeOutflow(input)
+      if(!window.confirm(`Enviar ${outflowLabels[input.reason].toLocaleLowerCase('pt-BR')} preparada offline?\n${saved.code} · ${saved.location} · ${saved.status}\n${saved.boxes} caixas\n${saved.notes}\nReferência: ${saved.id}\nO servidor validará o saldo atual. Sem resposta, confira o mesmo pedido; não registre outra retirada.`))return
+      const operation:PendingOutflow={version:1,userId,requestId:saved.id,input,phase:'uncertain'}
+      savePendingOutflow(operation)
+      setRecovery({pending:operation,error:''})
+      await resolvePending(operation)
+    }catch(caught){setError(caught instanceof Error?caught.message:'Não foi possível preparar o envio do rascunho.')}
+  }
   return <>
+    <OfflineOperations key={`${userId}:${offlineRevision}`} userId={userId} disabled={!ready||!isAdministrator||saving||Boolean(pending)||Boolean(recovery.error)} onSend={draft=>void sendOffline(draft)}/>
     <div className="page-heading"><div><p className="eyebrow">AMORTECEDORES E MOLAS</p><h1>Saídas de estoque</h1><p className="subtitle">Registre a retirada de caixas e acompanhe o motivo no Histórico.</p></div></div>
     <section className="inventory-panel outflow-panel" aria-label="Registrar saída de caixas">
       {!isAdministrator?<p>O registro de saídas está disponível apenas para Administrador nesta etapa.</p>:!ready?<p role="status">O registro de saídas aguarda ativação no banco.</p>:<>

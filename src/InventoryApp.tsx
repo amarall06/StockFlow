@@ -6,7 +6,19 @@ import { ReceiptForm } from './components/ReceiptForm'
 import { readPendingTransfer } from './lib/pending-transfer'
 import { readPendingOutflow } from './lib/pending-outflow'
 import { StockAlerts } from './components/StockAlerts'
-import { startResumeRefresh } from './lib/resume-refresh'
+import { StockNotice } from './components/StockNotice'
+import { InstallApp } from './components/InstallApp'
+import { ConnectionStatus } from './components/ConnectionStatus'
+import { OfflineReceipts } from './components/OfflineReceipts'
+import { OfflineTransfers } from './components/OfflineTransfers'
+import { OfflineTests } from './components/OfflineTests'
+import { OfflineRegistrations } from './components/OfflineRegistrations'
+import { OfflinePendingNotice, OfflineTransferPendingNotice, OfflineWarrantyPendingNotice, OfflineCustomerReturnPendingNotice, OfflineTestPendingNotice } from './components/OfflinePendingNotice'
+import { saveOfflineStock } from './lib/offline-stock'
+import { InventoryConsistencyError } from './lib/inventory-consistency'
+import { INVENTORY_CHANGE_EVENT, startResumeRefresh } from './lib/resume-refresh'
+import { startInventoryRealtime } from './lib/inventory-realtime'
+import { supabase } from './lib/supabase'
 import { NavigationIcon } from './components/NavigationIcon'
 
 import { dashboardStockSummary } from './lib/dashboard-summary'
@@ -197,6 +209,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [inventoryApiVersion, setInventoryApiVersion] = useState(0)
   const [databaseError, setDatabaseError] = useState('')
   const [resumeError, setResumeError] = useState('')
+  const [consultedAt, setConsultedAt] = useState('')
   const [testingRow, setTestingRow] = useState<StockRow | null>(null)
 
   // Reaproveita a mesma tela de estoque, filtrando somente amortecedores ou molas.
@@ -234,14 +247,17 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         return
       }
       setCatalog(snapshot.catalog)
+      saveOfflineStock(userId, snapshot)
+      setConsultedAt(new Date().toISOString())
       setInventoryApiVersion(snapshot.apiVersion)
       setStock(snapshot.stock)
       setLocations(snapshot.locations)
       setDataMode('database')
       setStorageMessage('Conectado ao Supabase')
-    }).catch(() => {
+    }).catch((caught) => {
       if (isMounted) {
-        if (import.meta.env.PROD) setDatabaseError('Não foi possível carregar o estoque. Confira a conexão e tente novamente.')
+        if (caught instanceof InventoryConsistencyError) setDatabaseError(caught.message)
+        else if (import.meta.env.PROD) setDatabaseError('Não foi possível carregar o estoque. Confira a conexão e tente novamente.')
         else setStorageMessage('Supabase indisponível; usando dados fictícios')
       }
     })
@@ -266,6 +282,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   async function refreshDatabaseSnapshot() {
     const snapshot = await loadInventorySnapshot()
     setCatalog(snapshot.catalog)
+    saveOfflineStock(userId, snapshot)
+    setConsultedAt(new Date().toISOString())
     setInventoryApiVersion(snapshot.apiVersion)
     setStock(snapshot.stock)
     setLocations(snapshot.locations)
@@ -284,14 +302,23 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
       canRefresh: () => !document.querySelector('dialog[open]'),
       apply: snapshot => {
         setCatalog(snapshot.catalog)
+        saveOfflineStock(userId, snapshot)
+        setConsultedAt(new Date().toISOString())
         setStock(snapshot.stock)
         setLocations(snapshot.locations)
         setInventoryApiVersion(snapshot.apiVersion)
         setResumeError('')
       },
-      onError: () => setResumeError('Não foi possível atualizar automaticamente. Os dados anteriores permanecem na tela; confira a conexão e retorne à janela para tentar novamente.'),
+      onError: (caught) => setResumeError(caught instanceof InventoryConsistencyError ? `${caught.message} Os dados anteriores permanecem na tela.` : 'Não foi possível atualizar automaticamente. Os dados anteriores permanecem na tela; confira a conexão e retorne à janela para tentar novamente.'),
     })
   }, [dataMode, activePage])
+
+  useEffect(() => {
+    if (dataMode !== 'database' || !supabase) return
+    return startInventoryRealtime(supabase, () => {
+      window.dispatchEvent(new Event(INVENTORY_CHANGE_EVENT))
+    })
+  }, [dataMode, userId])
 
   // As opções de transferência dependem do produto, origem e situação selecionados.
   const movementOrigins = [...new Set(activeStock.filter((row) => row.code === effectiveMoveCode && row.boxes > 0).map((row) => row.location))]
@@ -573,9 +600,19 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
       </dialog>
 
       <section className="main-panel" id="inicio">
+        <ConnectionStatus consultedAt={consultedAt}/>
+        {dataMode === 'database' && <OfflineRegistrations key={`registrations:${userId}`} userId={userId} administrator={isAdministrator} onRefresh={refreshDatabaseSnapshot}/>}
+        {dataMode === 'database' && (activePage === 'inventory' || activePage === 'springs') && <OfflineReceipts key={`receipts:${userId}`} userId={userId} role={userRole} onRefresh={refreshDatabaseSnapshot}/>}
+        {dataMode === 'database' && (activePage === 'inventory' || activePage === 'springs') && <OfflineTransfers key={`transfers:${userId}`} userId={userId} role={userRole} onRefresh={refreshDatabaseSnapshot}/>}
+        {dataMode === 'database' && activePage === 'inventory' && inventoryApiVersion >= 9 && <OfflineTests key={`tests:${userId}`} userId={userId} role={userRole} onRefresh={refreshDatabaseSnapshot}/>}
+        {(isAdministrator || userRole === 'receiving') && <OfflinePendingNotice userId={userId} canOutflow={isAdministrator} onOpen={() => changePage('outflow')} onReceipts={() => changePage('inventory')}/>}
+        {(isAdministrator || userRole === 'stockkeeper') && <OfflineTransferPendingNotice userId={userId} onOpen={() => changePage('inventory')}/>}
+        {isAdministrator && <OfflineWarrantyPendingNotice userId={userId} onOpen={() => changePage('warranty')}/>}
+        {isAdministrator && <OfflineCustomerReturnPendingNotice userId={userId} onOpen={() => changePage('warranty')}/>}
+        {(isAdministrator || userRole === 'tester') && <OfflineTestPendingNotice userId={userId} onOpen={() => changePage('inventory')}/>}
         <header className="topbar">
           <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
-          <div className="user-chip"><button type="button" className="mobile-menu-trigger" aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={mobileMenuOpen} onClick={() => { mobileMenuRef.current?.showModal(); setMobileMenuOpen(true) }}><span aria-hidden="true">☰</span> Menu</button><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
+          <div className="user-chip"><button type="button" className="mobile-menu-trigger" aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={mobileMenuOpen} onClick={() => { mobileMenuRef.current?.showModal(); setMobileMenuOpen(true) }}><span aria-hidden="true">☰</span> Menu</button><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><InstallApp/><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
           <label className="mobile-module-menu">Ir para
             <select aria-label="Escolher módulo" value={activePage} onChange={event => changePage(event.target.value as typeof activePage)}>
               <option value="dashboard">Painel</option><option value="alerts">Alertas ({alertCount})</option>
@@ -721,7 +758,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} />
           <section className="inventory-panel">
             {dataMode === 'database' && inventoryApiVersion >= 10 ? <ReceiptForm key={isSpringPage ? 'springs' : 'shocks'}
-              catalog={catalog} locations={locations} springs={isSpringPage} role={userRole} onReceived={refreshDatabaseSnapshot} /> : <form className="add-product-form" onSubmit={handleAddProduct}>
+              catalog={catalog} locations={locations} springs={isSpringPage} role={userRole} userId={userId} onReceived={refreshDatabaseSnapshot} /> : <form className="add-product-form" onSubmit={handleAddProduct}>
               <div className="form-heading"><h2>{dataMode === 'database' ? 'Registrar entrada de estoque' : 'Adicionar ao estoque de demonstração'}</h2><p>{dataMode === 'database' ? 'A entrada é gravada no Supabase junto com o histórico. Código novo cadastra produto e saldo inicial.' : 'Código novo cadastra o produto; código existente adiciona caixas a outra localização. Os dados ficam salvos neste navegador.'}</p></div>
               <label>Código do produto<input value={newCode} onChange={(event) => setNewCode(event.target.value)} placeholder={isSpringPage ? 'MGM-35' : 'ARE-24'} required /></label>
               <label>Aplicação (para código novo)<input value={catalog[newCode.trim().toUpperCase()]?.application ?? newApplication} onChange={(event) => setNewApplication(event.target.value)} placeholder={isSpringPage ? 'Ex.: Mola — aplicação fictícia' : 'Ex.: Renault — exemplo'} disabled={Boolean(catalog[newCode.trim().toUpperCase()])} required={!catalog[newCode.trim().toUpperCase()]} /></label>
@@ -784,11 +821,12 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               setScanResult((current) => current?.code === code ? { ...product, code } : current)
             }}
           /> : activePage === 'profile' ? <ProfileSettings displayName={profileName} email={email} role={userRole}
-            apiVersion={inventoryApiVersion} onUpdated={onProfileUpdated} /> : <WarrantyManufacturers
+            apiVersion={inventoryApiVersion} onUpdated={onProfileUpdated} /> : <WarrantyManufacturers userId={userId}
               apiVersion={inventoryApiVersion} isAdministrator={isAdministrator} />}
           </Suspense></ModuleBoundary>
         </div>
       </section>
+      {dataMode === 'database' && <StockNotice key={userId} userId={userId} catalog={catalog} stock={stock} onOpen={() => changePage('alerts')} />}
       {testingRow && <ShockTestingDialog row={testingRow} ready={dataMode === 'database' && inventoryApiVersion >= 9}
         canApprove={userRole === 'administrator' || userRole === 'tester'} onClose={() => setTestingRow(null)}
         onRecorded={() => {

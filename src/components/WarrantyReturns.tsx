@@ -6,6 +6,7 @@ import './WarrantyReturns.css'
 import { useModalDialog } from '../lib/use-modal-dialog'
 import { confirmOperation } from '../lib/confirm-operation'
 import { startResumeRefresh } from '../lib/resume-refresh'
+import { saveOfflineCustomerReturns } from '../lib/offline-stock'
 
 const initialReturn: WarrantyReturnInput = {
   manufacturer_id: null, product_kind: 'unknown', product_code: '', description: '', boxes: 1,
@@ -89,8 +90,8 @@ function ReturnDialog({ previous, manufacturers, onClose, onSaved }: {
   </dialog>
 }
 
-export function WarrantyReturns({ ready, isAdministrator, manufacturers, revision, onChanged, canAutoRefresh }: {
-  ready: boolean; isAdministrator: boolean; manufacturers: WarrantyManufacturer[]; revision: number; onChanged: () => void; canAutoRefresh?: () => boolean
+export function WarrantyReturns({ ready, isAdministrator, manufacturers, revision, onChanged, canAutoRefresh, userId = '' }: {
+  userId?: string; ready: boolean; isAdministrator: boolean; manufacturers: WarrantyManufacturer[]; revision: number; onChanged: () => void; canAutoRefresh?: () => boolean
 }) {
   const [result, setResult] = useState<{ revision: number; rows: WarrantyReturn[]; error: string }>({ revision: -1, rows: [], error: '' })
   const [editing, setEditing] = useState<WarrantyReturn | null | undefined>(undefined)
@@ -106,7 +107,7 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
     let hasReport = false
     function publish(rows: WarrantyReturn[]) {
       if (!current) return
-      hasReport = true
+      hasReport = true; saveOfflineCustomerReturns(userId, rows)
       setResult({ revision, rows, error: '' })
       setAutomaticError({ revision, message: '' })
     }
@@ -122,7 +123,7 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
       },
     })
     return () => { current = false; stop() }
-  }, [ready, revision, canAutoRefresh])
+  }, [ready, revision, canAutoRefresh, userId])
   const names = new Map(manufacturers.map((m) => [m.id, m.name]))
   const filtered = result.rows.filter((row) => (!status || row.status === status)
     && `${row.product_code} ${row.description} ${row.location} ${row.reason} ${names.get(row.manufacturer_id ?? '') ?? ''}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR')))

@@ -6,9 +6,12 @@ import { EditButton } from './EditButton'
 import { WarrantyReturns } from './WarrantyReturns'
 import { ExportCsvButton } from './ExportCsvButton'
 import './WarrantyManufacturers.css'
+import { saveOfflineWarranty } from '../lib/offline-stock'
+import { OfflineWarranty } from './OfflineWarranty'
+import { OfflineCustomerReturns } from './OfflineCustomerReturns'
 
-export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
-  apiVersion: number; isAdministrator: boolean
+export function WarrantyManufacturers({ apiVersion, isAdministrator, userId = '' }: {
+  apiVersion: number; isAdministrator: boolean; userId?: string
 }) {
   const ready = apiVersion >= 6
   const boxesReady = apiVersion >= 7
@@ -36,6 +39,7 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
     function publish(rows: WarrantyManufacturer[]) {
       if (!isCurrent) return
       hasReport = true
+      if (boxesReady) saveOfflineWarranty(userId, rows)
       setResult({ revision, withBoxes: boxesReady, rows, error: '' })
       setAutomaticError({ key: reportKey, message: '' })
     }
@@ -51,7 +55,7 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
       },
     })
     return () => { isCurrent = false; stop() }
-  }, [ready, boxesReady, revision, reportKey, canAutoRefresh])
+  }, [ready, boxesReady, revision, reportKey, canAutoRefresh, userId])
 
   function editManufacturer(manufacturer: WarrantyManufacturer) {
     if (!isAdministrator || saving) return
@@ -91,6 +95,8 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
   const filtered = result.rows.filter((manufacturer) => manufacturer.name.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR')))
 
   return <>
+    {boxesReady && userId && <OfflineWarranty key={userId} userId={userId} role={isAdministrator?'administrator':'viewer'} onRefresh={async()=>{setRevision(value=>value+1)}}/>}
+    {apiVersion >= 8 && userId && <OfflineCustomerReturns key={`returns:${userId}`} userId={userId} role={isAdministrator?'administrator':'viewer'} onRefresh={async()=>{setRevision(value=>value+1)}}/>}
     <div className="page-heading"><div><p className="eyebrow">AMORTECEDORES E MOLAS</p><h1>Garantia</h1><p className="subtitle">Controle as caixas em garantia de cada fabricante.</p></div></div>
     <section className="inventory-panel warranty-manufacturers" aria-labelledby="manufacturers-title">
       <div className="panel-heading"><div><h2 id="manufacturers-title">Fabricantes das peças</h2><p>Cadastro compartilhado entre amortecedores e molas.</p></div>{ready && !loading && !result.error && <span className="row-count">{result.rows.length} fabricantes</span>}</div>
@@ -116,7 +122,7 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator }: {
             </li>)}</ul>}
       </>}
     </section>
-    <WarrantyReturns ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} canAutoRefresh={canAutoRefresh} />
+    <WarrantyReturns userId={userId} ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} canAutoRefresh={canAutoRefresh} />
     {boxOperation && <WarrantyBoxesDialog manufacturer={boxOperation.manufacturer} direction={boxOperation.direction}
       onClose={() => setBoxOperation(null)} onSaved={(feedback) => { setBoxOperation(null); setMessage(feedback); setError(''); setRevision((value) => value + 1) }} />}
   </>

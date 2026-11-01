@@ -4,6 +4,7 @@ import { AuthScreen, Brand } from './components/AuthScreen'
 import { ModuleBoundary, ModuleLoadError, ModuleLoading } from './components/ModuleBoundary'
 import { supabase } from './lib/supabase'
 import './App.css'
+import { clearOfflineStock, retainOfflineStockFor } from './lib/offline-stock'
 
 // A tela de login não precisa baixar os módulos operacionais.
 const InventoryApp = lazy(() => import('./InventoryApp'))
@@ -42,6 +43,7 @@ function App() {
 
     let profileRevision=0
     async function loadUserProfile(user: User) {
+      retainOfflineStockFor(user.id)
       if (!supabase) return
       const revision=++profileRevision
       try {
@@ -61,6 +63,7 @@ function App() {
           return
         }
         if (!data.is_active) {
+          clearOfflineStock()
           setAuthView({ status: 'inactive', email: user.email ?? '' })
           return
         }
@@ -77,6 +80,7 @@ function App() {
       } else if (data.session?.user) {
         void loadUserProfile(data.session.user)
       } else {
+        clearOfflineStock()
         setAuthView({ status: 'signed-out' })
       }
     }).catch(() => {
@@ -92,7 +96,7 @@ function App() {
           // Não conservar a tela/pedido da conta anterior enquanto carrega outro perfil.
           setAuthView(current=>current.status==='ready'&&current.userId===nextUser.id?current:{status:'loading'})
           void loadUserProfile(nextUser)
-        } else {profileRevision++;setAuthView({ status: 'signed-out' })}
+        } else {clearOfflineStock();profileRevision++;setAuthView({ status: 'signed-out' })}
       })
     })
 
@@ -122,6 +126,7 @@ function App() {
   }
 
   async function handleSignOut() {
+    clearOfflineStock()
     if (!supabase) return
     setSignOutError('')
     try {

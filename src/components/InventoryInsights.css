@@ -1,0 +1,9 @@
+.inventory-insights{min-width:0}
+.inventory-insights .table-scroll{max-width:100%;overflow-x:auto;margin:1rem 0}
+.inventory-insights table{width:100%;min-width:620px;border-collapse:collapse;font-size:12px}
+.inventory-insights th,.inventory-insights td{text-align:left;padding:12px;border-bottom:1px solid #a08b7255}
+.inventory-insights th{font-weight:600}
+.inventory-insights meter{width:6rem;min-width:4rem;vertical-align:middle}
+.inventory-insights meter::-webkit-meter-optimum-value{background:linear-gradient(90deg,#78b48a,#e4b445,#b96950)}
+.inventory-insights meter::-moz-meter-bar{background:linear-gradient(90deg,#78b48a,#e4b445,#b96950)}
+.inventory-insights .table-scroll:focus-visible{outline:3px solid #b96950;outline-offset:2px}
