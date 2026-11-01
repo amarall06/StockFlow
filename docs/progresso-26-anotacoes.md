@@ -1,6 +1,6 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração igual à lista original de `anotacoes-2026-10-31.md`. “Parcial” não deve ser riscado como pedido inteiro concluído. Mudanças das anotações 15 e 16 ainda são locais, sem publicação.
+Atualizado em 01/11/2026. Numeração igual à lista original de `anotacoes-2026-10-31.md`. “Parcial” não deve ser riscado como pedido inteiro concluído. Mudanças das anotações 15 e 16 publicadas no código e8fb14a, Vercel success e seis módulos públicos conferidos por hash. Relatório `publicacao-anotacoes-15-16.md`.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
@@ -18,8 +18,8 @@ Atualizado em 01/11/2026. Numeração igual à lista original de `anotacoes-2026
 | 12 | Cancelamento de pedidos | Não iniciado; reservas e retorno físico a definir. |
 | 13 | Alertas automáticos de pendências | Não iniciado. |
 | 14 | Offline | Não iniciado; escopo de consulta e escrita a definir antes de implementar. |
-| 15 | Prevenção e confirmação de operações | **Implementação local concluída: pode riscar esse escopo.** Confirmação das operações de caixas e trava imediata de envio completadas; 16 casos novos aprovados, preservados saldo/UUID/recuperação existentes. Publicação e piloto seguem pendentes. Guia `fechamento-anotacao-15.md`. |
-| 16 | Sincronização entre aparelhos | **Implementação periódica local concluída nas telas previstas:** estoque, Giro/ABC, Painel, Garantia e Histórico. Pode riscar essas subpartes. A anotação inteira permanece **parcial**: faltam publicação, definição da necessidade de atualização instantânea e ensaio real entre aparelhos. |
+| 15 | Prevenção e confirmação de operações | **Implementação concluída e publicada: pode riscar esse escopo.** Confirmação das operações de caixas e trava imediata de envio completadas; 16 casos novos aprovados nas etapas anteriores, preservados saldo/UUID/recuperação existentes. Piloto mantém sua pendência geral. Guia `fechamento-anotacao-15.md`. |
+| 16 | Sincronização entre aparelhos | **Atualização periódica implementada e publicada nas telas previstas:** estoque, Giro/ABC, Painel, Garantia e Histórico. Pode riscar essas subpartes e sua publicação. A anotação inteira permanece **parcial**: faltam definir/atender a necessidade de atualização instantânea e o ensaio real entre aparelhos. |
 | 17 | Conferência de prateleiras | Não iniciado. |
 | 18 | Mapa interativo | Não iniciado; depende de mapa físico. |
 | 19 | Modo missão e separação de pedidos | Não iniciado; depende de pedidos, reservas e QR. |
@@ -33,9 +33,11 @@ Atualizado em 01/11/2026. Numeração igual à lista original de `anotacoes-2026
 
 ## Última etapa
 
-Anotação 16, Histórico: atualização da página/filtros aplicados, preservação de rascunhos, dados mantidos em falha, descarte de respostas antigas e limpeza ao sair. Cinco casos novos aprovados, build aprovado e somente aviso de análise preexistente. Nenhum caso anterior repetido. Guia `estudo-historico-atualizacao-automatica.md`.
+Publicação das anotações 15 e 16 concluída: código e8fb14a na main, Vercel success, domínio HTTP 200 e seis módulos servidos iguais ao build aprovado. Os 51 casos novos (45 navegador + 6 isolados) aprovados nas etapas anteriores não foram repetidos nesta publicação. Nenhuma escrita no banco. Guia `publicacao-anotacoes-15-16.md`. Próximo passo da 16: requisito instantâneo e validação entre aparelhos reais.
 
 ### Registros anteriores
+
+Anotação 16, Histórico: atualização da página/filtros aplicados, preservação de rascunhos, dados mantidos em falha, descarte de respostas antigas e limpeza ao sair. Cinco casos novos aprovados, build aprovado e somente aviso de análise preexistente. Nenhum caso anterior repetido. Guia `estudo-historico-atualizacao-automatica.md`.
 
 Anotação 16, Garantia: fabricantes/saldos e devoluções atualizam automaticamente sem perder buscas/andamento; rascunhos e diálogos pausam a leitura; falhas conservam dados e respostas antigas são descartadas. Seis casos novos aprovados, build aprovado e análise dos dois componentes sem avisos. Nenhum caso anterior foi repetido. Guia `estudo-garantia-atualizacao-automatica.md`. Próxima etapa: Histórico.
 
@@ -49,6 +51,6 @@ Anotação 16, atualização periódica: `src/lib/resume-refresh.ts` e integraç
 
 ## Próximos passos
 
-Na 16, as telas previstas já receberam atualização periódica. Próximas etapas: publicar o conjunto, definir necessidade de recebimento instantâneo de eventos e preparar/executar ensaio real entre aparelhos. Não repetir os casos locais aprovados de estoque, Giro/ABC, Painel, Garantia ou Histórico. Depois, mecanismo comum de avisos (1, 13, 22), conforme sequência original e definições necessárias. Não iniciar múltiplas funcionalidades na mesma rodada.
+Na 16, atualização periódica das telas previstas publicada. Próximas etapas: definir/atender o requisito de recebimento instantâneo de eventos e preparar/executar ensaio real entre aparelhos. Não repetir os casos locais aprovados de estoque, Giro/ABC, Painel, Garantia ou Histórico. Depois, mecanismo comum de avisos (1, 13, 22), conforme sequência original e definições necessárias. Não iniciar múltiplas funcionalidades na mesma rodada.
 
 Foto real, Safari físico e execução do piloto continuam dependências externas. Usuários, etiquetas e restauração preservam o adiamento. **A melhoria geral do design fica para depois das 26 anotações**, conforme pedido do usuário; correções necessárias ao uso das funcionalidades podem acompanhar suas etapas.

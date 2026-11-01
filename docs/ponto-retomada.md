@@ -1,3 +1,15 @@
+> **Publicação 15/16 confirmada em 01/11/2026:** código
+> `e8fb14a6f21b83075f49d108107841dc799f846e` na main, Vercel success:
+> https://vercel.com/amarall06s-projects/liber-automotive/8DU95egck97vFX8PDq5Mj7tF1fnd
+> Domínio HTTP 200; hashes de JS inicial, InventoryApp, Painel, Giro/ABC, Garantia
+> e Histórico conferiram com o build aprovado. Relatório `publicacao-anotacoes-15-16.md`.
+> Nenhum dos 51 casos novos anteriores foi repetido; não houve login ou escrita no banco.
+> Pode riscar implementação/publicação da 15 e publicação das subpartes periódicas da 16.
+> 16 inteira ainda parcial: resolver requisito instantâneo e ensaio real entre aparelhos.
+> A 24 segue concluída quanto ao roteiro. Foto real/Safari físico/piloto mantêm pendências.
+> Não reabrir publicações/testes dos registros históricos abaixo. Próximo trabalho: continuar
+> 16 pelos pontos ainda abertos, sem iniciar outros itens. Design geral depois das 26.
+>
 > **Anotação 16 — Histórico automático, local, 01/11/2026:** página e filtros
 > aplicados atualizam a cada 30 segundos e ao retomar aba/conexão. Rascunhos não são
 > aplicados nem apagados. Falha mantém registros; respostas antigas descartadas; temporizador

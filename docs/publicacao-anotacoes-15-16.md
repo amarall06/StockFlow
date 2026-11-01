@@ -1,5 +1,13 @@
 # Publicação das anotações 15 e 16 — 01/11/2026
 
+## Publicação confirmada
+
+Código `e8fb14a6f21b83075f49d108107841dc799f846e` enviado à main. Vercel informou success: https://vercel.com/amarall06s-projects/liber-automotive/8DU95egck97vFX8PDq5Mj7tF1fnd. O domínio https://liber-automotive.vercel.app/ respondeu HTTP 200 e serviu `index-Zj9nagJs.js`.
+
+Os hashes SHA-256 dos seis módulos públicos coincidiram com a última compilação aprovada: index-Zj9nagJs.js, InventoryApp-GBKty3xe.js, InventoryDashboard-BYOz9aaZ.js, InventoryTurnover-CoW9NTiX.js, WarrantyManufacturers-BlwfzB0A.js e MovementHistory-ZhVM9Lir.js. A conferência não executou testes funcionais, login ou consultas de dados autenticados. Registro documental posterior não muda esse código.
+
+Publicação da atualização periódica concluída. A anotação 16 inteira ainda está parcial pelo ensaio real entre aparelhos e pelo requisito de atualização instantânea; nenhum deles foi demonstrado por esta conferência pública. Os parágrafos de preparação abaixo registram o processo anterior e não reabrem o envio concluído.
+
 ## Conjunto preparado
 
 Base remota conferida: `a6b874b12fda792f04c5e6ee60d5b6efcf432f7e`, main de `amarall06/StockFlow`. Destino existente: Vercel, equipe `amarall06s-projects`, projeto `liber-automotive`, domínio https://liber-automotive.vercel.app/.

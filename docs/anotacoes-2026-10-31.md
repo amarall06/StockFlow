@@ -8,6 +8,8 @@ Todas as funcionalidades devem considerar amortecedores e molas. A unidade opera
 
 ## Lista completa
 
+Publicação confirmada em 01/11/2026: código e8fb14a na main, Vercel success e seis módulos públicos iguais ao build aprovado. Implementação/publicação da 15 concluída; publicação da atualização periódica da 16 concluída. A 16 inteira continua parcial por requisito instantâneo e ensaio entre aparelhos. Os 51 casos novos anteriores não foram repetidos. Guia `publicacao-anotacoes-15-16.md`. Este registro prevalece sobre as notas antigas de alterações somente locais.
+
 Atualização mais recente de 01/11/2026: Histórico automático concluído localmente com cinco casos novos aprovados, preservando filtros, página e rascunhos. Pode riscar essa subparte. Atualização periódica das telas previstas implementada; 16 inteira ainda parcial por publicação, definição de atualização instantânea e ensaio real entre aparelhos. Guia `estudo-historico-atualizacao-automatica.md`.
 
 Atualização mais recente de 01/11/2026: subparte da 16, Garantia automática (fabricantes/saldos/devoluções), concluída localmente com seis casos novos aprovados. Pode riscar essa subparte, preservados filtros e rascunhos. Restam Histórico e ensaio real entre aparelhos; não riscar 16 inteira. Guia `estudo-garantia-atualizacao-automatica.md`.
