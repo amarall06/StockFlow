@@ -251,4 +251,4 @@ Complemento da 26 publicado em `080869d`, Vercel success, página offline/worker
 
 ## Continuação 25/26 — formulários e contraste
 
-Sem Supabase real, corrigidos contrastes em sete CSS e aprovados 30 casos novos (16 diálogos/contagem + 14 telas nos temas claro/escuro). Somente novos casos com falha repetidos após correção; casos anteriores não executados. Publicação em preparação. Relatório `acessibilidade-formularios-2026-11-01.md`.
+Sem Supabase real, corrigidos contrastes em sete CSS e aprovados 30 casos novos (16 diálogos/contagem + 14 telas nos temas claro/escuro). Somente novos casos com falha repetidos após correção; casos anteriores não executados. Publicado em `62b59f9`, Vercel success e onze arquivos públicos iguais ao build aprovado. Relatório `acessibilidade-formularios-2026-11-01.md`.

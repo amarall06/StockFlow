@@ -24,6 +24,15 @@ Os testes antigos de teclado, login, navegação e página offline não foram ex
 
 ## O que pode riscar
 
-Pode riscar a auditoria automática e as correções de contraste desses formulários/diálogos no recorte descrito, como avanço das anotações 25 e 26. A publicação será registrada abaixo depois de confirmada.
+Pode riscar a auditoria automática e as correções de contraste desses formulários/diálogos no recorte descrito, como avanço das anotações 25 e 26. Publicação confirmada em `62b59f9`, conforme registro abaixo.
 
 Auditoria automática com dados simulados não encerra acessibilidade completa. Permanecem leitura manual com tecnologia assistiva, Safari/iPhone físico, fotos reais e testes do piloto. As pendências que exigem capacidade/mapa/regras operacionais ou ativação do servidor continuam na lista dos 26, sem dados inventados para encerrá-las.
+
+
+## Publicação confirmada
+
+Código `62b59f9a49b09592d26e946154467fda0c770ff5`, main, repositório `amarall06/StockFlow`. Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/GKDmqkb3ghHX8dbvpq6qJNXRzhLS
+
+Domínio https://liber-automotive.vercel.app/ respondeu HTTP 200, com entrada `index-CnTy_KLs.js`. Onze arquivos públicos (os nove CSS do build, JavaScript inicial e InventoryApp) conferiram por SHA-256 com a compilação aprovada. Diagnóstico local ignorado pelo Git: `test-results/publicacao-62b59f9/hashes.json`. Build e análise dos dois testes novos aprovados; nenhum teste concluído repetido para publicar. Commit `[skip ci]` evitou repetição das suítes completas, mantendo a compilação normal da Vercel. Nenhuma escrita ou mudança de configuração no Supabase.
+
+Pode riscar implementação, auditoria automatizada e publicação desse recorte da 26. Os 30 casos novos contam como avanço da 25. As demais dependências mantêm o estado documentado em `pendencias-atuais-26-anotacoes.md`.

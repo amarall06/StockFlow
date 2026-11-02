@@ -15,7 +15,7 @@ Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação
 - 16: consulta periódica nas telas previstas e receptor privado no cliente; não a emissão/ativação no servidor.
 - 25/26: os testes e recortes de interface já aprovados. Complemento de teclado/celular offline publicado em `080869d`, com três testes novos aprovados; relatório `offline-acessibilidade-2026-11-01.md`.
 
-- 25/26: mais 30 casos novos de auditoria de campos/contraste nos dois temas, incluindo sete diálogos, contagem local e sete telas, aprovados. Correções prontas, publicação em preparação. Guia `acessibilidade-formularios-2026-11-01.md`.
+- 25/26: mais 30 casos novos de auditoria de campos/contraste nos dois temas, incluindo sete diálogos, contagem local e sete telas, aprovados. Correções prontas, publicado em `62b59f9`, com arquivos públicos conferidos. Guia `acessibilidade-formularios-2026-11-01.md`.
 
 ## Pendências por número
 

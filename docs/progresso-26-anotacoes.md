@@ -1,6 +1,6 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração original preservada. Código `080869d` publicado (complemento da 26), incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
+Atualizado em 01/11/2026. Numeração original preservada. Código `62b59f9` publicado (contraste/formulários da 26), incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
@@ -29,11 +29,11 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `080869d` pub
 | 23 | Produtos sem movimentação | Parcial local: códigos com saldo sem qualquer operação no intervalo, última movimentação dentro da janela e prateleiras atuais. **Última conhecida fora da janela implementada e publicada; pode riscar essa subparte.** Falta idade física/rastreabilidade. Guia `anotacao-23-ultima-movimentacao.md`. Não equivale a apenas ausência de vendas. |
 | 24 | Preparar roteiro do piloto | **Concluído: pode riscar a preparação do roteiro.** Documento `roteiro-piloto.md` entregue. Execução com equipe permanece pendente. |
 | 25 | Ampliar testes automáticos | **Mais 30 casos novos de acessibilidade de formulários/diálogos aprovados nesta rodada, sem repetir os concluídos.** **Mais 13 casos novos de navegador e cenários isolados aprovados nesta etapa, sem repetir anteriores.** Parcial: mais 70 verificações novas nesta continuação (22 navegador + 48 isoladas), incluindo o receptor Realtime iniciado antes do pedido de sequência automática. Casos antigos não repetidos. Ensaios reais e demais áreas seguem pendentes. |
-| 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Contraste de sete telas e sete diálogos revisado nos temas claro/escuro; 30 casos novos aprovados. Pode riscar esse recorte automatizado, publicação em preparação.** **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Complemento publicado em `080869d`; pode riscar esse recorte.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
+| 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Contraste de sete telas e sete diálogos revisado nos temas claro/escuro; 30 casos novos aprovados. Pode riscar esse recorte automatizado, publicado em `62b59f9`, com arquivos públicos conferidos.** **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Complemento publicado em `080869d`; pode riscar esse recorte.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
 
 ## Rodada atual — formulários e contraste
 
-Correções de contraste em sete CSS, 30 casos novos aprovados e nenhum teste antigo repetido. Publicação em preparação. Guia `acessibilidade-formularios-2026-11-01.md`. Não envolve banco real nem reformulação geral de design.
+Correções de contraste em sete CSS, 30 casos novos aprovados e nenhum teste antigo repetido. Publicado em `62b59f9`, Vercel success e onze arquivos públicos iguais ao build aprovado. Guia `acessibilidade-formularios-2026-11-01.md`. Não envolve banco real nem reformulação geral de design.
 
 ## Lista consolidada do que falta
 
