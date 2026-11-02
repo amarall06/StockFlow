@@ -38,6 +38,10 @@ Dados preservados: 95 produtos, 113 movimentos, hash de saldos dfa96a2fa33dcc97c
 
 ## Pode riscar e o que falta
 
-Pode riscar **implementação/testes do envio, recuperação de confirmação e consulta compartilhada de contagens do cenário de apresentação da 17**. Publicação do site em preparação; banco já aplicado e exemplos carregados.
+Pode riscar **implementação, testes e publicação do envio, recuperação de confirmação e consulta compartilhada de contagens do cenário de apresentação da 17**. Banco aplicado e três exemplos carregados.
 
 Não riscar a anotação 17 inteira. Faltam fluxo operacional real, definição/implementação de revisão e aprovação autorizadas, quem pode aprovar/ajustar, tratamento transacional e coordenação física de movimentos durante a contagem, histórico de decisões e ajustes vinculados, integração com divergências aprovadas/mapa (20) e piloto físico com a equipe. Nenhuma regra real foi presumida para encerrar essas pendências.
+
+## Publicação confirmada
+
+Código 07db4cc42ed0217150eb1f4ee7f1b58b40c6dade publicado no site original: https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/457EDKGLjPS8pAjn9nWhicGgWUY6 . Domínio HTTP 200 e dezesseis recursos públicos iguais ao build aprovado, incluindo módulo/editor de contagem e apresentação. Nenhum teste funcional repetido para publicar.
