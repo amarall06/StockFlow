@@ -20,4 +20,4 @@ Os botões abrem o registro original no histórico e selecionam a região na pla
 
 Pode riscar **anotação 20: resumo das conferências/aprovações compartilhadas da apresentação, com acesso ao histórico e à planta**. Avança o vínculo com o mapa da 17. Faltam operação e regras reais da contagem, ajustes autorizados, rastreamento de movimentos durante conferência, histórico completo e piloto físico. Não encerra as anotações 17/20 inteiras.
 
-Publicação aguardando confirmação.
+Publicado em `7b6a1a3a75ed062c5960439bfea3ae6199e7dcba`; domínio HTTP 200 e quatorze recursos públicos iguais ao build aprovado. Três casos novos aprovados, nenhum caso concluído repetido.
