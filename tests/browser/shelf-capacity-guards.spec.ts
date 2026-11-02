@@ -15,7 +15,7 @@ test('perfil Consulta visualiza exemplos mas não recebe controles de edição',
   await page.route('**/rest/v1/profiles*',route=>route.fulfill({json:{is_active:true,display_name:'Consulta',role:'viewer'}}))
   await page.reload()
   const chart=page.getByRole('region',{name:'Ocupação por capacidade física'})
-  await expect(chart).toContainText('Demonstração fictícia')
+  await expect(chart).toContainText('Prateleiras Norte, Sul, Leste e Oeste')
   await expect(chart.getByRole('button',{name:/Configurar capacidade/})).toHaveCount(0)
   await chart.getByLabel('Dados do gráfico de capacidade').selectOption('stock')
   await expect(chart).toContainText('Capacidade não informada')

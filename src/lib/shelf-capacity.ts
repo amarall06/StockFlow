@@ -3,7 +3,7 @@ export type Capacity = { boxes: number; basis: string }
 export type Capacities = Record<string, Capacity>
 export type CapacityMode = 'demo' | 'stock'
 export const demoLocations = ['NORTE', 'SUL', 'LESTE', 'OESTE']
-export const demoCapacities: Capacities = Object.fromEntries(demoLocations.map((code, i) => [code, { boxes: [40, 60, 30, 50][i], basis: 'Caixa padrão fictícia' }]))
+export const demoCapacities: Capacities = Object.fromEntries(demoLocations.map((code, i) => [code, { boxes: [40, 60, 30, 50][i], basis: 'Caixa padrão' }]))
 export const demoStock: StockRow[] = [
   { code: 'AGM-35', location: 'NORTE', status: 'Aguardando testagem', boxes: 20 },
   { code: 'AGM-35', location: 'NORTE', status: 'Liberado para venda', boxes: 20 },

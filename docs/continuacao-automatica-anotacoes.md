@@ -267,3 +267,8 @@ Usuário escolheu referência física e autorizou cenário fictício NORTE/SUL/L
 ## 18 e apresentação fictícia — 02/11/2026
 
 Mapa interativo, busca/detalhes e página independente `/demonstracao.html` com indicadores, produtos, capacidade e divergência inteiramente fictícios, a pedido do usuário para apresentação aos superiores. Cinco testes novos de navegador e verificações isoladas aprovados; sem testes anteriores. Nenhum acesso/escrita no Supabase. Publicado em `f38cc9c`, Vercel success e dezesseis recursos públicos conferidos. Guia `mapa-ficticio-apresentacao-2026-11-02.md`.
+
+
+## 21 e planta no site original — 02/11/2026
+
+Sugestão por capacidade e espaço conferido, compatibilidade, divergência/ranking, seleção do destino no mapa e planta em grade inspirada na imagem enviada. Apresentação integrada ao Painel com rótulos neutros; página anterior mantida só por compatibilidade. Oito casos novos de navegador e verificações isoladas aprovados; nenhum anterior repetido e sem Supabase real. Publicação em preparação. Guia `sugestoes-planta-2026-11-02.md`.

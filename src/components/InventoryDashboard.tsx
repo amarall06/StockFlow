@@ -10,6 +10,7 @@ import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
 import { ShelfCapacity } from './ShelfCapacity'
+import { StockPresentation } from './StockPresentation'
 import './InventoryDashboard.css'
 
 function MetricIcon({kind}:{kind:string}) {
@@ -40,6 +41,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
+  const [view,setView]=useState<'stock'|'presentation'>('stock')
   const [revision,setRevision]=useState(0)
   const [refreshing,setRefreshing]=useState(false)
   const [refreshError,setRefreshError]=useState('')
@@ -54,7 +56,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   const springBoxes=dashboardStockSummary(catalog,stock,'springs').boxes
   const stockPage=category==='all'?'stock':category==='springs'?'springs':'inventory'
   useEffect(()=>{
-    if(!ready)return
+    if(!ready||view==='presentation')return
     let current=true
     let initialPending=true
     let hasReport=false
@@ -76,7 +78,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       },
     })
     return()=>{current=false;stop()}
-  },[ready,category,revision,reportKey])
+  },[ready,category,revision,reportKey,view])
   async function refresh(){
     if(refreshing||loading||manualPending.current)return
     manualPending.current=true
@@ -87,7 +89,8 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   }
   return <>
     <div className="page-heading"><div><p className="eyebrow">VISÃO GERAL</p><h1>Painel inicial</h1><p className="subtitle">Acompanhe seu estoque, movimentações e principais indicadores.</p></div></div>
-    {!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
+    {capacityUserId&&<div className="dashboard-tools"><label>Visualização do Painel<select value={view} onChange={event=>setView(event.target.value as typeof view)}><option value="stock">Consulta do estoque</option><option value="presentation">Apresentação</option></select></label></div>}
+    {view==='presentation'&&capacityUserId?<StockPresentation userId={`presentation:${capacityUserId}`} canEdit={isAdministrator}/>:!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
       <section className="dashboard-stock-totals" aria-label="Total de caixas por categoria">
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('inventory')}><MetricIcon kind="shock"/><span>Amortecedores</span><strong>{shockBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">→</span></span></button>
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('springs')}><MetricIcon kind="spring"/><span>Molas</span><strong>{springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">→</span></span></button>
@@ -118,7 +121,6 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <StockReportExport/>
-      <p><a href="/demonstracao.html" target="_blank" rel="noopener noreferrer">Abrir apresentação com dados fictícios (nova aba)</a></p>
       {capacityUserId && <ShelfCapacity key={capacityUserId} userId={capacityUserId} locations={locations} stock={stock} canEdit={isAdministrator}/>}
       <InventoryInsights catalog={catalog} stock={stock} category={category}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}

@@ -12,7 +12,7 @@ export function fictionalShelfMap(stock: StockRow[], query: string) {
     const matchedBoxes = normalized ? rows.filter(row => row.code.toUpperCase().includes(normalized)).reduce((sum, row) => sum + row.boxes, 0) : 0
     if (!Number.isSafeInteger(boxes) || !Number.isSafeInteger(matchedBoxes)) throw Error('Quantidade inválida para o mapa fictício.')
     const count = location === 'LESTE' ? fictionalCounts.LESTE : null
-    return { location, rows, boxes, matchedBoxes, count, state: count ? 'Divergência fictícia' : boxes > 0 ? 'Ocupada no exemplo' : 'Sem caixas no exemplo' }
+    return { location, rows, boxes, matchedBoxes, count, state: count ? 'Divergência de contagem' : boxes > 0 ? 'Ocupada' : 'Sem caixas' }
   })
   return { shelves, normalized, matches: shelves.filter(row => row.matchedBoxes > 0) }
 }

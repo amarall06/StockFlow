@@ -16,7 +16,7 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
     <p>Configuração local neste navegador, separada por conta na área autenticada. Informe capacidade em caixas equivalentes; deixe a quantidade vazia para remover a referência.</p>
     <form onSubmit={event => { event.preventDefault(); try { if (boxes !== '' && (!/^\d+$/.test(boxes) || !Number.isSafeInteger(Number(boxes)) || Number(boxes) < 1 || Number(boxes) > 2147483647 || !basis.trim())) throw Error('Informe capacidade inteira positiva e a referência do tamanho da caixa.'); onSave(boxes === '' ? null : { boxes: Number(boxes), basis: basis.trim() }) } catch (caught) { setError(caught instanceof Error ? caught.message : 'Não foi possível salvar.') } }}>
       <label>Capacidade física (caixas)<input type="number" min="1" max="2147483647" step="1" value={boxes} onChange={event => setBoxes(event.target.value)}/></label>
-      <label>Referência de tamanho da caixa<input maxLength={120} required={boxes !== ''} value={basis} onChange={event => setBasis(event.target.value)} placeholder="Informe o padrão real ou fictício usado"/></label>
+      <label>Referência de tamanho da caixa<input maxLength={120} required={boxes !== ''} value={basis} onChange={event => setBasis(event.target.value)} placeholder="Informe o padrão de caixa usado"/></label>
       {error && <p role="alert">{error}</p>}
       <button type="submit" className="theme-toggle">Salvar capacidade local</button>
     </form>
@@ -33,16 +33,16 @@ export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = fa
   const rows = error ? [] : capacityRows(mode === 'demo' ? demoLocations : locations, mode === 'demo' ? demoStock : stock, entries)
   return <section className="inventory-panel dashboard-panel shelf-capacity" aria-label="Ocupação por capacidade física">
     <h2>Ocupação por capacidade física</h2>
-    {!demoOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Demonstração fictícia — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
-    {mode === 'demo' ? <p className="capacity-demo"><strong>Demonstração fictícia.</strong> Prateleiras, capacidades e quantidades de exemplo, criadas a seu pedido. Não representam o estoque da empresa.</p> : <p>Usa o saldo normal consultado de amortecedores e molas juntos, independentemente do filtro de categoria. Capacidades reais começam sem preenchimento; exemplos não são copiados para esta consulta.</p>}
+    {!demoOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Apresentação — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
+    {mode === 'demo' ? <p className="capacity-demo">Prateleiras Norte, Sul, Leste e Oeste.</p> : <p>Usa o saldo normal consultado de amortecedores e molas juntos, independentemente do filtro de categoria. Capacidades reais começam sem preenchimento; exemplos não são copiados para esta consulta.</p>}
     <p>A barra compara caixas registradas com a capacidade informada, usando caixas de tamanho equivalente. Garantia sem localização física não entra neste cálculo. Zero caixas não comprova espaço físico livre.</p>
     <p>Configuração salva somente nesta conta e navegador; compartilhamento entre aparelhos ainda depende do servidor.</p>
     {error && <p role="alert">{error}</p>}{message && <p role="status">{message}</p>}
-    {mode === 'demo' && !error && <FictionalShelfMap stock={demoStock} capacities={entries}/>}
-    <div className="capacity-grid">{rows.map(row => <article className="capacity-card" aria-label={`${mode === 'demo' ? 'Fictícia' : 'Consultada'} ${row.location}`} key={row.location}>
-      <h3>{row.location}</h3><p>{row.boxes} caixas {mode === 'demo' ? 'fictícias' : 'consultadas'}</p>
+    {mode === 'demo' && !error && <FictionalShelfMap key={userId} userId={userId} canEdit={canEdit} stock={demoStock} capacities={entries}/>}
+    <div className="capacity-grid">{rows.map(row => <article className="capacity-card" aria-label={`${mode === 'demo' ? 'Prateleira' : 'Consultada'} ${row.location}`} key={row.location}>
+      <h3>{row.location}</h3><p>{row.boxes} caixas {mode === 'demo' ? '' : 'consultadas'}</p>
       {row.capacity ? <>
-        <p>Capacidade: {row.capacity.boxes} caixas · {row.capacity.basis}</p>
+        <p>Capacidade: {row.capacity.boxes} caixas · {row.capacity.basis.replace("Caixa padrão fictícia", "Caixa padrão")}</p>
         <div className="capacity-track" role="meter" aria-label={`Ocupação de ${row.location}`} aria-valuemin={0} aria-valuemax={row.capacity.boxes} aria-valuenow={Math.min(row.boxes, row.capacity.boxes)} aria-valuetext={`${Math.round(row.percent!)}% — ${row.boxes} de ${row.capacity.boxes} caixas${row.excess ? `; excede em ${row.excess} caixas` : ''}`}><span style={{ width: `${Math.min(100, row.percent!)}%` }}/></div>
         <p><strong>{new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(row.percent!)}% da capacidade</strong></p>
         {row.excess > 0 && <p>Acima da capacidade informada em {row.excess} caixas.</p>}

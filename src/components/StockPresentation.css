@@ -1,0 +1,4 @@
+.stock-presentation{min-width:0}.stock-presentation .presentation-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-block:24px}
+.stock-presentation .presentation-metrics>div{padding:16px;border:1px solid var(--liber-line,#b9aaa0);border-radius:8px;background:var(--liber-surface,#fff);display:grid;gap:12px;min-width:0;overflow-wrap:anywhere;color:var(--liber-ink,#24211e)}
+.stock-presentation .presentation-metrics strong{font-size:32px}.stock-presentation .presentation-metrics span{font-size:14px}
+@media(max-width:650px){.stock-presentation .presentation-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
