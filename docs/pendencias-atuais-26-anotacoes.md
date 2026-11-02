@@ -57,7 +57,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 20 | Divergências aprovadas/histórico compartilhado no mapa e eventual disposição física. Resumo do rascunho local já entregue. | Conferências no servidor e mapa físico |
 | 21 | Protótipo de sugestões no cenário do Painel pronto, publicado em `3faabef`, com recursos públicos conferidos. Faltam capacidade/ocupação/espaço e restrições reais validados, servidor/concorrência/reservas e piloto. | Dados físicos e servidor |
 | 22 | Detectores locais de prazo e recorrência prontos na apresentação. Faltam regra/datas/conferências reais, histórico compartilhado e resolução; implementar retirada física incompleta e executar piloto. | Regras, identidade física e servidor |
-| 23 | Rastreabilidade e idade física das caixas; última movimentação conhecida já entregue e não prova idade do saldo. | Identidade/lotes/eventos e regra operacional |
+| 23 | Permanência por entrada de grupos pronta no cenário. Faltam identidade/origem/datas reais, rastreabilidade compartilhada e piloto; última movimentação conhecida não prova idade física do saldo. | Identidade/lotes/eventos, servidor e conferência física |
 | 24 | Executar o roteiro com equipe e registrar resultados reais. | Equipe e conferência física |
 | 25 | Acrescentar testes dos próximos fluxos quando existirem e concluir ensaios reais pendentes; preservar evidências aprovadas. | Funcionalidades futuras e ambiente real |
 | 26 | Revisão manual restante, leitor de tela e Safari/iPhone físico; corrigir descobertas do piloto. Auditoria automática não cobre todos os critérios. | Avaliação manual e aparelhos |
@@ -84,4 +84,4 @@ Regra configurável, deduplicação de conferências por produto/prateleira/situ
 
 ## 23 — permanência por entrada local, 02/11/2026
 
-Grupos de entrada de exemplo correspondentes às 85 caixas, limite configurável, desconhecidos separados, filtros e mapa implementados. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: permanencia-caixas-local-2026-11-02.md. Identidade/origem/datas reais, rastreabilidade compartilhada e piloto continuam pendentes. Publicação em andamento.
+Grupos de entrada de exemplo correspondentes às 85 caixas, limite configurável, desconhecidos separados, filtros e mapa implementados. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: permanencia-caixas-local-2026-11-02.md. Identidade/origem/datas reais, rastreabilidade compartilhada e piloto continuam pendentes. Publicado em `0ffcdbd`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.

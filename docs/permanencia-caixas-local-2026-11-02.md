@@ -29,3 +29,7 @@ Sete testes novos em `tests/browser/stock-age.spec.ts`, aprovados em 20,5 s: gru
 ## Pode riscar e falta
 
 Pode riscar implementação/testes do protótipo de permanência por entrada registrada e grupos de exemplo da 23. Faltam identidade real por caixa/lote, procedência e datas comprováveis, conservação dos vínculos nas entradas/transferências/saídas/devoluções, histórico/persistência compartilhados, migração dos saldos sem origem sem inventar datas, política operacional e piloto. A última movimentação conhecida continua uma informação diferente. Não riscar a 23 inteira.
+
+## Publicação confirmada
+
+Publicado em `0ffcdbd64e5cf3daea3514a2f9d0e0020302b45f`, https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/HRxzXLofeaf2ReVSGAqrn2ZKYDA2 . Domínio HTTP 200 com entrada atual e treze recursos públicos iguais ao build aprovado, conferidos por hash. Nenhum teste funcional repetido na publicação. Commits `[skip ci]` evitam a suíte antiga. Pode riscar implementação/testes/publicação do protótipo local de permanência da 23; demais dependências reais permanecem.

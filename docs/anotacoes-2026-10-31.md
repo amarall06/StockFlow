@@ -1,4 +1,4 @@
-> **23 — permanência, 02/11/2026:** grupos de entrada de exemplo reconciliados com as 85 caixas, limite configurável, datas desconhecidas separadas, filtros e mapa. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `permanencia-caixas-local-2026-11-02.md`. Publicação em andamento.
+> **23 — permanência, 02/11/2026:** grupos de entrada de exemplo reconciliados com as 85 caixas, limite configurável, datas desconhecidas separadas, filtros e mapa. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `permanencia-caixas-local-2026-11-02.md`. Publicado em `0ffcdbd`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.
 
 > **22 — recorrência, 02/11/2026:** detector local de divergências repetidas por produto/prateleira/situação, regra configurável, evidências e mapa. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `divergencias-recorrentes-local-2026-11-02.md`. Publicado em `5e1c31f`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
 
