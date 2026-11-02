@@ -40,4 +40,4 @@ Advisors: proteção padrão da cópia privada sem políticas é intencional; pe
 
 ## Publicação
 
-Aguardando confirmação do deploy deste recorte.
+Publicado em `06b0e2d1043ffc8ab12af35ef9345c0002b753f4`. Domínio HTTP 200 e 17 recursos públicos idênticos ao build aprovado. A consulta pelo conector Vercel não teve acesso à implantação; publicação conferida pela integração GitHub e pelos arquivos públicos. Nenhuma credencial foi alterada.
