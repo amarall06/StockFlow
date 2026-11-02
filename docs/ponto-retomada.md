@@ -1,3 +1,5 @@
+> **22 — recorrência, 02/11/2026:** detector local de divergências repetidas por produto/prateleira/situação, regra configurável, evidências e mapa. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `divergencias-recorrentes-local-2026-11-02.md`. Publicação em andamento.
+
 > **22 — 02/11/2026:** detector de prazo de testagem na apresentação, prazo configurável e grupos sem data separados. Seis testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `prazo-testagem-local-2026-11-02.md`. Publicado em `8ddf8fd`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
 
 > **12 — 02/11/2026:** cancelamento local com motivo, data e declaração de retorno das caixas separadas. Quatro testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `cancelamento-local-2026-11-02.md`. Publicado em `f82b482`; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.

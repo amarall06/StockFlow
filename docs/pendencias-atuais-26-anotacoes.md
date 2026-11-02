@@ -77,3 +77,7 @@ Formulário, motivo/data e declaração do retorno das caixas já separadas impl
 ## 22 — prazo de testagem local, 02/11/2026
 
 Detector por dias corridos na apresentação, prazo configurável por conta/navegador e grupos sem data tratados separadamente. Seis testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: prazo-testagem-local-2026-11-02.md. Regra/datas reais, servidor/avisos compartilhados e demais detectores continuam pendentes. Publicado em `8ddf8fd`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
+
+## 22 — divergências recorrentes locais, 02/11/2026
+
+Regra configurável, deduplicação de conferências por produto/prateleira/situação, evidências e mapa implementados na apresentação. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: divergencias-recorrentes-local-2026-11-02.md. Regra/conferências reais, servidor compartilhado, resolução, retirada física incompleta e piloto continuam pendentes. Publicação em andamento.
