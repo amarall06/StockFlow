@@ -36,4 +36,4 @@ A preparação não concluída do histórico foi guardada em `test-results/pende
 
 ## Publicação
 
-Aguardando confirmação.
+Publicado em `bb68769d5801a733ca32249548768f8c26ad3c1e`, Vercel success. Domínio HTTP 200 e quatorze recursos públicos iguais ao build aprovado. Conferência final do banco: 95 produtos, 126 movimentos, 8.763 caixas; configuração operacional versão 1 com capacidades vazias. Nenhum teste funcional repetido na publicação.
