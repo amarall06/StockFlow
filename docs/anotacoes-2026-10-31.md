@@ -1,4 +1,4 @@
-> **22 — recorrência, 02/11/2026:** detector local de divergências repetidas por produto/prateleira/situação, regra configurável, evidências e mapa. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `divergencias-recorrentes-local-2026-11-02.md`. Publicação em andamento.
+> **22 — recorrência, 02/11/2026:** detector local de divergências repetidas por produto/prateleira/situação, regra configurável, evidências e mapa. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `divergencias-recorrentes-local-2026-11-02.md`. Publicado em `5e1c31f`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
 
 > **22 — 02/11/2026:** detector de prazo de testagem na apresentação, prazo configurável e grupos sem data separados. Seis testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `prazo-testagem-local-2026-11-02.md`. Publicado em `8ddf8fd`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
 

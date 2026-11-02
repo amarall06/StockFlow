@@ -292,4 +292,4 @@ Detector por dias corridos na apresentação, prazo configurável por conta/nave
 
 ## 22 — divergências recorrentes locais, 02/11/2026
 
-Regra configurável, deduplicação de conferências por produto/prateleira/situação, evidências e mapa implementados na apresentação. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: divergencias-recorrentes-local-2026-11-02.md. Regra/conferências reais, servidor compartilhado, resolução, retirada física incompleta e piloto continuam pendentes. Publicação em andamento.
+Regra configurável, deduplicação de conferências por produto/prateleira/situação, evidências e mapa implementados na apresentação. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: divergencias-recorrentes-local-2026-11-02.md. Regra/conferências reais, servidor compartilhado, resolução, retirada física incompleta e piloto continuam pendentes. Publicado em `5e1c31f`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.

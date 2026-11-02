@@ -29,3 +29,7 @@ Sete casos novos de `tests/browser/recurring-divergences.spec.ts`, todos aprovad
 ## Pode riscar e falta
 
 Pode riscar implementação/testes do detector de recorrência na apresentação. Na 22 faltam regra operacional validada, conferências/datas/identidade reais e histórico compartilhado, autorização, resolução de avisos, detector de retirada física incompleta e piloto. A aprovação de contagens da 17 e a integração de divergências ao mapa de calor real da 20 não foram entregues por esse protótipo.
+
+## Publicação confirmada
+
+Publicado em `5e1c31f30dbfc939a6775e5fbbf578bbd1eee537`, https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/2dFa9LRj8h4WAvhsjeAFbaKbAMAv . Domínio HTTP 200 com entrada atual e quatorze recursos públicos iguais ao build aprovado, conferidos por hash. Nenhum teste funcional repetido na publicação. Commits `[skip ci]` evitam a suíte antiga. Pode riscar implementação/testes/publicação do detector local de recorrência da 22; demais dependências reais permanecem.

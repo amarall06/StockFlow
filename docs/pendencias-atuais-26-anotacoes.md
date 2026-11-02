@@ -56,7 +56,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 19 | Protótipo local da missão pronto, publicado em `2b91830`, Vercel success e quatorze recursos públicos conferidos. Faltam pedidos/reservas compartilhados transacionais, QR físico/identidade, histórico/autorização, regras de expedição e piloto. | Regras, QR e servidor |
 | 20 | Divergências aprovadas/histórico compartilhado no mapa e eventual disposição física. Resumo do rascunho local já entregue. | Conferências no servidor e mapa físico |
 | 21 | Protótipo de sugestões no cenário do Painel pronto, publicado em `3faabef`, com recursos públicos conferidos. Faltam capacidade/ocupação/espaço e restrições reais validados, servidor/concorrência/reservas e piloto. | Dados físicos e servidor |
-| 22 | Definir retirada física incompleta, prazo em teste e limiar de divergência recorrente; criar registros/regras correspondentes. | Regras e histórico compartilhado |
+| 22 | Detectores locais de prazo e recorrência prontos na apresentação. Faltam regra/datas/conferências reais, histórico compartilhado e resolução; implementar retirada física incompleta e executar piloto. | Regras, identidade física e servidor |
 | 23 | Rastreabilidade e idade física das caixas; última movimentação conhecida já entregue e não prova idade do saldo. | Identidade/lotes/eventos e regra operacional |
 | 24 | Executar o roteiro com equipe e registrar resultados reais. | Equipe e conferência física |
 | 25 | Acrescentar testes dos próximos fluxos quando existirem e concluir ensaios reais pendentes; preservar evidências aprovadas. | Funcionalidades futuras e ambiente real |
@@ -80,4 +80,4 @@ Detector por dias corridos na apresentação, prazo configurável por conta/nave
 
 ## 22 — divergências recorrentes locais, 02/11/2026
 
-Regra configurável, deduplicação de conferências por produto/prateleira/situação, evidências e mapa implementados na apresentação. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: divergencias-recorrentes-local-2026-11-02.md. Regra/conferências reais, servidor compartilhado, resolução, retirada física incompleta e piloto continuam pendentes. Publicação em andamento.
+Regra configurável, deduplicação de conferências por produto/prateleira/situação, evidências e mapa implementados na apresentação. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: divergencias-recorrentes-local-2026-11-02.md. Regra/conferências reais, servidor compartilhado, resolução, retirada física incompleta e piloto continuam pendentes. Publicado em `5e1c31f`, Vercel success; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
