@@ -1,11 +1,11 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração original preservada. Código `a7954af` publicado (guia de instalação da 10), incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
+Atualizado em 01/11/2026. Numeração original preservada. Código `7aa9dc5` publicado (capacidade física local e exemplos da 2), incluindo o guia de instalação `a7954af`, incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
 | 1 | Pop-up de estoque baixo | **Implementação local concluída: pode riscar esse escopo.** Aviso comum às telas, amortecedores/molas, acesso autorizado, memória por conta/sessão, sem repetição por consulta e sem roubar foco. Publicado em `221171e`. |
-| 2 | Gráfico com referência de cheio | **Capacidade física definida; gráfico/configuração local por prateleira e cenário fictício NORTE/SUL/LESTE/OESTE implementados, oito testes novos aprovados. Pode riscar esse recorte local.** Publicação em preparação; faltam compartilhamento no servidor e capacidades reais quando aplicável. Guia `capacidade-fisica-local.md`. |
+| 2 | Gráfico com referência de cheio | **Capacidade física definida; gráfico/configuração local por prateleira e cenário fictício NORTE/SUL/LESTE/OESTE implementados, oito testes novos aprovados. Pode riscar implementação/testes/publicação desse recorte local.** Publicado em `7aa9dc5`; faltam compartilhamento no servidor e capacidades reais quando aplicável. Guia `capacidade-fisica-local.md`. |
 | 3 | Separação de testados/não testados | **Separação visual por situação nos resumos de prateleiras concluída e publicada: pode riscar esse escopo.** Amortecedores aguardando/liberados e molas em estoque, em caixas. Organização física ainda não definida. |
 | 4 | Identificação de testadores | Parcial existente: pessoa/data e função Testador; gestão e contas reais adiadas. |
 | 5 | Relatórios PDF e Excel | **Exportação manual local concluída: pode riscar esse escopo.** PDF/XLSX reais no Painel, semana/mês/ano, saldo atual normal + movimentações do período em caixas. Não inclui fechamento histórico transacional, envio ou agendamento. Publicado em `221171e`. |
@@ -33,7 +33,7 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `a7954af` pub
 
 ## Rodada atual — capacidade física
 
-Referência escolhida e exemplos fictícios autorizados pelo usuário. Gráfico/configuração local no Painel, oito casos novos de navegador e cenários isolados aprovados; publicação em preparação. Guia `capacidade-fisica-local.md`. Não foram criados locais/saldos no Supabase.
+Referência escolhida e exemplos fictícios autorizados pelo usuário. Gráfico/configuração local no Painel, oito casos novos de navegador e cenários isolados aprovados; publicado em `7aa9dc5`, com arquivos públicos conferidos. Guia `capacidade-fisica-local.md`. Não foram criados locais/saldos no Supabase.
 
 ## Rodada anterior — instalação e revisão dos 26
 

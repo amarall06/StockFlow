@@ -37,6 +37,15 @@ Total: **oito testes novos de navegador e novos cenários isolados aprovados**. 
 
 ## O que pode riscar e limites
 
-Pode riscar a definição “capacidade física”, a implementação local do gráfico/configuração por prateleira e o cenário fictício NORTE/SUL/LESTE/OESTE da anotação 2. A publicação será registrada depois de confirmada.
+Pode riscar a definição “capacidade física”, a implementação local do gráfico/configuração por prateleira e o cenário fictício NORTE/SUL/LESTE/OESTE da anotação 2. Publicado em `7aa9dc5`, conforme registro abaixo.
 
 Falta compartilhar configurações entre contas/aparelhos no servidor e, quando for usar com dados reais, preencher/conferir capacidades e tamanhos reais. O exemplo não encerra mapa físico (18), separação física (3) ou sugestão de espaço (21). A autorização para exemplos não aprova ajustes no estoque real nem a limpeza final da 8.
+
+
+## Publicação confirmada
+
+Código `7aa9dc585d0ba4bec98be08530874518d60cee22`, main, `amarall06/StockFlow`. Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/GCdkDnzvKpYy8hMvzVZwyZrG3tKB
+
+Domínio https://liber-automotive.vercel.app/ HTTP 200, entrada `index-BuPUpMaV.js`. Seis arquivos públicos (entrada, InventoryApp, Painel, dois CSS associados e módulo modal compartilhado) iguais por SHA-256 ao build aprovado. Diagnóstico local ignorado: `test-results/publicacao-7aa9dc5/hashes.json`. Build/análise aprovados; oito testes novos de navegador e cenários isolados aprovados sem repetir suítes anteriores. Commit `[skip ci]` evita executar novamente as suítes completas de GitHub Actions; compilação da Vercel ocorreu normalmente.
+
+Pode riscar implementação/verificação/publicação do escopo local e fictício da anotação 2. O gráfico aparece no Painel; a edição é por prateleira. Compartilhamento de capacidade entre contas/aparelhos continua pendente de servidor.
