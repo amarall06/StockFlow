@@ -13,7 +13,7 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `62b59f9` pub
 | 7 | Segurança do site | Parcial/contínuo. Novos cabeçalhos locais e dependências de exportação sem vulnerabilidades conhecidas na instalação; controles existentes não encerram auditoria de banco/armazenamento/recuperação. |
 | 8 | Zerar estoque fictício | Adiado para transição final aprovada. |
 | 9 | Etiquetas de testados | Adiado. |
-| 10 | Aplicativo Windows/Android | **Preparação local PWA concluída:** manifesto, ícones, janela própria e convite de instalação. Publicado; falta validar instalação real Windows/Android. Offline é item separado. |
+| 10 | Aplicativo Windows/Android | **Orientação interna Windows/Android/iPhone concluída localmente, inclusive sem convite automático; cinco testes novos aprovados. Publicação em preparação.** **Preparação local PWA concluída:** manifesto, ícones, janela própria e convite de instalação. Publicado; falta validar instalação real Windows/Android. Offline é item separado. |
 | 11 | Ampliar dashboard | **Implementação local dos indicadores em caixas concluída: pode riscar esse escopo.** Disponível para venda, aguardando teste e garantia separados, preservados totais/atividade/alertas. Não converte caixas em peças sem quantidade validada por caixa. Publicado em `221171e`. |
 | 12 | Cancelamento de pedidos | Não iniciado; reservas e retorno físico a definir. |
 | 13 | Alertas automáticos de pendências | Parcial local: avisos automáticos de inconsistências da consulta, usando o fluxo existente. Aviso global de rascunhos offline por conta e acesso à conferência implementados, com um teste novo aprovado. **Aviso de contagem local e de confirmação de saída pendente concluídos e publicados; pode riscar esses escopos.** Faltam demais regras de pendências operacionais/prazos/resolução. |
@@ -31,7 +31,11 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `62b59f9` pub
 | 25 | Ampliar testes automáticos | **Mais 30 casos novos de acessibilidade de formulários/diálogos aprovados nesta rodada, sem repetir os concluídos.** **Mais 13 casos novos de navegador e cenários isolados aprovados nesta etapa, sem repetir anteriores.** Parcial: mais 70 verificações novas nesta continuação (22 navegador + 48 isoladas), incluindo o receptor Realtime iniciado antes do pedido de sequência automática. Casos antigos não repetidos. Ensaios reais e demais áreas seguem pendentes. |
 | 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Contraste de sete telas e sete diálogos revisado nos temas claro/escuro; 30 casos novos aprovados. Pode riscar esse recorte automatizado, publicado em `62b59f9`, com arquivos públicos conferidos.** **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Complemento publicado em `080869d`; pode riscar esse recorte.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
 
-## Rodada atual — formulários e contraste
+## Rodada atual — instalação e revisão dos 26
+
+Guia interno de instalação concluído e aprovado em cinco testes novos, sem repetir anteriores; publicação em preparação. Relatório `guia-instalacao-2026-11-01.md`. Dependências práticas da empresa: `definicoes-da-empresa-26-anotacoes.md`. Instalação/atualização em aparelhos reais continuam pendentes.
+
+## Rodada anterior — formulários e contraste
 
 Correções de contraste em sete CSS, 30 casos novos aprovados e nenhum teste antigo repetido. Publicado em `62b59f9`, Vercel success e onze arquivos públicos iguais ao build aprovado. Guia `acessibilidade-formularios-2026-11-01.md`. Não envolve banco real nem reformulação geral de design.
 

@@ -1,0 +1,10 @@
+.install-guide-dialog{box-sizing:border-box;width:min(680px,calc(100vw - 32px));max-height:90dvh;overflow:auto;padding:20px;border:1px solid var(--liber-line,#b9aaa0);border-radius:10px;background:var(--liber-surface,#fff);color:var(--liber-ink,#24211e)}
+.install-guide-dialog::backdrop{background:#261d19a6}
+.install-guide-dialog header{display:flex;align-items:start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.install-guide-dialog h2{margin:0;font-size:22px}
+.install-guide-dialog h3{font-size:17px}
+.install-guide-dialog p,.install-guide-dialog a{font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.install-guide-dialog section{border-top:1px solid var(--liber-line,#b9aaa0);margin-top:1rem}
+.install-guide-dialog a{color:var(--liber-accent,#963d0b)}
+.install-guide-dialog button{font:inherit;min-height:44px;padding:8px 12px;max-width:100%;white-space:normal}
+.install-guide-dialog :focus-visible{outline:3px solid currentColor;outline-offset:3px}

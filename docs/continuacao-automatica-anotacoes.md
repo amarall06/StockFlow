@@ -252,3 +252,8 @@ Complemento da 26 publicado em `080869d`, Vercel success, página offline/worker
 ## Continuação 25/26 — formulários e contraste
 
 Sem Supabase real, corrigidos contrastes em sete CSS e aprovados 30 casos novos (16 diálogos/contagem + 14 telas nos temas claro/escuro). Somente novos casos com falha repetidos após correção; casos anteriores não executados. Publicado em `62b59f9`, Vercel success e onze arquivos públicos iguais ao build aprovado. Relatório `acessibilidade-formularios-2026-11-01.md`.
+
+
+## Revisão completa e guia da 10 — 01/11/2026
+
+Conferidos os 26 itens. Guia interno de instalação independente de convite automático, com caminhos Windows/Android/iPhone, cinco testes novos aprovados e nenhuma suíte anterior repetida. Publicação em preparação. Relatório `guia-instalacao-2026-11-01.md`. Dependências do usuário/empresa detalhadas em `definicoes-da-empresa-26-anotacoes.md`; sem inventar prazos, mapa ou capacidade, sem banco real e sem limpar dados fictícios.

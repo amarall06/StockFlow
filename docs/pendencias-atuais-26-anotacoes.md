@@ -17,6 +17,12 @@ Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação
 
 - 25/26: mais 30 casos novos de auditoria de campos/contraste nos dois temas, incluindo sete diálogos, contagem local e sete telas, aprovados. Correções prontas, publicado em `62b59f9`, com arquivos públicos conferidos. Guia `acessibilidade-formularios-2026-11-01.md`.
 
+- 10/25/26: orientação interna de instalação Windows/Android/iPhone pronta, com cinco testes novos aprovados, inclusive sem convite automático; publicação em preparação. Não encerra instalação real.
+
+## O que depende de você
+
+O preenchimento prático, sem solicitar senhas ou decisões técnicas do servidor, está em `definicoes-da-empresa-26-anotacoes.md`. Respostas podem ser fornecidas por grupos conforme a empresa tiver as informações.
+
 ## Pendências por número
 
 | Nº | O que falta | Dependência principal |
