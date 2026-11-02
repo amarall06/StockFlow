@@ -1,0 +1,14 @@
+[
+  {
+    "source_id": "14d08e01-bee6-4ee3-a651-eefb964e4d2f",
+    "request_id": "59e30063-b462-4824-950a-7766210dbd7b",
+    "decision": "recount_requested",
+    "note": "Diferença de uma caixa: solicitar nova conferência no roteiro de apresentação."
+  },
+  {
+    "source_id": "d8f16693-afac-4b66-a35a-ca2545a3bbda",
+    "request_id": "bf4f42fe-c627-41e1-a0e9-dd0ae612215e",
+    "decision": "approved",
+    "note": "Conferência aprovada no roteiro de apresentação; excedente mantido para análise, sem ajustar saldo."
+  }
+]

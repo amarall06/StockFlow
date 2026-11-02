@@ -8,6 +8,9 @@ import {INVENTORY_CHANGE_EVENT} from '../lib/resume-refresh'
 import {loadPublishedPresentation} from '../lib/presentation-cloud'
 import type {PresentationBundle} from '../lib/presentation-bundle'
 import './PresentationShelfCounts.css'
+import {PresentationCountReview} from './PresentationCountReview'
+import {loadCountReviews} from '../lib/presentation-count-reviews-api'
+import {mergeCountReviews,reviewLabels,type CountReview} from '../lib/presentation-count-reviews'
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(value))
 
 function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boolean;onBusy:(busy:boolean)=>void;onSaved:(count:SharedCount)=>void;receipt:SharedCount|undefined}){
@@ -38,9 +41,10 @@ function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boole
     {error&&<p role="alert">{error}</p>}
   </form>
 }
-export function PresentationShelfCounts({userId,canOperate,ready,data}:{userId:string;canOperate:boolean;ready:boolean;data:PresentationBundle}){
+export function PresentationShelfCounts({userId,canOperate,canReview=false,ready,data}:{userId:string;canOperate:boolean;canReview?:boolean;ready:boolean;data:PresentationBundle}){
   const[rows,setRows]=useState<SharedCount[]|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[sending,setSending]=useState(false)
   const[consultedAt,setConsultedAt]=useState(()=>new Date().toISOString()),refresh=useRef(()=>{})
+  const[reviews,setReviews]=useState<Record<string,CountReview>>({}),reviewCache=useRef<Record<string,CountReview>>({})
   const raw=useSyncExternalStore(subscribeShelfCount,()=>readShelfCountRaw(userId),()=>null)
   let draft:Draft|null=null
   try{draft=parseShelfCount(raw,userId)}catch{/* O editor existente mostra o erro e preserva os dados. */}
@@ -49,7 +53,10 @@ export function PresentationShelfCounts({userId,canOperate,ready,data}:{userId:s
     const read=async()=>{
       const request=++sequence;controller?.abort();window.clearTimeout(timeout)
       const current=new AbortController();controller=current;timeout=window.setTimeout(()=>current.abort(),15000)
-      try{const result=await loadPresentationCounts(current.signal);if(live&&request===sequence){setRows(result);setError('')}}
+      try{
+        const result=await loadPresentationCounts(current.signal),decisions=await loadCountReviews(result,current.signal)
+        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result);reviewCache.current=merged;setReviews(merged);setRows(result);setError('')}
+      }
       catch{if(live&&request===sequence)setError('Não foi possível atualizar as contagens compartilhadas. Os registros já consultados foram mantidos; confira sua conexão e seu acesso.')}
     }
     const resume=()=>{void read()},notice=()=>{if(navigator.onLine&&document.visibilityState==='visible'){window.clearTimeout(noticeTimer);noticeTimer=window.setTimeout(resume,150)}}
@@ -61,7 +68,7 @@ export function PresentationShelfCounts({userId,canOperate,ready,data}:{userId:s
   const catalog=Object.fromEntries(data.stock.map(row=>[row.code,{application:row.code.startsWith('M')?'Mola':'Amortecedor',defaultLocation:row.location}]))
   const receipt=draft?rows?.find(row=>row.source_id===draft!.id&&row.actor_id===userId.replace(/^presentation:/,'')):undefined
   return <section className="inventory-panel presentation-counts" aria-label="Contagens compartilhadas">
-    <h2>Conferência de prateleiras</h2><p>Referência da apresentação: Norte, Sul, Leste e Oeste. Envios ficam aguardando revisão, separados do estoque operacional. Aprovação e ajuste não estão disponíveis.</p>
+    <h2>Conferência de prateleiras</h2><p>Referência da apresentação: Norte, Sul, Leste e Oeste. O Administrador pode aprovar uma contagem ou solicitar recontagem, com justificativa. As decisões ficam separadas do estoque operacional e não ajustam saldos.</p>
     {message&&<p role="status">{message}</p>}
     {canOperate?<fieldset className="presentation-count-session" disabled={sending}><legend>Preparar e enviar contagem</legend>
       <ShelfCount userId={userId} stock={data.stock} catalog={catalog} locations={data.locations} consultedAt={consultedAt} presentationSharing onRefresh={async()=>{await loadPublishedPresentation(AbortSignal.timeout(15000));setConsultedAt(new Date().toISOString())}}/>
@@ -70,19 +77,24 @@ export function PresentationShelfCounts({userId,canOperate,ready,data}:{userId:s
         setMessage(`Envio confirmado: ${saved.id}. Aguardando revisão; nenhum saldo foi alterado.`);refresh.current()
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
-    <h3>Histórico de envios</h3><p>Até 50 envios mais recentes, com consulta automática e ao voltar à janela. São registros aguardando revisão, não conferências aprovadas.</p>
+    <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, com consulta automática e ao voltar à janela. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
     <button type="button" className="theme-toggle" onClick={()=>refresh.current()}>Atualizar contagens compartilhadas</button>
     {error&&<p role="alert">{error}</p>}{rows===null&&!error&&<p role="status">Consultando contagens…</p>}
     {rows?.length===0&&<p>Nenhuma contagem enviada nesta apresentação.</p>}
     <ul>{rows?.map(row=>{
       const summary=countSummary({rows:row.submission.rows} as Draft)
-      return <li key={row.id}><details><summary>{row.location} · Aguardando revisão · {date(row.created_at)}</summary>
+      const review=reviews[row.id]
+      return <li key={row.id}><details><summary>{row.location} · {review?reviewLabels[review.decision]:'Aguardando revisão'} · {date(row.created_at)}</summary>
         <p>Responsável no envio: {row.actor_name}. Identificador: {row.id}.</p>
         <p>{summary.differences} itens divergentes; faltam {summary.missing} caixas e sobram {summary.extra} caixas em relação à referência.</p>
         <p>Consulta de referência: {date(row.submission.consulted_at)}. Início informado: {date(row.submission.started_at)}.</p>
         <ul>{row.submission.rows.map(item=><li key={`${item.code}:${item.status}`}>{item.code} · {item.status}: esperado {item.expected}, contado {item.counted}; diferença {item.counted!-item.expected} caixas.</li>)}</ul>
         {!row.submission.rows.length&&<p>Prateleira sem caixas na referência e na contagem enviada.</p>}
         {row.submission.notes&&<p>Observação: {row.submission.notes}</p>}
+        <PresentationCountReview count={row} review={review} canReview={canReview} ready={ready&&!error} onReviewed={(decision,count)=>{
+          const merged=mergeCountReviews(reviewCache.current,[decision],[...(rows??[]).filter(row=>row.id!==count.id),count])
+          reviewCache.current=merged;setReviews(merged);setMessage(`Revisão confirmada: ${decision.id}. ${reviewLabels[decision.decision]}; nenhum saldo foi alterado.`);refresh.current()
+        }}/>
       </details></li>
     })}</ul>
   </section>

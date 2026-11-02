@@ -9,4 +9,12 @@
 .presentation-counts [role=alert] { color: #a73c35; }
 .theme-dark .presentation-counts p { color: #c0aca1; }
 .theme-dark .presentation-counts [role=alert] { color: #ffb8ac; }
+.presentation-count-review { margin-top: 16px; padding-top: 12px; border-top: 1px solid #78858c; }
+.presentation-count-review fieldset { min-width: 0; border: 1px solid #78858c; border-radius: 8px; padding: 12px; }
+.presentation-count-review label { display: block; margin: 12px 0; }
+.presentation-count-review select,.presentation-count-review textarea { display: block; width: 100%; max-width: 100%; box-sizing: border-box; min-height: 42px; padding: 10px; border: 1px solid #78858c; border-radius: 6px; background: #fff; color: #253e4b; font: inherit; }
+.presentation-count-review textarea { min-height: 96px; resize: vertical; }
+.presentation-count-review button { margin: 8px 8px 0 0; }
+.presentation-count-review :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.theme-dark .presentation-count-review select,.theme-dark .presentation-count-review textarea { border-color: #a58f81; background: #382c28; color: #f1e7df; }
 @media(max-width:650px) { .presentation-counts { padding: 12px; } .presentation-count-session { padding: 8px; } }

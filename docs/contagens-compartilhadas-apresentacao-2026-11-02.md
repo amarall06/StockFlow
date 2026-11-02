@@ -1,3 +1,4 @@
+> **17 — revisão dos exemplos, 02/11/2026:** Administrador pode aprovar ou solicitar recontagem com justificativa, autoria/data, referência congelada e confirmação recuperável. Decisões imutáveis separadas dos envios, sem ajuste de saldo. NORTE solicita recontagem; SUL aprovada na apresentação; OESTE aguardando revisão. Dez testes novos de navegador e novos casos de modelo/banco/REST/concorrência aprovados; nenhum caso concluído repetido. Guia `revisao-contagens-apresentacao-2026-11-02.md`. Banco aplicado; publicação do site em preparação. Operação real, regras de aprovação/ajuste, movimentos durante contagem e piloto continuam pendentes.
 # Anotação 17 — contagens compartilhadas da apresentação — 02/11/2026
 
 ## Entrega e acesso

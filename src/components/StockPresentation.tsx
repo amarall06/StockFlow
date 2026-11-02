@@ -48,7 +48,7 @@ export function StockPresentation({ userId, canEdit, canPick = canEdit }: { user
     <StockAge key={`age:${userId}`} userId={userId} canEdit={canEdit} groups={data.stockAgeGroups} stock={demoStock}/>
     <PostalReturns key={`postal:${userId}`} userId={userId} canOperate={canPick} sources={data.postalReturns}/>
     <PickMissions key={userId} userId={userId} stock={demoStock} canOperate={canPick} orders={data.orders}/>
-    {authenticated&&<PresentationShelfCounts key={`counts:${userId}`} userId={userId} canOperate={canPick} ready={cloud.status==='ready'} data={data}/>}
+    {authenticated&&<PresentationShelfCounts key={`counts:${userId}`} userId={userId} canOperate={canPick} canReview={canEdit} ready={cloud.status==='ready'} data={data}/>}
     {authenticated?<SharedShelfLayout key={`shared:${userId}`} userId={userId} canEdit={canEdit} data={data}/>:<ShelfCapacity userId={userId} locations={demoLocations} stock={demoStock} canEdit={canEdit} demoOnly presentationData={data}/>}
   </section>
 }
