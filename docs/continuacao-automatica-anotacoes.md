@@ -308,4 +308,4 @@ Acesso administrativo disponível novamente. Cenário-base publicado no banco e 
 
 ## 2/18 — planta e capacidades sincronizadas, 02/11/2026
 
-Edição no Supabase por Administrador, leitura a cada 10 s/foco/reconexão, versão congelada e confirmação UUID recuperável. Dez testes novos de navegador e novos ensaios reais de banco/concorrência/REST aprovados; nenhum anterior repetido. Guia: planta-capacidades-supabase-2026-11-02.md. Cópias locais/estoque preservados. Dados físicos reais, operações/conferências integradas e piloto continuam pendentes. Publicação do site em andamento.
+Edição no Supabase por Administrador, leitura a cada 10 s/foco/reconexão, versão congelada e confirmação UUID recuperável. Dez testes novos de navegador e novos ensaios reais de banco/concorrência/REST aprovados; nenhum anterior repetido. Guia: planta-capacidades-supabase-2026-11-02.md. Cópias locais/estoque preservados. Dados físicos reais, operações/conferências integradas e piloto continuam pendentes. Site publicado em `efe0a4b`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.

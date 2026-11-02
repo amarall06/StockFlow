@@ -52,3 +52,7 @@ Estoque operacional preservado: 95 produtos, 113 movimentos e hash de saldos dfa
 Pode riscar sincronização da planta e capacidades do cenário de apresentação das 2/18, com versão, permissões e recuperação de confirmação. Avança a utilização das capacidades compartilhadas da 21. Não encerra as anotações por inteiro.
 
 Faltam posições/códigos/capacidades/restrições físicos reais, vínculo transacional com operações e conferências aprovadas, edição de configurações reais fora da apresentação e piloto em aparelhos/equipe. Missões e demais conferências continuam locais. A emissão instantânea do servidor da 16 permanece pendente.
+
+## Publicação confirmada
+
+Código `efe0a4b0933e7faeec424099b0d539894d6c020d` publicado em https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/5mqKhdb835HQqawVrVSR7vYizHLe . Domínio HTTP 200 e treze recursos públicos iguais ao build aprovado, conferidos por hash. Migração e configuração já aplicadas no Supabase. Nenhum teste funcional repetido na publicação. Pode riscar implementação/testes/publicação da sincronização da planta/capacidades do cenário das 2/18. Restante e limites descritos acima.

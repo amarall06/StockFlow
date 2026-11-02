@@ -36,7 +36,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | Nº | O que falta | Dependência principal |
 | --- | --- | --- |
 | 1 | Sem pendência de implementação no escopo entregue; observar comportamento no piloto. | Piloto geral |
-| 2 | Capacidade física escolhida; gráfico/configuração local e exemplo NORTE/SUL/LESTE/OESTE prontos. Publicado em `7aa9dc5`. Faltam persistência compartilhada e capacidades reais quando for utilizar com dados reais. | Servidor e conferência física futura |
+| 2 | Capacidades do cenário sincronizadas no Supabase com a planta, versão e permissões. Faltam capacidades físicas reais, integração das configurações reais fora da apresentação e piloto. | Dados físicos e integração operacional |
 | 3 | Definir separação física, nomes e uso das prateleiras de testados/não testados; executar organização conferida. | Empresa e espaço físico |
 | 4 | Retomar gestão de funcionários/testadores e validar contas reais e permissões. | Etapa adiada; serviço de contas/equipe |
 | 5 | Escopo manual entregue. Fechamento histórico transacional/envio automático não integra essa entrega. | Eventual nova solicitação |
@@ -52,7 +52,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 15 | Implementação/publicação entregues; execução pela equipe faz parte do piloto geral. | Piloto geral |
 | 16 | Ativar autorização e emissão de eventos privados no servidor; validar reconexão e atualização entre aparelhos reais. | Supabase e aparelhos |
 | 17 | Envio de contagem, histórico compartilhado, aprovação autorizada, tratamento transacional de movimentos durante contagem e decisão de ajuste; piloto físico. | Servidor e regras operacionais |
-| 18 | Cenário-base publicado no Supabase e leitura autenticada no site pronta. Faltam edição compartilhada da planta/capacidades, posições/códigos reais, vínculo com estoque/conferências aprovadas e piloto. | Implementação de edição compartilhada, dados físicos e regras |
+| 18 | Cenário-base e edição compartilhada da planta/capacidades publicados no Supabase e site. Faltam posições/códigos reais, vínculo com estoque/conferências aprovadas e piloto. | Dados físicos, integração e regras |
 | 19 | Protótipo local da missão pronto, publicado em `2b91830`, Vercel success e quatorze recursos públicos conferidos. Faltam pedidos/reservas compartilhados transacionais, QR físico/identidade, histórico/autorização, regras de expedição e piloto. | Regras, QR e servidor |
 | 20 | Divergências aprovadas/histórico compartilhado no mapa e eventual disposição física. Resumo do rascunho local já entregue. | Conferências no servidor e mapa físico |
 | 21 | Protótipo de sugestões no cenário do Painel pronto, publicado em `3faabef`, com recursos públicos conferidos. Faltam capacidade/ocupação/espaço e restrições reais validados, servidor/concorrência/reservas e piloto. | Dados físicos e servidor |
@@ -96,4 +96,4 @@ Acesso administrativo disponível novamente. Cenário-base publicado no banco e 
 
 ## 2/18 — planta e capacidades sincronizadas, 02/11/2026
 
-Edição no Supabase por Administrador, leitura a cada 10 s/foco/reconexão, versão congelada e confirmação UUID recuperável. Dez testes novos de navegador e novos ensaios reais de banco/concorrência/REST aprovados; nenhum anterior repetido. Guia: planta-capacidades-supabase-2026-11-02.md. Cópias locais/estoque preservados. Dados físicos reais, operações/conferências integradas e piloto continuam pendentes. Publicação do site em andamento.
+Edição no Supabase por Administrador, leitura a cada 10 s/foco/reconexão, versão congelada e confirmação UUID recuperável. Dez testes novos de navegador e novos ensaios reais de banco/concorrência/REST aprovados; nenhum anterior repetido. Guia: planta-capacidades-supabase-2026-11-02.md. Cópias locais/estoque preservados. Dados físicos reais, operações/conferências integradas e piloto continuam pendentes. Site publicado em `efe0a4b`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.
