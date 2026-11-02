@@ -4,6 +4,7 @@ import {loadSharedLayout,saveSharedLayout} from '../lib/shared-layout-api'
 import {newestSharedLayout,validateSharedDraft,type SharedLayout,type SharedLayoutDraft} from '../lib/shared-layout'
 import type {PresentationBundle} from '../lib/presentation-bundle'
 import './SharedShelfLayout.css'
+import {INVENTORY_CHANGE_EVENT} from '../lib/resume-refresh'
 
 function RackFields({snapshot,location,onSave,onClose}:{snapshot:SharedLayout;location:string;onSave:(draft:SharedLayoutDraft)=>Promise<void>;onClose:()=>void}){
   const original=snapshot.layout[location as keyof typeof snapshot.layout],capacity=snapshot.capacities[location]
@@ -51,7 +52,7 @@ export function SharedShelfLayout({userId,canEdit,data}:{userId:string;canEdit:b
   const[saving,setSaving]=useState(false),writeBusy=useRef(false)
   const attempt=useRef<{fingerprint:string;id:string}|null>(null)
   useEffect(()=>{
-    active.current=true;let live=true,sequence=0,controller:AbortController|null=null,timeout:number|undefined
+    active.current=true;let live=true,sequence=0,controller:AbortController|null=null,timeout:number|undefined,noticeTimer:number|undefined
     const read=async()=>{
       const request=++sequence;controller?.abort();window.clearTimeout(timeout)
       controller=new AbortController();timeout=window.setTimeout(()=>controller?.abort(),15000)
@@ -61,15 +62,17 @@ export function SharedShelfLayout({userId,canEdit,data}:{userId:string;canEdit:b
     refresh.current=()=>{void read()};void read()
     const interval=window.setInterval(()=>{if(document.visibilityState==='visible'&&navigator.onLine)void read()},10000)
     const resume=()=>{void read()}
+    const notice=()=>{if(document.visibilityState!=='visible'||!navigator.onLine)return;window.clearTimeout(noticeTimer);noticeTimer=window.setTimeout(()=>{void read()},150)}
     window.addEventListener('focus',resume);window.addEventListener('online',resume)
-    return()=>{live=false;active.current=false;controller?.abort();window.clearTimeout(timeout);window.clearInterval(interval);window.removeEventListener('focus',resume);window.removeEventListener('online',resume)}
+    window.addEventListener(INVENTORY_CHANGE_EVENT,notice)
+    return()=>{live=false;active.current=false;controller?.abort();window.clearTimeout(timeout);window.clearTimeout(noticeTimer);window.clearInterval(interval);window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener(INVENTORY_CHANGE_EVENT,notice)}
   },[])
   const shared=mode==='shared'
   const display=shared&&state.snapshot?{...data,floorPlan:state.snapshot.layout,capacities:state.snapshot.capacities}:data
   return <>
     <section className="inventory-panel dashboard-panel shared-shelf-layout" aria-label="Sincronização da planta e capacidades">
       <h2>Planta e capacidades entre aparelhos</h2>
-      <p>A configuração compartilhada é consultada a cada 10 segundos, ao voltar à janela e ao reconectar. Salvar é permitido ao Administrador e exige a versão consultada. Os dados continuam sendo os da apresentação.</p>
+      <p>A configuração compartilhada recebe avisos privados para consultar novas versões, com verificação adicional a cada 10 segundos, ao voltar à janela e ao reconectar. Salvar é permitido ao Administrador e exige a versão consultada. Os dados continuam sendo os da apresentação.</p>
       <label>Configuração exibida<select disabled={canEdit&&Boolean(editing)} value={mode} onChange={event=>setMode(event.target.value)}><option value="shared">Compartilhada no Supabase</option><option value="local">Configurações deste navegador</option></select></label>
       <p>As cópias locais existentes são preservadas e podem ser vistas nessa seleção. Elas não substituem a configuração compartilhada automaticamente.</p>
       <p role="status">{state.snapshot?`Versão compartilhada ${state.snapshot.revision} · Atualizada em ${new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(state.snapshot.updatedAt))} (America/Bahia).`:state.error?'Sem configuração compartilhada disponível; exibindo a referência da apresentação.':'Consultando planta e capacidades compartilhadas…'}</p>

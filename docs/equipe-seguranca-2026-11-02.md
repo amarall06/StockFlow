@@ -33,4 +33,8 @@ Pode riscar o ajuste de entrada operacional da 2; gestão de identificação/fun
 
 3 continua dependente da disposição física. 5 já entregue. 6 depende da regra/destino real. 7 ainda exige revisão das demais funções, armazenamento/recuperação e proteção de senhas vazadas. 8 permanece para a transição final aprovada. Próximas pendências físicas/regras são mantidas como tais, sem considerar exemplos como validação real.
 
-Publicação: em preparação.
+Publicação confirmada: código fd761540b609367c88c4a370cb0f346f5a914aa1, Vercel success em https://vercel.com/amarall06s-projects/liber-automotive/8okCBFCGxcG7BmTBdnpPbiQ48B5w . Domínio HTTP 200 e quinze recursos públicos iguais ao build aprovado. Nenhum teste funcional repetido para publicar.
+
+Auditoria depois das migrações: aviso de funções SECURITY DEFINER expostas caiu de 18 para 17; demais funções ainda precisam de revisão individual. [Referência do aviso](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable). A auditoria privada sem políticas/permissões de cliente é intencionalmente fechada. Proteção de senhas vazadas permanece pendente: [configuração do serviço](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
+Conferência final: duas contas originais, Administrador e Consulta ativos, versão 1; nenhum registro permanente de teste em team_access_requests; 95 produtos, 113 movimentos e hash de saldos dfa96a2fa33dcc97c385e1cd5094fd58 preservados.
