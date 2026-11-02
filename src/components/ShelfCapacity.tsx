@@ -23,14 +23,14 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
     </form>
   </dialog>
 }
-export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false, presentationData }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean; presentationData?:PresentationBundle }) {
+export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false, presentationData, sharedView=false }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean; presentationData?:PresentationBundle; sharedView?:boolean }) {
   const scenarioStock=presentationData?.stock??demoStock,scenarioLocations=presentationData?.locations??demoLocations,scenarioCapacities=presentationData?.capacities??demoCapacities
   const [mode, setMode] = useState<CapacityMode>('demo')
   const raw = useSyncExternalStore(subscribeCapacities, () => readCapacityRaw(userId, mode), () => null)
   const [editing, setEditing] = useState<{ location: string; raw: string | null; entries: Capacities } | null>(null)
   const [message, setMessage] = useState('')
   let entries: Capacities = {}, error = ''
-  try { entries = mode === 'demo' && raw === null ? scenarioCapacities : parseCapacities(raw, userId) }
+  try { entries = sharedView?scenarioCapacities:mode === 'demo' && raw === null ? scenarioCapacities : parseCapacities(raw, userId) }
   catch (caught) { error = caught instanceof Error ? caught.message : 'Não foi possível ler a capacidade.' }
   const rows = error ? [] : capacityRows(mode === 'demo' ? scenarioLocations : locations, mode === 'demo' ? scenarioStock : stock, entries)
   return <section className="inventory-panel dashboard-panel shelf-capacity" aria-label="Ocupação por capacidade física">
@@ -38,9 +38,9 @@ export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = fa
     {!demoOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Apresentação — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
     {mode === 'demo' ? <p className="capacity-demo">Prateleiras Norte, Sul, Leste e Oeste.</p> : <p>Usa o saldo normal consultado de amortecedores e molas juntos, independentemente do filtro de categoria. Capacidades reais começam sem preenchimento; exemplos não são copiados para esta consulta.</p>}
     <p>A barra compara caixas registradas com a capacidade informada, usando caixas de tamanho equivalente. Garantia sem localização física não entra neste cálculo. Zero caixas não comprova espaço físico livre.</p>
-    <p>Configuração salva somente nesta conta e navegador; compartilhamento entre aparelhos ainda depende do servidor.</p>
+    <p>{sharedView?'Exibindo planta e capacidades da configuração compartilhada.':'Configuração salva somente nesta conta e navegador; esta cópia local é independente da configuração compartilhada.'}</p>
     {error && <p role="alert">{error}</p>}{message && <p role="status">{message}</p>}
-    {mode === 'demo' && !error && <FictionalShelfMap key={userId} userId={userId} canEdit={canEdit} stock={scenarioStock} capacities={entries} baseLayout={presentationData?.floorPlan}/>}
+    {mode === 'demo' && !error && <FictionalShelfMap key={`${userId}:${sharedView}`} userId={userId} canEdit={canEdit} stock={scenarioStock} capacities={entries} baseLayout={presentationData?.floorPlan} sharedView={sharedView}/>}
     <div className="capacity-grid">{rows.map(row => <article className="capacity-card" aria-label={`${mode === 'demo' ? 'Prateleira' : 'Consultada'} ${row.location}`} key={row.location}>
       <h3>{row.location}</h3><p>{row.boxes} caixas {mode === 'demo' ? '' : 'consultadas'}</p>
       {row.capacity ? <>

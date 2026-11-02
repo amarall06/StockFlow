@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 import {prepareKeyboardPage} from './helpers/keyboard'
-async function prepare(page){const writes=await prepareKeyboardPage(page);const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true});if(await close.isVisible())await close.click();await page.getByLabel('Visualização do Painel').selectOption('presentation');return writes}
+async function prepare(page){const writes=await prepareKeyboardPage(page);const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true});if(await close.isVisible())await close.click();await page.getByLabel('Visualização do Painel').selectOption('presentation');await page.getByRole('region',{name:'Sincronização da planta e capacidades',exact:true}).getByLabel('Configuração exibida').selectOption('local');return writes}
 const suggestions=page=>page.getByRole('region',{name:'Sugestões de espaço',exact:true})
 const map=page=>page.getByRole('region',{name:'Mapa de prateleiras',exact:true})
 test('apresentação está no site original com textos normais e sem link para outra página',async({page})=>{
@@ -55,6 +55,7 @@ test('posição e dimensões são aplicadas e recuperadas ao reabrir; sobreposi�
   await map(page).getByRole('button',{name:'Salvar planta local'}).click()
   await expect(map(page).getByRole('status').filter({hasText:'Planta salva'})).toBeVisible()
   await page.reload();await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  await page.getByRole('region',{name:'Sincronização da planta e capacidades',exact:true}).getByLabel('Configuração exibida').selectOption('local')
   await map(page).getByRole('button',{name:/^Prateleira NORTE —/}).click()
   await expect(page.getByLabel('Coluna X de NORTE',{exact:true})).toHaveValue('20')
   await expect(page.getByLabel('Linha Y de NORTE',{exact:true})).toHaveValue('2')

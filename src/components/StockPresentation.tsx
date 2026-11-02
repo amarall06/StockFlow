@@ -8,6 +8,7 @@ import { TestingDelay } from './TestingDelay'
 import { RecurringDivergences } from './RecurringDivergences'
 import { StockAge } from './StockAge'
 import { PostalReturns } from './PostalReturns'
+import { SharedShelfLayout } from './SharedShelfLayout'
 export function StockPresentation({ userId, canEdit, canPick = canEdit }: { userId: string; canEdit: boolean; canPick?: boolean }) {
   const[storedCloud,setCloud]=useState<{data:PresentationBundle;status:'local'|'loading'|'ready'|'error';publishedAt?:string;key:string}>({data:presentationBundle,status:'local',key:''})
   const[reload,setReload]=useState(0)
@@ -29,7 +30,7 @@ export function StockPresentation({ userId, canEdit, canPick = canEdit }: { user
       <h2>Cenário da apresentação</h2>
       <p role="status">{cloud.status==='ready'?'Dados-base carregados do Supabase — versão 1.':cloud.status==='loading'?'Consultando cenário compartilhado; exibindo cópia local.':cloud.status==='error'?'Não foi possível carregar o cenário compartilhado. Exibindo cópia local da versão 1.':'Exibindo cópia local da versão 1.'}</p>
       {cloud.publishedAt&&<p>Publicado em {new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(cloud.publishedAt))} (America/Bahia).</p>}
-      <p>Prateleiras, saldos, planta e exemplos de referência compartilham a mesma versão. Edições de capacidade/planta, missões e conferências continuam neste navegador; não são enviadas automaticamente. Os exemplos não alteram o estoque operacional.</p>
+      <p>Prateleiras, saldos e exemplos de referência compartilham a mesma versão. A planta e as capacidades têm configuração compartilhada própria abaixo. Missões e conferências continuam neste navegador. Os exemplos não alteram o estoque operacional.</p>
       {authenticated&&<button className="theme-toggle" type="button" disabled={cloud.status==='loading'} onClick={()=>setReload(value=>value+1)}>Recarregar cenário compartilhado</button>}
     </section>
     <section className="presentation-metrics" aria-label="Indicadores do estoque">
@@ -46,6 +47,6 @@ export function StockPresentation({ userId, canEdit, canPick = canEdit }: { user
     <StockAge key={`age:${userId}`} userId={userId} canEdit={canEdit} groups={data.stockAgeGroups} stock={demoStock}/>
     <PostalReturns key={`postal:${userId}`} userId={userId} canOperate={canPick} sources={data.postalReturns}/>
     <PickMissions key={userId} userId={userId} stock={demoStock} canOperate={canPick} orders={data.orders}/>
-    <ShelfCapacity userId={userId} locations={demoLocations} stock={demoStock} canEdit={canEdit} demoOnly presentationData={data}/>
+    {authenticated?<SharedShelfLayout key={`shared:${userId}`} userId={userId} canEdit={canEdit} data={data}/>:<ShelfCapacity userId={userId} locations={demoLocations} stock={demoStock} canEdit={canEdit} demoOnly presentationData={data}/>}
   </section>
 }

@@ -50,6 +50,7 @@ test('carregamento e reconsulta não apagam capacidade e planta locais',async({p
   await prepare(page);await expect(panel(page)).toContainText('Dados-base carregados do Supabase')
   await panel(page).getByRole('button',{name:'Recarregar cenário compartilhado'}).click()
   await expect(panel(page)).toContainText('Dados-base carregados do Supabase')
+  await page.getByRole('region',{name:'Sincronização da planta e capacidades',exact:true}).getByLabel('Configuração exibida').selectOption('local')
   await expect(page.getByRole('article',{name:'Prateleira NORTE',exact:true})).toContainText('Capacidade: 55 caixas')
   const saved=await page.evaluate(userId=>({capacity:JSON.parse(localStorage.getItem(`liber:shelf-capacity:v1:demo:${userId}`)!),plan:JSON.parse(localStorage.getItem(`liber:floor-plan:v1:${userId}`)!)}),userId)
   expect(saved).toEqual({capacity,plan})
