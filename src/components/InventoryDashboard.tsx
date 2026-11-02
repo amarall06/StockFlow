@@ -8,6 +8,7 @@ import { InventoryActivity } from './InventoryActivity'
 import { DashboardWarranty } from './DashboardWarranty'
 import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
+import { ShelfCountDivergences } from './ShelfCount'
 import './InventoryDashboard.css'
 
 function MetricIcon({kind}:{kind:string}) {
@@ -34,8 +35,8 @@ export function DashboardActivity({report,onHistory=()=>{}}:{report:DashboardRep
   </div>
 }
 
-export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false}:{
-  activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
+export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId}:{
+  countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
@@ -117,6 +118,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <StockReportExport/>
       <InventoryInsights catalog={catalog} stock={stock} category={category}/>
+      {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
       {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
       {loading?<p className="dashboard-message" role="status">Carregando vendas e recebimentos…</p>:result.error?<p className="dashboard-error auth-error" role="alert">{result.error}</p>:result.report&&<><p className="dashboard-message">Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.</p><DashboardActivity report={result.report} onHistory={()=>onOpen('history')}/></>}
       </div>

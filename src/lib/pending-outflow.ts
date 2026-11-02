@@ -34,10 +34,12 @@ export function savePendingOutflow(pending:PendingOutflow) {
     const target=storage(pending.userId), value=JSON.stringify(pending)
     target.setItem(key(pending.userId),value)
     if(target.getItem(key(pending.userId))!==value) throw new Error('Gravação não confirmada.')
+    window.dispatchEvent(new Event('liber:pending-outflow'))
   } catch {throw new Error('Não foi possível guardar o pedido nesta aba. Nenhuma nova saída foi enviada. Habilite o armazenamento do navegador e tente novamente.')}
 }
 export function clearPendingOutflow(userId:string) {
   const target=storage(userId)
   target.removeItem(key(userId))
   if(target.getItem(key(userId))!==null) throw new Error('Não foi possível encerrar o pedido salvo nesta aba.')
+  window.dispatchEvent(new Event('liber:pending-outflow'))
 }

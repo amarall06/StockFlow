@@ -43,6 +43,7 @@ test('resposta de período anterior não substitui o atual e filtro de molas res
   let started = false, released = false
   await page.route('https://stockflow-test.supabase.co/rest/v1/stock_movements*', async route => {
     const url = new URL(route.request().url())
+    if (url.searchParams.has('product.code')) return route.fulfill({ json: [] })
     if (Number(url.searchParams.get('offset')) > 0) return route.fulfill({ json: [] })
     const days = Math.round((Date.parse(url.searchParams.get('created_at')!.slice(4)) - Date.now()) / -86400000)
     const old = days === 30

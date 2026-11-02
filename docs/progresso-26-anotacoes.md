@@ -1,37 +1,49 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração igual à lista original de `anotacoes-2026-10-31.md`. “Parcial” não deve ser riscado como pedido inteiro concluído. Mudanças das anotações 15 e 16 publicadas no código e8fb14a, Vercel success e seis módulos públicos conferidos por hash. Relatório `publicacao-anotacoes-15-16.md`.
+Atualizado em 01/11/2026. Numeração original preservada. Código `221171e` publicado; relatório `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
-| 1 | Pop-up de estoque baixo | Não iniciado; faltam regras de destinatários e repetição. |
+| 1 | Pop-up de estoque baixo | **Implementação local concluída: pode riscar esse escopo.** Aviso comum às telas, amortecedores/molas, acesso autorizado, memória por conta/sessão, sem repetição por consulta e sem roubar foco. Publicado em `221171e`. |
 | 2 | Gráfico com referência de cheio | Não iniciado; capacidade/meta a definir. |
-| 3 | Separação de testados/não testados | Parcial existente: situações separadas; organização física não definida. |
+| 3 | Separação de testados/não testados | **Separação visual por situação nos resumos de prateleiras concluída localmente: pode riscar esse escopo.** Amortecedores aguardando/liberados e molas em estoque, em caixas. Organização física ainda não definida. |
 | 4 | Identificação de testadores | Parcial existente: pessoa/data e função Testador; gestão e contas reais adiadas. |
-| 5 | Relatórios PDF e Excel | Não iniciado; CSV não equivale a PDF/XLSX. |
+| 5 | Relatórios PDF e Excel | **Exportação manual local concluída: pode riscar esse escopo.** PDF/XLSX reais no Painel, semana/mês/ano, saldo atual normal + movimentações do período em caixas. Não inclui fechamento histórico transacional, envio ou agendamento. Publicado em `221171e`. |
 | 6 | Retorno dos Correios | Regra a definir com a empresa. |
-| 7 | Segurança do site | Parcial/contínuo; controles existentes e revisão local não encerram toda a segurança. |
+| 7 | Segurança do site | Parcial/contínuo. Novos cabeçalhos locais e dependências de exportação sem vulnerabilidades conhecidas na instalação; controles existentes não encerram auditoria de banco/armazenamento/recuperação. |
 | 8 | Zerar estoque fictício | Adiado para transição final aprovada. |
 | 9 | Etiquetas de testados | Adiado. |
-| 10 | Aplicativo Windows/Android | Não iniciado. |
-| 11 | Ampliar dashboard | Parcial existente: painel e atividade já disponíveis; ampliação solicitada não concluída. |
+| 10 | Aplicativo Windows/Android | **Preparação local PWA concluída:** manifesto, ícones, janela própria e convite de instalação. Publicado; falta validar instalação real Windows/Android. Offline é item separado. |
+| 11 | Ampliar dashboard | **Implementação local dos indicadores em caixas concluída: pode riscar esse escopo.** Disponível para venda, aguardando teste e garantia separados, preservados totais/atividade/alertas. Não converte caixas em peças sem quantidade validada por caixa. Publicado em `221171e`. |
 | 12 | Cancelamento de pedidos | Não iniciado; reservas e retorno físico a definir. |
-| 13 | Alertas automáticos de pendências | Não iniciado. |
-| 14 | Offline | Não iniciado; escopo de consulta e escrita a definir antes de implementar. |
+| 13 | Alertas automáticos de pendências | Parcial local: avisos automáticos de inconsistências da consulta, usando o fluxo existente. Aviso global de rascunhos offline por conta e acesso à conferência implementados, com um teste novo aprovado. **Aviso de contagem local e de confirmação de saída pendente concluídos localmente; pode riscar esses escopos.** Faltam demais regras de pendências operacionais/prazos/resolução. |
+| 14 | Offline | **Subpartes locais concluídas, pode riscar esses escopos:** consulta após reabrir (15 minutos por conta); vendas, descarte/devolução ao fornecedor; entradas com fornecedor/lote; transferências; caixas de Garantia; recebimento/edição/andamento/encerramento de devoluções consultadas. Envios individuais e recuperação com UUID, sem aplicação de saldo offline. Último lote: seis testes novos aprovados. **Aprovação de testagem offline: preparo/envio/recuperação concluídos localmente, com oito testes novos aprovados; pode riscar esse escopo.** Aviso da 13 incluído. **Cadastros novos offline: produto com entrada inicial, fornecedor e fabricante implementados localmente, com oito testes novos aprovados; pode riscar esse escopo.** Produto recupera UUID; fornecedor/fabricante recuperam por consulta e vínculo explícito, mantendo para revisão ambiguidades não resolvidas, sem recriação automática. 13 avançou com conferência global. **Publicação/worker e reabertura pública HTTPS concluídos; composição nova no banco real validada com ROLLBACK, sem dados permanentes. Ainda faltam:** piloto autenticado e instalação/atualização em aparelhos reais; fotos exigem conexão. Detalhes e limites em `continuacao-automatica-anotacoes.md`. Não riscar a 14 inteira. |
 | 15 | Prevenção e confirmação de operações | **Implementação concluída e publicada: pode riscar esse escopo.** Confirmação das operações de caixas e trava imediata de envio completadas; 16 casos novos aprovados nas etapas anteriores, preservados saldo/UUID/recuperação existentes. Piloto mantém sua pendência geral. Guia `fechamento-anotacao-15.md`. |
-| 16 | Sincronização entre aparelhos | **Atualização periódica implementada e publicada nas telas previstas:** estoque, Giro/ABC, Painel, Garantia e Histórico. Pode riscar essas subpartes e sua publicação. A anotação inteira permanece **parcial**: faltam definir/atender a necessidade de atualização instantânea e o ensaio real entre aparelhos. |
-| 17 | Conferência de prateleiras | Não iniciado. |
+| 16 | Sincronização entre aparelhos | **Atualização periódica publicada nas telas previstas. Receptor privado instantâneo publicado e testado em simulação.** Faltam política/gatilhos no servidor, ativação e ensaio entre aparelhos reais. Não riscar 16 inteira. |
+| 17 | Conferência de prateleiras | **Rascunho local concluído: pode riscar contagem/recuperação, comparação e CSV para revisão.** Branco diferente de zero, referência preservada, alerta se saldo consultado mudar, sem ajuste. Faltam publicação, envio, aprovação, histórico compartilhado e piloto físico. |
 | 18 | Mapa interativo | Não iniciado; depende de mapa físico. |
 | 19 | Modo missão e separação de pedidos | Não iniciado; depende de pedidos, reservas e QR. |
-| 20 | Mapa de calor | Não iniciado. |
+| 20 | Mapa de calor | Parcial local: tabela por prateleira com frequência/volume, intensidade relativa e períodos 30/90/180/365 dias. **Resumo de divergências do rascunho local concluído: pode riscar esse escopo**, separado de movimentações, filtrável por categoria, sem tratar rascunho como aprovado. Faltam publicação, conferências aprovadas compartilhadas e eventual mapa físico. |
 | 21 | Sugestão de espaços livres | Não iniciado; depende de capacidade física validada. |
-| 22 | Detector por regras | Não iniciado; limites e prazos a definir. |
-| 23 | Produtos sem movimentação | Não iniciado no escopo novo; ABC sem vendas não substitui última movimentação/idade física. |
+| 22 | Detector por regras | Parcial local: detecta saldo inválido, falta de cadastro legível e situação incompatível; rejeita consulta inconsistente, sem corrigir dados. **Aviso global de saída com confirmação/atualização pendente concluído localmente.** Não comprova retirada física incompleta. Faltam prazos em teste, regras de retirada física e divergência recorrente. |
+| 23 | Produtos sem movimentação | Parcial local: códigos com saldo sem qualquer operação no intervalo, última movimentação dentro da janela e prateleiras atuais. **Última conhecida fora da janela implementada localmente e aprovada em testes novos; pode riscar essa subparte local.** Faltam publicação dessa subparte e idade física/rastreabilidade. Guia `anotacao-23-ultima-movimentacao.md`. Não equivale a apenas ausência de vendas. |
 | 24 | Preparar roteiro do piloto | **Concluído: pode riscar a preparação do roteiro.** Documento `roteiro-piloto.md` entregue. Execução com equipe permanece pendente. |
-| 25 | Ampliar testes automáticos | Parcial: adicionados casos de vazio, sessões, CSV/filtros, falha de rede, teclado e retomada. Não encerra os ensaios reais/áreas ainda não cobertas. |
-| 26 | Formulários, mensagens, contraste, teclado e telas pequenas | Parcial: revisões locais concluídas nos fluxos registrados; Safari/iPhone físico e revisão completa continuam pendentes. |
+| 25 | Ampliar testes automáticos | **Mais 13 casos novos de navegador e cenários isolados aprovados nesta etapa, sem repetir anteriores.** Parcial: mais 70 verificações novas nesta continuação (22 navegador + 48 isoladas), incluindo o receptor Realtime iniciado antes do pedido de sequência automática. Casos antigos não repetidos. Ensaios reais e demais áreas seguem pendentes. |
+| 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
 
-## Última etapa
+## Continuação sem servidor — estado mais recente
+
+Implementadas localmente subpartes de 3, 13, 17, 20 e 22; 13 testes novos de navegador e cenários isolados aprovados. Build/análise aprovados; sem repetir suítes anteriores. Alterações ainda não publicadas, assim como a última conhecida da 23. Guia de código, escopo e pendências: `anotacoes-sem-servidor-2026-11-01.md`. Não riscar itens inteiros que dependem de regras, servidor, mapa ou ensaio físico.
+
+## Estado após a publicação
+
+Itens 1, 5 e 11 publicados no escopo implementado. 10 publicado como preparação PWA. 14 publicada e validada nos escopos do relatório; não riscar piloto/aparelhos reais. 16 aguarda servidor; acesso ao conector indisponível na retomada. 7 permanece parcial: proteção de senhas vazadas e revisão individual de RPCs/armazenamento/recuperação pendentes.
+
+## Última etapa histórica
+
+Continuação automática: itens 1, 5 e 11 concluídos no escopo local indicado; 10 preparado para instalação; 7, 13, 20, 22 e 23 avançaram; receptor da 16 preparado. 70 verificações novas aprovadas, build aprovado, análise com apenas aviso preexistente. Nenhuma escrita no banco e nenhuma publicação desta rodada. Detalhes, código e dependências dos 26 em `continuacao-automatica-anotacoes.md`.
+
+### Publicação anterior
 
 Publicação das anotações 15 e 16 concluída: código e8fb14a na main, Vercel success, domínio HTTP 200 e seis módulos servidos iguais ao build aprovado. Os 51 casos novos (45 navegador + 6 isolados) aprovados nas etapas anteriores não foram repetidos nesta publicação. Nenhuma escrita no banco. Guia `publicacao-anotacoes-15-16.md`. Próximo passo da 16: requisito instantâneo e validação entre aparelhos reais.
 
@@ -51,6 +63,6 @@ Anotação 16, atualização periódica: `src/lib/resume-refresh.ts` e integraç
 
 ## Próximos passos
 
-Na 16, atualização periódica das telas previstas publicada. Próximas etapas: definir/atender o requisito de recebimento instantâneo de eventos e preparar/executar ensaio real entre aparelhos. Não repetir os casos locais aprovados de estoque, Giro/ABC, Painel, Garantia ou Histórico. Depois, mecanismo comum de avisos (1, 13, 22), conforme sequência original e definições necessárias. Não iniciar múltiplas funcionalidades na mesma rodada.
+Continuar automaticamente entre itens autorizados, sem repetir testes concluídos. Ativar o servidor privado da 16 quando houver acesso administrativo; definir as regras/dados pendentes de retorno, pedidos, prazos, capacidade e mapa físico. Offline já implementado/publicado nos escopos descritos; continuar somente suas validações reais pendentes. A tabela de dependências de todos os itens está no guia mais recente; não tratar preparação ou simulação como implantação real.
 
 Foto real, Safari físico e execução do piloto continuam dependências externas. Usuários, etiquetas e restauração preservam o adiamento. **A melhoria geral do design fica para depois das 26 anotações**, conforme pedido do usuário; correções necessárias ao uso das funcionalidades podem acompanhar suas etapas.

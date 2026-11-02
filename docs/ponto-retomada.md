@@ -1,3 +1,40 @@
+> **Continuação sem servidor — 01/11/2026:** subpartes locais de 17 (contagem/CSV), 13 (avisos), 20 (divergências locais), 22 (confirmação de saída pendente) e 3 (separação visual nas prateleiras) implementadas. Treze testes novos de navegador e cenários isolados aprovados; anteriores não repetidos. Ainda não publicado. Código e limites: `anotacoes-sem-servidor-2026-11-01.md`; consultar a tabela atual em `progresso-26-anotacoes.md`.
+
+> **Retomada — 23:** última movimentação conhecida fora da janela implementada localmente, testes novos aprovados e build/análise aprovados. Não publicada. Guia `anotacao-23-ultima-movimentacao.md`. Ativação do servidor da 16 não realizada: conector Supabase indisponível nesta sessão.
+
+> **Estado atual — 01/11/2026:** código `221171e` publicado. Validação transacional offline no banco real revertida integralmente; atualização do worker e reabertura no HTTPS público aprovadas em testes novos. Pode riscar esses escopos da 14; piloto autenticado/aparelhos reais e fotos continuam pendentes. Servidor instantâneo da 16 ainda não ativado. Relatório: `publicacao-anotacao-14.md`. Os registros abaixo descrevem etapas históricas e não substituem este estado.
+
+> **14 — cadastros novos offline:** produto com entrada inicial recupera UUID; fornecedor/fabricante usam consulta e vínculo explícito, sem recriar pedido incerto não encontrado. Oito testes novos aprovados; 13 avançou com conferência global. Build/análise aprovados, sem repetir casos anteriores; não publicado e sem banco real. Restam validação/implantação e limites detalhados no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — aprovação de testagem offline concluída localmente:** amortecedores aguardando teste, UUID original, envio individual e recuperação sem duplicação. Oito testes novos aprovados; 13 avançou com aviso global e acesso Testador/Administrador. Nenhuma suíte anterior repetida, sem banco real e não publicado. Restam cadastros novos e validação/publicação do conjunto. Detalhes no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — lote acelerado:** fornecedor/lote nas entradas offline e descarte/devolução ao fornecedor com motivo implementados localmente; seis testes novos aprovados, sem repetir anteriores. Build/análise aprovados; não publicado, sem banco real. Próxima pendência concreta: aprovação de testagem offline; demais limites na tabela dos 26 e no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — edição/andamento/encerramento offline de devoluções consultadas:** versão original e identidade preservadas, envio/recuperação implementados localmente; 16 casos novos aprovados, sem repetir anteriores. 13 avançou com aviso de confirmadas que aguardam só leitura. Build/análise aprovados. Não publicado e sem escrita no banco real. Consultar o final de `continuacao-automatica-anotacoes.md` para código/escopo e o progresso dos 26.
+
+> **14 — devolução de cliente offline (recebimento inicial):** preparo como recebida/em conferência, envio UUID de registro/requisição e recuperação implementados localmente. Oito casos novos incluem conflito, resposta perdida, falha após confirmação e aviso global da 13. Não inclui editar/encerrar registros existentes offline. Build aprovado, sem banco real e não publicado. Guia no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — Garantia offline (caixas por fabricante):** preparo de entrada/saída, envio individual UUID e recuperação implementados localmente, oito testes novos aprovados. Na sequência 13 avançou com aviso global. Não inclui processo de devolução de cliente/fabricante novo. Build aprovado; não publicado e sem banco real. Detalhes no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — transferências offline:** preparo com origem/destino da consulta, envio individual UUID e recuperação de confirmação implementados localmente. Oito testes novos de navegador incluem Estoquista, recusa, perda de resposta, leitura após confirmação e aviso global (13). Nenhum teste anterior repetido; não publicado e sem banco real. 14 inteira continua parcial por garantia/demais escopos. Guia no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — entradas offline concluídas no escopo local:** produtos/locais da consulta, sem fornecedor/lote/produto novo; preparo, envio individual e fases persistidas para recuperar confirmação sem duplicar. Cinco testes novos do fluxo aprovados. Em seguida 13 avançou com aviso de entradas pendentes e um teste novo aprovado. Build aprovado; não publicado, sem banco real. Faltam transferências/garantia e demais escopos da 14. Detalhes no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — envio dos rascunhos de venda concluído localmente:** confirmação individual, UUID original, conflito preserva rascunho, resposta perdida recupera pedido, confirmação com falha de leitura não reenvia. Cinco testes novos aprovados. Em seguida 13 avançou com aviso global de pendências locais e mais um teste novo aprovado. Nenhum caso anterior repetido, nenhuma escrita em banco real; não publicado. Demais tipos de operação offline continuam pendentes. Guia no final de `continuacao-automatica-anotacoes.md`.
+
+> **14 — rascunhos de saídas offline:** preparação local persistente por conta, sem reserva/desconto/envio, com UUID e proteção de repetição. Dois casos novos de navegador aprovados sem rede. Pendências apresentadas em Saídas (avanço da 13), ainda sem aplicação/reconciliação no servidor. Não riscar operações offline completas. Alterações não publicadas.
+
+> **14 — reabertura offline implementada localmente:** consulta dedicada, cópia de saldos por conta válida por 15 minutos e filtro; limpeza ao sair/trocar conta. Três testes novos de navegador e seis isolados aprovados, sem repetir anteriores. Em seguida avançou proteção do cache (7). Não publicado; sem escritas offline. Detalhes/limites no final de `continuacao-automatica-anotacoes.md`.
+
+> **Continuação da 14:** aviso offline e horário da consulta conservada implementados localmente; atualização automática pausa/descarte/retomada com cinco casos isolados novos aprovados. Sem cache persistente ou fila de escritas; 14 permanece parcial. Não repetir os 70 casos anteriores. Consulte o final de `continuacao-automatica-anotacoes.md`.
+
+> **Continuação automática, 01/11/2026:** o usuário autorizou seguir entre anotações sem parar após cada etapa. Esta orientação substitui as restrições antigas de uma etapa por rodada.
+> Itens 1 (pop-up), 5 (PDF/XLSX manual, saldo atual + movimentos por semana/mês/ano) e 11 (indicadores em caixas) concluídos localmente no escopo documentado.
+> Item 10 preparado para instalação; 7/13/20/22/23 avançaram com cabeçalhos e regras iniciais de consistência. Receptor privado da 16 preparado localmente; servidor ainda não ativado.
+> 70 verificações novas aprovadas (22 navegador + 48 isoladas), sem repetir a suíte anterior; build aprovado, apenas aviso React preexistente.
+> **Não publicado; nenhuma escrita no banco real.** Não riscar 16, segurança ou regras operacionais inteiras. Dependências de todos os 26 revisadas em `continuacao-automatica-anotacoes.md`.
+> Acompanhar `progresso-26-anotacoes.md`. Capacidade, mapa, retorno/cancelamento, prazos, backend e ensaios físicos continuam pendentes. Estoque fictício não foi apagado. Design geral continua para depois da lista.
+>
 > **Publicação 15/16 confirmada em 01/11/2026:** código
 > `e8fb14a6f21b83075f49d108107841dc799f846e` na main, Vercel success:
 > https://vercel.com/amarall06s-projects/liber-automotive/8DU95egck97vFX8PDq5Mj7tF1fnd

@@ -9,6 +9,9 @@ import { StockAlerts } from './components/StockAlerts'
 import { StockNotice } from './components/StockNotice'
 import { InstallApp } from './components/InstallApp'
 import { ConnectionStatus } from './components/ConnectionStatus'
+import { ShelfCount, ShelfCountNotice } from './components/ShelfCount'
+import { PendingOutflowNotice } from './components/PendingOutflowNotice'
+import { LocationStockSummary } from './components/LocationStockSummary'
 import { OfflineReceipts } from './components/OfflineReceipts'
 import { OfflineTransfers } from './components/OfflineTransfers'
 import { OfflineTests } from './components/OfflineTests'
@@ -643,6 +646,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
           </div>
 
           {springUpdatePending && <p className="transfer-message" role="status">As situações antigas de molas precisam ser atualizadas no banco para “Em estoque”. Entradas e transferências de molas ficam aguardando essa atualização.</p>}
+          {dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') && <ShelfCount key={`count:${userId}`} userId={userId} stock={stock} catalog={catalog} locations={locations} consultedAt={consultedAt} onRefresh={refreshDatabaseSnapshot}/>}
           <section className="scan-panel" aria-labelledby="scan-title">
             <div className="scan-heading">
               <div><h2 id="scan-title">Consultar {productNameSingular} pela leitura do código</h2><p>O campo fica pronto para um leitor USB: ele envia o código e Enter. Também é possível digitar.</p></div>
@@ -685,12 +689,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               <div><h2 id="locations-title">Localizações e transferências</h2><p>Cadastre prateleiras e mova caixas de {productName} mantendo a situação atual.</p></div>
               <div className="location-header-actions"><span className="location-total">{locations.length} prateleiras</span>{dataMode === 'demo' && <button className="reset-demo-button" type="button" onClick={restoreDemoData}>Restaurar dados fictícios</button>}</div>
             </div>
-            <div className="location-list" aria-label="Prateleiras cadastradas">
-              {locations.map((location) => {
-                const boxesAtLocation = activeStock.filter((row) => row.location === location).reduce((sum, row) => sum + row.boxes, 0)
-                return <span className="location-chip" key={location}><strong>{location}</strong><small>{boxesAtLocation} cx. / {boxesAtLocation * 2} peças</small></span>
-              })}
-            </div>
+            <LocationStockSummary locations={locations} stock={activeStock} springs={isSpringPage}/>
             <div className="location-tools">
               <form className="location-create-form" onSubmit={handleAddLocation}>
                 <h3>Cadastrar prateleira</h3>
@@ -813,7 +812,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard countUserId={dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') ? userId : undefined} activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {
@@ -824,6 +823,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             apiVersion={inventoryApiVersion} onUpdated={onProfileUpdated} /> : <WarrantyManufacturers userId={userId}
               apiVersion={inventoryApiVersion} isAdministrator={isAdministrator} />}
           </Suspense></ModuleBoundary>
+          {dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') && <ShelfCountNotice key={`count-notice:${userId}`} userId={userId} onOpen={() => changePage('inventory')}/>}
+          {dataMode === 'database' && isAdministrator && <PendingOutflowNotice key={`outflow-notice:${userId}`} userId={userId} onOpen={() => changePage('outflow')}/>}
         </div>
       </section>
       {dataMode === 'database' && <StockNotice key={userId} userId={userId} catalog={catalog} stock={stock} onOpen={() => changePage('alerts')} />}

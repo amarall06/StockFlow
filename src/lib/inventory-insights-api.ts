@@ -1,7 +1,8 @@
 import { supabase } from './supabase'
 import { readAllRows } from './read-all-rows'
 import { inventoryInsights, type InsightMovement } from './inventory-insights'
-export async function loadInventoryInsights(days: number) {
+import { lastProductMovements } from './last-product-movement'
+export async function loadInventoryInsights(days: number, stockCodes: string[] = []) {
   if (![30, 90, 180, 365].includes(days)) throw new Error('Período inválido.')
   const client = supabase
   if (!client) throw new Error('Banco não configurado.')
@@ -13,5 +14,15 @@ export async function loadInventoryInsights(days: number) {
   if (result.error) throw new Error('Não foi possível consultar a atividade por produto e prateleira.')
   // Valida antes da publicação, para falha de dados seguir a mesma recuperação da rede.
   inventoryInsights({}, [], result.data)
-  return { movements: result.data, asOf: asOf.toISOString(), start: start.toISOString() }
+  const moved = new Set(result.data.map(row => row.product?.code))
+  const previous = await lastProductMovements(stockCodes.filter(code => !moved.has(code)), start.toISOString(), async code => {
+    const { data, error } = await client.from('stock_movements')
+      .select('created_at, product:products!inner(code)')
+      .eq('unit_type', 'box').eq('product.code', code).lt('created_at', start.toISOString())
+      .order('created_at', { ascending: false }).order('id', { ascending: false }).limit(1)
+    if (error || !Array.isArray(data)) throw new Error('Não foi possível consultar a última movimentação.')
+    const row = data[0] as unknown as { created_at: string; product: { code: string } } | undefined
+    return row ? { code: row.product?.code, created_at: row.created_at } : null
+  })
+  return { movements: result.data, previous, asOf: asOf.toISOString(), start: start.toISOString() }
 }

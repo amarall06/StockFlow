@@ -1,3 +1,9 @@
+> **Continuação sem servidor — 01/11/2026:** subpartes locais de 17 (contagem/CSV), 13 (avisos), 20 (divergências locais), 22 (confirmação de saída pendente) e 3 (separação visual nas prateleiras) implementadas. Treze testes novos de navegador e cenários isolados aprovados; anteriores não repetidos. Ainda não publicado. Código e limites: `anotacoes-sem-servidor-2026-11-01.md`; consultar a tabela atual em `progresso-26-anotacoes.md`.
+
+> **Retomada — 23:** última movimentação conhecida fora da janela implementada localmente, testes novos aprovados e build/análise aprovados. Não publicada. Guia `anotacao-23-ultima-movimentacao.md`. Ativação do servidor da 16 não realizada: conector Supabase indisponível nesta sessão.
+
+> **Estado atual — 01/11/2026:** código `221171e` publicado. Validação transacional offline no banco real revertida integralmente; atualização do worker e reabertura no HTTPS público aprovadas em testes novos. Pode riscar esses escopos da 14; piloto autenticado/aparelhos reais e fotos continuam pendentes. Servidor instantâneo da 16 ainda não ativado. Relatório: `publicacao-anotacao-14.md`. Os registros abaixo descrevem etapas históricas e não substituem este estado.
+
 # Anotações de 31/10/2026 — evolução do estoque
 
 Registro das 26 solicitações do usuário, organizado para implementação posterior. Acrescentar à pauta; registrar uma ideia não significa que ela já foi implementada. Documento interno, sem expor rascunhos no site. A antiga referência dcc621a foi superada pela entrega a6b874b de 01/11/2026; consultar ponto-retomada.md e não repetir os testes concluídos.
@@ -7,6 +13,8 @@ Início da implementação em 01/11/2026: grupo 1 encerrado na parte local/publi
 Todas as funcionalidades devem considerar amortecedores e molas. A unidade operacional continua sendo caixa; molas não passam por testagem. Sugestões de mudança física e regras de devolução precisam de definição antes da execução. Usuários e etiquetas entram no planejamento, preservando o adiamento anterior até a retomada dessas etapas.
 
 ## Lista completa
+
+Atualização da continuação automática (01/11/2026): itens 1, 5 e 11 concluídos no escopo local documentado; 10 preparado; 7, 13, 20, 22 e 23 avançaram; receptor privado da 16 preparado, servidor pendente. Foram aprovadas 70 verificações novas, sem repetir as anteriores. Alterações não publicadas, sem escrita no banco. Estado atual prevalece sobre os registros históricos abaixo. Código, limites e dependências de todos os itens: `continuacao-automatica-anotacoes.md` e `progresso-26-anotacoes.md`. O pedido mais recente autoriza continuar entre itens sem parar a cada etapa; não autoriza apagar estoque na transição sem o plano e confirmação já exigidos.
 
 Publicação confirmada em 01/11/2026: código e8fb14a na main, Vercel success e seis módulos públicos iguais ao build aprovado. Implementação/publicação da 15 concluída; publicação da atualização periódica da 16 concluída. A 16 inteira continua parcial por requisito instantâneo e ensaio entre aparelhos. Os 51 casos novos anteriores não foram repetidos. Guia `publicacao-anotacoes-15-16.md`. Este registro prevalece sobre as notas antigas de alterações somente locais.
 

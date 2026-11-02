@@ -1,0 +1,12 @@
+.shelf-count{padding:1rem;margin:1rem 0;min-width:0}
+.shelf-count summary{cursor:pointer;font-weight:600}
+.shelf-count label{display:flex;flex-direction:column;gap:.4rem;min-width:0;margin:.7rem 0}
+.shelf-count select,.shelf-count input,.shelf-count textarea{font:inherit;color:inherit;background:var(--input-bg,transparent);border:1px solid currentColor;border-radius:6px;padding:.6rem;max-width:100%;box-sizing:border-box}
+.shelf-count textarea{width:100%;min-height:5rem;resize:vertical}
+.shelf-count-scroll{overflow-x:auto;max-width:100%}
+.shelf-count table{border-collapse:collapse;width:100%;min-width:650px}
+.shelf-count th,.shelf-count td{text-align:left;padding:.7rem;border-bottom:1px solid #a08b7255}
+.shelf-count input{width:8rem}
+.shelf-count-add,.shelf-count-actions{display:flex;gap:.8rem;align-items:end;flex-wrap:wrap}
+.shelf-count-add label{flex:1 1 200px}
+.shelf-count :focus-visible{outline:3px solid currentColor;outline-offset:3px}

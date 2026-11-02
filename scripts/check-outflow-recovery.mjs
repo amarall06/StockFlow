@@ -33,7 +33,7 @@ source = source.replace(/^import type .*$/gm, '')
   .replace("import { isSpringCode } from './product-category'", "const isSpringCode=(code)=>/^(MGM|MFI|MRE|MFR)-/.test(code)")
 globalThis.__recovery.api = await load(source)
 const saved=new Map()
-globalThis.window={sessionStorage:{getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value),removeItem:key=>saved.delete(key)}}
+globalThis.window=Object.assign(new EventTarget(),{sessionStorage:{getItem:key=>saved.get(key)??null,setItem:(key,value)=>saved.set(key,value),removeItem:key=>saved.delete(key)}})
 source=await readFile(new URL('src/lib/pending-outflow.ts',root),'utf8')
 source=source.replace(/^import .*from '.\/outflow-api'$/m,'const {normalizeOutflow}=globalThis.__recovery.api')
 globalThis.__recovery.pending=await load(source)
