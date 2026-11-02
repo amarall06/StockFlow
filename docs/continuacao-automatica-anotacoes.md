@@ -272,3 +272,8 @@ Mapa interativo, busca/detalhes e página independente `/demonstracao.html` com 
 ## 21 e planta no site original — 02/11/2026
 
 Sugestão por capacidade e espaço conferido, compatibilidade, divergência/ranking, seleção do destino no mapa e planta em grade inspirada na imagem enviada. Apresentação integrada ao Painel com rótulos neutros; página anterior mantida só por compatibilidade. Oito casos novos de navegador e verificações isoladas aprovados; nenhum anterior repetido e sem Supabase real. Publicado em `3faabef`, Vercel success e quatorze recursos públicos conferidos. Guia `sugestoes-planta-2026-11-02.md`.
+
+
+## 19 — modo missão local, 02/11/2026
+
+Pedidos de exemplo, roteiro, código textual, confirmação acumulada e recuperação, conclusão/cancelamento e disponibilidade local entre pedidos. No próprio Painel, integrado ao mapa e com funções Administrador/Estoquista/Consulta. Oito testes novos de navegador e verificações isoladas aprovados; nenhum anterior ou Supabase real. Publicação em preparação. Guia `modo-missao-local-2026-11-02.md`.

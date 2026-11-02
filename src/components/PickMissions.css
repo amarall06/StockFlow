@@ -1,0 +1,7 @@
+.pick-missions{min-width:0}.pick-missions>label,.pick-item-form label{display:grid;gap:7px;margin-block:14px;font-size:14px}
+.pick-missions input,.pick-missions select{font:inherit;width:100%;min-width:0;box-sizing:border-box;min-height:44px;padding:9px;border:1px solid var(--liber-muted,#655f58);border-radius:6px;background:var(--liber-surface,#fff);color:var(--liber-ink,#24211e)}
+.pick-missions code{display:inline-block;overflow-wrap:anywhere;max-width:100%;font-size:13px;user-select:all}
+.pick-route{padding-left:24px}.pick-route>li{border:1px solid var(--liber-line,#b9aaa0);padding:14px;border-radius:8px;margin-block:12px;overflow-wrap:anywhere}
+.pick-route>li[aria-current=step]{border:2px solid var(--liber-accent,#b34d14)}.pick-route h3{font-size:16px;margin:0}
+.pick-item-form{padding:16px;border:1px solid var(--liber-muted,#655f58);border-radius:8px;margin-block:18px}.pick-actions{display:flex;gap:10px;flex-wrap:wrap;margin-block:16px}
+.pick-missions :focus-visible{outline:3px solid currentColor;outline-offset:3px}.pick-missions button{min-height:44px}
