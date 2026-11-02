@@ -27,3 +27,7 @@ A configuração do cenário não define prazo real da empresa. Nenhuma aprovaç
 ## Pode riscar e falta
 
 Pode riscar implementação e testes do detector local de prazo de testagem da 22, na apresentação. Faltam regra de prazo/marco/calendário validada pela empresa, datas e identidade reais, persistência/autorização e avisos compartilhados no servidor, resolução de pendências, retirada física incompleta/divergência recorrente e piloto. Não riscar a 22 inteira.
+
+## Publicação confirmada
+
+Publicado em `8ddf8fdc4c12cfd8507bded53293b11b3d879872`, https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/CwHuTygUvStRthMYx41FHSmfTkbu . Domínio HTTP 200 com entrada atual e quatorze recursos públicos iguais ao build aprovado, conferidos por hash. Nenhum teste funcional repetido na publicação. Commits `[skip ci]` evitam a suíte antiga. Pode riscar implementação, testes e publicação do detector local de prazo da 22; as dependências reais descritas acima permanecem.
