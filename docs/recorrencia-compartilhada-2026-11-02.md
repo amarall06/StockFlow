@@ -20,4 +20,4 @@ Cada evidência abre a contagem original no histórico. A localização usa a pl
 
 Pode riscar **22 — detector de recorrência com contagens aprovadas compartilhadas da apresentação e evidências navegáveis**. Não encerra a anotação inteira: restam regras/dados físicos reais, histórico completo, configuração da regra entre aparelhos, resolução operacional, retirada física incompleta e piloto. A avaliação atual abrange até 50 envios recentes e os vínculos abertos; ausência de ocorrência nessa amostra não comprova ausência no histórico completo.
 
-Publicação aguardando confirmação.
+Publicado em `dfc442a50756f7b20d3fa1c5aa73e6854e42ca74`. Domínio HTTP 200 e quatorze recursos públicos iguais ao build aprovado; sem repetir testes funcionais na publicação.
