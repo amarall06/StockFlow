@@ -6,6 +6,8 @@ Painel → Apresentação → Conferência de prateleiras → Histórico. Uma co
 
 O rascunho atual não é substituído: se já existir uma contagem neste aparelho, é preciso continuá-la ou descartá-la explicitamente no editor. O envio exige preencher e confirmar novamente os valores. O servidor cria o envio e o vínculo na mesma transação, verificando a solicitação de revisão original. Confirmação perdida recupera o mesmo envio/vínculo.
 
+Itens encontrados sem saldo na origem também aparecem na recontagem, com quantidade em branco. É necessário conferi-los explicitamente, inclusive informando zero quando não forem encontrados novamente. O servidor recusa sua omissão e mantém a quantidade anterior no registro original.
+
 Cada solicitação admite uma recontagem enviada. Dois envios diferentes disputando a mesma origem não sobrescrevem um ao outro: o segundo é recusado e seu rascunho fica preservado. Uma nova solicitação de revisão sobre a filha permite a próxima recontagem da sequência. Não é possível criar ciclos ou trocar retroativamente a origem de um envio.
 
 No histórico, **Ver recontagem** e **Ver contagem de origem** percorrem os registros em ambos os sentidos, abrem os detalhes e posicionam o foco de teclado. Se a origem estiver fora dos 50 envios recentes, ela é consultada pelo identificador sob RLS e adicionada à tela. Registros relacionados abertos permanecem disponíveis nesta sessão de consulta.
@@ -23,6 +25,7 @@ NORTE original: 19 caixas aguardando teste e 20 liberadas, referência 20/20, co
 - `src/lib/presentation-recounts-api.ts`: consulta vínculos de origem/filha e registros relacionados fora da lista recente, sempre pela sessão e RLS.
 - `src/components/PresentationShelfCounts.tsx`: início de recontagem, identificação da origem no envio, histórico navegável, foco, consulta complementar e atualização privada/periódica sem perder o rascunho.
 - `supabase/migrations/20261102204729_presentation_recount_links.sql`: tabela imutável com FKs para origem, filha e solicitação; leitura apenas para perfis ativos. Atualiza a RPC de envio existente para validar e gravar o vínculo atomicamente. Bloqueios por identidade/origem, unicidade e validação de prateleira impedem duplicação, alteração da origem e vínculos inválidos. Grava responsável e data. Nenhuma função de ajuste de estoque é chamada.
+- `supabase/migrations/20261102210002_recount_origin_items.sql`: garante a conferência de todos os itens da origem, inclusive os encontrados sem saldo, preservando a gravação atômica e as permissões da RPC.
 - `supabase/seeds/presentation-recount.sql` e fixture `tests/fixtures/presentation-recount.json`: exemplo NORTE idempotente; resolve a contagem original pela identidade do roteiro, sem fixar IDs de usuários ou registros do banco.
 
 ## Somente testes novos
@@ -33,6 +36,7 @@ NORTE original: 19 caixas aguardando teste e 20 liberadas, referência 20/20, co
 4. Duas conexões reais simultâneas enviaram o exemplo com a mesma identidade. Ambas receberam a mesma filha; um único envio e um vínculo permaneceram. O seed posterior recuperou o exemplo sem duplicação.
 5. `scripts/check-presentation-recounts-rest.mjs`: API real recusou leitura de vínculos e envio de recontagem sem sessão, HTTP 401 em ambos.
 6. `tests/browser/presentation-recounts.spec.ts`: nove casos novos aprovados em 27s na primeira execução. Duas sessões, campos em branco e origem persistente, ida/volta com foco, rascunho existente preservado, confirmação perdida/reabertura, conflito de outro aparelho, origem fora da lista recente, nova etapa da sequência, Consulta sem início/envio e teclado/375px/axe A/AA em claro/escuro. API/transporte simulados; não representa piloto físico.
+7. Na conferência final foi acrescentado o caso de item encontrado sem saldo. `scripts/check-recount-origin-items.mjs` e `tests/database/recount-origin-items-live.sql` aprovados; o último com ROLLBACK. A primeira chamada desse teste SQL falhou por parênteses ausentes na expressão JSON do próprio teste; corrigida e executado somente esse caso novo falho. Um décimo teste novo foi acrescentado ao navegador e executado sozinho, aprovado em 6,4s. Os nove casos anteriores não foram repetidos.
 
 Build e análise direcionada aprovados. Nenhum teste anteriormente concluído foi repetido. A auditoria Supabase não acrescentou avisos de segurança; avisos anteriores da 7 continuam separados. [Referência sobre permissões de funções](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
 

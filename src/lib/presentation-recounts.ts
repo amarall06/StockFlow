@@ -9,6 +9,7 @@ export function beginPresentationRecount(userId:string,parent:SharedCount,review
   parseCountReview(review,parent)
   if(review.count_id!==parent.id||review.decision!=='recount_requested')throw Error('A origem não tem uma solicitação de recontagem válida.')
   const draft=beginShelfCount(userId,parent.location,presentationBundle.stock,consultedAt)
+  for(const item of parent.submission.rows)if(!draft.rows.some(row=>row.code===item.code&&row.status===item.status))draft.rows.push({code:item.code,status:item.status,expected:item.expected,counted:null})
   return {...draft,recountOf:parent.id}
 }
 export function parseRecountLink(value:unknown,counts:SharedCount[]):RecountLink{

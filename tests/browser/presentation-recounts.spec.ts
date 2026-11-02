@@ -121,3 +121,14 @@ for(const dark of [false,true])test(`vínculos em 375px por teclado com contrast
   expect(await region(page).evaluate(element=>element.scrollWidth<=element.clientWidth)).toBe(true)
   const result=await new AxeBuilder({page}).include('.presentation-counts').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();expect(result.violations).toEqual([])
 })
+test('item encontrado sem saldo na origem permanece obrigatório na recontagem',async({page})=>{
+  const db=database(),parent=db.counts[0]
+  parent.submission.rows.push({code:'MGM-35',status:'Em estoque',expected:0,counted:1})
+  await prepare(page,db);await start(page,parent)
+  const found=region(page).getByLabel('Caixas contadas MGM-35 Em estoque',{exact:true})
+  await expect(found).toHaveValue('')
+  await expect(region(page).getByRole('button',{name:'Enviar contagem para revisão',exact:true})).toBeDisabled()
+  await found.fill('0');await fill(page);await expect(region(page)).toContainText('Envio confirmado:')
+  expect(db.calls[0].rows.find(row=>row.code==='MGM-35').counted).toBe(0)
+  expect(parent.submission.rows.find(row=>row.code==='MGM-35').counted).toBe(1)
+})
