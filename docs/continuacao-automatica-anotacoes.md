@@ -276,4 +276,4 @@ Sugestão por capacidade e espaço conferido, compatibilidade, divergência/rank
 
 ## 19 — modo missão local, 02/11/2026
 
-Pedidos de exemplo, roteiro, código textual, confirmação acumulada e recuperação, conclusão/cancelamento e disponibilidade local entre pedidos. No próprio Painel, integrado ao mapa e com funções Administrador/Estoquista/Consulta. Oito testes novos de navegador e verificações isoladas aprovados; nenhum anterior ou Supabase real. Publicação em preparação. Guia `modo-missao-local-2026-11-02.md`.
+Pedidos de exemplo, roteiro, código textual, confirmação acumulada e recuperação, conclusão/cancelamento e disponibilidade local entre pedidos. No próprio Painel, integrado ao mapa e com funções Administrador/Estoquista/Consulta. Oito testes novos de navegador e verificações isoladas aprovados; nenhum anterior ou Supabase real. Publicado em `2b91830`, Vercel success e quatorze recursos públicos iguais ao build aprovado. Guia `modo-missao-local-2026-11-02.md`.

@@ -41,10 +41,14 @@ Cancelar uma missão ativa exige confirmação na interface e conserva o registr
 
 `tests/browser/pick-missions.spec.ts`: **oito casos novos aprovados** — roteiro/localização no mapa sem movimentar estoque; código incorreto e parcial recuperada; conclusão/destinação/cancelamento entre pedidos; falha de gravação; conteúdo inválido preservado/Consulta bloqueada; Estoquista operando sem editar capacidades; leitura por Enter/teclado/axe A/AA em 375 px nos temas claro e escuro. API interceptada, nenhum dado ou conta real utilizado.
 
-Build e análise dos módulos novos aprovados. Nenhuma suíte/caso concluído das etapas anteriores foi executado. A publicação será registrada abaixo depois de confirmada.
+Build e análise dos módulos novos aprovados. Nenhuma suíte/caso concluído das etapas anteriores foi executado. Publicação confirmada abaixo.
 
 ## Pode riscar e o que falta
 
-Pode riscar implementação e verificação do **protótipo local da 19**: pedidos de exemplo, roteiro, localização, leitura textual, confirmação parcial/total, progresso recuperável e conclusão/cancelamento locais. Publicação ainda em preparação.
+Pode riscar implementação e verificação do **protótipo local da 19**: pedidos de exemplo, roteiro, localização, leitura textual, confirmação parcial/total, progresso recuperável e conclusão/cancelamento locais. Publicação concluída em `2b91830`.
 
 Para uso real faltam: cadastro/vínculo dos pedidos, reservas globais transacionais e concorrência entre operadores/aparelhos; autorização e histórico no servidor; identidade única das etiquetas/caixas e leitura QR física/câmera quando definida; regras validadas de separar/expedir/vender/cancelar/devolver; integração da expedição com estoque e ensaio físico da equipe. O texto de leitura do protótipo identifica saldo/local/situação e **não é uma identidade única de caixa física**. Não foi prometida disponibilidade global a partir dos dados locais.
+
+## Publicação confirmada
+
+Código `2b9183069bd9430d99210eb39bb0a39a42e28fc1`, publicado no site original em 02/11/2026. Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/7J2LVT2JhXvu4mxjjRQifgCRQ4Sa . Domínio https://liber-automotive.vercel.app/ respondeu HTTP 200 com a entrada atual. Quatorze recursos públicos conferidos por hash, todos iguais ao build aprovado. Nenhum teste funcional repetido na publicação; commits com `[skip ci]` evitam a suíte antiga. Acesso: Painel → Visualização do Painel → Apresentação → Modo missão.
