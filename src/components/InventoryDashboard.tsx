@@ -118,6 +118,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <StockReportExport/>
+      <p><a href="/demonstracao.html" target="_blank" rel="noopener noreferrer">Abrir apresentação com dados fictícios (nova aba)</a></p>
       {capacityUserId && <ShelfCapacity key={capacityUserId} userId={capacityUserId} locations={locations} stock={stock} canEdit={isAdministrator}/>}
       <InventoryInsights catalog={catalog} stock={stock} category={category}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}

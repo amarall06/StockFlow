@@ -2,6 +2,7 @@ import { useRef, useState, useSyncExternalStore } from 'react'
 import type { StockRow } from '../lib/inventory-api'
 import { capacityRows, demoCapacities, demoLocations, demoStock, parseCapacities, readCapacityRaw, saveCapacities, subscribeCapacities, type Capacities, type Capacity, type CapacityMode } from '../lib/shelf-capacity'
 import { useModalDialog } from '../lib/use-modal-dialog'
+import { FictionalShelfMap } from './FictionalShelfMap'
 import './ShelfCapacity.css'
 
 function CapacityEditor({ location, entry, onSave, onClose }: { location: string; entry: Capacity | null; onSave: (entry: Capacity | null) => void; onClose: () => void }) {
@@ -12,7 +13,7 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
   useModalDialog(ref)
   return <dialog ref={ref} className="capacity-dialog" aria-labelledby="capacity-editor-title" onCancel={event => { event.preventDefault(); onClose() }}>
     <header><h2 id="capacity-editor-title">Capacidade de {location}</h2><button type="button" className="theme-toggle" onClick={onClose}>Fechar capacidade</button></header>
-    <p>Configuração local nesta conta e navegador. Informe capacidade em caixas equivalentes; deixe a quantidade vazia para remover a referência.</p>
+    <p>Configuração local neste navegador, separada por conta na área autenticada. Informe capacidade em caixas equivalentes; deixe a quantidade vazia para remover a referência.</p>
     <form onSubmit={event => { event.preventDefault(); try { if (boxes !== '' && (!/^\d+$/.test(boxes) || !Number.isSafeInteger(Number(boxes)) || Number(boxes) < 1 || Number(boxes) > 2147483647 || !basis.trim())) throw Error('Informe capacidade inteira positiva e a referência do tamanho da caixa.'); onSave(boxes === '' ? null : { boxes: Number(boxes), basis: basis.trim() }) } catch (caught) { setError(caught instanceof Error ? caught.message : 'Não foi possível salvar.') } }}>
       <label>Capacidade física (caixas)<input type="number" min="1" max="2147483647" step="1" value={boxes} onChange={event => setBoxes(event.target.value)}/></label>
       <label>Referência de tamanho da caixa<input maxLength={120} required={boxes !== ''} value={basis} onChange={event => setBasis(event.target.value)} placeholder="Informe o padrão real ou fictício usado"/></label>
@@ -21,7 +22,7 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
     </form>
   </dialog>
 }
-export function ShelfCapacity({ userId, locations, stock, canEdit }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean }) {
+export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean }) {
   const [mode, setMode] = useState<CapacityMode>('demo')
   const raw = useSyncExternalStore(subscribeCapacities, () => readCapacityRaw(userId, mode), () => null)
   const [editing, setEditing] = useState<{ location: string; raw: string | null; entries: Capacities } | null>(null)
@@ -32,11 +33,12 @@ export function ShelfCapacity({ userId, locations, stock, canEdit }: { userId: s
   const rows = error ? [] : capacityRows(mode === 'demo' ? demoLocations : locations, mode === 'demo' ? demoStock : stock, entries)
   return <section className="inventory-panel dashboard-panel shelf-capacity" aria-label="Ocupação por capacidade física">
     <h2>Ocupação por capacidade física</h2>
-    <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Demonstração fictícia — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>
+    {!demoOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Demonstração fictícia — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
     {mode === 'demo' ? <p className="capacity-demo"><strong>Demonstração fictícia.</strong> Prateleiras, capacidades e quantidades de exemplo, criadas a seu pedido. Não representam o estoque da empresa.</p> : <p>Usa o saldo normal consultado de amortecedores e molas juntos, independentemente do filtro de categoria. Capacidades reais começam sem preenchimento; exemplos não são copiados para esta consulta.</p>}
     <p>A barra compara caixas registradas com a capacidade informada, usando caixas de tamanho equivalente. Garantia sem localização física não entra neste cálculo. Zero caixas não comprova espaço físico livre.</p>
     <p>Configuração salva somente nesta conta e navegador; compartilhamento entre aparelhos ainda depende do servidor.</p>
     {error && <p role="alert">{error}</p>}{message && <p role="status">{message}</p>}
+    {mode === 'demo' && !error && <FictionalShelfMap stock={demoStock} capacities={entries}/>}
     <div className="capacity-grid">{rows.map(row => <article className="capacity-card" aria-label={`${mode === 'demo' ? 'Fictícia' : 'Consultada'} ${row.location}`} key={row.location}>
       <h3>{row.location}</h3><p>{row.boxes} caixas {mode === 'demo' ? 'fictícias' : 'consultadas'}</p>
       {row.capacity ? <>

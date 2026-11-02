@@ -262,3 +262,8 @@ Conferidos os 26 itens. Guia interno de instalação independente de convite aut
 ## Capacidade física por prateleira — 01/11/2026
 
 Usuário escolheu referência física e autorizou cenário fictício NORTE/SUL/LESTE/OESTE e demais valores. Implementado gráfico e edição local por prateleira, com separação entre demonstração e consulta do estoque. Oito testes novos de navegador e novos cenários isolados aprovados; nenhum antigo repetido. Publicado em `7aa9dc5`, Vercel success e seis arquivos públicos conferidos. Guia `capacidade-fisica-local.md`. Compartilhamento e dados reais continuam pendentes.
+
+
+## 18 e apresentação fictícia — 02/11/2026
+
+Mapa interativo, busca/detalhes e página independente `/demonstracao.html` com indicadores, produtos, capacidade e divergência inteiramente fictícios, a pedido do usuário para apresentação aos superiores. Cinco testes novos de navegador e verificações isoladas aprovados; sem testes anteriores. Nenhum acesso/escrita no Supabase. Publicação em preparação. Guia `mapa-ficticio-apresentacao-2026-11-02.md`.

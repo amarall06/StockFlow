@@ -4,7 +4,7 @@ import { gzipSync } from 'node:zlib'
 
 const root=new URL('../dist/',import.meta.url)
 const manifest=JSON.parse(await readFile(new URL('.vite/manifest.json',root),'utf8'))
-const entry=Object.entries(manifest).find(([,item])=>item.isEntry)
+const entry=Object.entries(manifest).find(([key,item])=>key==='index.html'&&item.isEntry)
 assert(entry,'Execute npm run build antes desta conferência.')
 const eager=new Set()
 function visit(key){if(eager.has(key))return;eager.add(key);for(const dependency of manifest[key].imports??[])visit(dependency)}

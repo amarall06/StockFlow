@@ -21,6 +21,8 @@ Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação
 
 - 2: referência física definida; exemplo com quatro prateleiras e capacidades fictícias autorizado e implementado, com configuração local editável. Oito testes novos aprovados; publicado em `7aa9dc5`, com arquivos públicos conferidos. Guia `capacidade-fisica-local.md`.
 
+- 18: mapa fictício interativo e página de apresentação com indicadores/produtos/capacidades fictícios prontos. Cinco casos novos e verificações isoladas aprovados; publicação em preparação. Guia `mapa-ficticio-apresentacao-2026-11-02.md`.
+
 ## O que depende de você
 
 O preenchimento prático, sem solicitar senhas ou decisões técnicas do servidor, está em `definicoes-da-empresa-26-anotacoes.md`. Respostas podem ser fornecidas por grupos conforme a empresa tiver as informações.
@@ -46,7 +48,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 15 | Implementação/publicação entregues; execução pela equipe faz parte do piloto geral. | Piloto geral |
 | 16 | Ativar autorização e emissão de eventos privados no servidor; validar reconexão e atualização entre aparelhos reais. | Supabase e aparelhos |
 | 17 | Envio de contagem, histórico compartilhado, aprovação autorizada, tratamento transacional de movimentos durante contagem e decisão de ajuste; piloto físico. | Servidor e regras operacionais |
-| 18 | Validar mapa físico/posição das prateleiras e implementar busca/destaque/legenda sem depender só de cor. | Mapa real e dados compartilhados |
+| 18 | Mapa fictício interativo e apresentação sem login prontos, publicação em preparação. Faltam posições/códigos reais, vínculo com estoque e conferências aprovadas, configurações compartilhadas e piloto físico. | Dados reais e servidor |
 | 19 | Definir pedido, reserva, separado/expedido, identidade QR e concorrência; implementar missão de separação. | Regras, QR e servidor |
 | 20 | Divergências aprovadas/histórico compartilhado no mapa e eventual disposição física. Resumo do rascunho local já entregue. | Conferências no servidor e mapa físico |
 | 21 | Cadastrar capacidade/ocupação/restrições confiáveis e mapa, então sugerir espaços. Saldo zero não comprova espaço livre. | Dados físicos e servidor |

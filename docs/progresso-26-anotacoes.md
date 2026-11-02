@@ -1,6 +1,6 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração original preservada. Código `7aa9dc5` publicado (capacidade física local e exemplos da 2), incluindo o guia de instalação `a7954af`, incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
+Atualizado em 02/11/2026. Numeração original preservada. Código `7aa9dc5` publicado (capacidade física local e exemplos da 2), incluindo o guia de instalação `a7954af`, incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `7aa9dc5` pub
 | 15 | Prevenção e confirmação de operações | **Implementação concluída e publicada: pode riscar esse escopo.** Confirmação das operações de caixas e trava imediata de envio completadas; 16 casos novos aprovados nas etapas anteriores, preservados saldo/UUID/recuperação existentes. Piloto mantém sua pendência geral. Guia `fechamento-anotacao-15.md`. |
 | 16 | Sincronização entre aparelhos | **Atualização periódica publicada nas telas previstas. Receptor privado instantâneo publicado e testado em simulação.** Faltam política/gatilhos no servidor, ativação e ensaio entre aparelhos reais. Não riscar 16 inteira. |
 | 17 | Conferência de prateleiras | **Rascunho local concluído e publicado: pode riscar contagem/recuperação, comparação e CSV para revisão.** Branco diferente de zero, referência preservada, alerta se saldo consultado mudar, sem ajuste. Faltam envio, aprovação, histórico compartilhado e piloto físico. |
-| 18 | Mapa interativo | Não iniciado; depende de mapa físico. |
+| 18 | Mapa interativo | **Mapa fictício NORTE/SUL/LESTE/OESTE com busca, múltiplos locais, seleção/detalhes e estados por texto implementado. Página de apresentação inteiramente fictícia sem login pronta. Cinco testes novos de navegador e verificações isoladas aprovados; pode riscar esse recorte.** Publicação em preparação. Faltam mapa/códigos reais, vínculo com consulta e conferências aprovadas, persistência compartilhada e piloto. Guia `mapa-ficticio-apresentacao-2026-11-02.md`. |
 | 19 | Modo missão e separação de pedidos | Não iniciado; depende de pedidos, reservas e QR. |
 | 20 | Mapa de calor | Parcial local: tabela por prateleira com frequência/volume, intensidade relativa e períodos 30/90/180/365 dias. **Resumo de divergências do rascunho local concluído e publicado: pode riscar esse escopo**, separado de movimentações, filtrável por categoria, sem tratar rascunho como aprovado. Faltam conferências aprovadas compartilhadas e eventual mapa físico. |
 | 21 | Sugestão de espaços livres | Não iniciado; depende de capacidade física validada. |
@@ -31,7 +31,11 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `7aa9dc5` pub
 | 25 | Ampliar testes automáticos | **Mais 30 casos novos de acessibilidade de formulários/diálogos aprovados nesta rodada, sem repetir os concluídos.** **Mais 13 casos novos de navegador e cenários isolados aprovados nesta etapa, sem repetir anteriores.** Parcial: mais 70 verificações novas nesta continuação (22 navegador + 48 isoladas), incluindo o receptor Realtime iniciado antes do pedido de sequência automática. Casos antigos não repetidos. Ensaios reais e demais áreas seguem pendentes. |
 | 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Contraste de sete telas e sete diálogos revisado nos temas claro/escuro; 30 casos novos aprovados. Pode riscar esse recorte automatizado, publicado em `62b59f9`, com arquivos públicos conferidos.** **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Complemento publicado em `080869d`; pode riscar esse recorte.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
 
-## Rodada atual — capacidade física
+## Rodada atual — mapa fictício e apresentação
+
+Mapa interativo da 18 e apresentação inteiramente fictícia em `/demonstracao.html`, sem login ou chamadas ao Supabase. Cinco testes novos de navegador e verificações isoladas aprovados, sem repetir anteriores. Publicação em preparação. Guia `mapa-ficticio-apresentacao-2026-11-02.md`. Os outros fluxos pendentes não foram considerados implementados por esta demonstração.
+
+## Rodada anterior — capacidade física
 
 Referência escolhida e exemplos fictícios autorizados pelo usuário. Gráfico/configuração local no Painel, oito casos novos de navegador e cenários isolados aprovados; publicado em `7aa9dc5`, com arquivos públicos conferidos. Guia `capacidade-fisica-local.md`. Não foram criados locais/saldos no Supabase.
 
