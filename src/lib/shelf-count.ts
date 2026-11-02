@@ -2,7 +2,7 @@ import type { StockRow } from './inventory-api'
 import { isSpringCode } from './product-category'
 
 export type CountRow = Pick<StockRow, 'code' | 'status'> & { expected: number; counted: number | null }
-export type ShelfCount = { version: 1; userId: string; id: string; location: string; consultedAt: string; startedAt: string; reference: string; rows: CountRow[]; notes: string }
+export type ShelfCount = { version: 1; userId: string; id: string; location: string; consultedAt: string; startedAt: string; reference: string; rows: CountRow[]; notes: string; recountOf?:string }
 const statuses: StockRow['status'][] = ['Aguardando testagem', 'Liberado para venda', 'Em estoque']
 export const countRowKey = (row: Pick<CountRow, 'code' | 'status'>) => JSON.stringify([row.code, row.status])
 export function validCountStatus(code: string, status: string) {
@@ -32,6 +32,7 @@ export function parseShelfCount(raw: string | null, userId: string): ShelfCount 
   if (raw === null) return null
   const value = JSON.parse(raw) as ShelfCount
   if (!value || value.version !== 1 || value.userId !== userId || typeof value.id !== 'string' || !value.id || typeof value.location !== 'string' || !value.location || !Number.isFinite(Date.parse(value.consultedAt)) || !Number.isFinite(Date.parse(value.startedAt)) || typeof value.reference !== 'string' || typeof value.notes !== 'string' || value.notes.length > 2000 || !Array.isArray(value.rows) || value.rows.length > 1000) throw new Error('Rascunho de contagem inválido. Preserve os dados para revisão.')
+  if(value.recountOf!==undefined&&(typeof value.recountOf!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.recountOf)))throw Error('Origem da recontagem inválida. Preserve o rascunho para revisão.')
   const reference = JSON.parse(value.reference) as Array<{ code: string; status: StockRow['status']; boxes: number }>
   if (!Array.isArray(reference) || reference.some(row => !row || typeof row.code !== 'string' || !quantity(row.boxes) || !validCountStatus(row.code, row.status))) throw new Error('Referência de contagem inválida.')
   const seen = new Set<string>()

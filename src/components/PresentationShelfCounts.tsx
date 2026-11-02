@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState,useSyncExternalStore} from 'react'
 import {ShelfCount} from './ShelfCount'
 import {parseShelfCount,countSummary,type ShelfCount as Draft} from '../lib/shelf-count'
-import {readShelfCountRaw,subscribeShelfCount} from '../lib/shelf-count-store'
+import {readShelfCountRaw,saveShelfCount,subscribeShelfCount} from '../lib/shelf-count-store'
 import {loadPresentationCounts,submitCountPayload} from '../lib/presentation-counts-api'
 import {countSubmission,countFingerprint,type SharedCount} from '../lib/presentation-counts'
 import {INVENTORY_CHANGE_EVENT} from '../lib/resume-refresh'
@@ -11,6 +11,8 @@ import './PresentationShelfCounts.css'
 import {PresentationCountReview} from './PresentationCountReview'
 import {loadCountReviews} from '../lib/presentation-count-reviews-api'
 import {mergeCountReviews,reviewLabels,type CountReview} from '../lib/presentation-count-reviews'
+import {beginPresentationRecount,mergeRecountLinks,type RecountLink} from '../lib/presentation-recounts'
+import {loadRecountLinks,loadRelatedCount} from '../lib/presentation-recounts-api'
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(value))
 
 function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boolean;onBusy:(busy:boolean)=>void;onSaved:(count:SharedCount)=>void;receipt:SharedCount|undefined}){
@@ -31,6 +33,7 @@ function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boole
     finally{busy.current=false;onBusy(false)}
   }}>
     <h3>Enviar contagem de {draft.location}</h3>
+    {draft.recountOf&&<p>Recontagem vinculada à contagem de origem: {draft.recountOf}. Este envio não substitui os valores anteriores.</p>}
     <p>Uma cópia completa será registrada com sua conta e a data do servidor. O envio aguarda revisão e não altera caixas, reservas ou conferências aprovadas.</p>
     {invalid&&<p role="status">{invalid}</p>}
     {sent&&<p role="status">Envio já confirmado: {receipt.id}. O rascunho local foi preservado.</p>}
@@ -45,17 +48,20 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
   const[rows,setRows]=useState<SharedCount[]|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[sending,setSending]=useState(false)
   const[consultedAt,setConsultedAt]=useState(()=>new Date().toISOString()),refresh=useRef(()=>{})
   const[reviews,setReviews]=useState<Record<string,CountReview>>({}),reviewCache=useRef<Record<string,CountReview>>({})
+  const[links,setLinks]=useState<RecountLink[]>([]),linkCache=useRef<RecountLink[]>([]),extraCounts=useRef(new Map<string,SharedCount>()),focusTarget=useRef(''),followSequence=useRef(0),alive=useRef(true)
   const raw=useSyncExternalStore(subscribeShelfCount,()=>readShelfCountRaw(userId),()=>null)
   let draft:Draft|null=null
   try{draft=parseShelfCount(raw,userId)}catch{/* O editor existente mostra o erro e preserva os dados. */}
   useEffect(()=>{
+    alive.current=true
     let live=true,sequence=0,controller:AbortController|undefined,timeout:number|undefined,noticeTimer:number|undefined
     const read=async()=>{
       const request=++sequence;controller?.abort();window.clearTimeout(timeout)
       const current=new AbortController();controller=current;timeout=window.setTimeout(()=>current.abort(),15000)
       try{
-        const result=await loadPresentationCounts(current.signal),decisions=await loadCountReviews(result,current.signal)
-        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result);reviewCache.current=merged;setReviews(merged);setRows(result);setError('')}
+        const recent=await loadPresentationCounts(current.signal),result=[...recent,...[...extraCounts.current.values()].filter(count=>!recent.some(row=>row.id===count.id))]
+        const [decisions,origins]=await Promise.all([loadCountReviews(result,current.signal),loadRecountLinks(result,current.signal)])
+        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result),mergedLinks=mergeRecountLinks(linkCache.current,origins,result);reviewCache.current=merged;linkCache.current=mergedLinks;setLinks(mergedLinks);setReviews(merged);setRows(result);setError('')}
       }
       catch{if(live&&request===sequence)setError('Não foi possível atualizar as contagens compartilhadas. Os registros já consultados foram mantidos; confira sua conexão e seu acesso.')}
     }
@@ -63,8 +69,16 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
     refresh.current=resume;void read()
     const interval=window.setInterval(()=>{if(navigator.onLine&&document.visibilityState==='visible')void read()},10000)
     window.addEventListener('focus',resume);window.addEventListener('online',resume);window.addEventListener(INVENTORY_CHANGE_EVENT,notice)
-    return()=>{live=false;controller?.abort();window.clearTimeout(timeout);window.clearTimeout(noticeTimer);window.clearInterval(interval);window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener(INVENTORY_CHANGE_EVENT,notice)}
+    return()=>{live=false;alive.current=false;controller?.abort();window.clearTimeout(timeout);window.clearTimeout(noticeTimer);window.clearInterval(interval);window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener(INVENTORY_CHANGE_EVENT,notice)}
   },[])
+  function focusCount(id:string){const details=document.getElementById(`presentation-count-${id}`)?.querySelector<HTMLDetailsElement>('details');if(!details)return false;details.open=true;details.querySelector('summary')?.focus();details.scrollIntoView({block:'nearest'});return true}
+  useEffect(()=>{if(!focusTarget.current)return;const frame=requestAnimationFrame(()=>{if(focusCount(focusTarget.current))focusTarget.current=''});return()=>cancelAnimationFrame(frame)},[rows])
+  async function follow(id:string){
+    const request=++followSequence.current
+    if(focusCount(id))return
+    try{const count=await loadRelatedCount(id,AbortSignal.timeout(15000));if(alive.current&&request===followSequence.current){extraCounts.current.set(id,count);focusTarget.current=id;refresh.current()}}
+    catch(caught){if(alive.current&&request===followSequence.current)setError(caught instanceof Error?caught.message:'Não foi possível consultar o vínculo.')}
+  }
   const catalog=Object.fromEntries(data.stock.map(row=>[row.code,{application:row.code.startsWith('M')?'Mola':'Amortecedor',defaultLocation:row.location}]))
   const receipt=draft?rows?.find(row=>row.source_id===draft!.id&&row.actor_id===userId.replace(/^presentation:/,'')):undefined
   return <section className="inventory-panel presentation-counts" aria-label="Contagens compartilhadas">
@@ -77,15 +91,18 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
         setMessage(`Envio confirmado: ${saved.id}. Consulte a decisão no histórico; nenhum saldo foi alterado.`);refresh.current()
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
-    <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, com consulta automática e ao voltar à janela. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
+    <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, mais as contagens vinculadas abertas nesta tela. Use os vínculos para acompanhar a origem e cada recontagem. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
     <button type="button" className="theme-toggle" onClick={()=>refresh.current()}>Atualizar contagens compartilhadas</button>
     {error&&<p role="alert">{error}</p>}{rows===null&&!error&&<p role="status">Consultando contagens…</p>}
     {rows?.length===0&&<p>Nenhuma contagem enviada nesta apresentação.</p>}
     <ul>{rows?.map(row=>{
       const summary=countSummary({rows:row.submission.rows} as Draft)
       const review=reviews[row.id]
-      return <li key={row.id}><details><summary>{row.location} · {review?reviewLabels[review.decision]:'Aguardando revisão'} · {date(row.created_at)}</summary>
+      const parentId=row.submission.recount_of,child=links.find(link=>link.parent_count_id===row.id)
+      return <li key={row.id} id={`presentation-count-${row.id}`}><details><summary>{row.location} · {parentId?'Recontagem · ':''}{review?reviewLabels[review.decision]:'Aguardando revisão'} · {date(row.created_at)}</summary>
         <p>Responsável no envio: {row.actor_name}. Identificador: {row.id}.</p>
+        {parentId&&<p>Origem desta recontagem: {parentId}. <button type="button" className="theme-toggle" onClick={()=>void follow(parentId)}>Ver contagem de origem</button></p>}
+        {child&&<p>Recontagem registrada: {child.child_count_id}. <button type="button" className="theme-toggle" onClick={()=>void follow(child.child_count_id)}>Ver recontagem</button></p>}
         <p>{summary.differences} itens divergentes; faltam {summary.missing} caixas e sobram {summary.extra} caixas em relação à referência.</p>
         <p>Consulta de referência: {date(row.submission.consulted_at)}. Início informado: {date(row.submission.started_at)}.</p>
         <ul>{row.submission.rows.map(item=><li key={`${item.code}:${item.status}`}>{item.code} · {item.status}: esperado {item.expected}, contado {item.counted}; diferença {item.counted!-item.expected} caixas.</li>)}</ul>
@@ -95,6 +112,14 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
           const merged=mergeCountReviews(reviewCache.current,[decision],[...(rows??[]).filter(row=>row.id!==count.id),count])
           reviewCache.current=merged;setReviews(merged);setMessage(`Revisão confirmada: ${decision.id}. ${reviewLabels[decision.decision]}; nenhum saldo foi alterado.`);refresh.current()
         }}/>
+        {canOperate&&review?.decision==='recount_requested'&&!child&&<button type="button" className="theme-toggle" disabled={!ready||Boolean(error)||sending} onClick={()=>{
+          try{
+            if(!navigator.onLine)throw Error('Conecte antes de iniciar a recontagem.')
+            const next=beginPresentationRecount(userId,row,review,draft,new Date().toISOString())
+            saveShelfCount(userId,next,raw);setMessage(`Recontagem de ${row.location} iniciada, vinculada a ${row.id}. Preencha novamente as quantidades no editor; nenhum saldo foi alterado.`)
+            const editor=document.getElementById('shelf-count') as HTMLDetailsElement|null;if(editor){editor.open=true;editor.querySelector('summary')?.focus();editor.scrollIntoView({block:'nearest'})}
+          }catch(caught){setMessage(caught instanceof Error?caught.message:'Não foi possível iniciar a recontagem.')}
+        }}>Iniciar recontagem de {row.location}</button>}
       </details></li>
     })}</ul>
   </section>

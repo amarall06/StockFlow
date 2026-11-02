@@ -12,7 +12,7 @@ export async function submitCountPayload(submission:CountSubmission){
   if(!supabase)throw Error('Não foi possível conectar ao banco.')
   const {data,error}=await supabase.rpc('submit_presentation_shelf_count',{p_submission:submission}).abortSignal(AbortSignal.timeout(15000))
   if(error){
-    if(error.code==='40001')throw Error('Esta contagem já foi enviada com outros valores ou a referência diverge. Preserve o rascunho e consulte os envios antes de iniciar outra contagem.')
+    if(error.code==='40001')throw Error(submission.recount_of?'A solicitação de recontagem já foi atendida ou a origem diverge. Preserve o rascunho e consulte o histórico.':'Esta contagem já foi enviada com outros valores ou a referência diverge. Preserve o rascunho e consulte os envios antes de iniciar outra contagem.')
     if(error.code==='42501')throw Error('Sua conta não pode enviar esta contagem. Confira sua função e se o acesso continua ativo.')
     throw Error('Não foi possível confirmar o envio. O rascunho foi mantido; tente novamente sem alterar os valores para recuperar a mesma confirmação.')
   }
