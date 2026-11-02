@@ -42,6 +42,10 @@ Conferência real antes/depois: 95 produtos, 113 movimentos e hash de saldos `df
 
 ## Pode riscar e o que falta
 
-Pode riscar **revisão, aprovação/solicitação de recontagem, justificativa/autoria e recuperação de confirmação dos exemplos da 17**, no escopo de implementação/testes. Publicação do site em preparação; banco e exemplos aplicados.
+Pode riscar **revisão, aprovação/solicitação de recontagem, justificativa/autoria e recuperação de confirmação dos exemplos da 17**, incluindo implementação, testes e publicação. Banco e exemplos aplicados.
 
 Não riscar a 17 inteira. Faltam regras e permissões da operação real (incluindo quem pode aprovar a própria contagem), coordenação de movimentos durante conferência, aprovação operacional/ajustes autorizados com histórico transacional, vínculo entre recontagem e origem, integração com mapa/divergências aprovadas (20) e piloto físico com a equipe. A decisão da apresentação não alimenta o estoque operacional nem o mapa de conferências aprovadas reais.
+
+## Publicação confirmada
+
+Funcionalidade publicada em 31925a00797da7bc30f2b53d69fe4c86880f5825, Vercel success em https://vercel.com/amarall06s-projects/liber-automotive/7XUvauLjaX38FGoieAo8wjHhckgo . Ajuste final de mensagem publicado em 2629d4369d531f2f832fff515118f1411f462851, Vercel success em https://vercel.com/amarall06s-projects/liber-automotive/F3Hxcy4LfzNgonhZtdAy6Z3497Cm . Domínio https://liber-automotive.vercel.app/ com HTTP 200 e dezesseis recursos públicos iguais ao build aprovado em ambas as verificações. Nenhum teste funcional repetido para publicar.
