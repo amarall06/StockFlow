@@ -285,3 +285,7 @@ PDF/CSV do pedido atual com roteiro e progresso, identificação de cancelamento
 ## 12 — cancelamento local com motivo, 02/11/2026
 
 Formulário, motivo/data e declaração do retorno das caixas já separadas implementados na apresentação; quatro testes novos e verificações isoladas aprovados, nenhum anterior repetido. Guia: cancelamento-local-2026-11-02.md. Pedidos/reservas/histórico reais e piloto continuam pendentes. Publicado em `f82b482`; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
+
+## 22 — prazo de testagem local, 02/11/2026
+
+Detector por dias corridos na apresentação, prazo configurável por conta/navegador e grupos sem data tratados separadamente. Seis testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: prazo-testagem-local-2026-11-02.md. Regra/datas reais, servidor/avisos compartilhados e demais detectores continuam pendentes. Publicação em andamento.

@@ -2,6 +2,7 @@ import { ShelfCapacity } from './ShelfCapacity'
 import { demoLocations, demoStock } from '../lib/shelf-capacity'
 import './StockPresentation.css'
 import { PickMissions } from './PickMissions'
+import { TestingDelay } from './TestingDelay'
 export function StockPresentation({ userId, canEdit, canPick = canEdit }: { userId: string; canEdit: boolean; canPick?: boolean }) {
   const total = demoStock.reduce((sum, row) => sum + row.boxes, 0)
   const awaiting = demoStock.filter(row => row.status === 'Aguardando testagem').reduce((sum, row) => sum + row.boxes, 0)
@@ -15,6 +16,7 @@ export function StockPresentation({ userId, canEdit, canPick = canEdit }: { user
         return <li key={product.code}><strong>{product.code}</strong> — {product.name}; {rows.reduce((sum, row) => sum + row.boxes, 0)} caixas; locais: {[...new Set(rows.map(row => row.location))].join(', ')}.</li>
       })}</ul>
     </section>
+    <TestingDelay key={`testing:${userId}`} userId={userId} canEdit={canEdit}/>
     <PickMissions key={userId} userId={userId} stock={demoStock} canOperate={canPick}/>
     <ShelfCapacity userId={userId} locations={demoLocations} stock={demoStock} canEdit={canEdit} demoOnly/>
   </section>
