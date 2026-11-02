@@ -52,7 +52,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 15 | Implementação/publicação entregues; execução pela equipe faz parte do piloto geral. | Piloto geral |
 | 16 | Ativar autorização e emissão de eventos privados no servidor; validar reconexão e atualização entre aparelhos reais. | Supabase e aparelhos |
 | 17 | Envio de contagem, histórico compartilhado, aprovação autorizada, tratamento transacional de movimentos durante contagem e decisão de ajuste; piloto físico. | Servidor e regras operacionais |
-| 18 | Mapa fictício interativo e apresentação sem login prontos, publicado em `f38cc9c`, com recursos públicos conferidos. Faltam posições/códigos reais, vínculo com estoque e conferências aprovadas, configurações compartilhadas e piloto físico. | Dados reais e servidor |
+| 18 | Cenário-base publicado no Supabase e leitura autenticada no site pronta. Faltam edição compartilhada da planta/capacidades, posições/códigos reais, vínculo com estoque/conferências aprovadas e piloto. | Implementação de edição compartilhada, dados físicos e regras |
 | 19 | Protótipo local da missão pronto, publicado em `2b91830`, Vercel success e quatorze recursos públicos conferidos. Faltam pedidos/reservas compartilhados transacionais, QR físico/identidade, histórico/autorização, regras de expedição e piloto. | Regras, QR e servidor |
 | 20 | Divergências aprovadas/histórico compartilhado no mapa e eventual disposição física. Resumo do rascunho local já entregue. | Conferências no servidor e mapa físico |
 | 21 | Protótipo de sugestões no cenário do Painel pronto, publicado em `3faabef`, com recursos públicos conferidos. Faltam capacidade/ocupação/espaço e restrições reais validados, servidor/concorrência/reservas e piloto. | Dados físicos e servidor |
@@ -92,4 +92,4 @@ Três remessas de exemplo, quantidade/condição/observação e declaração de 
 
 ## 18 — cenário-base no Supabase, 02/11/2026
 
-Acesso administrativo disponível novamente. Cenário-base publicado no banco e leitura autenticada integrada; oito testes novos de navegador e novas verificações reais de banco/REST aprovados, nenhum anterior repetido. Estoque operacional preservado. Guia: cenario-supabase-2026-11-02.md. Edições e operações locais ainda não sincronizam; dados reais, regras e piloto continuam pendentes. Publicação do site em andamento.
+Acesso administrativo disponível novamente. Cenário-base publicado no banco e leitura autenticada integrada; oito testes novos de navegador e novas verificações reais de banco/REST aprovados, nenhum anterior repetido. Estoque operacional preservado. Guia: cenario-supabase-2026-11-02.md. Edições e operações locais ainda não sincronizam; dados reais, regras e piloto continuam pendentes. Site publicado em `2150fbc`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.

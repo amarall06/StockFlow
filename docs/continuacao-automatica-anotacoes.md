@@ -304,4 +304,4 @@ Três remessas de exemplo, quantidade/condição/observação e declaração de 
 
 ## 18 — cenário-base no Supabase, 02/11/2026
 
-Acesso administrativo disponível novamente. Cenário-base publicado no banco e leitura autenticada integrada; oito testes novos de navegador e novas verificações reais de banco/REST aprovados, nenhum anterior repetido. Estoque operacional preservado. Guia: cenario-supabase-2026-11-02.md. Edições e operações locais ainda não sincronizam; dados reais, regras e piloto continuam pendentes. Publicação do site em andamento.
+Acesso administrativo disponível novamente. Cenário-base publicado no banco e leitura autenticada integrada; oito testes novos de navegador e novas verificações reais de banco/REST aprovados, nenhum anterior repetido. Estoque operacional preservado. Guia: cenario-supabase-2026-11-02.md. Edições e operações locais ainda não sincronizam; dados reais, regras e piloto continuam pendentes. Site publicado em `2150fbc`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.

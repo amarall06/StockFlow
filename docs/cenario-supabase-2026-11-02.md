@@ -44,3 +44,7 @@ Build e análise aprovados. Nenhum teste anterior executado; publicação usará
 Pode riscar a persistência/publicação e leitura autenticada do cenário-base da 18 no Supabase. Avança a referência compartilhada das 2/18/21 e arquiva os exemplos das 6/19/22/23. Não encerra essas anotações.
 
 Ainda faltam edição compartilhada de mapa/capacidade, concorrência e autorização transacional para operações, sincronização de missões/conferências/decisões de retorno, política operacional e dados físicos reais, identidade/QR, ativação da emissão instantânea da 16 e piloto com contas/aparelhos reais. O acesso ao Supabase agora está disponível; não tratar indisponibilidade anterior como bloqueio atual.
+
+## Publicação do site confirmada
+
+Código `2150fbca6b8f8010a722525cdfc7a952472f976b`, https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/6b5AtkQhhAvKbXMXjyV4a75trCum . Domínio HTTP 200 com entrada atual; treze recursos públicos iguais ao build aprovado, conferidos por hash. Nenhum teste funcional repetido na publicação. Migração/dados já aplicados no Supabase do projeto; não são apenas arquivos preparados. Pode riscar publicação no banco e no site desse cenário-base. Os registros locais e as demais pendências descritas acima continuam com seu alcance original.
