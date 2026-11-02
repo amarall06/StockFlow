@@ -4,6 +4,7 @@ import { capacityRows, demoCapacities, demoLocations, demoStock, parseCapacities
 import { useModalDialog } from '../lib/use-modal-dialog'
 import { FictionalShelfMap } from './FictionalShelfMap'
 import './ShelfCapacity.css'
+import type {PresentationBundle} from '../lib/presentation-bundle'
 
 function CapacityEditor({ location, entry, onSave, onClose }: { location: string; entry: Capacity | null; onSave: (entry: Capacity | null) => void; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null)
@@ -22,15 +23,16 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
     </form>
   </dialog>
 }
-export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean }) {
+export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false, presentationData }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean; presentationData?:PresentationBundle }) {
+  const scenarioStock=presentationData?.stock??demoStock,scenarioLocations=presentationData?.locations??demoLocations,scenarioCapacities=presentationData?.capacities??demoCapacities
   const [mode, setMode] = useState<CapacityMode>('demo')
   const raw = useSyncExternalStore(subscribeCapacities, () => readCapacityRaw(userId, mode), () => null)
   const [editing, setEditing] = useState<{ location: string; raw: string | null; entries: Capacities } | null>(null)
   const [message, setMessage] = useState('')
   let entries: Capacities = {}, error = ''
-  try { entries = mode === 'demo' && raw === null ? demoCapacities : parseCapacities(raw, userId) }
+  try { entries = mode === 'demo' && raw === null ? scenarioCapacities : parseCapacities(raw, userId) }
   catch (caught) { error = caught instanceof Error ? caught.message : 'Não foi possível ler a capacidade.' }
-  const rows = error ? [] : capacityRows(mode === 'demo' ? demoLocations : locations, mode === 'demo' ? demoStock : stock, entries)
+  const rows = error ? [] : capacityRows(mode === 'demo' ? scenarioLocations : locations, mode === 'demo' ? scenarioStock : stock, entries)
   return <section className="inventory-panel dashboard-panel shelf-capacity" aria-label="Ocupação por capacidade física">
     <h2>Ocupação por capacidade física</h2>
     {!demoOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Apresentação — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
@@ -38,7 +40,7 @@ export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = fa
     <p>A barra compara caixas registradas com a capacidade informada, usando caixas de tamanho equivalente. Garantia sem localização física não entra neste cálculo. Zero caixas não comprova espaço físico livre.</p>
     <p>Configuração salva somente nesta conta e navegador; compartilhamento entre aparelhos ainda depende do servidor.</p>
     {error && <p role="alert">{error}</p>}{message && <p role="status">{message}</p>}
-    {mode === 'demo' && !error && <FictionalShelfMap key={userId} userId={userId} canEdit={canEdit} stock={demoStock} capacities={entries}/>}
+    {mode === 'demo' && !error && <FictionalShelfMap key={userId} userId={userId} canEdit={canEdit} stock={scenarioStock} capacities={entries} baseLayout={presentationData?.floorPlan}/>}
     <div className="capacity-grid">{rows.map(row => <article className="capacity-card" aria-label={`${mode === 'demo' ? 'Prateleira' : 'Consultada'} ${row.location}`} key={row.location}>
       <h3>{row.location}</h3><p>{row.boxes} caixas {mode === 'demo' ? '' : 'consultadas'}</p>
       {row.capacity ? <>

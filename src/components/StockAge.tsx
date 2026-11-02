@@ -12,11 +12,11 @@ function AgeEditor({days,onSave}:{days:number;onSave:(value:number)=>void}){
     <button className="theme-toggle" type="submit">Salvar limite de permanência local</button>
   </form>
 }
-export function StockAge({userId,canEdit}:{userId:string;canEdit:boolean}){
+export function StockAge({userId,canEdit,groups=sampleStockAgeGroups,stock=demoStock}:{userId:string;canEdit:boolean;groups?:typeof sampleStockAgeGroups;stock?:typeof demoStock}){
   const raw=useSyncExternalStore(subscribeStockAge,()=>readStockAgeRaw(userId),()=>null)
   const[category,setCategory]=useState('all'),[message,setMessage]=useState({text:'',error:false}),busy=useRef(false)
   let days=90,error='',rows:ReturnType<typeof stockAgeRows>=[]
-  try{days=parseStockAgeDays(raw,userId);rows=stockAgeRows(sampleStockAgeGroups,demoStock,days,stockAgeReference)}catch{error='Não foi possível avaliar a permanência. Dados preservados; confira a configuração e a referência dos grupos.'}
+  try{days=parseStockAgeDays(raw,userId);rows=stockAgeRows(groups,stock,days,stockAgeReference)}catch{error='Não foi possível avaliar a permanência. Dados preservados; confira a configuração e a referência dos grupos.'}
   const visible=rows.filter(row=>category==='all'||isSpringCode(row.code)===(category==='spring'))
   const sum=(situation:string)=>visible.filter(row=>row.situation===situation).reduce((total,row)=>total+row.boxes,0)
   const labels={older:'Limite atingido',recent:'Abaixo do limite',unknown:'Entrada sem data — conferir',future:'Entrada futura — conferir'}

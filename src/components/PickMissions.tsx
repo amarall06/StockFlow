@@ -33,16 +33,16 @@ function CancelMissionForm({ counted, onConfirm }: { counted: number; onConfirm:
     </form>
   </details>
 }
-export function PickMissions({ userId, stock, canOperate }: { userId: string; stock: StockRow[]; canOperate: boolean }) {
+export function PickMissions({ userId, stock, canOperate, orders=sampleOrders }: { userId: string; stock: StockRow[]; canOperate: boolean; orders?:typeof sampleOrders }) {
   const raw = useSyncExternalStore(subscribeMissions, () => readMissionRaw(userId), () => null)
-  const [orderId, setOrderId] = useState(sampleOrders[0].id)
+  const [orderId, setOrderId] = useState(orders[0].id)
   const [feedback, setFeedback] = useState({ text: '', error: false })
   const busy = useRef(false)
   const [exporting, setExporting] = useState(false)
   const exportBusy = useRef(false)
   let state: MissionState | null = null, error = ''
   try { state = parseMissions(raw, userId) } catch { error = 'Não foi possível recuperar as missões locais. Os dados foram preservados; novas separações estão bloqueadas até a revisão.' }
-  const order = sampleOrders.find(row => row.id === orderId)!
+  const order = orders.find(row => row.id === orderId)!
   const mission = state && Object.hasOwn(state.missions, orderId) ? state.missions[orderId] : null
   const current = mission?.status === 'active' ? mission.steps.find(row => row.counted < row.quantity) : null
   const counted = mission?.steps.reduce((sum, row) => sum + row.counted, 0) ?? 0
@@ -68,7 +68,7 @@ export function PickMissions({ userId, stock, canOperate }: { userId: string; st
   return <section className="inventory-panel dashboard-panel pick-missions" aria-label="Modo missão">
     <h2>Modo missão — separar pedidos</h2>
     <p>Prepare o roteiro, confira a leitura e registre as caixas separadas. A disponibilidade da apresentação considera outras missões desta conta e navegador. Separação não registra venda, expedição ou baixa de estoque.</p>
-    <label>Pedido para separar<select value={orderId} onChange={event => { setOrderId(event.target.value); setFeedback({ text: '', error: false }) }}>{sampleOrders.map(row => <option key={row.id} value={row.id}>{row.id} — {row.customer}</option>)}</select></label>
+    <label>Pedido para separar<select value={orderId} onChange={event => { setOrderId(event.target.value); setFeedback({ text: '', error: false }) }}>{orders.map(row => <option key={row.id} value={row.id}>{row.id} — {row.customer}</option>)}</select></label>
     <p><strong>{order.customer}</strong> · {total} caixas solicitadas.</p><ul>{order.items.map(item => <li key={item.code}>{item.code}: {item.boxes} caixas</li>)}</ul>
     {error && <p role="alert">{error}</p>}{feedback.text && <p role={feedback.error ? 'alert' : 'status'}>{feedback.text}</p>}
     {!canOperate && <p>Perfil de consulta: a separação é feita pelo Administrador ou Estoquista.</p>}

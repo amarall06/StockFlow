@@ -9,13 +9,13 @@ function DeadlineEditor({ days, onSave }: { days: number; onSave: (days: number)
     <button type="submit" className="theme-toggle">Salvar prazo local</button>
   </form>
 }
-export function TestingDelay({ userId, canEdit }: { userId: string; canEdit: boolean }) {
+export function TestingDelay({ userId, canEdit, groups=sampleTestingGroups }: { userId: string; canEdit: boolean; groups?:typeof sampleTestingGroups }) {
   const raw = useSyncExternalStore(subscribeTestingDays, () => readTestingDays(userId), () => null)
   const [feedback, setFeedback] = useState({ text: '', error: false })
   const busy = useRef(false)
   let days = 7, error = ''
   try { days = parseTestingDays(raw, userId) } catch { error = 'Não foi possível recuperar o prazo local. Os dados foram preservados; a avaliação está bloqueada até a revisão.' }
-  const rows = error ? [] : testingDelays(sampleTestingGroups, days, testingReference)
+  const rows = error ? [] : testingDelays(groups, days, testingReference)
   const sum = (situation: string) => rows.filter(row => row.situation === situation).reduce((total, row) => total + row.boxes, 0)
   const labels = { overdue: 'Prazo ultrapassado', within: 'Dentro do prazo', unknown: 'Sem data — conferir', future: 'Data futura — conferir' }
   return <section className="inventory-panel dashboard-panel testing-delay" aria-label="Pendências de testagem">

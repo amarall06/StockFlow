@@ -11,12 +11,12 @@ function RecurrenceEditor({ rule, onSave }: { rule: RecurrenceRule; onSave: (rul
     <button className="theme-toggle" type="submit">Salvar regra de recorrência local</button>
   </form>
 }
-export function RecurringDivergences({ userId, canEdit }: { userId: string; canEdit: boolean }) {
+export function RecurringDivergences({ userId, canEdit, checks=sampleDivergenceChecks }: { userId: string; canEdit: boolean; checks?:typeof sampleDivergenceChecks }) {
   const raw = useSyncExternalStore(subscribeRecurrence, () => readRecurrenceRaw(userId), () => null)
   const [message, setMessage] = useState({ text: '', error: false }), busy = useRef(false)
   let rule: RecurrenceRule | null = null, error = ''
   try { rule = parseRecurrenceRule(raw, userId) } catch { error = 'Não foi possível recuperar a regra local. Dados preservados; avaliação bloqueada até revisão.' }
-  const results = rule ? recurringDivergences(sampleDivergenceChecks, rule, recurrenceReference) : []
+  const results = rule ? recurringDivergences(checks, rule, recurrenceReference) : []
   return <section className="inventory-panel dashboard-panel recurring-divergences" aria-label="Divergências recorrentes">
     <h2>Divergências recorrentes</h2>
     <p>Histórico da apresentação em 02/11/2026. Conta conferências distintas revisadas por produto, prateleira e situação. Rascunhos, resultados iguais e datas fora do período não entram.</p>

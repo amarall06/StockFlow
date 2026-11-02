@@ -1,0 +1,415 @@
+{
+  "scenario_key": "liber-presentation-v1",
+  "revision": 1,
+  "payload": {
+    "version": 1,
+    "reference": "2026-11-02",
+    "locations": [
+      "NORTE",
+      "SUL",
+      "LESTE",
+      "OESTE"
+    ],
+    "stock": [
+      {
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Aguardando testagem",
+        "boxes": 20
+      },
+      {
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Liberado para venda",
+        "boxes": 20
+      },
+      {
+        "code": "MGM-35",
+        "location": "SUL",
+        "status": "Em estoque",
+        "boxes": 12
+      },
+      {
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "boxes": 33
+      }
+    ],
+    "capacities": {
+      "NORTE": {
+        "boxes": 40,
+        "basis": "Caixa padrão"
+      },
+      "SUL": {
+        "boxes": 60,
+        "basis": "Caixa padrão"
+      },
+      "LESTE": {
+        "boxes": 30,
+        "basis": "Caixa padrão"
+      },
+      "OESTE": {
+        "boxes": 50,
+        "basis": "Caixa padrão"
+      }
+    },
+    "floorPlan": {
+      "NORTE": {
+        "x": 19,
+        "y": 3,
+        "width": 10,
+        "height": 5
+      },
+      "OESTE": {
+        "x": 5,
+        "y": 12,
+        "width": 9,
+        "height": 6
+      },
+      "LESTE": {
+        "x": 34,
+        "y": 12,
+        "width": 9,
+        "height": 6
+      },
+      "SUL": {
+        "x": 19,
+        "y": 24,
+        "width": 10,
+        "height": 5
+      }
+    },
+    "grid": {
+      "columns": 48,
+      "rows": 32,
+      "cell": 20
+    },
+    "spaceChecks": {
+      "NORTE": {
+        "kinds": [
+          "shock"
+        ],
+        "statuses": [
+          "Aguardando testagem",
+          "Liberado para venda"
+        ],
+        "verifiedFree": 0,
+        "basis": "Caixa padrão",
+        "divergence": false
+      },
+      "SUL": {
+        "kinds": [
+          "spring"
+        ],
+        "statuses": [
+          "Em estoque"
+        ],
+        "verifiedFree": 30,
+        "basis": "Caixa padrão",
+        "divergence": false
+      },
+      "LESTE": {
+        "kinds": [
+          "shock"
+        ],
+        "statuses": [
+          "Liberado para venda"
+        ],
+        "verifiedFree": 10,
+        "basis": "Caixa padrão",
+        "divergence": true
+      },
+      "OESTE": {
+        "kinds": [
+          "shock",
+          "spring"
+        ],
+        "statuses": [
+          "Aguardando testagem",
+          "Liberado para venda",
+          "Em estoque"
+        ],
+        "verifiedFree": 40,
+        "basis": "Caixa padrão",
+        "divergence": false
+      }
+    },
+    "counts": {
+      "LESTE": {
+        "reference": 33,
+        "counted": 31
+      }
+    },
+    "orders": [
+      {
+        "id": "PED-1001",
+        "customer": "Oficina Horizonte",
+        "items": [
+          {
+            "code": "AGM-35",
+            "boxes": 8
+          },
+          {
+            "code": "MGM-35",
+            "boxes": 4
+          }
+        ]
+      },
+      {
+        "id": "PED-1002",
+        "customer": "Auto Peças Central",
+        "items": [
+          {
+            "code": "AGM-35",
+            "boxes": 9
+          },
+          {
+            "code": "MGM-35",
+            "boxes": 5
+          }
+        ]
+      },
+      {
+        "id": "PED-1003",
+        "customer": "Oficina Avenida",
+        "items": [
+          {
+            "code": "AGM-35",
+            "boxes": 7
+          },
+          {
+            "code": "MGM-35",
+            "boxes": 4
+          }
+        ]
+      }
+    ],
+    "testingGroups": [
+      {
+        "id": "T-01",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "boxes": 8,
+        "kind": "shock",
+        "awaiting": true,
+        "since": "2026-10-31"
+      },
+      {
+        "id": "T-02",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "boxes": 7,
+        "kind": "shock",
+        "awaiting": true,
+        "since": "2026-10-25"
+      },
+      {
+        "id": "T-03",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "boxes": 3,
+        "kind": "shock",
+        "awaiting": true,
+        "since": "2026-10-17"
+      },
+      {
+        "id": "T-04",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "boxes": 2,
+        "kind": "shock",
+        "awaiting": true,
+        "since": null
+      }
+    ],
+    "divergenceChecks": [
+      {
+        "sessionId": "C-101",
+        "date": "2026-10-08",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "expected": 32,
+        "counted": 30,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-102",
+        "date": "2026-10-20",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "expected": 31,
+        "counted": 32,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-103",
+        "date": "2026-10-31",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "expected": 33,
+        "counted": 30,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-104",
+        "date": "2026-10-12",
+        "code": "MGM-35",
+        "location": "SUL",
+        "status": "Em estoque",
+        "expected": 12,
+        "counted": 13,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-105",
+        "date": "2026-10-30",
+        "code": "MGM-35",
+        "location": "SUL",
+        "status": "Em estoque",
+        "expected": 12,
+        "counted": 11,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-106",
+        "date": "2026-10-22",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Liberado para venda",
+        "expected": 20,
+        "counted": 20,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-107",
+        "date": "2026-09-01",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "expected": 30,
+        "counted": 28,
+        "reviewed": true
+      },
+      {
+        "sessionId": "C-108",
+        "date": "2026-11-01",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "expected": 33,
+        "counted": 20,
+        "reviewed": false
+      }
+    ],
+    "stockAgeGroups": [
+      {
+        "id": "E-01",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Aguardando testagem",
+        "boxes": 8,
+        "receivedOn": "2026-10-31"
+      },
+      {
+        "id": "E-02",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Aguardando testagem",
+        "boxes": 7,
+        "receivedOn": "2026-10-25"
+      },
+      {
+        "id": "E-03",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Aguardando testagem",
+        "boxes": 3,
+        "receivedOn": "2026-10-17"
+      },
+      {
+        "id": "E-04",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Aguardando testagem",
+        "boxes": 2,
+        "receivedOn": null
+      },
+      {
+        "id": "E-05",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Liberado para venda",
+        "boxes": 15,
+        "receivedOn": "2026-07-15"
+      },
+      {
+        "id": "E-06",
+        "code": "AGM-35",
+        "location": "NORTE",
+        "status": "Liberado para venda",
+        "boxes": 5,
+        "receivedOn": "2026-10-28"
+      },
+      {
+        "id": "E-07",
+        "code": "MGM-35",
+        "location": "SUL",
+        "status": "Em estoque",
+        "boxes": 9,
+        "receivedOn": "2026-09-01"
+      },
+      {
+        "id": "E-08",
+        "code": "MGM-35",
+        "location": "SUL",
+        "status": "Em estoque",
+        "boxes": 3,
+        "receivedOn": "2026-10-28"
+      },
+      {
+        "id": "E-09",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "boxes": 20,
+        "receivedOn": "2026-07-01"
+      },
+      {
+        "id": "E-10",
+        "code": "AGM-35",
+        "location": "LESTE",
+        "status": "Liberado para venda",
+        "boxes": 13,
+        "receivedOn": null
+      }
+    ],
+    "postalReturns": [
+      {
+        "id": "RET-2001",
+        "shipment": "REM-401",
+        "customer": "Oficina Horizonte",
+        "code": "AGM-35",
+        "expected": 4
+      },
+      {
+        "id": "RET-2002",
+        "shipment": "REM-402",
+        "customer": "Auto Peças Central",
+        "code": "MGM-35",
+        "expected": 3
+      },
+      {
+        "id": "RET-2003",
+        "shipment": "REM-403",
+        "customer": "Oficina Avenida",
+        "code": "AGM-35",
+        "expected": 2
+      }
+    ]
+  },
+  "published_at": "2026-11-02T14:30:00Z"
+}

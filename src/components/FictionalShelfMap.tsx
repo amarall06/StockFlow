@@ -8,13 +8,13 @@ import { FloorRackEditor } from './FloorRackEditor'
 import { subscribeMissionLocation } from '../lib/map-navigation'
 import { floorGrid, floorPlanKey, initialFloorPlan, parseFloorPlan, saveFloorPlan, validateFloorPlan, type FloorPlan } from '../lib/floor-plan'
 
-export function FictionalShelfMap({ stock, capacities, userId, canEdit }: { stock: StockRow[]; capacities: Capacities; userId: string; canEdit: boolean }) {
+export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayout=initialFloorPlan }: { stock: StockRow[]; capacities: Capacities; userId: string; canEdit: boolean; baseLayout?:FloorPlan }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const buttons = useRef(new Map<string, HTMLButtonElement>())
   useEffect(() => subscribeMissionLocation(userId, location => { setSelected(location); const button = buttons.current.get(location); button?.focus(); button?.scrollIntoView({ block: 'nearest', inline: 'nearest' }) }), [userId])
   const viewport = useRef<HTMLDivElement>(null)
-  const [saved] = useState(() => { try { const raw = localStorage.getItem(floorPlanKey(userId)); return { raw, layout: parseFloorPlan(raw, userId), error: '' } } catch { return { raw: null, layout: structuredClone(initialFloorPlan), error: 'Não foi possível ler a planta salva. Os dados foram preservados; gravação bloqueada.' } } })
+  const [saved] = useState(() => { try { const raw = localStorage.getItem(floorPlanKey(userId)); return { raw, layout: raw===null?structuredClone(validateFloorPlan(baseLayout)):parseFloorPlan(raw, userId), error: '' } } catch { return { raw: null, layout: structuredClone(initialFloorPlan), error: 'Não foi possível ler a planta salva. Os dados foram preservados; gravação bloqueada.' } } })
   const originalRaw = useRef(saved.raw)
   const [layout, setLayout] = useState<FloorPlan>(saved.layout)
   const [zoom, setZoom] = useState(0.75)

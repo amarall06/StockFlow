@@ -13,12 +13,12 @@ function ReceiptForm({expected,onSave}:{expected:number;onSave:(counted:number,c
     <button type="submit" className="theme-toggle">Registrar retorno para avaliação</button>
   </form>
 }
-export function PostalReturns({userId,canOperate}:{userId:string;canOperate:boolean}){
+export function PostalReturns({userId,canOperate,sources=samplePostalReturns}:{userId:string;canOperate:boolean;sources?:typeof samplePostalReturns}){
   const raw=useSyncExternalStore(subscribePostalReturns,()=>readPostalReturnsRaw(userId),()=>null)
-  const[id,setId]=useState(samplePostalReturns[0].id),[message,setMessage]=useState({text:'',error:false}),busy=useRef(false)
+  const[id,setId]=useState(sources[0].id),[message,setMessage]=useState({text:'',error:false}),busy=useRef(false)
   let state:PostalReturnState|null=null,error=''
   try{state=parsePostalReturns(raw,userId)}catch{error='Não foi possível recuperar os retornos locais. Dados preservados; recebimento bloqueado até revisão.'}
-  const source=samplePostalReturns.find(row=>row.id===id)!,receipt=state&&Object.hasOwn(state.receipts,id)?state.receipts[id]:null
+  const source=sources.find(row=>row.id===id)!,receipt=state&&Object.hasOwn(state.receipts,id)?state.receipts[id]:null
   const entries=state?Object.values(state.receipts):[]
   return <section className="inventory-panel dashboard-panel postal-returns" aria-label="Retornos dos Correios">
     <h2>Retornos dos Correios</h2>
@@ -26,7 +26,7 @@ export function PostalReturns({userId,canOperate}:{userId:string;canOperate:bool
     <p>O retorno fica aguardando decisão de destino. Não libera caixas para venda, não desfaz expedição e não aumenta o estoque de 85 caixas do cenário.</p>
     {error&&<p role="alert">{error}</p>}{message.text&&<p role={message.error?'alert':'status'}>{message.text}</p>}
     {state&&<p role="status">{entries.length} {entries.length===1?'retorno aguardando':'retornos aguardando'} decisão de destino · {entries.reduce((total,row)=>total+row.counted,0)} caixas recebidas para avaliação.</p>}
-    <label>Retorno para conferir<select value={id} onChange={event=>{setId(event.target.value);setMessage({text:'',error:false})}}>{samplePostalReturns.map(row=><option key={row.id} value={row.id}>{row.id} — {row.customer}</option>)}</select></label>
+    <label>Retorno para conferir<select value={id} onChange={event=>{setId(event.target.value);setMessage({text:'',error:false})}}>{sources.map(row=><option key={row.id} value={row.id}>{row.id} — {row.customer}</option>)}</select></label>
     <p>{source.shipment} · {source.customer} · {source.code} · {source.expected} caixas esperadas.</p>
     {receipt?<section aria-label="Registro do retorno"><h3>Aguardando decisão de destino</h3>
       <p>{receipt.counted} de {source.expected} caixas recebidas · {postalConditionLabels[receipt.condition]}</p><p>Observação: {receipt.notes}</p>
