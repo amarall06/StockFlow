@@ -31,4 +31,4 @@ Pode riscar **consulta dos envios anteriores aos 50 mais recentes e integração
 
 ## Publicação
 
-Aguardando confirmação.
+Publicado em `c154d88c3f9a8fc10cbc983323f46828b83d0bc8`, Vercel success. Domínio HTTP 200 e quatorze recursos públicos iguais ao build aprovado. Nenhum teste funcional repetido na publicação.
