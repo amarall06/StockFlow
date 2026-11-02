@@ -1,0 +1,11 @@
+begin;
+select set_config('request.jwt.claim.sub',(select id::text from public.profiles where is_active and role='administrator' order by id limit 1),true);
+set local role authenticated;
+do $$ declare sample jsonb;begin
+ for sample in select * from jsonb_array_elements('[{"source_id":"14d08e01-bee6-4ee3-a651-eefb964e4d2f","scenario_revision":1,"location":"NORTE","rows":[{"code":"AGM-35","status":"Aguardando testagem","expected":20,"counted":19},{"code":"AGM-35","status":"Liberado para venda","expected":20,"counted":20}],"notes":"Contagem do roteiro de apresentação; aguardando revisão.","consulted_at":"2026-11-02T14:30:00Z","started_at":"2026-11-02T15:00:00Z"},{"source_id":"d8f16693-afac-4b66-a35a-ca2545a3bbda","scenario_revision":1,"location":"SUL","rows":[{"code":"MGM-35","status":"Em estoque","expected":12,"counted":13}],"notes":"Contagem do roteiro de apresentação; aguardando revisão.","consulted_at":"2026-11-02T14:30:00Z","started_at":"2026-11-02T15:00:00Z"},{"source_id":"69ca67ce-805b-4406-bc78-9f0414c431e9","scenario_revision":1,"location":"OESTE","rows":[],"notes":"Contagem do roteiro de apresentação; aguardando revisão.","consulted_at":"2026-11-02T14:30:00Z","started_at":"2026-11-02T15:00:00Z"}]'::jsonb) loop
+  perform public.submit_presentation_shelf_count(sample);
+ end loop;
+end $$;
+reset role;
+commit;
+select count(*) as presentation_count_examples from public.presentation_shelf_counts;

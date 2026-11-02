@@ -1,0 +1,12 @@
+.presentation-counts { padding: 24px; overflow-wrap: anywhere; }
+.presentation-counts p { color: #586872; line-height: 1.6; }
+.presentation-counts form { margin: 16px 0; }
+.presentation-counts form>label { display: block; margin: 12px 0; }
+.presentation-count-session { min-width: 0; padding: 12px; border: 1px solid #78858c; border-radius: 8px; }
+.presentation-counts>ul { list-style: none; padding: 0; }
+.presentation-counts>ul>li { margin: 12px 0; padding: 12px; border: 1px solid #78858c; border-radius: 8px; }
+.presentation-counts summary { cursor: pointer; }
+.presentation-counts [role=alert] { color: #a73c35; }
+.theme-dark .presentation-counts p { color: #c0aca1; }
+.theme-dark .presentation-counts [role=alert] { color: #ffb8ac; }
+@media(max-width:650px) { .presentation-counts { padding: 12px; } .presentation-count-session { padding: 8px; } }

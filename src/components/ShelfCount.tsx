@@ -42,7 +42,7 @@ export function ShelfCountDivergences({ userId, category, stock, onOpen }: { use
   </section>
 }
 const formatDate = (value: string) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Bahia', dateStyle: 'short', timeStyle: 'short' }).format(new Date(value))
-export function ShelfCount({ userId, stock, catalog, locations, consultedAt, onRefresh }: { userId: string; stock: StockRow[]; catalog: Record<string, ProductInfo>; locations: string[]; consultedAt: string; onRefresh: () => Promise<unknown> }) {
+export function ShelfCount({ userId, stock, catalog, locations, consultedAt, onRefresh, presentationSharing=false }: { userId: string; stock: StockRow[]; catalog: Record<string, ProductInfo>; locations: string[]; consultedAt: string; onRefresh: () => Promise<unknown>;presentationSharing?:boolean }) {
   const { raw, draft, error } = useDraft(userId)
   const [location, setLocation] = useState('')
   const [code, setCode] = useState('')
@@ -57,7 +57,7 @@ export function ShelfCount({ userId, stock, catalog, locations, consultedAt, onR
   }
   return <details className="inventory-panel shelf-count" id="shelf-count">
     <summary>Conferência de prateleira — contagem local</summary>
-    <p>Conte caixas por produto e situação. Este rascunho fica somente nesta conta e aparelho, pode ser exportado para revisão e não altera o estoque. Envio e aprovação ainda não estão disponíveis.</p>
+    <p>Conte caixas por produto e situação. Este rascunho fica somente nesta conta e aparelho, pode ser exportado para revisão e não altera o estoque. {presentationSharing?'Use o envio compartilhado abaixo para registrar uma cópia aguardando revisão. Não há aprovação nem ajuste de saldo nesta apresentação.':'Envio e aprovação ainda não estão disponíveis.'}</p>
     {error && <p className="auth-error" role="alert">{error}</p>}
     {message && <p role="status">{message}</p>}
     {!draft && !error && <form onSubmit={event => { event.preventDefault(); try { if (!navigator.onLine || !locations.includes(location)) throw new Error('Conecte e selecione uma prateleira válida antes de iniciar.'); save(beginShelfCount(userId, location, stock, consultedAt)) } catch (caught) { setMessage(caught instanceof Error ? caught.message : 'Não foi possível iniciar.') } }}>
