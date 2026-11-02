@@ -16,6 +16,7 @@ import {loadRecountLinks,loadRelatedCount} from '../lib/presentation-recounts-ap
 import {SharedCountMap} from './SharedCountMap'
 import {RecurringDivergences} from './RecurringDivergences'
 import {bahiaDay,sharedDivergenceChecks} from '../lib/shared-divergence-checks'
+import {SharedCountPending} from './SharedCountPending'
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(value))
 
 function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boolean;onBusy:(busy:boolean)=>void;onSaved:(count:SharedCount)=>void;receipt:SharedCount|undefined}){
@@ -88,6 +89,7 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
   return <section className="inventory-panel presentation-counts" aria-label="Contagens compartilhadas">
     <h2>Conferência de prateleiras</h2><p>Referência da apresentação: Norte, Sul, Leste e Oeste. O Administrador pode aprovar uma contagem ou solicitar recontagem, com justificativa. As decisões ficam separadas do estoque operacional e não ajustam saldos.</p>
     {message&&<p role="status">{message}</p>}
+    {rows!==null&&<SharedCountPending counts={rows} reviews={reviews} links={links} canReview={canReview} canOperate={canOperate} stale={Boolean(error)} onOpen={id=>{focusCount(id)}}/>}
     {canOperate?<fieldset className="presentation-count-session" disabled={sending}><legend>Preparar e enviar contagem</legend>
       <ShelfCount userId={userId} stock={data.stock} catalog={catalog} locations={data.locations} consultedAt={consultedAt} presentationSharing onRefresh={async()=>{await loadPublishedPresentation(AbortSignal.timeout(15000));setConsultedAt(new Date().toISOString())}}/>
       {draft&&<SendCount key={draft.id} draft={draft} ready={ready&&!error} onBusy={setSending} receipt={receipt} onSaved={saved=>{

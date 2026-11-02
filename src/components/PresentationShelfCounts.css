@@ -6,6 +6,10 @@
 .presentation-counts>ul { list-style: none; padding: 0; }
 .presentation-counts>ul>li { margin: 12px 0; padding: 12px; border: 1px solid #78858c; border-radius: 8px; }
 .presentation-counts summary { cursor: pointer; }
+.shared-count-pending { margin:16px 0;padding:16px;border:1px solid #78858c;border-radius:8px; }
+.shared-count-pending ul { list-style:none;padding:0;display:grid;gap:12px; }
+.shared-count-pending li { padding:12px;border:1px solid #78858c;border-radius:6px; }
+.shared-count-pending :focus-visible { outline:3px solid currentColor;outline-offset:3px; }
 .shared-count-compass { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0; }
 .shared-count-region { min-width:0;padding:12px;border:1px solid #78858c;border-radius:8px; }
 .shared-count-region h4 { margin:0;font-size:1rem; }
