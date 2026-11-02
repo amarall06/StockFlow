@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test'
-import {prepareKeyboardPage} from './helpers/keyboard'
+import {prepareKeyboardPage as prepareBase} from './helpers/keyboard'
+async function prepareKeyboardPage(page){const writes=await prepareBase(page);await page.getByLabel('Dados do gráfico de capacidade').selectOption('demo');return writes}
 test('configuração ilegível ou de outra conta não é substituída pelos exemplos',async({page})=>{
   await prepareKeyboardPage(page)
   const chart=page.getByRole('region',{name:'Ocupação por capacidade física'})
@@ -13,7 +14,7 @@ test('configuração ilegível ou de outra conta não é substituída pelos exem
 test('perfil Consulta visualiza exemplos mas não recebe controles de edição',async({page})=>{
   await prepareKeyboardPage(page)
   await page.route('**/rest/v1/profiles*',route=>route.fulfill({json:{is_active:true,display_name:'Consulta',role:'viewer'}}))
-  await page.reload()
+  await page.reload();await page.getByLabel('Dados do gráfico de capacidade').selectOption('demo')
   const chart=page.getByRole('region',{name:'Ocupação por capacidade física'})
   await expect(chart).toContainText('Prateleiras Norte, Sul, Leste e Oeste')
   await expect(chart.getByRole('button',{name:/Configurar capacidade/})).toHaveCount(0)

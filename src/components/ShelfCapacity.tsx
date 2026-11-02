@@ -25,7 +25,7 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
 }
 export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false, presentationData, sharedView=false }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean; presentationData?:PresentationBundle; sharedView?:boolean }) {
   const scenarioStock=presentationData?.stock??demoStock,scenarioLocations=presentationData?.locations??demoLocations,scenarioCapacities=presentationData?.capacities??demoCapacities
-  const [mode, setMode] = useState<CapacityMode>('demo')
+  const [mode, setMode] = useState<CapacityMode>(demoOnly ? 'demo' : 'stock')
   const raw = useSyncExternalStore(subscribeCapacities, () => readCapacityRaw(userId, mode), () => null)
   const [editing, setEditing] = useState<{ location: string; raw: string | null; entries: Capacities } | null>(null)
   const [message, setMessage] = useState('')

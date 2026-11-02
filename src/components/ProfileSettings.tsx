@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { updateOwnDisplayName } from '../lib/profile-api'
 import './ProfileSettings.css'
+import { TeamAccess } from './TeamAccess'
 
 const roleLabels: Record<string, string> = {
   administrator: 'Administrador', receiving: 'Recebimento', tester: 'Testador', stockkeeper: 'Estoquista', viewer: 'Consulta',
@@ -47,5 +48,6 @@ export function ProfileSettings({ displayName, email, role, apiVersion, onUpdate
         <button className="add-product-button" type="submit" disabled={!ready || saving || !name.trim() || name.trim() === (displayName ?? '')}>{saving ? 'Salvando…' : 'Salvar nome'}</button>
       </form>
     </section>
+    {role === 'administrator' && <TeamAccess/>}
   </>
 }

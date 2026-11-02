@@ -1,6 +1,7 @@
 import {test,expect} from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
-import {prepareKeyboardPage} from './helpers/keyboard'
+import {prepareKeyboardPage as prepareBase} from './helpers/keyboard'
+async function prepareKeyboardPage(page){const writes=await prepareBase(page);await page.getByLabel('Dados do gráfico de capacidade').selectOption('demo');return writes}
 const region=page=>page.getByRole('region',{name:'Ocupação por capacidade física'})
 async function edit(page,location,boxes,basis='Caixa padrão de teste'){
   await region(page).getByRole('button',{name:`Configurar capacidade de ${location}`,exact:true}).click()
