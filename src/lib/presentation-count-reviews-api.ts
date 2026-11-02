@@ -1,16 +1,20 @@
 import {supabase} from './supabase'
-import {parseCountReview,reviewInput,type CountDecision} from './presentation-count-reviews'
+import {parseCountReview,reviewInput,type CountDecision,type CountReview} from './presentation-count-reviews'
 import type {SharedCount} from './presentation-counts'
 export async function loadCountReviews(counts:SharedCount[],signal:AbortSignal){
   if(!counts.length)return []
   if(!supabase)throw Error('Não foi possível conectar ao banco.')
-  const {data,error}=await supabase.from('presentation_count_reviews').select('*').in('count_id',counts.map(count=>count.id)).order('count_id').abortSignal(signal)
+  const reviews:CountReview[]=[]
+  for(let offset=0;offset<counts.length;offset+=50){
+  const {data,error}=await supabase.from('presentation_count_reviews').select('*').in('count_id',counts.slice(offset,offset+50).map(count=>count.id)).order('count_id').abortSignal(signal)
   if(error||!Array.isArray(data))throw Error('Não foi possível consultar as decisões das contagens.')
-  return data.map(value=>{
+  reviews.push(...data.map(value=>{
     const count=counts.find(count=>count.id===value.count_id)
     if(!count)throw Error('Revisão sem contagem correspondente.')
     return parseCountReview(value,count)
-  })
+  }))
+  }
+  return reviews
 }
 export async function reviewPresentationCount(count:SharedCount,decision:CountDecision,note:string,requestId:string){
   if(!supabase)throw Error('Não foi possível conectar ao banco.')

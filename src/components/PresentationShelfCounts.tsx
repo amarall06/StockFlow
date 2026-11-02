@@ -51,6 +51,7 @@ function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boole
 export function PresentationShelfCounts({userId,canOperate,canReview=false,ready,data}:{userId:string;canOperate:boolean;canReview?:boolean;ready:boolean;data:PresentationBundle}){
   const[rows,setRows]=useState<SharedCount[]|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[sending,setSending]=useState(false)
   const[recurrenceDay,setRecurrenceDay]=useState(()=>bahiaDay(new Date().toISOString()))
+  const[historyLimit,setHistoryLimit]=useState(50),[confirmedLimit,setConfirmedLimit]=useState(0),[hasMore,setHasMore]=useState(false),[historyBusy,setHistoryBusy]=useState(false)
   const[consultedAt,setConsultedAt]=useState(()=>new Date().toISOString()),refresh=useRef(()=>{})
   const[reviews,setReviews]=useState<Record<string,CountReview>>({}),reviewCache=useRef<Record<string,CountReview>>({})
   const[links,setLinks]=useState<RecountLink[]>([]),linkCache=useRef<RecountLink[]>([]),extraCounts=useRef(new Map<string,SharedCount>()),focusTarget=useRef(''),followSequence=useRef(0),alive=useRef(true)
@@ -59,23 +60,26 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
   try{draft=parseShelfCount(raw,userId)}catch{/* O editor existente mostra o erro e preserva os dados. */}
   useEffect(()=>{
     alive.current=true
-    let live=true,sequence=0,controller:AbortController|undefined,timeout:number|undefined,noticeTimer:number|undefined
-    const read=async()=>{
+    let live=true,sequence=0,pending=false,queued=false,controller:AbortController|undefined,timeout:number|undefined,noticeTimer:number|undefined
+    const read=async():Promise<void>=>{
+      if(pending){queued=true;return}
+      pending=true
       const request=++sequence;controller?.abort();window.clearTimeout(timeout)
       const current=new AbortController();controller=current;timeout=window.setTimeout(()=>current.abort(),15000)
       try{
-        const recent=await loadPresentationCounts(current.signal),result=[...recent,...[...extraCounts.current.values()].filter(count=>!recent.some(row=>row.id===count.id))]
+        const recent=await loadPresentationCounts(current.signal,historyLimit),result=[...recent,...[...extraCounts.current.values()].filter(count=>!recent.some(row=>row.id===count.id))]
         const [decisions,origins]=await Promise.all([loadCountReviews(result,current.signal),loadRecountLinks(result,current.signal)])
-        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result),mergedLinks=mergeRecountLinks(linkCache.current,origins,result);reviewCache.current=merged;linkCache.current=mergedLinks;setLinks(mergedLinks);setReviews(merged);setRows(result);setRecurrenceDay(bahiaDay(new Date().toISOString()));setError('')}
+        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result),mergedLinks=mergeRecountLinks(linkCache.current,origins,result);reviewCache.current=merged;linkCache.current=mergedLinks;setLinks(mergedLinks);setReviews(merged);setRows(result);setRecurrenceDay(bahiaDay(new Date().toISOString()));setConfirmedLimit(historyLimit);setHasMore(recent.length===historyLimit);setError('')}
       }
       catch{if(live&&request===sequence)setError('Não foi possível atualizar as contagens compartilhadas. Os registros já consultados foram mantidos; confira sua conexão e seu acesso.')}
+      finally{pending=false;if(live&&request===sequence)setHistoryBusy(false);if(live&&queued){queued=false;void read()}}
     }
     const resume=()=>{void read()},notice=()=>{if(navigator.onLine&&document.visibilityState==='visible'){window.clearTimeout(noticeTimer);noticeTimer=window.setTimeout(resume,150)}}
     refresh.current=resume;void read()
     const interval=window.setInterval(()=>{if(navigator.onLine&&document.visibilityState==='visible')void read()},10000)
     window.addEventListener('focus',resume);window.addEventListener('online',resume);window.addEventListener(INVENTORY_CHANGE_EVENT,notice)
     return()=>{live=false;alive.current=false;controller?.abort();window.clearTimeout(timeout);window.clearTimeout(noticeTimer);window.clearInterval(interval);window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener(INVENTORY_CHANGE_EVENT,notice)}
-  },[])
+  },[historyLimit])
   function focusCount(id:string){const details=document.getElementById(`presentation-count-${id}`)?.querySelector<HTMLDetailsElement>('details');if(!details)return false;details.open=true;details.querySelector('summary')?.focus();details.scrollIntoView({block:'nearest'});return true}
   useEffect(()=>{if(!focusTarget.current)return;const frame=requestAnimationFrame(()=>{if(focusCount(focusTarget.current))focusTarget.current=''});return()=>cancelAnimationFrame(frame)},[rows])
   async function follow(id:string){
@@ -93,13 +97,15 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
     {canOperate?<fieldset className="presentation-count-session" disabled={sending}><legend>Preparar e enviar contagem</legend>
       <ShelfCount userId={userId} stock={data.stock} catalog={catalog} locations={data.locations} consultedAt={consultedAt} presentationSharing onRefresh={async()=>{await loadPublishedPresentation(AbortSignal.timeout(15000));setConsultedAt(new Date().toISOString())}}/>
       {draft&&<SendCount key={draft.id} draft={draft} ready={ready&&!error} onBusy={setSending} receipt={receipt} onSaved={saved=>{
-        setRows(previous=>[saved,...(previous??[]).filter(row=>row.id!==saved.id)].sort((a,b)=>b.created_at.localeCompare(a.created_at)||b.id.localeCompare(a.id)).slice(0,50))
+        setRows(previous=>[saved,...(previous??[]).filter(row=>row.id!==saved.id)].sort((a,b)=>b.created_at.localeCompare(a.created_at)||b.id.localeCompare(a.id)).slice(0,historyLimit))
         setMessage(`Envio confirmado: ${saved.id}. Consulte a decisão no histórico; nenhum saldo foi alterado.`);refresh.current()
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
     {rows!==null&&<SharedCountMap counts={rows} reviews={reviews} userId={userId} onHistory={id=>{focusCount(id)}} stale={Boolean(error)}/>}
     {rows!==null&&<RecurringDivergences userId={userId} canEdit={canReview} checks={sharedDivergenceChecks(rows,reviews)} reference={recurrenceDay} shared stale={Boolean(error)} onEvidence={id=>{focusCount(id)}}/>}
-    <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, mais as contagens vinculadas abertas nesta tela. Use os vínculos para acompanhar a origem e cada recontagem. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
+    <h3>Histórico de envios e decisões</h3><p>Começa pelos 50 envios mais recentes. Carregue os anteriores para ampliar também o mapa, as pendências e a recorrência desta consulta. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
+    {hasMore&&<button type="button" className="theme-toggle" disabled={historyBusy} onClick={()=>{setHistoryBusy(true);if(confirmedLimit<historyLimit)refresh.current();else setHistoryLimit(value=>value+50)}}>{historyBusy?'Consultando envios anteriores…':'Carregar mais 50 envios anteriores'}</button>}
+    {rows!==null&&<p role="status">{rows.length} envios carregados nesta consulta, incluindo vínculos abertos.</p>}
     <button type="button" className="theme-toggle" onClick={()=>refresh.current()}>Atualizar contagens compartilhadas</button>
     {error&&<p role="alert">{error}</p>}{rows===null&&!error&&<p role="status">Consultando contagens…</p>}
     {rows?.length===0&&<p>Nenhuma contagem enviada nesta apresentação.</p>}

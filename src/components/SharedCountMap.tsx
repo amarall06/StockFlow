@@ -10,7 +10,7 @@ export function SharedCountMap({counts,reviews,userId,onHistory,stale}:{counts:S
  const[error,setError]=useState('')
  return <section aria-label="Mapa das conferências compartilhadas" className="shared-count-map">
   <h3>Conferências por região</h3>
-  <p>Envios e decisões da apresentação consultados nesta tela: até 50 envios recentes, mais os vínculos abertos. Sem registro nesta consulta não significa prateleira conferida. Aprovação não altera o estoque nem comprova espaço livre.</p>
+  <p>Envios e decisões da apresentação consultados nesta tela: envios carregados e vínculos abertos. Sem registro nesta consulta não significa prateleira conferida. Aprovação não altera o estoque nem comprova espaço livre.</p>
   {stale&&<p role="status">Exibindo a consulta anterior; aguarde a atualização antes de usar estes resultados.</p>}
   <div className="shared-count-compass">
    {regionalLocations.map(location=>{
