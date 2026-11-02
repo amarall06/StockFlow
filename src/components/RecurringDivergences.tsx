@@ -11,15 +11,16 @@ function RecurrenceEditor({ rule, onSave }: { rule: RecurrenceRule; onSave: (rul
     <button className="theme-toggle" type="submit">Salvar regra de recorrência local</button>
   </form>
 }
-export function RecurringDivergences({ userId, canEdit, checks=sampleDivergenceChecks }: { userId: string; canEdit: boolean; checks?:typeof sampleDivergenceChecks }) {
+export function RecurringDivergences({ userId, canEdit, checks=sampleDivergenceChecks, reference=recurrenceReference, shared=false, stale=false, onEvidence }: { userId: string; canEdit: boolean; checks?:typeof sampleDivergenceChecks; reference?:string; shared?:boolean; stale?:boolean; onEvidence?:(id:string)=>void }) {
   const raw = useSyncExternalStore(subscribeRecurrence, () => readRecurrenceRaw(userId), () => null)
   const [message, setMessage] = useState({ text: '', error: false }), busy = useRef(false)
   let rule: RecurrenceRule | null = null, error = ''
   try { rule = parseRecurrenceRule(raw, userId) } catch { error = 'Não foi possível recuperar a regra local. Dados preservados; avaliação bloqueada até revisão.' }
-  const results = rule ? recurringDivergences(checks, rule, recurrenceReference) : []
-  return <section className="inventory-panel dashboard-panel recurring-divergences" aria-label="Divergências recorrentes">
-    <h2>Divergências recorrentes</h2>
-    <p>Histórico da apresentação em 02/11/2026. Conta conferências distintas revisadas por produto, prateleira e situação. Rascunhos, resultados iguais e datas fora do período não entram.</p>
+  const results = rule ? recurringDivergences(checks, rule, reference) : []
+  return <section className="inventory-panel dashboard-panel recurring-divergences" aria-label={shared?'Recorrência das conferências compartilhadas':'Divergências recorrentes'}>
+    <h2>{shared?'Recorrência das conferências compartilhadas':'Divergências recorrentes'}</h2>
+    {shared?<p>Somente contagens aprovadas da apresentação nesta consulta: até 50 envios recentes, mais vínculos abertos. Data de referência: {reference.split('-').reverse().join('/')}, em America/Bahia; o período usa a data de envio da contagem. Pendentes e pedidos de recontagem não entram. A ausência de recorrência nesta amostra não comprova ausência no histórico completo.</p>:<p>Histórico da apresentação em 02/11/2026. Conta conferências distintas revisadas por produto, prateleira e situação. Rascunhos, resultados iguais e datas fora do período não entram.</p>}
+    {stale&&<p role="status">Resultados da consulta anterior; não foi possível atualizar as conferências compartilhadas.</p>}
     <p>As diferenças históricas não são o saldo atual e não representam ajuste ou aprovação de estoque. Esta regra local não define a política real da empresa.</p>
     {error && <p role="alert">{error}</p>}{message.text && <p role={message.error ? 'alert' : 'status'}>{message.text}</p>}
     {rule && <>
@@ -28,7 +29,7 @@ export function RecurringDivergences({ userId, canEdit, checks=sampleDivergenceC
       <ul aria-label="Recorrências encontradas">{results.map(result => <li key={JSON.stringify([result.code,result.location,result.status])}>
         <h3>{result.code} — {result.location}</h3><p>{result.status} · {result.evidence.length} conferências com diferença</p>
         <p>Soma das diferenças absolutas: {result.absoluteDifference} caixas. Não é saldo a ajustar.</p>
-        <details><summary>Ver conferências de {result.code} em {result.location}</summary><ul>{result.evidence.map(check => <li key={check.sessionId}>{check.sessionId} · {check.date.split('-').reverse().join('/')} · Esperado: {check.expected} · Contado: {check.counted} · Diferença: {check.difference > 0 ? '+' : ''}{check.difference}</li>)}</ul></details>
+        <details><summary>Ver conferências de {result.code} em {result.location}</summary><ul>{result.evidence.map(check => <li key={check.sessionId}>{check.sessionId} · {check.date.split('-').reverse().join('/')} · Esperado: {check.expected} · Contado: {check.counted} · Diferença: {check.difference > 0 ? '+' : ''}{check.difference}{onEvidence&&<button className="theme-toggle" type="button" onClick={()=>onEvidence(check.sessionId)}>Abrir contagem {check.sessionId}</button>}</li>)}</ul></details>
         <button className="theme-toggle" type="button" onClick={() => { try { locateMissionShelf(userId,result.location) } catch { setMessage({ text:'Não foi possível localizar a prateleira no mapa.',error:true }) } }}>Ver {result.location} no mapa de recorrências</button>
       </li>)}</ul>
       {canEdit ? <RecurrenceEditor key={raw} rule={rule} onSave={value => {

@@ -14,6 +14,8 @@ import {mergeCountReviews,reviewLabels,type CountReview} from '../lib/presentati
 import {beginPresentationRecount,mergeRecountLinks,type RecountLink} from '../lib/presentation-recounts'
 import {loadRecountLinks,loadRelatedCount} from '../lib/presentation-recounts-api'
 import {SharedCountMap} from './SharedCountMap'
+import {RecurringDivergences} from './RecurringDivergences'
+import {bahiaDay,sharedDivergenceChecks} from '../lib/shared-divergence-checks'
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(value))
 
 function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boolean;onBusy:(busy:boolean)=>void;onSaved:(count:SharedCount)=>void;receipt:SharedCount|undefined}){
@@ -47,6 +49,7 @@ function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boole
 }
 export function PresentationShelfCounts({userId,canOperate,canReview=false,ready,data}:{userId:string;canOperate:boolean;canReview?:boolean;ready:boolean;data:PresentationBundle}){
   const[rows,setRows]=useState<SharedCount[]|null>(null),[error,setError]=useState(''),[message,setMessage]=useState(''),[sending,setSending]=useState(false)
+  const[recurrenceDay,setRecurrenceDay]=useState(()=>bahiaDay(new Date().toISOString()))
   const[consultedAt,setConsultedAt]=useState(()=>new Date().toISOString()),refresh=useRef(()=>{})
   const[reviews,setReviews]=useState<Record<string,CountReview>>({}),reviewCache=useRef<Record<string,CountReview>>({})
   const[links,setLinks]=useState<RecountLink[]>([]),linkCache=useRef<RecountLink[]>([]),extraCounts=useRef(new Map<string,SharedCount>()),focusTarget=useRef(''),followSequence=useRef(0),alive=useRef(true)
@@ -62,7 +65,7 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
       try{
         const recent=await loadPresentationCounts(current.signal),result=[...recent,...[...extraCounts.current.values()].filter(count=>!recent.some(row=>row.id===count.id))]
         const [decisions,origins]=await Promise.all([loadCountReviews(result,current.signal),loadRecountLinks(result,current.signal)])
-        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result),mergedLinks=mergeRecountLinks(linkCache.current,origins,result);reviewCache.current=merged;linkCache.current=mergedLinks;setLinks(mergedLinks);setReviews(merged);setRows(result);setError('')}
+        if(live&&request===sequence){const merged=mergeCountReviews(reviewCache.current,decisions,result),mergedLinks=mergeRecountLinks(linkCache.current,origins,result);reviewCache.current=merged;linkCache.current=mergedLinks;setLinks(mergedLinks);setReviews(merged);setRows(result);setRecurrenceDay(bahiaDay(new Date().toISOString()));setError('')}
       }
       catch{if(live&&request===sequence)setError('Não foi possível atualizar as contagens compartilhadas. Os registros já consultados foram mantidos; confira sua conexão e seu acesso.')}
     }
@@ -93,6 +96,7 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
     {rows!==null&&<SharedCountMap counts={rows} reviews={reviews} userId={userId} onHistory={id=>{focusCount(id)}} stale={Boolean(error)}/>}
+    {rows!==null&&<RecurringDivergences userId={userId} canEdit={canReview} checks={sharedDivergenceChecks(rows,reviews)} reference={recurrenceDay} shared stale={Boolean(error)} onEvidence={id=>{focusCount(id)}}/>}
     <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, mais as contagens vinculadas abertas nesta tela. Use os vínculos para acompanhar a origem e cada recontagem. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
     <button type="button" className="theme-toggle" onClick={()=>refresh.current()}>Atualizar contagens compartilhadas</button>
     {error&&<p role="alert">{error}</p>}{rows===null&&!error&&<p role="status">Consultando contagens…</p>}
