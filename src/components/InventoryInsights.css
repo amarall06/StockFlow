@@ -1,5 +1,5 @@
 .inventory-insights{min-width:0}
-.inventory-insights .table-scroll{max-width:100%;overflow-x:auto;margin:1rem 0}
+.inventory-insights .table-scroll{max-width:100%;max-height:420px;overflow:auto;margin:1rem 0}
 .inventory-insights table{width:100%;min-width:620px;border-collapse:collapse;font-size:12px}
 .inventory-insights th,.inventory-insights td{text-align:left;padding:12px;border-bottom:1px solid #a08b7255}
 .inventory-insights th{font-weight:600}

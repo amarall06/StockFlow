@@ -51,6 +51,7 @@ function App() {
           .from('profiles')
           .select('is_active, display_name, role')
           .eq('id', user.id)
+          .abortSignal(AbortSignal.timeout(15000))
           .maybeSingle()
 
         if (!isMounted || revision!==profileRevision) return

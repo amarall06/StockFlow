@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { readAllRows } from './read-all-rows'
 import { validateBalance } from './inventory-consistency'
+import {regionalLocation,regionalOrder} from './regional-locations'
 import type { ProductInfo, ShockType, VehicleApplication } from './product-details'
 import type { ApplicationHistoryRecord } from './application-history'
 export type { ProductInfo, ShockType, VehicleApplication } from './product-details'
@@ -28,26 +29,27 @@ function getClient() {
 // Busca os cadastros e saldos em caixas usando a sessão autenticada e as políticas RLS.
 export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
   const client = getClient()
-  const { data: apiVersion, error: apiError } = await client.rpc('inventory_api_version')
+  const signal=AbortSignal.timeout(15000)
+  const { data: apiVersion, error: apiError } = await client.rpc('inventory_api_version').abortSignal(signal)
   if (apiError) throw apiError
 
   const [productsResult, locationsResult, balancesResult, applicationsResult] = await Promise.all([
     readAllRows<unknown>((from, to) => (Number(apiVersion) >= 3
       ? client.from('products').select(`id, code, application, default_location_id, updated_at, shock_type${Number(apiVersion) >= 12 ? ', minimum_boxes, minimum_updated_at' : ''}`)
       : client.from('products').select('id, code, application, default_location_id, updated_at'))
-      .order('code').range(from, to)),
+      .order('code').range(from, to).abortSignal(signal)),
     // Inclui locais desativados para não esconder os saldos que ainda estão neles.
     readAllRows((from, to) => client.from('locations').select('id, code, is_active')
-      .order('code').range(from, to)),
+      .order('code').range(from, to).abortSignal(signal)),
     readAllRows((from, to) => client.from('stock_balances')
       .select('product_id, location_id, status_code, quantity')
       .eq('unit_type', 'box')
       .in('status_code', ['awaiting_test', 'released_for_sale', 'in_stock'])
-      .order('product_id').order('location_id').order('status_code').range(from, to)),
+      .order('product_id').order('location_id').order('status_code').range(from, to).abortSignal(signal)),
     Number(apiVersion) >= 3
       ? readAllRows((from, to) => client.from('product_applications')
         .select('product_id, vehicle_model, year_from, year_to, position')
-        .order('product_id').order('position').order('id').range(from, to))
+        .order('product_id').order('position').order('id').range(from, to).abortSignal(signal))
       : Promise.resolve({ data: [], error: null }),
   ])
 
@@ -82,7 +84,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     status_code: string
     quantity: number
   }>
-  const locationById = new Map(locationRows.map((location) => [location.id, location.code]))
+  const locationById = new Map(locationRows.map((location) => [location.id, Number(apiVersion)>=17?regionalLocation(location.code):location.code]))
   const productById = new Map(productRows.map((product) => [product.id, product]))
   const catalog: Record<string, ProductInfo> = {}
 
@@ -113,7 +115,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     }]
   })
 
-  return { apiVersion: Number(apiVersion), catalog, locations: locationRows.filter((location) => location.is_active).map((location) => location.code), stock }
+  return { apiVersion: Number(apiVersion), catalog, locations: regionalOrder(locationRows.filter((location) => location.is_active).map((location) => location.code)), stock }
 }
 
 // Mantém a correspondência entre o texto da tela e o código salvo no banco.

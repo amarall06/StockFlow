@@ -10,7 +10,8 @@ export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
   const [selected,setSelected] = useState(0)
   const current = rows[Math.min(selected, rows.length-1)]
   const maximum = Math.max(1,...rows.map(row=>row[series]))
-  const points = rows.map((row,index)=>`${20+index/Math.max(1,rows.length-1)*560},${150-row[series]/maximum*120}`).join(' ')
+  const pointX = (index: number) => 45+(index+.5)/Math.max(1,rows.length)*535
+  const points = rows.map((row,index)=>`${pointX(index)},${150-row[series]/maximum*120}`).join(' ')
   const title = series === 'sold_boxes' ? 'Vendas' : 'Entradas'
   return <>
     <svg className="activity-chart" viewBox="0 0 600 180" role="img" aria-label={`${title} em caixas por dia; os valores também estão na tabela abaixo`}>
@@ -18,7 +19,7 @@ export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
       <path d="M40 25V150H580" stroke="currentColor" fill="none" opacity=".3" />
       <text x="20" y="18" fill="currentColor" fontSize="12">{maximum} cx.</text>
       {chartType==='line'?<polyline points={points} fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />:rows.map((row,index)=><rect key={row.day} x={45+index/rows.length*535+4} y={150-row[series]/maximum*120} width={Math.max(1,535/rows.length-8)} height={row[series]/maximum*120} rx="3" fill="currentColor"><title>{date(row.day)}: {row[series]} caixas</title></rect>)}
-      {current && chartType==='line' && <circle cx={20+Math.min(selected,rows.length-1)/Math.max(1,rows.length-1)*560} cy={150-current[series]/maximum*120} r="5" fill="currentColor" />}
+      {current && chartType==='line' && <circle cx={pointX(Math.min(selected,rows.length-1))} cy={150-current[series]/maximum*120} r="5" fill="currentColor" />}
       {rows.length>0 && (rows.length<=7?rows.map((row,index)=><text key={row.day} x={45+(index+.5)/rows.length*535} y="170" textAnchor="middle" fill="currentColor" fontSize="11">{date(row.day)}</text>):<><text x="40" y="174" fill="currentColor" fontSize="12">{date(rows[0].day)}</text><text x="580" y="174" textAnchor="end" fill="currentColor" fontSize="12">{date(rows.at(-1)!.day)}</text></>)}
     </svg>
 

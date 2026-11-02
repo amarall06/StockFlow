@@ -1,4 +1,5 @@
 import {supabase} from './supabase'
+import {regionalLocation} from './regional-locations'
 export type DashboardCategory='all'|'shocks'|'springs'
 export type DashboardReport={
   as_of:string;period_start:string;sold_boxes:number;sales_count:number;
@@ -18,7 +19,8 @@ export function validateDashboardReport(value:unknown):DashboardReport{
 export async function loadDashboardReport(category:DashboardCategory){
   if(!['all','shocks','springs'].includes(category))throw new Error('Categoria inválida.')
   if(!supabase)throw new Error('Banco não configurado.')
-  const {data,error}=await supabase.rpc('inventory_dashboard',{p_category:category})
+  const {data,error}=await supabase.rpc('inventory_dashboard',{p_category:category}).abortSignal(AbortSignal.timeout(15000))
   if(error)throw new Error('Não foi possível consultar vendas e entradas. Confira a conexão e tente atualizar.')
-  return validateDashboardReport(data)
+  const report=validateDashboardReport(data)
+  return {...report,receipts:report.receipts.map(row=>({...row,location:row.location?regionalLocation(row.location):null}))}
 }

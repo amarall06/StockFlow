@@ -1,3 +1,4 @@
+import {regionalLocations, regionalLocation, regionalOrder} from './lib/regional-locations'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -30,7 +31,6 @@ import { ProductPhoto, ProductPhotosProvider } from './components/ProductPhotos'
 import { searchableProductText } from './lib/product-details'
 import { isSpringCode } from './lib/product-category'
 import {
-  createLocation,
   loadInventorySnapshot,
   receiveStock,
   registerProductAndReceive,
@@ -59,51 +59,48 @@ const InventoryAlerts = lazy(() => import('./components/InventoryNavigation').th
 const ProductsOverview = lazy(() => import('./components/InventoryNavigation').then(module => ({ default: module.ProductsOverview })))
 
 // Dados fictícios para explorar a busca e a tabela; um código pode aparecer em mais de uma linha.
-const demoLocations = [
-  'A01', 'A03', 'B01', 'B02', 'C02', 'D04',
-]
+const demoLocations = regionalLocations
 
 const demoStock: StockRow[] = [
   {
     code: 'AGM-35',
-    location: 'A03',
+    location: 'NORTE',
     status: 'Aguardando testagem',
     boxes: 12,
   },
   {
     code: 'AGM-35',
-    location: 'B01',
+    location: 'SUL',
     status: 'Liberado para venda',
     boxes: 6,
   },
-  { code: 'ARE-24', location: 'C02', status: 'Aguardando testagem', boxes: 8 },
-  { code: 'AFR-57', location: 'A01', status: 'Liberado para venda', boxes: 4 },
-  { code: 'AFI-89', location: 'D04', status: 'Aguardando testagem', boxes: 5 },
-  { code: 'AFI-89', location: 'B02', status: 'Liberado para venda', boxes: 3 },
+  { code: 'ARE-24', location: 'LESTE', status: 'Aguardando testagem', boxes: 8 },
+  { code: 'AFR-57', location: 'NORTE', status: 'Liberado para venda', boxes: 4 },
+  { code: 'AFI-89', location: 'OESTE', status: 'Aguardando testagem', boxes: 5 },
+  { code: 'AFI-89', location: 'SUL', status: 'Liberado para venda', boxes: 3 },
 ]
 
 const demoCatalog: Record<string, ProductInfo> = {
-  'AGM-35': { application: 'Amortecedor Chevrolet', defaultLocation: 'A03' },
-  'ARE-24': { application: 'Renault — aplicação fictícia A', defaultLocation: 'C02' },
-  'AFR-57': { application: 'Ford — aplicação fictícia B', defaultLocation: 'A01' },
-  'AFI-89': { application: 'Fiat — aplicação fictícia C', defaultLocation: 'D04' },
+  'AGM-35': { application: 'Amortecedor Chevrolet', defaultLocation: 'NORTE' },
+  'ARE-24': { application: 'Renault — aplicação fictícia A', defaultLocation: 'LESTE' },
+  'AFR-57': { application: 'Ford — aplicação fictícia B', defaultLocation: 'NORTE' },
+  'AFI-89': { application: 'Fiat — aplicação fictícia C', defaultLocation: 'OESTE' },
 }
 
 // Molas têm cadastro próprio: não derivamos número, aplicação ou local do amortecedor.
 const demoSpringCatalog: Record<string, ProductInfo> = {
-  'MGM-12': { application: 'Mola Chevrolet — exemplo fictício', defaultLocation: 'A03' },
-  'MRE-48': { application: 'Mola Renault — exemplo fictício', defaultLocation: 'C02' },
-  'MFR-63': { application: 'Mola Ford — exemplo fictício', defaultLocation: 'A01' },
-  'MFI-91': { application: 'Mola Fiat — exemplo fictício', defaultLocation: 'B02' },
+  'MGM-12': { application: 'Mola Chevrolet — exemplo fictício', defaultLocation: 'NORTE' },
+  'MRE-48': { application: 'Mola Renault — exemplo fictício', defaultLocation: 'LESTE' },
+  'MFR-63': { application: 'Mola Ford — exemplo fictício', defaultLocation: 'NORTE' },
+  'MFI-91': { application: 'Mola Fiat — exemplo fictício', defaultLocation: 'SUL' },
 }
 
 // Quantidades fictícias para demonstrar o controle de molas por caixas.
 const demoSpringStock: StockRow[] = [
-  { code: 'MGM-12', location: 'A03', status: 'Em estoque', boxes: 2 },
-  { code: 'MGM-12', location: 'A01', status: 'Em estoque', boxes: 3 },
-  { code: 'MRE-48', location: 'C02', status: 'Em estoque', boxes: 4 },
-  { code: 'MFR-63', location: 'A01', status: 'Em estoque', boxes: 1 },
-  { code: 'MFI-91', location: 'B02', status: 'Em estoque', boxes: 5 },
+  { code: 'MGM-12', location: 'NORTE', status: 'Em estoque', boxes: 5 },
+  { code: 'MRE-48', location: 'LESTE', status: 'Em estoque', boxes: 4 },
+  { code: 'MFR-63', location: 'NORTE', status: 'Em estoque', boxes: 1 },
+  { code: 'MFI-91', location: 'SUL', status: 'Em estoque', boxes: 5 },
 ]
 
 // Junta os exemplos dos dois tipos para armazená-los no navegador.
@@ -135,7 +132,7 @@ function readSavedDemoData(): SavedDemoData | null {
     // Migra o campo antigo quantity para boxes sem perder os exemplos já salvos.
     const savedStock = data.stock.map((row) => ({
       code: row.code ?? '',
-      location: row.location ?? '',
+      location: regionalLocation(row.location ?? ''),
       status: isSpringCode(row.code ?? '') ? 'Em estoque' as const : row.status ?? 'Aguardando testagem',
       boxes: row.boxes ?? row.quantity ?? 0,
     }))
@@ -150,9 +147,9 @@ function readSavedDemoData(): SavedDemoData | null {
       consolidatedStock.set(key, { ...row, boxes: (existing?.boxes ?? 0) + row.boxes })
     }
     return {
-      catalog: { ...demoCatalog, ...(savedSpringCodes.size === 0 ? demoSpringCatalog : {}), ...(data.catalog as Record<string, ProductInfo>) },
+      catalog: Object.fromEntries(Object.entries({ ...demoCatalog, ...(savedSpringCodes.size === 0 ? demoSpringCatalog : {}), ...(data.catalog as Record<string, ProductInfo>) }).map(([code, product]) => [code, {...product, defaultLocation: product.defaultLocation ? regionalLocation(product.defaultLocation) : product.defaultLocation}])),
       stock: [...consolidatedStock.values(), ...missingSpringStock],
-      locations: data.locations,
+      locations: regionalOrder(data.locations.map(regionalLocation)),
     }
   } catch {
     return null
@@ -192,11 +189,10 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [stock, setStock] = useState<StockRow[]>(() => readSavedDemoData()?.stock ?? allDemoStock)
   // Localizações usadas nos formulários de estoque e transferência.
   const [locations, setLocations] = useState<string[]>(() => readSavedDemoData()?.locations ?? demoLocations)
-  const [newLocationCode, setNewLocationCode] = useState('')
   // A transferência física conserva a situação operacional das caixas.
   const [moveCode, setMoveCode] = useState('AGM-35')
-  const [moveFrom, setMoveFrom] = useState('A03')
-  const [moveTo, setMoveTo] = useState('A01')
+  const [moveFrom, setMoveFrom] = useState('NORTE')
+  const [moveTo, setMoveTo] = useState('SUL')
   const [moveStatus, setMoveStatus] = useState<StockRow['status']>('Aguardando testagem')
   const [moveQuantity, setMoveQuantity] = useState('1')
   const [transferMessage, setTransferMessage] = useState('')
@@ -265,7 +261,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
       }
     })
     return () => { isMounted = false }
-  }, [])
+  }, [userId])
 
   useEffect(() => {
     // A versão publicada só usa o Supabase; não grava uma cópia local durante a carga.
@@ -314,7 +310,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
       },
       onError: (caught) => setResumeError(caught instanceof InventoryConsistencyError ? `${caught.message} Os dados anteriores permanecem na tela.` : 'Não foi possível atualizar automaticamente. Os dados anteriores permanecem na tela; confira a conexão e retorne à janela para tentar novamente.'),
     })
-  }, [dataMode, activePage])
+  }, [dataMode, activePage, userId])
 
   useEffect(() => {
     if (dataMode !== 'database' || !supabase) return
@@ -375,31 +371,6 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     setScanMessage('')
     setSearch('')
     setTransferMessage('')
-  }
-
-  // Cadastra uma prateleira para usá-la nos registros e nas transferências.
-  function handleAddLocation(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const location = newLocationCode.trim().toUpperCase()
-
-    if (!location || locations.includes(location)) {
-      window.alert('Informe uma localização nova, que ainda não esteja cadastrada.')
-      return
-    }
-
-    if (dataMode === 'database' && !isAdministrator) {
-      window.alert('Somente o administrador pode cadastrar localizações.')
-      return
-    }
-
-    if (dataMode === 'database') {
-      void createLocation(location).then(refreshDatabaseSnapshot).then(() => {
-        setNewLocationCode('')
-      }).catch(() => window.alert('Não foi possível cadastrar a localização. Verifique se sua conta é administradora.'))
-    } else {
-      setLocations((currentLocations) => [...currentLocations, location])
-      setNewLocationCode('')
-    }
   }
 
   // Transfere caixas sem mudar sua situação operacional.
@@ -686,17 +657,12 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
           <section className="location-workspace" aria-labelledby="locations-title">
             <div className="location-workspace-heading">
-              <div><h2 id="locations-title">Localizações e transferências</h2><p>Cadastre prateleiras e mova caixas de {productName} mantendo a situação atual.</p></div>
+              <div><h2 id="locations-title">Localizações e transferências</h2><p>Consulte as quatro regiões e mova caixas de {productName} mantendo a situação atual.</p></div>
               <div className="location-header-actions"><span className="location-total">{locations.length} prateleiras</span>{dataMode === 'demo' && <button className="reset-demo-button" type="button" onClick={restoreDemoData}>Restaurar dados fictícios</button>}</div>
             </div>
             <LocationStockSummary locations={locations} stock={activeStock} springs={isSpringPage}/>
             <div className="location-tools">
-              <form className="location-create-form" onSubmit={handleAddLocation}>
-                <h3>Cadastrar prateleira</h3>
-                <p>Inclua um código de localização para usá-lo no estoque.</p>
-                <label htmlFor="new-location">Código da localização</label>
-              <div className="location-action-row"><input id="new-location" value={newLocationCode} onChange={(event) => setNewLocationCode(event.target.value)} placeholder="Ex.: E01" required /><button type="submit" disabled={dataMode === 'database' && !isAdministrator}>Adicionar local</button></div>
-              </form>
+              <section className="location-create-form"><h3>Prateleiras por região</h3><p>Norte, Sul, Leste e Oeste. Escolha uma região nos registros e nas transferências.</p></section>
               <>{dataMode === 'database' ? <StockTransfers userId={userId} stock={activeStock} locations={locations} canTransfer={canTransferStock} ready={inventoryApiVersion >= 15} onRefresh={refreshDatabaseSnapshot} /> : <form className="transfer-form" onSubmit={handleTransfer}>
                 <h3>Transferir entre prateleiras</h3>
                 <p>A quantidade transferida mantém a situação operacional.</p>
@@ -737,19 +703,19 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               <div className="card-icon icon-violet">▤</div>
               <p className="card-label">Caixas registradas</p>
               <p className="card-value">{totalBoxes}</p>
-              <p className="card-caption">equivale a {totalBoxes * 2} peças</p>
+              <p className="card-caption">Unidade de controle: caixas</p>
             </article>
             {!isSpringPage && <><article className="summary-card">
               <div className="card-icon icon-amber">◷</div>
               <p className="card-label">Caixas aguardando testagem</p>
               <p className="card-value">{awaitingTest}</p>
-              <p className="card-caption">equivale a {awaitingTest * 2} peças</p>
+              <p className="card-caption">Caixas ainda não liberadas para venda</p>
             </article>
             <article className="summary-card">
               <div className="card-icon icon-green">✓</div>
               <p className="card-label">Caixas liberadas para venda</p>
               <p className="card-value">{released}</p>
-              <p className="card-caption">equivale a {released * 2} peças</p>
+              <p className="card-caption">Caixas disponíveis para venda</p>
             </article></>}
           </section>
 
@@ -769,7 +735,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             <div className="panel-heading">
               <div>
                 <h2>Estoque de {productName} por localização</h2>
-                <p>Quantidades em caixas; cada caixa contém 2 peças. O produto pode aparecer em vários locais e situações.</p>
+                <p>Quantidades em caixas. O produto pode aparecer em várias regiões e situações.</p>
               </div>
               <span className="row-count">{filteredStock.length} registros</span>
             </div>

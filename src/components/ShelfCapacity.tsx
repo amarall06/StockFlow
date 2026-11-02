@@ -23,7 +23,7 @@ function CapacityEditor({ location, entry, onSave, onClose }: { location: string
     </form>
   </dialog>
 }
-export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false, presentationData, sharedView=false }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean; presentationData?:PresentationBundle; sharedView?:boolean }) {
+export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = false, stockOnly=false, presentationData, sharedView=false }: { userId: string; locations: string[]; stock: StockRow[]; canEdit: boolean; demoOnly?: boolean;stockOnly?:boolean; presentationData?:PresentationBundle; sharedView?:boolean }) {
   const scenarioStock=presentationData?.stock??demoStock,scenarioLocations=presentationData?.locations??demoLocations,scenarioCapacities=presentationData?.capacities??demoCapacities
   const [mode, setMode] = useState<CapacityMode>(demoOnly ? 'demo' : 'stock')
   const raw = useSyncExternalStore(subscribeCapacities, () => readCapacityRaw(userId, mode), () => null)
@@ -35,7 +35,7 @@ export function ShelfCapacity({ userId, locations, stock, canEdit, demoOnly = fa
   const rows = error ? [] : capacityRows(mode === 'demo' ? scenarioLocations : locations, mode === 'demo' ? scenarioStock : stock, entries)
   return <section className="inventory-panel dashboard-panel shelf-capacity" aria-label="Ocupação por capacidade física">
     <h2>Ocupação por capacidade física</h2>
-    {!demoOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Apresentação — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
+    {!demoOnly && !stockOnly && <label>Dados do gráfico de capacidade<select value={mode} onChange={event => { setMode(event.target.value as CapacityMode); setEditing(null); setMessage('') }}><option value="demo">Apresentação — Norte, Sul, Leste e Oeste</option><option value="stock">Consulta do estoque — capacidades locais</option></select></label>}
     {mode === 'demo' ? <p className="capacity-demo">Prateleiras Norte, Sul, Leste e Oeste.</p> : <p>Usa o saldo normal consultado de amortecedores e molas juntos, independentemente do filtro de categoria. Capacidades reais começam sem preenchimento; exemplos não são copiados para esta consulta.</p>}
     <p>A barra compara caixas registradas com a capacidade informada, usando caixas de tamanho equivalente. Garantia sem localização física não entra neste cálculo. Zero caixas não comprova espaço físico livre.</p>
     <p>{sharedView?'Exibindo planta e capacidades da configuração compartilhada.':'Configuração salva somente nesta conta e navegador; esta cópia local é independente da configuração compartilhada.'}</p>

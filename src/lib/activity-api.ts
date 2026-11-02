@@ -18,7 +18,7 @@ export function validateActivity(value: unknown, days: number): ActivityDay[] {
 export async function loadActivity(category: DashboardCategory, days: number) {
   if (!['all','shocks','springs'].includes(category) || ![7,30,90].includes(days)) throw new Error('Filtro inválido.')
   if (!supabase) throw new Error('Banco não configurado.')
-  const { data, error } = await supabase.rpc('inventory_activity_daily', { p_category: category, p_days: days })
+  const { data, error } = await supabase.rpc('inventory_activity_daily', { p_category: category, p_days: days }).abortSignal(AbortSignal.timeout(15000))
   if (error) throw new Error('Não foi possível consultar a atividade. Atualize os indicadores para tentar novamente.')
   return validateActivity(data, days)
 }

@@ -121,7 +121,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <StockReportExport/>
-      {capacityUserId && <ShelfCapacity key={capacityUserId} userId={capacityUserId} locations={locations} stock={stock} canEdit={isAdministrator}/>}
+      {capacityUserId && <ShelfCapacity key={capacityUserId} userId={capacityUserId} locations={locations} stock={stock} canEdit={isAdministrator} stockOnly/>}
       <InventoryInsights catalog={catalog} stock={stock} category={category}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
       {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
