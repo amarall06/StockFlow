@@ -10,9 +10,9 @@ export function validateSharedDraft(value:SharedLayoutDraft):SharedLayoutDraft{
   for(const [code,capacity]of Object.entries(capacities))if(!['NORTE','SUL','LESTE','OESTE'].includes(code)||Object.keys(capacity).sort().join(',')!=='basis,boxes')throw Error('Prateleira ou referência inválida.')
   return structuredClone({revision:value.revision,layout,capacities})
 }
-export function parseSharedLayout(value:unknown):SharedLayout{
+export function parseSharedLayout(value:unknown,operational=false):SharedLayout{
   const row=value as {scenario_key:string;revision:number;layout:FloorPlan;capacities:Capacities;updated_at:string;updated_by:string|null}|null
-  if(!row||row.scenario_key!=='liber-presentation-v1'||typeof row.updated_at!=='string'||!Number.isFinite(Date.parse(row.updated_at))||(row.updated_by!==null&&(typeof row.updated_by!=='string'||!/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(row.updated_by))))throw Error('Resposta da configuração compartilhada inválida.')
+  if(!row||row.scenario_key!==(operational?'liber-inventory-v1':'liber-presentation-v1')||typeof row.updated_at!=='string'||!Number.isFinite(Date.parse(row.updated_at))||(row.updated_by!==null&&(typeof row.updated_by!=='string'||!/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(row.updated_by))))throw Error('Resposta da configuração compartilhada inválida.')
   return{...validateSharedDraft(row),updatedAt:row.updated_at,updatedBy:row.updated_by}
 }
 export function newestSharedLayout(current:SharedLayout|null,incoming:SharedLayout){return current&&current.revision>incoming.revision?current:incoming}

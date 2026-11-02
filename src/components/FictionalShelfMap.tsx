@@ -8,7 +8,7 @@ import { FloorRackEditor } from './FloorRackEditor'
 import { subscribeMissionLocation } from '../lib/map-navigation'
 import { floorGrid, floorPlanKey, initialFloorPlan, parseFloorPlan, saveFloorPlan, validateFloorPlan, type FloorPlan } from '../lib/floor-plan'
 
-export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayout=initialFloorPlan, sharedView=false }: { stock: StockRow[]; capacities: Capacities; userId: string; canEdit: boolean; baseLayout?:FloorPlan; sharedView?:boolean }) {
+export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayout=initialFloorPlan, sharedView=false,operational=false }: { stock: StockRow[]; capacities: Capacities; userId: string; canEdit: boolean; baseLayout?:FloorPlan; sharedView?:boolean;operational?:boolean }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const buttons = useRef(new Map<string, HTMLButtonElement>())
@@ -20,7 +20,7 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
   const displayLayout=sharedView?baseLayout:layout
   const [zoom, setZoom] = useState(0.75)
   const [feedback, setFeedback] = useState({ text: '', error: false })
-  const { shelves, normalized, matches } = fictionalShelfMap(stock, query)
+  const { shelves, normalized, matches } = fictionalShelfMap(stock, query,operational)
   const current = shelves.find(row => row.location === selected)
   const capacity = current && Object.hasOwn(capacities, current.location) ? capacities[current.location] : null
   return <section className="fictional-shelf-map" aria-label="Mapa de prateleiras">
@@ -30,7 +30,7 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
     {query && <button type="button" className="theme-toggle" onClick={() => setQuery('')}>Limpar busca do mapa</button>}
     <p role="status">{normalized ? matches.length ? `Produto encontrado em ${matches.length} prateleiras: ${matches.map(row => row.location).join(', ')}.` : 'Nenhum produto encontrado no mapa. As prateleiras continuam mostrando seus saldos completos.' : 'Digite um código ou parte dele para destacar todas as prateleiras correspondentes.'}</p>
     <ul className="map-legend" aria-label="Legenda do mapa"><li>Ocupada: há caixas registradas.</li><li>Sem caixas: saldo zero, sem comprovação de espaço livre real.</li><li>Divergência de contagem: contagem difere da referência.</li><li>Produto encontrado: destaque também identificado por texto.</li></ul>
-    <SpaceSuggestions stock={stock} capacities={capacities} onSelect={location => { setSelected(location); buttons.current.get(location)?.focus() }}/>
+    {operational?<p>Mapa do saldo consultado. Posições são um modelo editável; valide a disposição física. Sugestões de espaço exigem capacidade, restrições e espaço físico conferidos.</p>:<SpaceSuggestions stock={stock} capacities={capacities} onSelect={location => { setSelected(location); buttons.current.get(location)?.focus() }}/>}
     <div className="floor-toolbar" role="group" aria-label="Controles da planta">
       <button type="button" className="theme-toggle" disabled={zoom >= 1.5} onClick={() => setZoom(value => Math.min(1.5, value + 0.25))}>Ampliar planta</button>
       <button type="button" className="theme-toggle" disabled={zoom <= 0.5} onClick={() => setZoom(value => Math.max(0.5, value - 0.25))}>Reduzir planta</button>

@@ -9,7 +9,8 @@ import { DashboardWarranty } from './DashboardWarranty'
 import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
-import { ShelfCapacity } from './ShelfCapacity'
+import { SharedShelfLayout } from './SharedShelfLayout'
+import {presentationBundle} from '../lib/presentation-bundle'
 import { StockPresentation } from './StockPresentation'
 import './InventoryDashboard.css'
 
@@ -121,7 +122,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <StockReportExport/>
-      {capacityUserId && <ShelfCapacity key={capacityUserId} userId={capacityUserId} locations={locations} stock={stock} canEdit={isAdministrator} stockOnly/>}
+      {capacityUserId && <SharedShelfLayout key={`inventory:${capacityUserId}`} userId={capacityUserId} canEdit={isAdministrator} operationalStock={stock} data={{...presentationBundle,locations}}/>}
       <InventoryInsights catalog={catalog} stock={stock} category={category}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
       {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}

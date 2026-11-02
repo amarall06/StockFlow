@@ -5,6 +5,10 @@ import {newestSharedLayout,validateSharedDraft,type SharedLayout,type SharedLayo
 import type {PresentationBundle} from '../lib/presentation-bundle'
 import './SharedShelfLayout.css'
 import {INVENTORY_CHANGE_EVENT} from '../lib/resume-refresh'
+import type {StockRow} from '../lib/inventory-api'
+import {FictionalShelfMap} from './FictionalShelfMap'
+import {capacityRows} from '../lib/shelf-capacity'
+import {regionalLocations} from '../lib/regional-locations'
 
 function RackFields({snapshot,location,onSave,onClose}:{snapshot:SharedLayout;location:string;onSave:(draft:SharedLayoutDraft)=>Promise<void>;onClose:()=>void}){
   const original=snapshot.layout[location as keyof typeof snapshot.layout],capacity=snapshot.capacities[location]
@@ -45,7 +49,8 @@ function SharedEditor({snapshot,onSave,onClose,saving}:{snapshot:SharedLayout;on
     <RackFields key={location} snapshot={snapshot} location={location} onSave={onSave} onClose={onClose}/>
   </section>
 }
-export function SharedShelfLayout({userId,canEdit,data}:{userId:string;canEdit:boolean;data:PresentationBundle}){
+export function SharedShelfLayout({userId,canEdit,data,operationalStock}:{userId:string;canEdit:boolean;data:PresentationBundle;operationalStock?:StockRow[]}){
+  const operational=operationalStock!==undefined
   const[state,setState]=useState<{snapshot:SharedLayout|null;error:string}>({snapshot:null,error:''})
   const[mode,setMode]=useState('shared'),[editing,setEditing]=useState<SharedLayout|null>(null),[message,setMessage]=useState('')
   const refresh=useRef<()=>void>(()=>{}),active=useRef(true)
@@ -56,7 +61,7 @@ export function SharedShelfLayout({userId,canEdit,data}:{userId:string;canEdit:b
     const read=async()=>{
       const request=++sequence;controller?.abort();window.clearTimeout(timeout)
       controller=new AbortController();timeout=window.setTimeout(()=>controller?.abort(),15000)
-      try{const snapshot=await loadSharedLayout(controller.signal);if(live&&request===sequence)setState(previous=>({snapshot:newestSharedLayout(previous.snapshot,snapshot),error:''}))}
+      try{const snapshot=await loadSharedLayout(controller.signal,operational);if(live&&request===sequence)setState(previous=>({snapshot:newestSharedLayout(previous.snapshot,snapshot),error:''}))}
       catch{if(live&&request===sequence)setState(previous=>({...previous,error:'Não foi possível atualizar a configuração compartilhada. A última versão consultada foi mantida; novas edições estão bloqueadas até reconectar.'}))}
     }
     refresh.current=()=>{void read()};void read()
@@ -66,16 +71,17 @@ export function SharedShelfLayout({userId,canEdit,data}:{userId:string;canEdit:b
     window.addEventListener('focus',resume);window.addEventListener('online',resume)
     window.addEventListener(INVENTORY_CHANGE_EVENT,notice)
     return()=>{live=false;active.current=false;controller?.abort();window.clearTimeout(timeout);window.clearTimeout(noticeTimer);window.clearInterval(interval);window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener(INVENTORY_CHANGE_EVENT,notice)}
-  },[])
+  },[operational])
   const shared=mode==='shared'
   const display=shared&&state.snapshot?{...data,floorPlan:state.snapshot.layout,capacities:state.snapshot.capacities}:data
+  const operationalRows=operationalStock&&state.snapshot?capacityRows(data.locations,operationalStock,state.snapshot.capacities):[]
   return <>
     <section className="inventory-panel dashboard-panel shared-shelf-layout" aria-label="Sincronização da planta e capacidades">
-      <h2>Planta e capacidades entre aparelhos</h2>
-      <p>A configuração compartilhada recebe avisos privados para consultar novas versões, com verificação adicional a cada 10 segundos, ao voltar à janela e ao reconectar. Salvar é permitido ao Administrador e exige a versão consultada. Os dados continuam sendo os da apresentação.</p>
-      <label>Configuração exibida<select disabled={canEdit&&Boolean(editing)} value={mode} onChange={event=>setMode(event.target.value)}><option value="shared">Compartilhada no Supabase</option><option value="local">Configurações deste navegador</option></select></label>
-      <p>As cópias locais existentes são preservadas e podem ser vistas nessa seleção. Elas não substituem a configuração compartilhada automaticamente.</p>
-      <p role="status">{state.snapshot?`Versão compartilhada ${state.snapshot.revision} · Atualizada em ${new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(state.snapshot.updatedAt))} (America/Bahia).`:state.error?'Sem configuração compartilhada disponível; exibindo a referência da apresentação.':'Consultando planta e capacidades compartilhadas…'}</p>
+      <h2>{operational?'Planta e capacidades do estoque':'Planta e capacidades entre aparelhos'}</h2>
+      <p>A configuração compartilhada recebe avisos privados para consultar novas versões, com verificação adicional a cada 10 segundos, ao voltar à janela e ao reconectar. Salvar é permitido ao Administrador e exige a versão consultada. {operational?'Usa os saldos da consulta operacional; capacidades não são copiadas da apresentação. Posições iniciais são um modelo editável a validar no espaço físico.':'Os dados continuam sendo os da apresentação.'}</p>
+      {!operational&&<><label>Configuração exibida<select disabled={canEdit&&Boolean(editing)} value={mode} onChange={event=>setMode(event.target.value)}><option value="shared">Compartilhada no Supabase</option><option value="local">Configurações deste navegador</option></select></label>
+      <p>As cópias locais existentes são preservadas e podem ser vistas nessa seleção. Elas não substituem a configuração compartilhada automaticamente.</p></>}
+      <p role="status">{state.snapshot?`Versão compartilhada ${state.snapshot.revision} · Atualizada em ${new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(state.snapshot.updatedAt))} (America/Bahia).`:state.error?operational?'Configuração operacional indisponível. Consulte os saldos nas telas de estoque.':'Sem configuração compartilhada disponível; exibindo a referência da apresentação.':'Consultando planta e capacidades compartilhadas…'}</p>
       {state.error&&<p role="alert">{state.error}</p>}{message&&<p role="status">{message}</p>}
       <div className="shared-layout-actions"><button className="theme-toggle" type="button" onClick={()=>refresh.current()}>Atualizar planta e capacidades</button>
         {shared&&canEdit&&!editing&&<button className="theme-toggle" type="button" disabled={!state.snapshot||Boolean(state.error)} onClick={()=>{if(state.snapshot){attempt.current=null;setEditing(structuredClone(state.snapshot));setMessage('')}}}>Editar configuração compartilhada</button>}
@@ -87,11 +93,15 @@ export function SharedShelfLayout({userId,canEdit,data}:{userId:string;canEdit:b
         try{
         const fingerprint=JSON.stringify(draft)
         if(attempt.current?.fingerprint!==fingerprint)attempt.current={fingerprint,id:crypto.randomUUID()}
-        const saved=await saveSharedLayout(draft,attempt.current.id)
+        const saved=await saveSharedLayout(draft,attempt.current.id,operational)
         if(active.current){setState(previous=>({snapshot:newestSharedLayout(previous.snapshot,saved),error:''}));setEditing(null);setMessage(`Gravação confirmada no Supabase, versão ${saved.revision}. A mesma confirmação não será aplicada duas vezes.`);refresh.current()}
         }finally{writeBusy.current=false;if(active.current)setSaving(false)}
       }}/>} 
     </section>
-    <ShelfCapacity userId={userId} locations={data.locations} stock={data.stock} canEdit={shared?false:canEdit} demoOnly presentationData={display} sharedView={shared}/>
+    {operational?state.snapshot&&<section className="inventory-panel dashboard-panel" aria-label="Ocupação operacional compartilhada">
+      <h2>Ocupação por capacidade física</h2><p>Saldo consultado em caixas; garantia sem localização não entra. Zero no sistema não comprova espaço físico livre. Configurações locais anteriores permanecem guardadas neste navegador e não substituem a versão compartilhada.</p>
+      {operationalStock!.every(row=>regionalLocations.includes(row.location))?<FictionalShelfMap userId={`inventory:${userId}`} stock={operationalStock!} capacities={state.snapshot.capacities} baseLayout={state.snapshot.layout} sharedView canEdit={false} operational/>:<p role="status">Existem localizações fora das quatro regiões nesta consulta. O mapa aguarda a atualização regional; os saldos permanecem disponíveis nas telas de estoque.</p>}
+      <div className="capacity-grid">{operationalRows.map(row=><article key={row.location} className="capacity-card" aria-label={`Consultada ${row.location}`}><h3>{row.location}</h3><p>{row.boxes} caixas consultadas</p>{row.capacity?<><p>Capacidade: {row.capacity.boxes} caixas · {row.capacity.basis}</p><meter min={0} max={row.capacity.boxes} value={Math.min(row.boxes,row.capacity.boxes)} aria-label={`Ocupação de ${row.location}`}/><p>{new Intl.NumberFormat('pt-BR',{maximumFractionDigits:1}).format(row.percent!)}% da capacidade</p>{row.excess>0&&<p>Acima da capacidade informada em {row.excess} caixas.</p>}</>:<p>Capacidade não informada — percentual indisponível.</p>}</article>)}</div>
+    </section>:<ShelfCapacity userId={userId} locations={data.locations} stock={data.stock} canEdit={shared?false:canEdit} demoOnly presentationData={display} sharedView={shared}/>}
   </>
 }
