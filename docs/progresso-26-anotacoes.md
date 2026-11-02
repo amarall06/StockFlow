@@ -9,7 +9,7 @@ Atualizado em 02/11/2026. Numeração original preservada. Código `0ffcdbd` pub
 | 3 | Separação de testados/não testados | **Separação visual por situação nos resumos de prateleiras concluída e publicada: pode riscar esse escopo.** Amortecedores aguardando/liberados e molas em estoque, em caixas. Organização física ainda não definida. |
 | 4 | Identificação de testadores | Parcial existente: pessoa/data e função Testador; gestão e contas reais adiadas. |
 | 5 | Relatórios PDF e Excel | **Exportação manual local concluída: pode riscar esse escopo.** PDF/XLSX reais no Painel, semana/mês/ano, saldo atual normal + movimentações do período em caixas. Não inclui fechamento histórico transacional, envio ou agendamento. Publicado em `221171e`. |
-| 6 | Retorno dos Correios | Regra a definir com a empresa. |
+| 6 | Retorno dos Correios | **Protótipo local de recebimento para conferência pronto na apresentação: quantidade/condição/observação e registro aguardando destino, sem somar saldo. Sete testes novos aprovados. Guia `retornos-correios-local-2026-11-02.md`. Publicação em andamento.** Regra/destino real, permissões, servidor e piloto continuam pendentes. |
 | 7 | Segurança do site | Parcial/contínuo. Novos cabeçalhos locais e dependências de exportação sem vulnerabilidades conhecidas na instalação; controles existentes não encerram auditoria de banco/armazenamento/recuperação. |
 | 8 | Zerar estoque fictício | Adiado para transição final aprovada. |
 | 9 | Etiquetas de testados | Adiado. |

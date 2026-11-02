@@ -1,0 +1,68 @@
+import {test,expect} from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+import {prepareKeyboardPage} from './helpers/keyboard'
+const panel=page=>page.getByRole('region',{name:'Retornos dos Correios',exact:true})
+const key='liber:postal-returns:v1:presentation:11111111-1111-4111-8111-111111111111'
+async function prepare(page){const writes=await prepareKeyboardPage(page);const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true});if(await close.isVisible())await close.click();await page.getByLabel('Visualização do Painel').selectOption('presentation');return writes}
+async function fill(page,count,condition){await panel(page).getByLabel('Caixas recebidas neste retorno').fill(String(count));await panel(page).getByLabel('Condição do retorno').selectOption(condition);await panel(page).getByLabel('Observação da conferência').fill('Volume recebido e conferido no balcão');await panel(page).getByRole('checkbox').check()}
+test('recebimento parcial com avaria recupera registro sem duplicar ou liberar saldo',async({page})=>{
+  const writes=await prepare(page);await fill(page,2,'damaged')
+  await panel(page).getByRole('button',{name:'Registrar retorno para avaliação'}).click()
+  await expect(panel(page)).toContainText('1 retorno aguardando decisão de destino · 2 caixas recebidas')
+  await page.reload();await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  const record=panel(page).getByRole('region',{name:'Registro do retorno'})
+  await expect(record).toContainText('2 de 4 caixas recebidas · Volume com avaria')
+  await expect(record).toContainText('Volume recebido e conferido no balcão')
+  await expect(panel(page).getByRole('button',{name:'Registrar retorno para avaliação'})).toHaveCount(0)
+  await expect(page.getByRole('region',{name:'Indicadores do estoque'})).toContainText('85')
+  expect(writes).toEqual([])
+})
+test('quantidade divergente não é aceita como íntegra e zero exige condição compatível',async({page})=>{
+  const writes=await prepare(page);await fill(page,0,'intact')
+  await panel(page).getByRole('button',{name:'Registrar retorno para avaliação'}).click()
+  await expect(panel(page).getByRole('alert')).toContainText('A quantidade não confere')
+  await panel(page).getByLabel('Condição do retorno').selectOption('mismatch')
+  await panel(page).getByRole('checkbox').uncheck()
+  await panel(page).getByRole('button',{name:'Registrar retorno para avaliação'}).click()
+  await expect(panel(page).getByRole('region',{name:'Registro do retorno'})).toHaveCount(0)
+  await panel(page).getByRole('checkbox').check()
+  await panel(page).getByRole('button',{name:'Registrar retorno para avaliação'}).click()
+  await expect(panel(page).getByRole('region',{name:'Registro do retorno'})).toContainText('0 de 4 caixas recebidas')
+  await panel(page).getByLabel('Retorno para conferir').selectOption('RET-2002')
+  await expect(panel(page)).toContainText('MGM-35 · 3 caixas esperadas')
+  expect(writes).toEqual([])
+})
+test('falha ao guardar retorno conserva formulário e nenhuma confirmação é criada',async({page})=>{
+  await prepare(page);await fill(page,4,'intact')
+  await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k.startsWith('liber:postal-returns:'))throw Error('Sem espaço para retorno');return original.call(this,k,v)}})
+  await panel(page).getByRole('button',{name:'Registrar retorno para avaliação'}).click()
+  await expect(panel(page).getByRole('alert')).toContainText('Sem espaço para retorno')
+  await expect(panel(page).getByLabel('Observação da conferência')).toHaveValue('Volume recebido e conferido no balcão')
+  await expect(panel(page)).toContainText('0 retornos aguardando decisão')
+})
+test('dados ilegíveis de retorno são preservados e bloqueiam recebimento',async({page})=>{
+  await prepare(page)
+  await page.evaluate(k=>{localStorage.setItem(k,'inválido');window.dispatchEvent(new Event('liber:postal-returns'))},key)
+  await expect(panel(page).getByRole('alert')).toContainText('recebimento bloqueado')
+  await expect(panel(page).getByRole('form')).toHaveCount(0)
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe('inválido')
+})
+test('Consulta vê retorno recebido sem receber formulário de operação',async({page})=>{
+  const writes=await prepare(page);await fill(page,4,'intact')
+  await panel(page).getByRole('button',{name:'Registrar retorno para avaliação'}).click()
+  await page.route('**/rest/v1/profiles*',route=>route.fulfill({json:{is_active:true,display_name:'Consulta',role:'viewer'}}))
+  await page.reload();await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  await expect(panel(page).getByRole('region',{name:'Registro do retorno'})).toContainText('4 de 4 caixas recebidas')
+  await panel(page).getByLabel('Retorno para conferir').selectOption('RET-2002')
+  await expect(panel(page).getByRole('form')).toHaveCount(0)
+  expect(writes).toEqual([])
+})
+for(const theme of ['light','dark'])test(`novo recebimento postal em 375 px com teclado e auditoria A/AA ${theme}`,async({page})=>{
+  await page.setViewportSize({width:375,height:812});await page.addInitScript(value=>localStorage.setItem('liber-automotive-theme',value),theme)
+  await prepare(page)
+  await panel(page).getByLabel('Caixas recebidas neste retorno').focus();await page.keyboard.press('Tab')
+  await expect(panel(page).getByLabel('Condição do retorno')).toBeFocused()
+  const audit=await new AxeBuilder({page}).include('.postal-returns').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
+  expect(audit.violations).toEqual([])
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+})

@@ -297,3 +297,7 @@ Regra configurável, deduplicação de conferências por produto/prateleira/situ
 ## 23 — permanência por entrada local, 02/11/2026
 
 Grupos de entrada de exemplo correspondentes às 85 caixas, limite configurável, desconhecidos separados, filtros e mapa implementados. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: permanencia-caixas-local-2026-11-02.md. Identidade/origem/datas reais, rastreabilidade compartilhada e piloto continuam pendentes. Publicado em `0ffcdbd`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.
+
+## 6 — recebimento dos Correios local, 02/11/2026
+
+Três remessas de exemplo, quantidade/condição/observação e declaração de conferência, registro recuperável aguardando decisão de destino; sem alterar estoque. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: retornos-correios-local-2026-11-02.md. Regras/destinos reais, identidade/permissões, servidor/expedição e piloto continuam pendentes. Publicação em andamento.
