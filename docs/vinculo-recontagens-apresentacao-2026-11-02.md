@@ -44,6 +44,10 @@ Verificação real antes/depois: 95 produtos, 113 movimentos, hash de saldos `df
 
 ## Pode riscar e falta
 
-Pode riscar **vínculo da recontagem à origem e à solicitação, sequência navegável, preservação dos registros e recuperação de confirmação no cenário de apresentação da 17**, no escopo de implementação e testes. Banco/exemplo aplicados; publicação do site em preparação.
+Pode riscar **vínculo da recontagem à origem e à solicitação, sequência navegável, preservação dos registros/itens e recuperação de confirmação no cenário de apresentação da 17**, incluindo implementação, testes e publicação. Banco/exemplo aplicados.
 
 Não riscar a 17 inteira. Faltam regras e permissões reais de conferência/aprovação, coordenação transacional/física de movimentos durante contagens, ajustes operacionais autorizados e seu histórico, integração com mapa/divergências aprovadas (20) e piloto físico. Vínculo não equivale a aprovação nem a ajuste; o exemplo novo aguarda revisão própria.
+
+## Publicação confirmada
+
+Código final 55057885c2d8945c5dca3b1011b988ab4d2ba3da publicado no site original https://liber-automotive.vercel.app/ . Vercel success em https://vercel.com/amarall06s-projects/liber-automotive/FcQAvPUnoLVk3PQUMbKH3nZmX1wZ . Domínio HTTP 200 e dezesseis recursos públicos iguais ao build aprovado. Nenhum teste funcional repetido na publicação.
