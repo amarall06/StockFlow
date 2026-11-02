@@ -1,6 +1,7 @@
+> **Publicação conferida — 02/11/2026:** etapas 2/4/7 em fd76154 e ativação da 16/complemento da planta em f83f2ea, ambos Vercel success, HTTP 200 e quinze recursos públicos iguais aos builds aprovados. Nesta continuação: treze casos novos de navegador e quatro roteiros novos de banco aprovados; nenhum caso concluído repetido. Relatórios `equipe-seguranca-2026-11-02.md` e `realtime-servidor-2026-11-02.md`. Não encerra os pilotos/dados/regras ainda pendentes. Próxima funcionalidade da sequência: envio/revisão compartilhada da contagem (17), com decisões operacionais de aprovação e movimentos ainda pendentes.
 > **16 — servidor ativado, 02/11/2026:** emissão privada e autorização Realtime aplicadas a 16 tabelas; planta/capacidades passam a reagir aos avisos. Dois testes novos de navegador e dois roteiros novos no banco aprovados, incluindo a função real de autorização do serviço. Nenhum caso antigo repetido. Guia `realtime-servidor-2026-11-02.md`. Falta piloto entre aparelhos físicos. As etapas 2/4/7 anteriores estão publicadas em fd76154, Vercel success e quinze recursos conferidos.
-> **Continuação em ordem — 02/11/2026:** ajuste do gráfico operacional da 2, gestão autenticada de contas existentes da 4 e proteção de perfis/função de nome da 7 implementados. Onze testes novos de navegador e dois roteiros novos no banco real aprovados, sem repetir anteriores; dados preservados. Guia `equipe-seguranca-2026-11-02.md`. Publicação em preparação. 4 ainda exige funcionários/contas individuais e piloto; 7 continua parcial. Nenhuma conta foi criada ou teve acesso real alterado.
-# O que falta nas 26 anotações — 01/11/2026
+> **Continuação em ordem — 02/11/2026:** ajuste do gráfico operacional da 2, gestão autenticada de contas existentes da 4 e proteção de perfis/função de nome da 7 implementados. Onze testes novos de navegador e dois roteiros novos no banco real aprovados, sem repetir anteriores; dados preservados. Guia `equipe-seguranca-2026-11-02.md`. Publicado em fd76154, com recursos públicos conferidos. 4 ainda exige funcionários/contas individuais e piloto; 7 continua parcial. Nenhuma conta foi criada ou teve acesso real alterado.
+# O que falta nas 26 anotações — atualizado em 02/11/2026
 
 Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação de uma subparte não encerra as dependências do pedido inteiro. Design geral somente depois desta lista.
 
@@ -40,7 +41,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 1 | Sem pendência de implementação no escopo entregue; observar comportamento no piloto. | Piloto geral |
 | 2 | Capacidades do cenário sincronizadas no Supabase com a planta, versão e permissões. Faltam capacidades físicas reais, integração das configurações reais fora da apresentação e piloto. | Dados físicos e integração operacional |
 | 3 | Definir separação física, nomes e uso das prateleiras de testados/não testados; executar organização conferida. | Empresa e espaço físico |
-| 4 | Retomar gestão de funcionários/testadores e validar contas reais e permissões. | Etapa adiada; serviço de contas/equipe |
+| 4 | Gestão de identificação/função/ativação das contas existentes entregue. Faltam contas individuais dos funcionários e validação real de autoria/permissões; criação de credenciais permanece no serviço de contas. | Equipe e contas individuais |
 | 5 | Escopo manual entregue. Fechamento histórico transacional/envio automático não integra essa entrega. | Eventual nova solicitação |
 | 6 | Recebimento local para conferência pronto na apresentação. Faltam regra e destino aprovados, identidade/permissões reais, remessa/expedição/servidor, liberação transacional e piloto. | Regra da empresa e servidor |
 | 7 | Concluir revisão de permissões/RPCs, armazenamento e recuperação; tratar proteção de senhas vazadas no serviço. | Supabase/configuração e auditoria |
@@ -52,7 +53,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 13 | Definir demais pendências, prazos, destinatários e resolução; implementar avisos apoiados nesses registros. | Regras e dados compartilhados |
 | 14 | Piloto autenticado com operações, reconexão, atualização e concorrência em aparelhos reais. Fotos continuam exigindo conexão. Ambiguidades de cadastro exigem revisão explícita. | Equipe/aparelhos/contas reais; fotos não fornecidas |
 | 15 | Implementação/publicação entregues; execução pela equipe faz parte do piloto geral. | Piloto geral |
-| 16 | Ativar autorização e emissão de eventos privados no servidor; validar reconexão e atualização entre aparelhos reais. | Supabase e aparelhos |
+| 16 | Emissão/autorização privadas ativadas no servidor; planta/capacidades integradas. Falta piloto autenticado entre aparelhos físicos, com reconexão real. | Equipe e aparelhos |
 | 17 | Envio de contagem, histórico compartilhado, aprovação autorizada, tratamento transacional de movimentos durante contagem e decisão de ajuste; piloto físico. | Servidor e regras operacionais |
 | 18 | Cenário-base e edição compartilhada da planta/capacidades publicados no Supabase e site. Faltam posições/códigos reais, vínculo com estoque/conferências aprovadas e piloto. | Dados físicos, integração e regras |
 | 19 | Protótipo local da missão pronto, publicado em `2b91830`, Vercel success e quatorze recursos públicos conferidos. Faltam pedidos/reservas compartilhados transacionais, QR físico/identidade, histórico/autorização, regras de expedição e piloto. | Regras, QR e servidor |

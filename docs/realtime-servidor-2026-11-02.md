@@ -34,4 +34,10 @@ Build e análise direcionada aprovados. Nenhum teste anteriormente concluído fo
 
 Emissão e autorização privadas do servidor da 16, integração instantânea da planta/capacidades e os recortes de teste acima. Ainda falta piloto autenticado entre aparelhos físicos, incluindo reconexão real e atualização/instalação. Não riscar a validação física da 16 nem afirmar que as missões/contagens locais agora são compartilhadas: elas ainda precisam de persistência própria.
 
-Publicação do complemento da planta: em preparação. O receptor anterior já está publicado; a ativação no banco já está aplicada.
+Publicação confirmada: código f83f2ead282b71edc99b2ebc51d31763cb52a7ad, Vercel success em https://vercel.com/amarall06s-projects/liber-automotive/7pxdNRbWqt8hDWUVTpDk5Pa4Ccyn . Domínio HTTP 200 e quinze recursos públicos iguais ao build aprovado. Ativação no banco aplicada. Nenhum teste funcional repetido na publicação.
+
+## Sequência das pendências
+
+1/5/11/15 já entregues; 2 e 3 ainda exigem dados/disposição físicos; 4 agora tem gestão das contas existentes, faltando pessoas/contas individuais e piloto; 6 exige regra/destino dos retornos; 7 continua com demais funções e armazenamento/recuperação, além da proteção de senhas vazadas; 8 só na transição final aprovada; 9 depende de etiqueta/identidade física; 10 de aparelhos; 12/13 de regras operacionais compartilhadas; 14 de piloto. A 16 avançou no servidor nesta rodada.
+
+Próxima funcionalidade da sequência: 17, envio e revisão compartilhada de contagens. O rascunho existente foi inspecionado: mantém referência congelada, branco diferente de zero, CSV e alerta de alteração. Ajuste automático não está autorizado por definição operacional: ainda falta estabelecer quem aprova e como coordenar movimentos durante a contagem. Não considerar 17/20 aprovadas nem converter os rascunhos em ajuste de saldo. 18/21 ainda exigem dados físicos reais para integração operacional; 19 exige pedidos/reservas/expedição; 22/23 exigem regras e identidade/origem comprovadas. Piloto, aparelhos e fotos permanecem externos. As pendências técnicas abertas continuam registradas, sem declarar as 26 concluídas.
