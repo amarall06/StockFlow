@@ -1,0 +1,72 @@
+import {test,expect} from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+import {prepareKeyboardPage} from './helpers/keyboard'
+const panel=page=>page.getByRole('region',{name:'Permanência das caixas',exact:true})
+const key='liber:stock-age:v1:presentation:11111111-1111-4111-8111-111111111111'
+async function prepare(page){
+  const writes=await prepareKeyboardPage(page)
+  const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true});if(await close.isVisible())await close.click()
+  await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  return writes
+}
+test('permanência usa entrada dos grupos, separa data desconhecida e localiza origem sem movimentar estoque',async({page})=>{
+  const writes=await prepare(page)
+  await expect(panel(page)).toContainText('35 caixas com 90 dias ou mais · 35 abaixo do limite · 15 sem data')
+  const list=panel(page).getByRole('list',{name:'Grupos por data de entrada'})
+  await expect(list.locator(':scope > li')).toHaveCount(10)
+  await expect(list.locator(':scope > li').first()).toContainText('E-09 — AGM-35 · LESTE')
+  await expect(list.locator(':scope > li').first()).toContainText('124 dias desde a entrada')
+  await panel(page).getByRole('button',{name:'Localizar grupo E-09 no mapa'}).click()
+  await expect(page.getByRole('region',{name:'Mapa de prateleiras',exact:true}).getByRole('button',{name:/^Prateleira LESTE —/})).toBeFocused()
+  expect(writes).toEqual([])
+})
+test('limite recuperado e filtro de molas calculam permanência sem usar vendas',async({page})=>{
+  const writes=await prepare(page)
+  await panel(page).getByLabel('Categoria para permanência').selectOption('spring')
+  await expect(panel(page)).toContainText('0 caixas com 90 dias ou mais · 12 abaixo do limite · 0 sem data')
+  await expect(panel(page)).toContainText('Nenhuma caixa com data conhecida atingiu')
+  await panel(page).getByLabel('Destacar a partir de (dias corridos)').fill('30')
+  await panel(page).getByRole('button',{name:'Salvar limite de permanência local'}).click()
+  await expect(panel(page)).toContainText('9 caixas com 30 dias ou mais · 3 abaixo do limite')
+  await page.reload();await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  await expect(panel(page).getByLabel('Destacar a partir de (dias corridos)')).toHaveValue('30')
+  await expect(panel(page)).toContainText('44 caixas com 30 dias ou mais · 26 abaixo do limite · 15 sem data')
+  await panel(page).getByLabel('Categoria para permanência').selectOption('shock')
+  await expect(panel(page)).toContainText('35 caixas com 30 dias ou mais · 23 abaixo do limite · 15 sem data')
+  expect(writes).toEqual([])
+})
+test('falha ao guardar limite preserva avaliação anterior e preenchimento',async({page})=>{
+  await prepare(page)
+  await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k.startsWith('liber:stock-age:'))throw Error('Sem espaço para limite');return original.call(this,k,v)}})
+  await panel(page).getByLabel('Destacar a partir de (dias corridos)').fill('30')
+  await panel(page).getByRole('button',{name:'Salvar limite de permanência local'}).click()
+  await expect(panel(page).getByRole('alert')).toContainText('Sem espaço para limite')
+  await expect(panel(page)).toContainText('35 caixas com 90 dias ou mais')
+  await expect(panel(page).getByLabel('Destacar a partir de (dias corridos)')).toHaveValue('30')
+})
+test('configuração ilegível é preservada e bloqueia cálculo',async({page})=>{
+  await prepare(page)
+  await page.evaluate(k=>{localStorage.setItem(k,'inválido');window.dispatchEvent(new Event('liber:stock-age'))},key)
+  await expect(panel(page).getByRole('alert')).toContainText('Dados preservados')
+  await expect(panel(page).getByRole('list')).toHaveCount(0)
+  await expect(panel(page).getByRole('form')).toHaveCount(0)
+  expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBe('inválido')
+})
+test('Consulta filtra permanência sem editar limite',async({page})=>{
+  const writes=await prepare(page)
+  await page.route('**/rest/v1/profiles*',route=>route.fulfill({json:{is_active:true,display_name:'Consulta',role:'viewer'}}))
+  await page.reload();await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  await expect(panel(page).getByRole('form')).toHaveCount(0)
+  await panel(page).getByLabel('Categoria para permanência').selectOption('spring')
+  await expect(panel(page)).toContainText('12 abaixo do limite')
+  expect(writes).toEqual([])
+})
+for(const theme of ['light','dark'])test(`nova permanência em 375 px com teclado e auditoria A/AA ${theme}`,async({page})=>{
+  await page.setViewportSize({width:375,height:812});await page.addInitScript(value=>localStorage.setItem('liber-automotive-theme',value),theme)
+  await prepare(page)
+  await panel(page).getByLabel('Destacar a partir de (dias corridos)').focus();await page.keyboard.press('Tab')
+  await expect(panel(page).getByRole('button',{name:'Salvar limite de permanência local'})).toBeFocused()
+  const result=await new AxeBuilder({page}).include('.stock-age').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()
+  expect(result.violations).toEqual([])
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+})

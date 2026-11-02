@@ -4,6 +4,7 @@ import './StockPresentation.css'
 import { PickMissions } from './PickMissions'
 import { TestingDelay } from './TestingDelay'
 import { RecurringDivergences } from './RecurringDivergences'
+import { StockAge } from './StockAge'
 export function StockPresentation({ userId, canEdit, canPick = canEdit }: { userId: string; canEdit: boolean; canPick?: boolean }) {
   const total = demoStock.reduce((sum, row) => sum + row.boxes, 0)
   const awaiting = demoStock.filter(row => row.status === 'Aguardando testagem').reduce((sum, row) => sum + row.boxes, 0)
@@ -19,6 +20,7 @@ export function StockPresentation({ userId, canEdit, canPick = canEdit }: { user
     </section>
     <TestingDelay key={`testing:${userId}`} userId={userId} canEdit={canEdit}/>
     <RecurringDivergences key={`recurrence:${userId}`} userId={userId} canEdit={canEdit}/>
+    <StockAge key={`age:${userId}`} userId={userId} canEdit={canEdit}/>
     <PickMissions key={userId} userId={userId} stock={demoStock} canOperate={canPick}/>
     <ShelfCapacity userId={userId} locations={demoLocations} stock={demoStock} canEdit={canEdit} demoOnly/>
   </section>
