@@ -23,7 +23,7 @@ Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação
 
 - 18: mapa fictício interativo e página de apresentação com indicadores/produtos/capacidades fictícios prontos. Cinco casos novos e verificações isoladas aprovados; publicado em `f38cc9c`, com recursos públicos conferidos. Guia `mapa-ficticio-apresentacao-2026-11-02.md`.
 
-- 21/18: sugestões de espaço, planta em grade com propriedades e salvamento local e apresentação integrada ao Painel prontos. Oito casos novos aprovados; publicação em preparação. Guia `sugestoes-planta-2026-11-02.md`.
+- 21/18: sugestões de espaço, planta em grade com propriedades e salvamento local e apresentação integrada ao Painel prontos. Oito casos novos aprovados; publicado em `3faabef`, com recursos públicos conferidos. Guia `sugestoes-planta-2026-11-02.md`.
 
 ## O que depende de você
 
@@ -53,7 +53,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 18 | Mapa fictício interativo e apresentação sem login prontos, publicado em `f38cc9c`, com recursos públicos conferidos. Faltam posições/códigos reais, vínculo com estoque e conferências aprovadas, configurações compartilhadas e piloto físico. | Dados reais e servidor |
 | 19 | Definir pedido, reserva, separado/expedido, identidade QR e concorrência; implementar missão de separação. | Regras, QR e servidor |
 | 20 | Divergências aprovadas/histórico compartilhado no mapa e eventual disposição física. Resumo do rascunho local já entregue. | Conferências no servidor e mapa físico |
-| 21 | Protótipo de sugestões no cenário do Painel pronto, publicação em preparação. Faltam capacidade/ocupação/espaço e restrições reais validados, servidor/concorrência/reservas e piloto. | Dados físicos e servidor |
+| 21 | Protótipo de sugestões no cenário do Painel pronto, publicado em `3faabef`, com recursos públicos conferidos. Faltam capacidade/ocupação/espaço e restrições reais validados, servidor/concorrência/reservas e piloto. | Dados físicos e servidor |
 | 22 | Definir retirada física incompleta, prazo em teste e limiar de divergência recorrente; criar registros/regras correspondentes. | Regras e histórico compartilhado |
 | 23 | Rastreabilidade e idade física das caixas; última movimentação conhecida já entregue e não prova idade do saldo. | Identidade/lotes/eventos e regra operacional |
 | 24 | Executar o roteiro com equipe e registrar resultados reais. | Equipe e conferência física |

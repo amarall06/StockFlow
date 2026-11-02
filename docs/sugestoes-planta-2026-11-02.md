@@ -45,6 +45,15 @@ Persistência local versionada, por conta/cenário, sem sobrescrever uma ediçã
 
 ## O que pode riscar e o que falta
 
-Pode riscar a **implementação e verificação local da 21 no cenário de apresentação**, a integração ao Painel original e a nova visualização/configuração local da planta da 18. A publicação será registrada depois de confirmada.
+Pode riscar a **implementação e verificação local da 21 no cenário de apresentação**, a integração ao Painel original e a nova visualização/configuração local da planta da 18. Publicado em `3faabef`, conforme registro abaixo.
 
 Para uso real faltam: capacidades/ocupação e espaço físico conferidos, dimensões/peso/restrições e posições validados pela equipe; fonte autorizada e compartilhada no servidor; atualização concorrente e eventual reserva transacional antes de mover caixas; divergências de contagens aprovadas; piloto físico. As regras de exemplo não encerram essas definições. Não houve mudança no Supabase nem aplicação de movimentações reais.
+
+
+## Publicação confirmada
+
+Código `3faabef393fa082003375d12069cad7ea668acb1`, main, `amarall06/StockFlow`. Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/6sJfjX6eb4Az1wseQbc59H4RKwCw
+
+Site original https://liber-automotive.vercel.app/ HTTP 200, entrada correspondente ao build. Quatorze recursos públicos de entrada/Painel/apresentação e dependências iguais por SHA-256 ao build aprovado; diagnóstico local ignorado em `test-results/publicacao-3faabef/hashes.json`. Oito testes novos de navegador e cenários isolados aprovados. Nenhum teste concluído foi repetido na publicação; `[skip ci]` preserva essa instrução e a Vercel compilou normalmente.
+
+Pode riscar implementação/verificação/publicação do protótipo local da 21, da planta editável no recorte da 18 e da integração da apresentação ao site original. Acesso: Painel → Visualização do Painel → Apresentação. Continuam pendentes dados físicos validados, compartilhamento/concorrência/reservas no servidor e piloto.
