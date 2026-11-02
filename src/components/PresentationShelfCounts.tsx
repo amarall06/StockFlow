@@ -74,7 +74,7 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
       <ShelfCount userId={userId} stock={data.stock} catalog={catalog} locations={data.locations} consultedAt={consultedAt} presentationSharing onRefresh={async()=>{await loadPublishedPresentation(AbortSignal.timeout(15000));setConsultedAt(new Date().toISOString())}}/>
       {draft&&<SendCount key={draft.id} draft={draft} ready={ready&&!error} onBusy={setSending} receipt={receipt} onSaved={saved=>{
         setRows(previous=>[saved,...(previous??[]).filter(row=>row.id!==saved.id)].sort((a,b)=>b.created_at.localeCompare(a.created_at)||b.id.localeCompare(a.id)).slice(0,50))
-        setMessage(`Envio confirmado: ${saved.id}. Aguardando revisão; nenhum saldo foi alterado.`);refresh.current()
+        setMessage(`Envio confirmado: ${saved.id}. Consulte a decisão no histórico; nenhum saldo foi alterado.`);refresh.current()
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
     <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, com consulta automática e ao voltar à janela. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
