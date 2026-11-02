@@ -32,6 +32,15 @@ Nenhuma suíte ou caso concluído de etapas anteriores foi repetido. Build final
 
 ## O que pode riscar
 
-Implementação/verificação do **mapa fictício interativo da 18** e preparação da página de apresentação com informações fictícias. Publicação será registrada depois da confirmação.
+Implementação/verificação do **mapa fictício interativo da 18** e preparação da página de apresentação com informações fictícias. Publicado em `f38cc9c`, conforme registro abaixo.
 
 Para a 18 real faltam: mapa/posições e códigos reais, ligação à consulta autorizada, divergências de conferências aprovadas, persistência compartilhada das configurações e ensaio na empresa. Dados reais não devem ser deduzidos desta planta de demonstração. As demais anotações continuam com os estados de `progresso-26-anotacoes.md`.
+
+
+## Publicação confirmada
+
+Código `f38cc9c92daf72595161a395e3db5b0ec52a5248`, main, `amarall06/StockFlow`. Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/3iK5hELEFjVt52V6XwhwpAavpUBr
+
+Apresentação: https://liber-automotive.vercel.app/demonstracao.html (sem login). Sistema: https://liber-automotive.vercel.app/. Ambas HTTP 200 e entradas correspondentes ao build multipágina. Dezesseis recursos públicos de entrada/Painel/apresentação e dependências iguais por SHA-256 ao build aprovado; diagnóstico local ignorado em `test-results/publicacao-f38cc9c/hashes.json`. Nenhum caso concluído foi repetido para publicar; `[skip ci]` evitou repetição das suítes completas, com compilação normal da Vercel. Sem acesso/escrita ao Supabase.
+
+Pode riscar implementação/verificação/publicação do mapa fictício da 18 e da apresentação. Roteiro para mostrar aos superiores: `roteiro-apresentacao-ficticia.md`. Continua sendo um protótipo de painel/capacidade/mapa; as demais funcionalidades pendentes dos 26 não foram marcadas concluídas.

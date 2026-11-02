@@ -1,6 +1,6 @@
 # Progresso das 26 anotações
 
-Atualizado em 02/11/2026. Numeração original preservada. Código `7aa9dc5` publicado (capacidade física local e exemplos da 2), incluindo o guia de instalação `a7954af`, incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
+Atualizado em 02/11/2026. Numeração original preservada. Código `f38cc9c` publicado (mapa fictício da 18 e apresentação), incluindo a capacidade física local `7aa9dc5`, incluindo o guia de instalação `a7954af`, incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
@@ -21,7 +21,7 @@ Atualizado em 02/11/2026. Numeração original preservada. Código `7aa9dc5` pub
 | 15 | Prevenção e confirmação de operações | **Implementação concluída e publicada: pode riscar esse escopo.** Confirmação das operações de caixas e trava imediata de envio completadas; 16 casos novos aprovados nas etapas anteriores, preservados saldo/UUID/recuperação existentes. Piloto mantém sua pendência geral. Guia `fechamento-anotacao-15.md`. |
 | 16 | Sincronização entre aparelhos | **Atualização periódica publicada nas telas previstas. Receptor privado instantâneo publicado e testado em simulação.** Faltam política/gatilhos no servidor, ativação e ensaio entre aparelhos reais. Não riscar 16 inteira. |
 | 17 | Conferência de prateleiras | **Rascunho local concluído e publicado: pode riscar contagem/recuperação, comparação e CSV para revisão.** Branco diferente de zero, referência preservada, alerta se saldo consultado mudar, sem ajuste. Faltam envio, aprovação, histórico compartilhado e piloto físico. |
-| 18 | Mapa interativo | **Mapa fictício NORTE/SUL/LESTE/OESTE com busca, múltiplos locais, seleção/detalhes e estados por texto implementado. Página de apresentação inteiramente fictícia sem login pronta. Cinco testes novos de navegador e verificações isoladas aprovados; pode riscar esse recorte.** Publicação em preparação. Faltam mapa/códigos reais, vínculo com consulta e conferências aprovadas, persistência compartilhada e piloto. Guia `mapa-ficticio-apresentacao-2026-11-02.md`. |
+| 18 | Mapa interativo | **Mapa fictício NORTE/SUL/LESTE/OESTE com busca, múltiplos locais, seleção/detalhes e estados por texto implementado. Página de apresentação inteiramente fictícia sem login pronta. Cinco testes novos de navegador e verificações isoladas aprovados; pode riscar esse recorte.** Publicado em `f38cc9c`, Vercel success e dezesseis recursos públicos conferidos. Faltam mapa/códigos reais, vínculo com consulta e conferências aprovadas, persistência compartilhada e piloto. Guia `mapa-ficticio-apresentacao-2026-11-02.md`. |
 | 19 | Modo missão e separação de pedidos | Não iniciado; depende de pedidos, reservas e QR. |
 | 20 | Mapa de calor | Parcial local: tabela por prateleira com frequência/volume, intensidade relativa e períodos 30/90/180/365 dias. **Resumo de divergências do rascunho local concluído e publicado: pode riscar esse escopo**, separado de movimentações, filtrável por categoria, sem tratar rascunho como aprovado. Faltam conferências aprovadas compartilhadas e eventual mapa físico. |
 | 21 | Sugestão de espaços livres | Não iniciado; depende de capacidade física validada. |
@@ -33,7 +33,7 @@ Atualizado em 02/11/2026. Numeração original preservada. Código `7aa9dc5` pub
 
 ## Rodada atual — mapa fictício e apresentação
 
-Mapa interativo da 18 e apresentação inteiramente fictícia em `/demonstracao.html`, sem login ou chamadas ao Supabase. Cinco testes novos de navegador e verificações isoladas aprovados, sem repetir anteriores. Publicação em preparação. Guia `mapa-ficticio-apresentacao-2026-11-02.md`. Os outros fluxos pendentes não foram considerados implementados por esta demonstração.
+Mapa interativo da 18 e apresentação inteiramente fictícia em `/demonstracao.html`, sem login ou chamadas ao Supabase. Cinco testes novos de navegador e verificações isoladas aprovados, sem repetir anteriores. Publicado em `f38cc9c`, Vercel success e dezesseis recursos públicos conferidos. Guia `mapa-ficticio-apresentacao-2026-11-02.md`. Os outros fluxos pendentes não foram considerados implementados por esta demonstração.
 
 ## Rodada anterior — capacidade física
 
