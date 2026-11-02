@@ -239,3 +239,8 @@ Publicação da 14 e ensaios novos reais documentados em `publicacao-anotacao-14
 ## Continuação sem servidor — 01/11/2026
 
 Subpartes de 17/13/20/22/3 implementadas, com 13 casos novos de navegador e novos cenários isolados aprovados. Sem Supabase real, sem migrações, sem publicação e sem repetir casos anteriores. Detalhamento prevalente: `anotacoes-sem-servidor-2026-11-01.md`. Aprovação/histórico/capacidade/mapa/regras/ensaios físicos continuam pendentes, conforme tabela dos 26.
+
+
+## Publicação e continuação — 01/11/2026
+
+Código `a726b26` publicado com Vercel success, seis arquivos iguais ao build anterior, sem repetir testes aprovados. Relatório `publicacao-contagem-e-alertas.md`. Na sequência, 26 avançou pela página offline com controles móveis, atalhos/foco e três testes novos sem rede, inclusive auditoria automática A/AA. Guia `offline-acessibilidade-2026-11-01.md`. Publicação do complemento em andamento; não houve acesso/escrita no Supabase.

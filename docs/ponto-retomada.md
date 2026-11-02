@@ -1,3 +1,5 @@
+> **Publicado — 01/11/2026:** código `a726b26`, Vercel success e seis arquivos públicos iguais ao build aprovado. Pode riscar publicação das subpartes de 3, 13, 17, 20, 22 e 23; limites e piloto preservados. Nenhum teste concluído repetido. Relatório `publicacao-contagem-e-alertas.md`.
+
 > **Continuação sem servidor — 01/11/2026:** subpartes locais de 17 (contagem/CSV), 13 (avisos), 20 (divergências locais), 22 (confirmação de saída pendente) e 3 (separação visual nas prateleiras) implementadas. Treze testes novos de navegador e cenários isolados aprovados; anteriores não repetidos. Ainda não publicado. Código e limites: `anotacoes-sem-servidor-2026-11-01.md`; consultar a tabela atual em `progresso-26-anotacoes.md`.
 
 > **Retomada — 23:** última movimentação conhecida fora da janela implementada localmente, testes novos aprovados e build/análise aprovados. Não publicada. Guia `anotacao-23-ultima-movimentacao.md`. Ativação do servidor da 16 não realizada: conector Supabase indisponível nesta sessão.
