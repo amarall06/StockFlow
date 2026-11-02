@@ -19,6 +19,8 @@ Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação
 
 - 10/25/26: orientação interna de instalação Windows/Android/iPhone pronta, com cinco testes novos aprovados, inclusive sem convite automático; publicado em `a7954af`, com arquivos públicos conferidos. Não encerra instalação real.
 
+- 2: referência física definida; exemplo com quatro prateleiras e capacidades fictícias autorizado e implementado, com configuração local editável. Oito testes novos aprovados; publicação em preparação. Guia `capacidade-fisica-local.md`.
+
 ## O que depende de você
 
 O preenchimento prático, sem solicitar senhas ou decisões técnicas do servidor, está em `definicoes-da-empresa-26-anotacoes.md`. Respostas podem ser fornecidas por grupos conforme a empresa tiver as informações.
@@ -28,7 +30,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | Nº | O que falta | Dependência principal |
 | --- | --- | --- |
 | 1 | Sem pendência de implementação no escopo entregue; observar comportamento no piloto. | Piloto geral |
-| 2 | Definir e cadastrar capacidade/meta real para o gráfico de cheio; depois implementar proporção. | Decisão/dados da empresa; persistência compartilhada |
+| 2 | Capacidade física escolhida; gráfico/configuração local e exemplo NORTE/SUL/LESTE/OESTE prontos. Faltam publicação, persistência compartilhada e capacidades reais quando for utilizar com dados reais. | Servidor e conferência física futura |
 | 3 | Definir separação física, nomes e uso das prateleiras de testados/não testados; executar organização conferida. | Empresa e espaço físico |
 | 4 | Retomar gestão de funcionários/testadores e validar contas reais e permissões. | Etapa adiada; serviço de contas/equipe |
 | 5 | Escopo manual entregue. Fechamento histórico transacional/envio automático não integra essa entrega. | Eventual nova solicitação |

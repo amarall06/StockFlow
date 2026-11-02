@@ -257,3 +257,8 @@ Sem Supabase real, corrigidos contrastes em sete CSS e aprovados 30 casos novos 
 ## Revisão completa e guia da 10 — 01/11/2026
 
 Conferidos os 26 itens. Guia interno de instalação independente de convite automático, com caminhos Windows/Android/iPhone, cinco testes novos aprovados e nenhuma suíte anterior repetida. Publicado em `a7954af`, Vercel success e cinco arquivos públicos iguais ao build aprovado. Relatório `guia-instalacao-2026-11-01.md`. Dependências do usuário/empresa detalhadas em `definicoes-da-empresa-26-anotacoes.md`; sem inventar prazos, mapa ou capacidade, sem banco real e sem limpar dados fictícios.
+
+
+## Capacidade física por prateleira — 01/11/2026
+
+Usuário escolheu referência física e autorizou cenário fictício NORTE/SUL/LESTE/OESTE e demais valores. Implementado gráfico e edição local por prateleira, com separação entre demonstração e consulta do estoque. Oito testes novos de navegador e novos cenários isolados aprovados; nenhum antigo repetido. Publicação em preparação. Guia `capacidade-fisica-local.md`. Compartilhamento e dados reais continuam pendentes.

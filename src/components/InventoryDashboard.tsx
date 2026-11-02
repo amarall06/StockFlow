@@ -9,6 +9,7 @@ import { DashboardWarranty } from './DashboardWarranty'
 import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
+import { ShelfCapacity } from './ShelfCapacity'
 import './InventoryDashboard.css'
 
 function MetricIcon({kind}:{kind:string}) {
@@ -35,8 +36,8 @@ export function DashboardActivity({report,onHistory=()=>{}}:{report:DashboardRep
   </div>
 }
 
-export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId}:{
-  countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
+export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId,capacityUserId,locations=[]}:{
+  capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
@@ -117,6 +118,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <StockReportExport/>
+      {capacityUserId && <ShelfCapacity key={capacityUserId} userId={capacityUserId} locations={locations} stock={stock} canEdit={isAdministrator}/>}
       <InventoryInsights catalog={catalog} stock={stock} category={category}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
       {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}

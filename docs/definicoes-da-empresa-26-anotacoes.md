@@ -2,13 +2,15 @@
 
 Revisão dos 26 itens em 01/11/2026. Pode responder em texto, por grupos, quando tiver as informações. Não enviar senhas ou chaves de acesso. Campos sem definição continuam pendentes; nenhum valor abaixo foi presumido como regra da empresa.
 
+A referência do gráfico já foi decidida: **capacidade física**. O usuário autorizou o cenário local fictício NORTE/SUL/LESTE/OESTE com valores de exemplo; não precisa repetir essa decisão. Dados físicos reais abaixo só serão necessários para substituir a demonstração por referência real.
+
 ## 1. Prateleiras, capacidade e separação — 2, 3, 18, 21
 
 | Informação | O que informar |
 | --- | --- |
 | Códigos reais | Prateleiras existentes, inclusive quais deixaram de ser usadas. |
 | Posição | Ordem/corredor/lado de cada prateleira. Um desenho simples com os códigos já ajuda; não precisa de planta profissional. |
-| Significado de cheio | Se o gráfico deve comparar com capacidade física ou com meta operacional de estoque. |
+| Significado de cheio | **Definido: capacidade física.** Gráfico e configuração local implementados. |
 | Capacidade | Limite validado por prateleira e tipo/tamanho de caixa; restrições de peso ou mistura, quando existirem. |
 | Testados/não testados | Quais locais ficam destinados a cada situação; se uma mesma prateleira pode conter ambas. |
 

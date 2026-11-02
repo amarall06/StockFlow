@@ -1,3 +1,5 @@
+> **Anotação 2 — 01/11/2026:** capacidade física escolhida; usuário autorizou exemplos fictícios com Norte/Sul/Leste/Oeste. Gráfico e configuração local por prateleira implementados, oito testes novos de navegador e cenários isolados aprovados, sem testes antigos. Publicação em preparação. Guia `capacidade-fisica-local.md`. Sem novos locais/saldos no Supabase.
+
 > **Publicado — 01/11/2026:** guia de instalação da 10 em `a7954af`, cinco testes novos aprovados e arquivos públicos iguais ao build aprovado. Pode riscar esse recorte; instalação física continua pendente. Conferência dos 26 e dados necessários da empresa: `definicoes-da-empresa-26-anotacoes.md`. Sem testes antigos repetidos e sem acesso ao Supabase real.
 
 > **Revisão dos 26 — 01/11/2026:** orientação de instalação da 10 implementada no sistema, inclusive sem convite automático. Cinco testes novos aprovados, nenhum anterior repetido. Publicado em `a7954af`, Vercel success e cinco arquivos públicos iguais ao build aprovado. Guia `guia-instalacao-2026-11-01.md`; o que depende da empresa está em `definicoes-da-empresa-26-anotacoes.md`. Sem Supabase real e sem inventar regras físicas/operacionais.

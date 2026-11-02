@@ -5,7 +5,7 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `a7954af` pub
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
 | 1 | Pop-up de estoque baixo | **Implementação local concluída: pode riscar esse escopo.** Aviso comum às telas, amortecedores/molas, acesso autorizado, memória por conta/sessão, sem repetição por consulta e sem roubar foco. Publicado em `221171e`. |
-| 2 | Gráfico com referência de cheio | Não iniciado; capacidade/meta a definir. |
+| 2 | Gráfico com referência de cheio | **Capacidade física definida; gráfico/configuração local por prateleira e cenário fictício NORTE/SUL/LESTE/OESTE implementados, oito testes novos aprovados. Pode riscar esse recorte local.** Publicação em preparação; faltam compartilhamento no servidor e capacidades reais quando aplicável. Guia `capacidade-fisica-local.md`. |
 | 3 | Separação de testados/não testados | **Separação visual por situação nos resumos de prateleiras concluída e publicada: pode riscar esse escopo.** Amortecedores aguardando/liberados e molas em estoque, em caixas. Organização física ainda não definida. |
 | 4 | Identificação de testadores | Parcial existente: pessoa/data e função Testador; gestão e contas reais adiadas. |
 | 5 | Relatórios PDF e Excel | **Exportação manual local concluída: pode riscar esse escopo.** PDF/XLSX reais no Painel, semana/mês/ano, saldo atual normal + movimentações do período em caixas. Não inclui fechamento histórico transacional, envio ou agendamento. Publicado em `221171e`. |
@@ -31,7 +31,11 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `a7954af` pub
 | 25 | Ampliar testes automáticos | **Mais 30 casos novos de acessibilidade de formulários/diálogos aprovados nesta rodada, sem repetir os concluídos.** **Mais 13 casos novos de navegador e cenários isolados aprovados nesta etapa, sem repetir anteriores.** Parcial: mais 70 verificações novas nesta continuação (22 navegador + 48 isoladas), incluindo o receptor Realtime iniciado antes do pedido de sequência automática. Casos antigos não repetidos. Ensaios reais e demais áreas seguem pendentes. |
 | 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Contraste de sete telas e sete diálogos revisado nos temas claro/escuro; 30 casos novos aprovados. Pode riscar esse recorte automatizado, publicado em `62b59f9`, com arquivos públicos conferidos.** **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Complemento publicado em `080869d`; pode riscar esse recorte.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
 
-## Rodada atual — instalação e revisão dos 26
+## Rodada atual — capacidade física
+
+Referência escolhida e exemplos fictícios autorizados pelo usuário. Gráfico/configuração local no Painel, oito casos novos de navegador e cenários isolados aprovados; publicação em preparação. Guia `capacidade-fisica-local.md`. Não foram criados locais/saldos no Supabase.
+
+## Rodada anterior — instalação e revisão dos 26
 
 Guia interno de instalação concluído e aprovado em cinco testes novos, sem repetir anteriores; publicado em `a7954af`, com arquivos públicos conferidos. Relatório `guia-instalacao-2026-11-01.md`. Dependências práticas da empresa: `definicoes-da-empresa-26-anotacoes.md`. Instalação/atualização em aparelhos reais continuam pendentes.
 
