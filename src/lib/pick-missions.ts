@@ -5,7 +5,7 @@ export const sampleOrders = [
   { id: 'PED-1003', customer: 'Oficina Avenida', items: [{ code: 'AGM-35', boxes: 7 }, { code: 'MGM-35', boxes: 4 }] },
 ]
 export type PickStep = { id: string; code: string; location: string; status: StockRow['status']; quantity: number; counted: number }
-export type PickMission = { orderId: string; status: 'active' | 'separated' | 'cancelled'; startedAt: string; updatedAt: string; steps: PickStep[] }
+export type PickMission = { orderId: string; status: 'active' | 'separated' | 'cancelled'; startedAt: string; updatedAt: string; steps: PickStep[]; cancellation?: { reason: string; disposition: 'not-picked' | 'returned'; recordedAt: string } }
 export type MissionState = { version: 1; userId: string; missions: Record<string, PickMission> }
 const keyOf = (row: { code: string; location: string; status: string }) => JSON.stringify([row.code, row.location, row.status])
 export const pickCode = (step: PickStep) => `LIBER|${step.location}|${step.code}|${step.status === 'Em estoque' ? 'EM_ESTOQUE' : 'LIBERADO'}`
@@ -23,6 +23,11 @@ export function parseMissions(raw: string | null, userId: string): MissionState 
       seen.add(step.id)
     }
     if (order.items.some(item => mission.steps.filter(step => step.code === item.code).reduce((sum, step) => sum + step.quantity, 0) !== item.boxes) || (mission.status === 'separated' && mission.steps.some(step => step.counted !== step.quantity))) throw Error('Quantidades da missão não correspondem ao pedido.')
+    if (mission.cancellation !== undefined) {
+      const record = mission.cancellation
+      const picked = mission.steps.some(step => step.counted > 0)
+      if (!record || mission.status !== 'cancelled' || typeof record.reason !== 'string' || record.reason.trim().length < 5 || record.reason.length > 300 || record.disposition !== (picked ? 'returned' : 'not-picked') || !Number.isFinite(Date.parse(record.recordedAt))) throw Error('Registro de cancelamento inválido.')
+    }
   }
   return state
 }
@@ -76,6 +81,16 @@ export function changeMissionStatus(state: MissionState, orderId: string, status
   return { ...state, missions: { ...state.missions, [orderId]: { ...mission, status, updatedAt: new Date().toISOString() } } }
 }
 export const missionKey = (userId: string) => `liber:pick-missions:v1:${userId}`
+export function cancelPickMission(state: MissionState, orderId: string, reason: string, returnConfirmed: boolean): MissionState {
+  const mission = state.missions[orderId]
+  if (!mission || mission.status !== 'active') throw Error('Somente uma missão em andamento pode ser cancelada por este fluxo.')
+  const cleaned = reason.trim()
+  if (cleaned.length < 5 || cleaned.length > 300) throw Error('Informe um motivo entre 5 e 300 caracteres.')
+  const picked = mission.steps.some(step => step.counted > 0)
+  if (picked && !returnConfirmed) throw Error('Confira o retorno das caixas separadas antes de liberar a destinação local.')
+  const now = new Date().toISOString()
+  return { ...state, missions: { ...state.missions, [orderId]: { ...mission, status: 'cancelled', updatedAt: now, cancellation: { reason: cleaned, disposition: picked ? 'returned' : 'not-picked', recordedAt: now } } } }
+}
 export function readMissionRaw(userId: string) { try { return localStorage.getItem(missionKey(userId)) } catch { return '!storage-unavailable' } }
 export function subscribeMissions(listener: () => void) {
   for (const event of ['storage', 'focus', 'liber:pick-missions']) window.addEventListener(event, listener)

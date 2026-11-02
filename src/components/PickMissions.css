@@ -5,3 +5,4 @@
 .pick-route>li[aria-current=step]{border:2px solid var(--liber-accent,#b34d14)}.pick-route h3{font-size:16px;margin:0}
 .pick-item-form{padding:16px;border:1px solid var(--liber-muted,#655f58);border-radius:8px;margin-block:18px}.pick-actions{display:flex;gap:10px;flex-wrap:wrap;margin-block:16px}
 .pick-missions :focus-visible{outline:3px solid currentColor;outline-offset:3px}.pick-missions button{min-height:44px}
+.pick-cancel{border:1px solid var(--liber-muted,#655f58);border-radius:8px;padding:14px;margin-block:16px}.pick-cancel summary{cursor:pointer;min-height:44px;align-content:center}.pick-cancel label{display:grid;gap:8px;margin-block:16px}.pick-cancel .pick-return-check{display:flex;align-items:center;gap:12px}.pick-return-check input[type=checkbox]{width:24px;min-height:24px;flex-shrink:0}

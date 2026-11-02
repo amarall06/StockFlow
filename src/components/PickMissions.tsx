@@ -1,6 +1,6 @@
 import { useRef, useState, useSyncExternalStore } from 'react'
 import type { StockRow } from '../lib/inventory-api'
-import { changeMissionStatus, confirmPick, parseMissions, pickCode, readMissionRaw, sampleOrders, saveMissions, startPickMission, subscribeMissions, type MissionState, type PickStep } from '../lib/pick-missions'
+import { cancelPickMission, changeMissionStatus, confirmPick, parseMissions, pickCode, readMissionRaw, sampleOrders, saveMissions, startPickMission, subscribeMissions, type MissionState, type PickStep } from '../lib/pick-missions'
 import { locateMissionShelf } from '../lib/map-navigation'
 import { createPickList, createPickListPdf, downloadPickListPdf, pickListHeaders } from '../lib/pick-list'
 import { downloadCsv } from '../lib/csv'
@@ -19,6 +19,19 @@ function PickItemForm({ step, onConfirm }: { step: PickStep; onConfirm: (scan: s
     <label>Total de caixas separadas neste item<input type="number" min={Math.max(1, step.counted)} max={step.quantity} step="1" required value={quantity} onChange={event => setQuantity(event.target.value)}/></label>
     <button className="theme-toggle" type="submit">Confirmar separação do item</button>
   </form>
+}
+function CancelMissionForm({ counted, onConfirm }: { counted: number; onConfirm: (reason: string, returned: boolean) => void }) {
+  const [reason, setReason] = useState('')
+  const [returned, setReturned] = useState(false)
+  return <details className="pick-cancel">
+    <summary>Cancelar missão local</summary>
+    <form aria-label="Cancelamento da missão" onSubmit={event => { event.preventDefault(); onConfirm(reason, returned) }}>
+      <p>O cancelamento libera a destinação deste pedido apenas na apresentação. O motivo e a conferência ficam nesta conta e navegador; nenhum saldo real é alterado.</p>
+      <label>Motivo do cancelamento<input required minLength={5} maxLength={300} value={reason} onChange={event => setReason(event.target.value)} /></label>
+      {counted > 0 ? <label className="pick-return-check"><input type="checkbox" required checked={returned} onChange={event => setReturned(event.target.checked)} />Conferi o retorno das {counted} caixas separadas às prateleiras de origem.</label> : <p>Nenhuma caixa foi registrada como separada nesta missão.</p>}
+      <button type="submit" className="theme-toggle">Confirmar cancelamento local</button>
+    </form>
+  </details>
 }
 export function PickMissions({ userId, stock, canOperate }: { userId: string; stock: StockRow[]; canOperate: boolean }) {
   const raw = useSyncExternalStore(subscribeMissions, () => readMissionRaw(userId), () => null)
@@ -62,6 +75,7 @@ export function PickMissions({ userId, stock, canOperate }: { userId: string; st
     {(!mission || mission.status === 'cancelled') && <button className="theme-toggle" type="button" disabled={!state || !canOperate} onClick={() => apply(value => startPickMission(value, orderId, stock), 'Missão iniciada. Quantidades destinadas localmente a este pedido.')}>{mission ? 'Reiniciar missão cancelada' : 'Iniciar missão'}</button>}
     {mission && <>
       <p role="status">{mission.status === 'active' ? 'Missão em andamento' : mission.status === 'separated' ? 'Separação concluída — expedição não registrada' : 'Missão cancelada'} · {counted} de {total} caixas separadas.</p>
+      {mission.cancellation && <section aria-label="Registro do cancelamento"><h3>Cancelamento registrado neste navegador</h3><p>Motivo: {mission.cancellation.reason}</p><p>{mission.cancellation.disposition === 'returned' ? 'Retorno às prateleiras de origem declarado como conferido.' : 'Sem caixas registradas como separadas.'}</p><p>Registrado em {new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Bahia', dateStyle: 'short', timeStyle: 'short' }).format(new Date(mission.cancellation.recordedAt))} (America/Bahia).</p></section>}
       <div className="pick-actions" aria-label="Exportar lista de retirada" aria-busy={exporting}>
         <button type="button" className="theme-toggle" disabled={exporting || Boolean(error)} onClick={() => void exportList('pdf')}>Baixar lista de retirada PDF</button>
         <button type="button" className="theme-toggle" disabled={exporting || Boolean(error)} onClick={() => void exportList('csv')}>Baixar lista de retirada CSV</button>
@@ -73,7 +87,8 @@ export function PickMissions({ userId, stock, canOperate }: { userId: string; st
       </li>)}</ol>
       {current && canOperate && !error && <PickItemForm key={`${orderId}:${current.id}:${current.counted}`} step={current} onConfirm={(scan, quantity) => apply(value => confirmPick(value, orderId, current.id, scan, quantity), 'Quantidade separada salva neste navegador.')}/>}
       {mission.status === 'active' && <div className="pick-actions"><button type="button" className="theme-toggle" disabled={Boolean(current) || !canOperate || Boolean(error)} onClick={() => apply(value => changeMissionStatus(value, orderId, 'separated'), 'Separação concluída localmente. As quantidades continuam destinadas a este pedido; nenhuma venda ou expedição foi registrada.')}>Concluir separação</button>
-        <button type="button" className="theme-toggle" disabled={!canOperate || Boolean(error)} onClick={() => { if (window.confirm('Cancelar esta missão local? Confira o destino das caixas já separadas. Nenhum saldo será alterado.')) apply(value => changeMissionStatus(value, orderId, 'cancelled'), 'Missão cancelada localmente. Confira o destino físico das caixas já separadas.') }}>Cancelar missão local</button></div>}
+      </div>}
+      {mission.status === 'active' && canOperate && !error && <CancelMissionForm key={`${orderId}:${counted}`} counted={counted} onConfirm={(reason, returned) => apply(value => cancelPickMission(value, orderId, reason, returned), 'Cancelamento registrado localmente com motivo e conferência. Nenhum saldo real foi alterado.')} />}
     </>}
   </section>
 }

@@ -281,3 +281,7 @@ Pedidos de exemplo, roteiro, código textual, confirmação acumulada e recupera
 ## 19 — lista de retirada local, 02/11/2026
 
 PDF/CSV do pedido atual com roteiro e progresso, identificação de cancelamento e cópia com data; sem alterar missão ou estoque. Quatro testes novos e verificações isoladas aprovados, PDF inspecionado visualmente. Pode riscar implementação/testes/publicação desse recorte local. Guia: lista-retirada-local-2026-11-02.md. Não encerra as pendências reais da 19. Publicado em `64e92a2`; domínio HTTP 200 e dezesseis recursos públicos iguais ao build aprovado.
+
+## 12 — cancelamento local com motivo, 02/11/2026
+
+Formulário, motivo/data e declaração do retorno das caixas já separadas implementados na apresentação; quatro testes novos e verificações isoladas aprovados, nenhum anterior repetido. Guia: cancelamento-local-2026-11-02.md. Pedidos/reservas/histórico reais e piloto continuam pendentes. Publicação em andamento.

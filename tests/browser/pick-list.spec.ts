@@ -46,8 +46,10 @@ test('CSV exporta progresso parcial recuperado e seleciona somente o pedido atua
   expect(writes).toEqual([])
 })
 test('lista cancelada é explicitamente invalidada nos dois formatos', async ({ page }) => {
-  await prepare(page); page.once('dialog', dialog => dialog.accept())
-  await panel(page).getByRole('button', { name: 'Cancelar missão local' }).click()
+  await prepare(page)
+  await panel(page).locator('summary').filter({ hasText: 'Cancelar missão local' }).click()
+  await panel(page).getByLabel('Motivo do cancelamento').fill('Cliente desistiu do pedido')
+  await panel(page).getByRole('button', { name: 'Confirmar cancelamento local' }).click()
   const csv = await download(page, 'CSV'), pdf = await download(page, 'PDF')
   expect(csv.bytes.toString('utf8')).toContain('CANCELADA - não utilizar para retirada')
   expect(pdf.bytes.toString('latin1')).toContain('CANCELADA - n')
