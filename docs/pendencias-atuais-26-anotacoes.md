@@ -72,4 +72,4 @@ PDF/CSV do pedido atual com roteiro e progresso, identificação de cancelamento
 
 ## 12 — cancelamento local com motivo, 02/11/2026
 
-Formulário, motivo/data e declaração do retorno das caixas já separadas implementados na apresentação; quatro testes novos e verificações isoladas aprovados, nenhum anterior repetido. Guia: cancelamento-local-2026-11-02.md. Pedidos/reservas/histórico reais e piloto continuam pendentes. Publicação em andamento.
+Formulário, motivo/data e declaração do retorno das caixas já separadas implementados na apresentação; quatro testes novos e verificações isoladas aprovados, nenhum anterior repetido. Guia: cancelamento-local-2026-11-02.md. Pedidos/reservas/histórico reais e piloto continuam pendentes. Publicado em `f82b482`; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.

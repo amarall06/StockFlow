@@ -28,3 +28,7 @@ Quatro testes novos de navegador em `pick-cancellation.spec.ts`, todos aprovados
 ## Pode riscar e falta
 
 Pode riscar o protótipo local de cancelamento com motivo e declaração de retorno da 12. Faltam pedidos reais, reserva global e concorrência transacional, identidade/responsável autenticado, histórico compartilhado completo, motivo/destino conforme regra aprovada da empresa, expedição/venda/devolução e ensaio físico. Não riscar a 12 inteira.
+
+## Publicação confirmada
+
+Publicado em `f82b4828c922baba12aec39a52fd486084c1978d`, no site original https://liber-automotive.vercel.app/ . Vercel: https://vercel.com/amarall06s-projects/liber-automotive/3TvgZman5FZA3Ka1TTWoSz9VWsE6 . Domínio HTTP 200 e quatorze recursos públicos iguais ao build aprovado, conferidos por hash. Nenhum teste funcional repetido na publicação. Commits `[skip ci]` evitam a suíte antiga. Pode riscar implementação, testes e publicação deste protótipo local da 12. Nenhuma alteração no Supabase ou estoque real.

@@ -1,4 +1,4 @@
-> **12 — 02/11/2026:** cancelamento local com motivo, data e declaração de retorno das caixas separadas. Quatro testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `cancelamento-local-2026-11-02.md`. Publicação em andamento.
+> **12 — 02/11/2026:** cancelamento local com motivo, data e declaração de retorno das caixas separadas. Quatro testes novos e verificações isoladas aprovados; nenhum anterior repetido. Sem Supabase. Guia `cancelamento-local-2026-11-02.md`. Publicado em `f82b482`; quatorze recursos públicos iguais ao build aprovado e domínio HTTP 200.
 
 > **19 — lista de retirada, 02/11/2026:** PDF/CSV com pedido, roteiro, leitura e quantidades solicitadas/separadas/pendentes; canceladas identificadas. Quatro testes novos e verificações isoladas aprovados, PDF inspecionado; nenhum teste anterior. Sem Supabase. Guia `lista-retirada-local-2026-11-02.md`. Publicado em `64e92a2`; domínio HTTP 200 e dezesseis recursos públicos iguais ao build aprovado.
 
