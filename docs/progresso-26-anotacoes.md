@@ -1,6 +1,6 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração original preservada. Código `62b59f9` publicado (contraste/formulários da 26), incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
+Atualizado em 01/11/2026. Numeração original preservada. Código `a7954af` publicado (guia de instalação da 10), incluindo o contraste/formulários da 26 em `62b59f9`, incluindo o complemento offline `080869d`, incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
@@ -13,7 +13,7 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `62b59f9` pub
 | 7 | Segurança do site | Parcial/contínuo. Novos cabeçalhos locais e dependências de exportação sem vulnerabilidades conhecidas na instalação; controles existentes não encerram auditoria de banco/armazenamento/recuperação. |
 | 8 | Zerar estoque fictício | Adiado para transição final aprovada. |
 | 9 | Etiquetas de testados | Adiado. |
-| 10 | Aplicativo Windows/Android | **Orientação interna Windows/Android/iPhone concluída localmente, inclusive sem convite automático; cinco testes novos aprovados. Publicação em preparação.** **Preparação local PWA concluída:** manifesto, ícones, janela própria e convite de instalação. Publicado; falta validar instalação real Windows/Android. Offline é item separado. |
+| 10 | Aplicativo Windows/Android | **Orientação interna Windows/Android/iPhone concluída e publicada, inclusive sem convite automático; cinco testes novos aprovados. Publicado em `a7954af`, Vercel success e cinco arquivos públicos iguais ao build aprovado.** **Preparação local PWA concluída:** manifesto, ícones, janela própria e convite de instalação. Publicado; falta validar instalação real Windows/Android. Offline é item separado. |
 | 11 | Ampliar dashboard | **Implementação local dos indicadores em caixas concluída: pode riscar esse escopo.** Disponível para venda, aguardando teste e garantia separados, preservados totais/atividade/alertas. Não converte caixas em peças sem quantidade validada por caixa. Publicado em `221171e`. |
 | 12 | Cancelamento de pedidos | Não iniciado; reservas e retorno físico a definir. |
 | 13 | Alertas automáticos de pendências | Parcial local: avisos automáticos de inconsistências da consulta, usando o fluxo existente. Aviso global de rascunhos offline por conta e acesso à conferência implementados, com um teste novo aprovado. **Aviso de contagem local e de confirmação de saída pendente concluídos e publicados; pode riscar esses escopos.** Faltam demais regras de pendências operacionais/prazos/resolução. |
@@ -33,7 +33,7 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `62b59f9` pub
 
 ## Rodada atual — instalação e revisão dos 26
 
-Guia interno de instalação concluído e aprovado em cinco testes novos, sem repetir anteriores; publicação em preparação. Relatório `guia-instalacao-2026-11-01.md`. Dependências práticas da empresa: `definicoes-da-empresa-26-anotacoes.md`. Instalação/atualização em aparelhos reais continuam pendentes.
+Guia interno de instalação concluído e aprovado em cinco testes novos, sem repetir anteriores; publicado em `a7954af`, com arquivos públicos conferidos. Relatório `guia-instalacao-2026-11-01.md`. Dependências práticas da empresa: `definicoes-da-empresa-26-anotacoes.md`. Instalação/atualização em aparelhos reais continuam pendentes.
 
 ## Rodada anterior — formulários e contraste
 

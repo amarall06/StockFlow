@@ -14,7 +14,7 @@ Se o convite chegar enquanto o guia estiver aberto, a ação nativa aparece dent
 
 Cinco casos novos em `tests/browser/install-guide.spec.ts`, todos aprovados: ausência de convite com instruções dos três grupos; convite recebido no guia sem abertura automática; falha anunciada com alternativa manual; teclado/largura/auditoria automática A/AA em tema claro; o mesmo recorte em tema escuro. Nenhum teste antigo de manifesto, ícones ou convite foi repetido. Não houve instalação nativa real, gravação no estoque ou uso de conta da empresa: API simulada e evento de convite simulado.
 
-Pode riscar a orientação interna e os cinco novos cenários desse recorte de 10/25/26. A 10 inteira continua parcial: falta instalar, abrir e atualizar em aparelhos reais da empresa. A publicação será registrada depois da confirmação.
+Pode riscar a orientação interna e os cinco novos cenários desse recorte de 10/25/26. A 10 inteira continua parcial: falta instalar, abrir e atualizar em aparelhos reais da empresa. Publicação concluída em `a7954af`, conforme registro abaixo.
 
 ## Revisão dos 26 e dependências
 
@@ -28,3 +28,12 @@ Pode riscar a orientação interna e os cinco novos cenários desse recorte de 1
 - [Safari no iPhone — Apple](https://support.apple.com/en-lamr/guide/iphone/iphea86e5236/ios).
 
 Os rótulos variam por versão; o guia aponta essa variação e mantém links para a orientação atual dos fabricantes. O texto do LIBER é uma orientação própria resumida, não uma garantia de funcionamento de todo navegador/aparelho.
+
+
+## Publicação confirmada
+
+Código `a7954af8846f08a50d1526abbbe9c4154abaa804`, main, `amarall06/StockFlow`. Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/3Kids8ieYghuKDRHQyBQTSEKYzuU
+
+Domínio https://liber-automotive.vercel.app/ HTTP 200, entrada `index-CGI2cOJT.js`. Cinco arquivos públicos (entrada, InventoryApp, InstallGuide JS/CSS e módulo modal compartilhado) iguais por SHA-256 ao build aprovado. Registro local ignorado: `test-results/publicacao-a7954af/hashes.json`. Build e análise dos módulos/teste novos aprovados. Cinco testes novos distintos aprovados, nenhum anterior repetido. Publicação `[skip ci]` para não repetir suítes completas já concluídas; Vercel compilou normalmente.
+
+Pode riscar implementação, verificação e publicação do guia interno da 10. Isso não confirma instalação em Windows/Android/iPhone reais; a lista de definições da empresa e de ensaios físicos continua válida.
