@@ -102,3 +102,7 @@ Anotação 16, atualização periódica: `src/lib/resume-refresh.ts` e integraç
 Continuar automaticamente entre itens autorizados, sem repetir testes concluídos. Ativar o servidor privado da 16 quando houver acesso administrativo; definir as regras/dados pendentes de retorno, pedidos, prazos, capacidade e mapa físico. Offline já implementado/publicado nos escopos descritos; continuar somente suas validações reais pendentes. A tabela de dependências de todos os itens está no guia mais recente; não tratar preparação ou simulação como implantação real.
 
 Foto real, Safari físico e execução do piloto continuam dependências externas. Usuários, etiquetas e restauração preservam o adiamento. **A melhoria geral do design fica para depois das 26 anotações**, conforme pedido do usuário; correções necessárias ao uso das funcionalidades podem acompanhar suas etapas.
+
+## 19 — lista de retirada local, 02/11/2026
+
+PDF/CSV do pedido atual com roteiro e progresso, identificação de cancelamento e cópia com data; sem alterar missão ou estoque. Quatro testes novos e verificações isoladas aprovados, PDF inspecionado visualmente. Pode riscar esse recorte local após publicação. Guia: lista-retirada-local-2026-11-02.md. Não encerra as pendências reais da 19. Publicação em andamento.

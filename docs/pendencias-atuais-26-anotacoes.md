@@ -65,3 +65,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 ## Limites desta rodada
 
 Nenhuma regra física/operacional foi inventada para concluir itens. Não foram criados usuários, aplicada migração, alterado saldo real ou apagado estoque fictício. Não se deve retomar testes concluídos apenas para atualizar documentação ou publicar. Novas verificações devem corresponder a mudanças ou cenários ainda não cobertos.
+
+## 19 — lista de retirada local, 02/11/2026
+
+PDF/CSV do pedido atual com roteiro e progresso, identificação de cancelamento e cópia com data; sem alterar missão ou estoque. Quatro testes novos e verificações isoladas aprovados, PDF inspecionado visualmente. Pode riscar esse recorte local após publicação. Guia: lista-retirada-local-2026-11-02.md. Não encerra as pendências reais da 19. Publicação em andamento.
