@@ -25,12 +25,12 @@
 .eyebrow { margin: 0 0 8px; color: #a75d48; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; }
 h1 { margin: 0; color: #172d3c; font-size: 27px; font-weight: 650; letter-spacing: -.8px; }
 .subtitle { margin: 8px 0 0; color: #77858e; font-size: 13px; }
-.demo-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 3px; padding: 8px 11px; border: 1px solid #ead5b2; border-radius: 20px; background: #fbf5e9; color: #91723d; font-size: 11px; white-space: nowrap; }
+.demo-badge { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 3px; padding: 8px 11px; border: 1px solid #ead5b2; border-radius: 20px; background: #fbf5e9; color: #715323; font-size: 11px; white-space: nowrap; }
 .demo-badge span { width: 6px; height: 6px; }
 /* Painel e resultado da consulta feita por leitura ou digitação do código. */
 .scan-panel { margin-bottom: 20px; padding: 18px 20px; border: 1px solid #e2e9ec; border-radius: 9px; background: #fff; box-shadow: 0 2px 5px #102d3a06; }
 .scan-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.scan-heading p { margin: 5px 0 0; color: #87939b; font-size: 11px; }
+.scan-heading p { margin: 5px 0 0; color: #586872; font-size: 11px; }
 .scan-icon { color: #a95c46; font-size: 23px; }
 .scan-form { margin-top: 15px; }
 .scan-form label { display: block; margin-bottom: 6px; color: #667780; font-size: 10px; }
@@ -40,15 +40,15 @@ h1 { margin: 0; color: #172d3c; font-size: 27px; font-weight: 650; letter-spacin
 .scan-input-row button { padding: 0 14px; border: 0; border-radius: 6px; background: #a95c46; color: #fff; cursor: pointer; font-size: 11px; }
 .scan-result { display: grid; grid-template-columns: .7fr 2fr 1fr; gap: 12px; margin-top: 14px; padding: 14px; border: 1px solid #eadbd1; border-radius: 7px; background: #fbf4ec; }
 .scan-result div { display: grid; gap: 5px; }
-.scan-result span { color: #90776c; font-size: 9px; font-weight: 700; letter-spacing: .5px; }
+.scan-result span { color: #705b50; font-size: 9px; font-weight: 700; letter-spacing: .5px; }
 .scan-result strong { color: #704438; font-size: 12px; }
 .scan-locations { margin-top: 14px; padding-top: 12px; border-top: 1px solid #eee6df; }
-.scan-locations-title { color: #90776c; font-size: 9px; font-weight: 700; letter-spacing: .5px; }
+.scan-locations-title { color: #705b50; font-size: 9px; font-weight: 700; letter-spacing: .5px; }
 .scan-locations ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 9px 0 0; padding: 0; list-style: none; }
 .scan-locations li { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border: 1px solid #eee6df; border-radius: 6px; background: #fffdfa; color: #604c43; font-size: 10px; }
 .scan-locations li strong { color: #704438; font-size: 11px; }
 .scan-locations li small { padding: 3px 5px; border-radius: 9px; background: #fbf0d8; color: #8f6c36; font-size: 9px; }
-.scan-locations li em { color: #90776c; font-size: 9px; font-style: normal; }
+.scan-locations li em { color: #705b50; font-size: 9px; font-style: normal; }
 .scan-message { margin: 12px 0 0; color: #a14b42; font-size: 11px; }
 .theme-dark .scan-panel { border-color: #4a3832; background: #29211e; }
 .theme-dark .scan-heading p, .theme-dark .scan-form label { color: #c0aca1; }
@@ -75,7 +75,7 @@ h1 { margin: 0; color: #172d3c; font-size: 27px; font-weight: 650; letter-spacin
 .inventory-panel { overflow: hidden; border: 1px solid #e7ecef; border-radius: 9px; background: #fff; box-shadow: 0 2px 5px #102d3a06; }
 .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 21px 22px 17px; }
 h2 { margin: 0; color: #1b3341; font-size: 15px; font-weight: 650; }
-.panel-heading p { margin: 6px 0 0; color: #87939b; font-size: 11px; }
+.panel-heading p { margin: 6px 0 0; color: #586872; font-size: 11px; }
 .row-count { padding: 6px 9px; border-radius: 15px; background: #f1f4f5; color: #687780; font-size: 10px; white-space: nowrap; }
 .search-box { height: 39px; display: flex; align-items: center; gap: 10px; margin: 0 22px 17px; padding: 0 11px; border: 1px solid #e3e9ec; border-radius: 6px; color: #95a2a9; }
 .search-box > span { font-size: 20px; line-height: 1; }
@@ -104,14 +104,14 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 .status-released > span { background: #78947a; }
 .quantity-heading, .quantity-cell { text-align: right; }
 .quantity-cell { color: #263d49; font-size: 13px; font-weight: 650; }
-.quantity-cell span { color: #98a3a8; font-size: 10px; font-weight: 400; }
+.quantity-cell span { color: #586872; font-size: 10px; font-weight: 400; }
 .empty-state { padding: 30px 20px; text-align: center; color: #839098; }
-.table-note { margin: 0; padding: 12px 22px 15px; border-top: 1px solid #edf0f2; color: #98a3a8; font-size: 10px; }
+.table-note { margin: 0; padding: 12px 22px 15px; border-top: 1px solid #edf0f2; color: #586872; font-size: 10px; }
 
 /* Formulário didático para adicionar linhas ao estoque de demonstração. */
 .add-product-form { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)) auto; align-items: end; gap: 10px; padding: 18px 22px; border-bottom: 1px solid #edf0f2; background: #fbfcfc; }
 .form-heading { grid-column: 1 / -1; }
-.form-heading p { margin: 5px 0 0; color: #87939b; font-size: 11px; }
+.form-heading p { margin: 5px 0 0; color: #586872; font-size: 11px; }
 .add-product-form label { display: grid; gap: 6px; color: #667780; font-size: 10px; }
 .add-product-form input, .add-product-form select { min-width: 0; height: 35px; padding: 0 8px; border: 1px solid #dfe7ea; border-radius: 5px; background: #fff; color: #253e4b; font: inherit; font-size: 11px; }
 .add-product-button { height: 35px; padding: 0 12px; border: 0; border-radius: 5px; background: #a95c46; color: white; cursor: pointer; font-size: 11px; white-space: nowrap; }
@@ -133,12 +133,12 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 /* Cadastro de prateleiras e transferência física de quantidades. */
 .location-workspace { margin-bottom: 22px; padding: 18px 20px; border: 1px solid #e9dfd8; border-radius: 9px; background: #fff; box-shadow: 0 2px 5px #40291c08; }
 .location-workspace-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-.location-workspace-heading p, .location-create-form p, .transfer-form > p { margin: 5px 0 0; color: #90776c; font-size: 10px; }
+.location-workspace-heading p, .location-create-form p, .transfer-form > p { margin: 5px 0 0; color: #705b50; font-size: 10px; }
 .location-total { padding: 6px 9px; border-radius: 14px; background: #f8efe6; color: #805c4b; font-size: 10px; white-space: nowrap; }
 .location-list { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 13px; }
 .location-chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 9px; border: 1px solid #eee6df; border-radius: 6px; background: #fffdfa; }
 .location-chip strong { color: #704438; font-size: 10px; }
-.location-chip small { color: #90776c; font-size: 9px; }
+.location-chip small { color: #705b50; font-size: 9px; }
 .location-tools { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.8fr); gap: 12px; margin-top: 15px; }
 .location-create-form, .transfer-form { align-content: start; padding: 14px; border: 1px solid #eee6df; border-radius: 7px; background: #fffcf9; }
 .location-create-form h3, .transfer-form h3 { margin: 0; color: #49372f; font-size: 12px; }
@@ -247,7 +247,7 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 .warranty-notice p { max-width: 760px; margin: 0; color: #806d62; font-size: 12px; line-height: 1.6; }
 .warranty-flow { margin-bottom: 18px; padding: 17px; border: 1px solid #eee6df; border-radius: 9px; background: #fff; }
 .warranty-flow-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.warranty-flow-heading p { margin: 5px 0 0; color: #87939b; font-size: 11px; }
+.warranty-flow-heading p { margin: 5px 0 0; color: #586872; font-size: 11px; }
 .warranty-draft-badge { padding: 5px 8px; border-radius: 12px; background: #fbf0d8; color: #8f6c36; font-size: 9px; font-weight: 700; letter-spacing: .4px; }
 .warranty-flow-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 14px; }
 .warranty-flow-card { display: flex; align-items: flex-start; gap: 10px; min-height: 95px; padding: 12px; border: 1px solid #eee6df; border-radius: 7px; background: #fffcf9; }
@@ -259,11 +259,11 @@ td { padding: 14px 15px; border-top: 1px solid #edf0f2; color: #40515a; font-siz
 .warranty-maker-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .warranty-maker-card { display: flex; align-items: flex-start; gap: 12px; min-height: 130px; padding: 16px; border: 1px solid #eee6df; border-radius: 9px; background: #fff; }
 .warranty-maker-icon { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 8px; background: #f6ece4; color: #a95c46; }
-.warranty-maker-label { margin: 0 0 4px; color: #90776c; font-size: 9px; font-weight: 700; letter-spacing: .7px; }
+.warranty-maker-label { margin: 0 0 4px; color: #705b50; font-size: 9px; font-weight: 700; letter-spacing: .7px; }
 .warranty-maker-card h2 { color: #49372f; font-size: 16px; }
-.warranty-maker-empty { margin: 7px 0 0; color: #87939b; font-size: 11px; }
+.warranty-maker-empty { margin: 7px 0 0; color: #586872; font-size: 11px; }
 .warranty-count { margin-left: auto; padding: 5px 8px; border-radius: 12px; background: #f8efe6; color: #805c4b; font-size: 9px; white-space: nowrap; }
-.warranty-footnote { margin: 15px 0; color: #90776c; font-size: 11px; line-height: 1.6; }
+.warranty-footnote { margin: 15px 0; color: #705b50; font-size: 11px; line-height: 1.6; }
 .spring-prefix-note { margin-top: 18px; padding: 17px; border: 1px dashed #d8b77d; border-radius: 9px; background: #fffcf6; }
 .spring-prefix-note h2 { margin-top: 4px; color: #49372f; }
 .spring-prefix-note > p:not(.warranty-maker-label) { margin: 7px 0 0; color: #806d62; font-size: 11px; }

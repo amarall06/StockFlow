@@ -5,13 +5,13 @@
 .profile-name-text small { display: block; margin-top: 3px; color: #90776c; font-size: 9px; }
 .profile-panel { max-width: 760px; padding: 24px; }
 .profile-account { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin: 0; padding-bottom: 22px; border-bottom: 1px solid #e9dfd8; }
-.profile-account dt { color: #74818a; font-size: 11px; }
+.profile-account dt { color: #586872; font-size: 11px; }
 .profile-account dd { margin: 7px 0 0; color: #40515a; font-size: 13px; overflow-wrap: anywhere; }
 .profile-form { display: grid; gap: 10px; margin-top: 22px; }
 .profile-form > label { color: #566671; font-size: 12px; font-weight: 600; }
 .profile-form input { min-height: 40px; padding: 0 11px; border: 1px solid #dfe7ea; border-radius: 6px; background: #fff; color: #253e4b; font: inherit; font-size: 13px; }
 .profile-form input:focus { outline: 2px solid #a95c4640; outline-offset: 1px; }
-.profile-form p { margin: 0; color: #74818a; font-size: 12px; line-height: 1.6; }
+.profile-form p { margin: 0; color: #586872; font-size: 12px; line-height: 1.6; }
 .profile-form button { justify-self: start; min-height: 38px; margin-top: 5px; }
 .profile-form button:disabled { opacity: .5; cursor: not-allowed; }
 .profile-form .auth-error { color: #a73c35; }

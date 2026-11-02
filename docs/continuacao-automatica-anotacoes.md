@@ -247,3 +247,8 @@ Código `a726b26` publicado com Vercel success, seis arquivos iguais ao build an
 
 
 Complemento da 26 publicado em `080869d`, Vercel success, página offline/worker v11 públicos iguais ao build aprovado. Três testes novos aprovados, nenhum anterior repetido. Publicações documentadas em `publicacao-contagem-e-alertas.md`; pendências consolidadas em `pendencias-atuais-26-anotacoes.md`.
+
+
+## Continuação 25/26 — formulários e contraste
+
+Sem Supabase real, corrigidos contrastes em sete CSS e aprovados 30 casos novos (16 diálogos/contagem + 14 telas nos temas claro/escuro). Somente novos casos com falha repetidos após correção; casos anteriores não executados. Publicação em preparação. Relatório `acessibilidade-formularios-2026-11-01.md`.

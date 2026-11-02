@@ -2,7 +2,7 @@
 .product-photo-thumb img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
 .catalog-product-heading>div{flex:1;min-width:0}
 .product-photo-thumb:hover{border-color:#ac7154}.product-photo-thumb:focus-visible{outline:3px solid #a95c46;outline-offset:3px}
-.photo-example-badge{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:8px;line-height:11px;color:#806a56}
+.photo-example-badge{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:8px;line-height:11px;color:#68503c}
 .product-photo-dialog{width:min(700px,calc(100vw - 28px));max-height:92vh;box-sizing:border-box;overflow:auto;border:1px solid #e4d9ce;border-radius:12px;padding:24px;background:#fffdfa;color:#49372f;box-shadow:0 24px 80px #25171144}
 .product-photo-dialog::backdrop{background:#1f1819b3}
 .photo-dialog-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}.photo-dialog-heading p{margin:0 0 5px;font-size:10px;letter-spacing:1px;color:#94715a}.photo-dialog-heading h2{margin:0;font-size:23px}

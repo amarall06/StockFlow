@@ -1,3 +1,5 @@
+> **25/26 — nova rodada de formulários, 01/11/2026:** contraste corrigido em sete arquivos CSS; trinta testes novos aprovados (diálogos/contagem e sete telas, claro/escuro). Nenhuma suíte antiga repetida. Publicação em preparação. Guia `acessibilidade-formularios-2026-11-01.md`. Pode riscar esse recorte automatizado após a publicação; leitor de tela manual e aparelhos reais continuam pendentes.
+
 > **Entrega atual — 01/11/2026:** `a726b26` publicou contagem/avisos/resumos/última movimentação; `080869d` publicou o complemento offline de teclado/celular da 26. Ambos com Vercel success e arquivos públicos conferidos. Três testes novos nesta rodada, anteriores não repetidos. Pode riscar publicação desses escopos. Lista completa do que falta: `pendencias-atuais-26-anotacoes.md`; relatório `publicacao-contagem-e-alertas.md`. As notas abaixo são históricas.
 
 > **Publicado — 01/11/2026:** código `a726b26`, Vercel success e seis arquivos públicos iguais ao build aprovado. Pode riscar publicação das subpartes de 3, 13, 17, 20, 22 e 23; limites e piloto preservados. Nenhum teste concluído repetido. Relatório `publicacao-contagem-e-alertas.md`.
