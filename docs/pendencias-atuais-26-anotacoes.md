@@ -40,7 +40,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 3 | Definir separação física, nomes e uso das prateleiras de testados/não testados; executar organização conferida. | Empresa e espaço físico |
 | 4 | Retomar gestão de funcionários/testadores e validar contas reais e permissões. | Etapa adiada; serviço de contas/equipe |
 | 5 | Escopo manual entregue. Fechamento histórico transacional/envio automático não integra essa entrega. | Eventual nova solicitação |
-| 6 | Decidir conferência/identificação/condição/destino do retorno dos Correios e implementar seu fluxo. | Regra da empresa e servidor |
+| 6 | Recebimento local para conferência pronto na apresentação. Faltam regra e destino aprovados, identidade/permissões reais, remessa/expedição/servidor, liberação transacional e piloto. | Regra da empresa e servidor |
 | 7 | Concluir revisão de permissões/RPCs, armazenamento e recuperação; tratar proteção de senhas vazadas no serviço. | Supabase/configuração e auditoria |
 | 8 | No final: inventariar dados fictícios, preparar cópia verificável/plano, obter a confirmação exigida e executar a transição. | Etapa final; aprovação para exclusão irreversível |
 | 9 | Definir e implementar etiquetas de testados e eventual QR por caixa. | Etapa adiada; definição/uso físico |
@@ -88,4 +88,4 @@ Grupos de entrada de exemplo correspondentes às 85 caixas, limite configurável
 
 ## 6 — recebimento dos Correios local, 02/11/2026
 
-Três remessas de exemplo, quantidade/condição/observação e declaração de conferência, registro recuperável aguardando decisão de destino; sem alterar estoque. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: retornos-correios-local-2026-11-02.md. Regras/destinos reais, identidade/permissões, servidor/expedição e piloto continuam pendentes. Publicação em andamento.
+Três remessas de exemplo, quantidade/condição/observação e declaração de conferência, registro recuperável aguardando decisão de destino; sem alterar estoque. Sete testes novos e verificações isoladas aprovados; nenhum anterior repetido. Guia: retornos-correios-local-2026-11-02.md. Regras/destinos reais, identidade/permissões, servidor/expedição e piloto continuam pendentes. Publicado em `7b943db`, Vercel success; treze recursos públicos iguais ao build aprovado e domínio HTTP 200.

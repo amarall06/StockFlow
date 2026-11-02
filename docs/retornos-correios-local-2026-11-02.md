@@ -27,3 +27,7 @@ Sete testes novos em `tests/browser/postal-returns.spec.ts`, aprovados em 33,5 s
 ## Pode riscar e falta
 
 Pode riscar implementação/testes do recebimento local para conferência da 6. Faltam regra aprovada da empresa para recebimento/identidade/condição/destino, responsáveis/permissões reais, integração com remessa/pedido/expedição, persistência e histórico compartilhados, liberação autorizada/transacional sem duplicar saldo, documentação e ensaio físico. Não riscar a 6 inteira; retorno direto para venda não foi adotado.
+
+## Publicação confirmada
+
+Publicado em `7b943dbb2eaec02a37ff0680f519129aad233b24`, https://liber-automotive.vercel.app/ . Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/5QZL5bN3m8HepbhRiinNJBFXinMq . Domínio HTTP 200 com entrada atual e treze recursos públicos iguais ao build aprovado, conferidos por hash. Nenhum teste funcional repetido na publicação. Commits `[skip ci]` evitam a suíte antiga. Pode riscar implementação/testes/publicação do protótipo local de recebimento da 6; demais dependências reais permanecem.
