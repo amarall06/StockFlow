@@ -6,6 +6,17 @@
 .presentation-counts>ul { list-style: none; padding: 0; }
 .presentation-counts>ul>li { margin: 12px 0; padding: 12px; border: 1px solid #78858c; border-radius: 8px; }
 .presentation-counts summary { cursor: pointer; }
+.shared-count-compass { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0; }
+.shared-count-region { min-width:0;padding:12px;border:1px solid #78858c;border-radius:8px; }
+.shared-count-region h4 { margin:0;font-size:1rem; }
+.shared-count-region button { margin:4px 4px 4px 0; }
+.shared-count-region :focus-visible { outline:3px solid currentColor;outline-offset:3px; }
+.shared-count-region.region-norte { grid-column:2;grid-row:1; }
+.shared-count-region.region-oeste { grid-column:1;grid-row:2; }
+.shared-count-region.region-leste { grid-column:3;grid-row:2; }
+.shared-count-region.region-sul { grid-column:2;grid-row:3; }
+@media(max-width:1000px) { .shared-count-compass { grid-template-columns:repeat(2,minmax(0,1fr)); } .shared-count-region.region-norte,.shared-count-region.region-oeste,.shared-count-region.region-leste,.shared-count-region.region-sul { grid-column:auto;grid-row:auto; } }
+@media(max-width:500px) { .shared-count-compass { grid-template-columns:minmax(0,1fr); } }
 .presentation-counts [role=alert] { color: #a73c35; }
 .theme-dark .presentation-counts p { color: #c0aca1; }
 .theme-dark .presentation-counts [role=alert] { color: #ffb8ac; }

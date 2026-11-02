@@ -13,6 +13,7 @@ import {loadCountReviews} from '../lib/presentation-count-reviews-api'
 import {mergeCountReviews,reviewLabels,type CountReview} from '../lib/presentation-count-reviews'
 import {beginPresentationRecount,mergeRecountLinks,type RecountLink} from '../lib/presentation-recounts'
 import {loadRecountLinks,loadRelatedCount} from '../lib/presentation-recounts-api'
+import {SharedCountMap} from './SharedCountMap'
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(value))
 
 function SendCount({draft,ready,onBusy,onSaved,receipt}:{draft:Draft;ready:boolean;onBusy:(busy:boolean)=>void;onSaved:(count:SharedCount)=>void;receipt:SharedCount|undefined}){
@@ -91,6 +92,7 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
         setMessage(`Envio confirmado: ${saved.id}. Consulte a decisão no histórico; nenhum saldo foi alterado.`);refresh.current()
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
+    {rows!==null&&<SharedCountMap counts={rows} reviews={reviews} userId={userId} onHistory={id=>{focusCount(id)}} stale={Boolean(error)}/>}
     <h3>Histórico de envios e decisões</h3><p>Até 50 envios mais recentes, mais as contagens vinculadas abertas nesta tela. Use os vínculos para acompanhar a origem e cada recontagem. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
     <button type="button" className="theme-toggle" onClick={()=>refresh.current()}>Atualizar contagens compartilhadas</button>
     {error&&<p role="alert">{error}</p>}{rows===null&&!error&&<p role="status">Consultando contagens…</p>}
