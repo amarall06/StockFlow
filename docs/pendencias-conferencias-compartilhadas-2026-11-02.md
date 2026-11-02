@@ -20,4 +20,4 @@ A fila recebe os dados já validados pelo fluxo compartilhado e acompanha suas a
 
 Pode riscar **13 — fila automática das pendências de revisão/recontagem compartilhadas da apresentação**. Não encerra a anotação 13 inteira: prazos, destinatários individuais, resolução e outras pendências operacionais ainda dependem das regras/registros correspondentes. A janela continua de até 50 envios recentes mais vínculos abertos; fila vazia não comprova conclusão de todo o histórico. Nenhum saldo alterado.
 
-Publicação aguardando confirmação.
+Publicado em `eb9d6879011afb28e90f38f5095ef407230d920a`. Domínio HTTP 200 e quatorze recursos públicos iguais ao build aprovado. Quatro testes novos aprovados, sem repetir anteriores ou testes funcionais na publicação.
