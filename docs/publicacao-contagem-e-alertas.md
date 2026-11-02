@@ -12,3 +12,12 @@ Seis arquivos servidos no domínio conferiram por SHA-256 com o build anteriorme
 As evidências funcionais são as já aprovadas em `anotacao-23-ultima-movimentacao.md` e `anotacoes-sem-servidor-2026-11-01.md`. Nenhum desses testes foi repetido para publicar. Commit usou `[skip ci]` para não reexecutar as suítes completas de GitHub Actions; a Vercel realizou sua compilação de publicação normalmente. O conector Vercel estava indisponível; envio pela integração Git e conferência pelo status público do commit e arquivos públicos.
 
 Pode riscar implementação e publicação dos escopos acima, conservando as limitações das anotações. Contagem permanece rascunho por conta/aparelho, sem ajuste de saldo e sem aprovação. Os itens inteiros que dependem de servidor, regras, dados físicos ou piloto continuam parciais. Nenhuma escrita no Supabase nem alteração de credenciais nesta publicação.
+
+
+## Complemento da 26 publicado
+
+Código `080869d360542cea347c7411099af2da3409ad4b`, Vercel success: https://vercel.com/amarall06s-projects/liber-automotive/CbrN9d5Z3eWUQgMjoWBgMFqDCx5z
+
+Página offline com foco/atalhos/campos móveis publicada; worker público v11 confirmado. `offline.html` e `sw.js` servidos iguais ao build aprovado, normalizando somente finais de linha CRLF/LF do Git Windows. Os seis arquivos do aplicativo da etapa anterior permaneceram no mesmo build. Três testes novos de acessibilidade aprovados antes de publicar; nenhum caso anterior repetido. Build do complemento aprovado. Relatório `offline-acessibilidade-2026-11-01.md`.
+
+Pode riscar implementação/verificação/publicação desse recorte da 26. A revisão manual completa e Safari/iPhone físico continuam pendentes. Lista consolidada: `pendencias-atuais-26-anotacoes.md`.

@@ -12,4 +12,4 @@ Somente três testes novos em `tests/browser/offline-accessibility.spec.ts`, tod
 2. Tab/Enter no link de conteúdo e atalhos para Saídas, Testagem e Fornecedor/fabricante chegam às seções e campos, sem criar rascunhos.
 3. Auditoria axe com WCAG 2 A/AA e 2.1 AA não encontra violações nos critérios automatizáveis avaliados.
 
-Nenhum teste concluído foi repetido. Isso não encerra acessibilidade completa, revisão manual de leitor de tela ou Safari/iPhone físico. Pode riscar este recorte de implementação e verificação da 26; a publicação será registrada no relatório de entrega. A melhoria geral de design permanece para depois das 26 anotações.
+Nenhum teste concluído foi repetido. Isso não encerra acessibilidade completa, revisão manual de leitor de tela ou Safari/iPhone físico. Pode riscar este recorte de implementação, verificação e publicação da 26; publicação concluída em `080869d`, com Vercel success e página/worker públicos iguais ao build aprovado; relatório `publicacao-contagem-e-alertas.md`. A melhoria geral de design permanece para depois das 26 anotações.

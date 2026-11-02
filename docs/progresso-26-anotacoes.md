@@ -1,6 +1,6 @@
 # Progresso das 26 anotações
 
-Atualizado em 01/11/2026. Numeração original preservada. Código `a726b26` publicado; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
+Atualizado em 01/11/2026. Numeração original preservada. Código `080869d` publicado (complemento da 26), incluindo os escopos anteriores de `a726b26`; relatório `publicacao-contagem-e-alertas.md`. A publicação offline anterior está em `publicacao-anotacao-14.md`. As notas locais antigas abaixo são históricas. Parcial não equivale ao pedido inteiro concluído. Continuar entre pendências sem repetir testes concluídos.
 
 | Nº | Pedido | Estado atual |
 | --- | --- | --- |
@@ -29,11 +29,15 @@ Atualizado em 01/11/2026. Numeração original preservada. Código `a726b26` pub
 | 23 | Produtos sem movimentação | Parcial local: códigos com saldo sem qualquer operação no intervalo, última movimentação dentro da janela e prateleiras atuais. **Última conhecida fora da janela implementada e publicada; pode riscar essa subparte.** Falta idade física/rastreabilidade. Guia `anotacao-23-ultima-movimentacao.md`. Não equivale a apenas ausência de vendas. |
 | 24 | Preparar roteiro do piloto | **Concluído: pode riscar a preparação do roteiro.** Documento `roteiro-piloto.md` entregue. Execução com equipe permanece pendente. |
 | 25 | Ampliar testes automáticos | **Mais 13 casos novos de navegador e cenários isolados aprovados nesta etapa, sem repetir anteriores.** Parcial: mais 70 verificações novas nesta continuação (22 navegador + 48 isoladas), incluindo o receptor Realtime iniciado antes do pedido de sequência automática. Casos antigos não repetidos. Ensaios reais e demais áreas seguem pendentes. |
-| 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Publicação do complemento em andamento.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
+| 26 | Formulários, mensagens, contraste, teclado e telas pequenas | **Página offline revisada: campos em 375 px, atalhos/foco de teclado e auditoria automática A/AA aprovados em três testes novos. Complemento publicado em `080869d`; pode riscar esse recorte.** **Nova contagem validada por teclado e em 375 px; pode riscar esse recorte local.** Parcial: aviso sem foco automático, acesso por teclado e novo caso em largura de 375 px aprovados, além das revisões anteriores. Safari/iPhone físico e revisão completa pendentes. |
+
+## Lista consolidada do que falta
+
+Consultar `pendencias-atuais-26-anotacoes.md`, com os 26 números, o que pode riscar e as dependências que faltam. Nenhuma alteração no Supabase; não foi apagado estoque fictício.
 
 ## Complemento offline — 26
 
-Após a publicação `a726b26`, implementadas melhorias de teclado/celular na página offline, worker v11. Três testes novos aprovados sem rede, sem repetir anteriores; guia `offline-acessibilidade-2026-11-01.md`. Publicação deste complemento em andamento.
+Após a publicação `a726b26`, implementadas melhorias de teclado/celular na página offline, worker v11. Três testes novos aprovados sem rede, sem repetir anteriores; guia `offline-acessibilidade-2026-11-01.md`. Complemento publicado em `080869d`, com página/worker conferidos.
 
 ## Publicação confirmada — estado atual
 

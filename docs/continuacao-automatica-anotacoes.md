@@ -244,3 +244,6 @@ Subpartes de 17/13/20/22/3 implementadas, com 13 casos novos de navegador e novo
 ## Publicação e continuação — 01/11/2026
 
 Código `a726b26` publicado com Vercel success, seis arquivos iguais ao build anterior, sem repetir testes aprovados. Relatório `publicacao-contagem-e-alertas.md`. Na sequência, 26 avançou pela página offline com controles móveis, atalhos/foco e três testes novos sem rede, inclusive auditoria automática A/AA. Guia `offline-acessibilidade-2026-11-01.md`. Publicação do complemento em andamento; não houve acesso/escrita no Supabase.
+
+
+Complemento da 26 publicado em `080869d`, Vercel success, página offline/worker v11 públicos iguais ao build aprovado. Três testes novos aprovados, nenhum anterior repetido. Publicações documentadas em `publicacao-contagem-e-alertas.md`; pendências consolidadas em `pendencias-atuais-26-anotacoes.md`.
