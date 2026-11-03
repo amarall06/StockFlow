@@ -34,4 +34,6 @@ Capturas finais em `docs/design/produtos-light.png`, `produtos-dark.png` e vers�
 
 ## Publicação
 
-Aguardando confirmação da versão desta etapa no domínio de produção. Próximas telas do redesign: Garantia e Alertas. Esta entrega conclui Produtos, sem encerrar pendências operacionais das 26 anotações.
+Publicado em `3b9ce1ead4181745bf8cdd2e9ad2ed5be25661a2`, Vercel success. Domínio https://liber-automotive.vercel.app/ com HTTP 200 e quinze recursos públicos idênticos ao build aprovado, incluindo o módulo/CSS de Produtos e a fonte/licença. Nenhum teste funcional repetido na publicação. Próximas telas do redesign: Garantia e Alertas. Esta entrega conclui Produtos, sem encerrar pendências operacionais das 26 anotações.
+
+As verificações usaram Chrome instalado e dados controlados. O ensaio em iPhone/Safari físico continua pendente; operações de escrita anteriores não foram repetidas nesta etapa visual.
