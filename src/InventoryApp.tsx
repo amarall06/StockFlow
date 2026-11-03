@@ -1,4 +1,5 @@
 import {regionalLocations, regionalLocation, regionalOrder} from './lib/regional-locations'
+import {InventoryLayout} from './components/InventoryLayout'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -526,54 +527,57 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
         <a className="brand" href="#inicio" aria-label="LIBER automotive, início" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}>
           <span className="brand-mark">L</span>
-          <span>LIBER<span className="brand-light">SOLUÇÕES EM<br/> ESTOQUE AUTOMOTIVO</span></span>
+          <span className="brand-wordmark">LIBER</span><span className="brand-light">SOLUÇÕES EM ESTOQUE<br/> AUTOMOTIVO</span>
         </a>
 
         <div className="sidebar-label">MÓDULOS</div>
         <nav className="sidebar-navigation" aria-label="Menu principal">
-        <button className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel inicial</button>
-        <button className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> Alertas <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
-        <button className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" aria-current={activePage === 'products' ? 'page' : undefined} onClick={() => changePage('products')}><NavigationIcon name="products"/> Produtos</button>
-        <button className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> Giro e ABC</button>
-        <button className={`nav-item${activePage === 'inventory' ? ' active' : ''}`} type="button" aria-current={activePage === 'inventory' ? 'page' : undefined} onClick={() => changePage('inventory')}>
+        <button data-page="dashboard" className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel inicial</button>
+        <button data-page="alerts" className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> Alertas <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
+        <button data-page="products" className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" aria-current={activePage === 'products' ? 'page' : undefined} onClick={() => changePage('products')}><NavigationIcon name="products"/> Produtos</button>
+        <button data-page="turnover" className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> Giro e ABC</button>
+        <button data-page="inventory" className={`nav-item${activePage === 'inventory' ? ' active' : ''}`} type="button" aria-current={activePage === 'inventory' ? 'page' : undefined} onClick={() => changePage('inventory')}>
           <NavigationIcon name="inventory"/> Visão geral
         </button>
         {/* Os módulos extras são exibidos quando o usuário autoriza a apresentação. */}
         {SHOW_DEVELOPMENT_MODULES && <>
-          <button className={`nav-item${activePage === 'warranty' ? ' active' : ''}`} type="button" aria-current={activePage === 'warranty' ? 'page' : undefined} onClick={() => changePage('warranty')}>
+          <button data-page="warranty" className={`nav-item${activePage === 'warranty' ? ' active' : ''}`} type="button" aria-current={activePage === 'warranty' ? 'page' : undefined} onClick={() => changePage('warranty')}>
             <NavigationIcon name="warranty"/> Garantia
           </button>
-          <button className={`nav-item${activePage === 'springs' ? ' active' : ''}`} type="button" aria-current={activePage === 'springs' ? 'page' : undefined} onClick={() => changePage('springs')}>
+          <button data-page="springs" className={`nav-item${activePage === 'springs' ? ' active' : ''}`} type="button" aria-current={activePage === 'springs' ? 'page' : undefined} onClick={() => changePage('springs')}>
             <NavigationIcon name="springs"/> Molas
           </button>
         </>}
 
-        {isAdministrator && <button className={`nav-item${activePage === 'outflow' ? ' active' : ''}`} type="button" aria-current={activePage === 'outflow' ? 'page' : undefined} onClick={() => changePage('outflow')}><NavigationIcon name="outflow"/> Saídas</button>}
-        <button className={`nav-item${activePage === 'history' ? ' active' : ''}`} type="button" aria-current={activePage === 'history' ? 'page' : undefined} onClick={() => changePage('history')}>
+        {isAdministrator && <button data-page="outflow" className={`nav-item${activePage === 'outflow' ? ' active' : ''}`} type="button" aria-current={activePage === 'outflow' ? 'page' : undefined} onClick={() => changePage('outflow')}><NavigationIcon name="outflow"/> Saídas</button>}
+        <button data-page="history" className={`nav-item${activePage === 'history' ? ' active' : ''}`} type="button" aria-current={activePage === 'history' ? 'page' : undefined} onClick={() => changePage('history')}>
           <NavigationIcon name="history"/> Histórico
         </button>
-        <button className={`nav-item${activePage === 'catalog' ? ' active' : ''}`} type="button" aria-current={activePage === 'catalog' ? 'page' : undefined} onClick={() => changePage('catalog')}>
+        <button data-page="catalog" className={`nav-item${activePage === 'catalog' ? ' active' : ''}`} type="button" aria-current={activePage === 'catalog' ? 'page' : undefined} onClick={() => changePage('catalog')}>
           <NavigationIcon name="catalog"/> Aplicações
         </button>
 
         </nav>
         <div className="sidebar-bottom">
-          <span>Estoque que<br/>move o seu negócio.</span>
+          <span>Estoque que move o seu negócio.</span>
         </div>
 
   </>
 
   return (
     <ProductPhotosProvider canEdit={isAdministrator}>
-    <main className={`app-shell${isDarkMode ? ' theme-dark' : ''}`}>
-      {/* A classe theme-dark faz o CSS aplicar a paleta escura quando o botão é ativado. */}
-      <a className="skip-link" href="#consulta">Ir para o conteúdo</a>
-      <aside className="sidebar">{sidebarContent}</aside>
-      <dialog ref={mobileMenuRef} id="mobile-navigation" className="mobile-navigation-dialog" aria-label="Menu de navegação" onClose={() => setMobileMenuOpen(false)} onClick={event => { if (event.target === event.currentTarget) mobileMenuRef.current?.close() }}>
+    <InventoryLayout dark={isDarkMode} sidebar={sidebarContent} mobileNavigation={<dialog ref={mobileMenuRef} id="mobile-navigation" className="mobile-navigation-dialog" aria-label="Menu de navegação" onClose={() => setMobileMenuOpen(false)} onClick={event => { if (event.target === event.currentTarget) mobileMenuRef.current?.close() }}>
         <aside className="sidebar"><button type="button" className="mobile-menu-close" onClick={() => mobileMenuRef.current?.close()}>Fechar menu ×</button>{sidebarContent}</aside>
-      </dialog>
-
-      <section className="main-panel" id="inicio">
+      </dialog>} overlays={<>
+      {dataMode === 'database' && <StockNotice key={userId} userId={userId} catalog={catalog} stock={stock} onOpen={() => changePage('alerts')} />}
+      {testingRow && <ShockTestingDialog row={testingRow} ready={dataMode === 'database' && inventoryApiVersion >= 9}
+        canApprove={userRole === 'administrator' || userRole === 'tester'} onClose={() => setTestingRow(null)}
+        onRecorded={() => {
+          setTestingRow(null)
+          setTransferMessage('Aprovação de teste registrada com responsável e data.')
+          void refreshDatabaseSnapshot().catch(() => setTransferMessage('Aprovação salva. Recarregue o site para atualizar os saldos.'))
+        }} />}
+      </>} notices={<>
         <ConnectionStatus consultedAt={consultedAt}/>
         {dataMode === 'database' && <OfflineRegistrations key={`registrations:${userId}`} userId={userId} administrator={isAdministrator} onRefresh={refreshDatabaseSnapshot}/>}
         {dataMode === 'database' && (activePage === 'inventory' || activePage === 'springs') && <OfflineReceipts key={`receipts:${userId}`} userId={userId} role={userRole} onRefresh={refreshDatabaseSnapshot}/>}
@@ -584,7 +588,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         {isAdministrator && <OfflineWarrantyPendingNotice userId={userId} onOpen={() => changePage('warranty')}/>}
         {isAdministrator && <OfflineCustomerReturnPendingNotice userId={userId} onOpen={() => changePage('warranty')}/>}
         {(isAdministrator || userRole === 'tester') && <OfflineTestPendingNotice userId={userId} onOpen={() => changePage('inventory')}/>}
-        <header className="topbar">
+        </>} header={<>
           <span className="breadcrumb">Estoque <span>/</span> {activePage === 'turnover' ? 'Giro e ABC' : activePage === 'stock' ? 'Estoque geral' : activePage === 'alerts' ? 'Alertas' : activePage === 'products' ? 'Produtos' : activePage === 'dashboard' ? 'Painel' : activePage === 'inventory' ? 'Visão geral' : activePage === 'warranty' ? 'Garantia' : activePage === 'outflow' ? 'Saídas' : activePage === 'history' ? 'Histórico' : activePage === 'catalog' ? 'Aplicações' : activePage === 'profile' ? 'Meu perfil' : 'Molas'}</span>
           <div className="user-chip"><button type="button" className="mobile-menu-trigger" aria-controls="mobile-navigation" aria-haspopup="dialog" aria-expanded={mobileMenuOpen} onClick={() => { mobileMenuRef.current?.showModal(); setMobileMenuOpen(true) }}><span aria-hidden="true">☰</span> Menu</button><button className="profile-open-button" type="button" onClick={()=>changePage('profile')} aria-label="Abrir meu perfil" title={displayName}><span className="user-avatar"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><circle cx="12" cy="7" r="3.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg></span><span className="profile-name-text">{displayName}</span></button><details ref={accountMenuRef} className="account-options"><summary aria-label="Opções da conta">⌄</summary><div><InstallApp/><button type="button" onClick={()=>changePage('profile')}>Minha conta</button><ThemeToggle dark={isDarkMode} onToggle={onToggleTheme}/><button className="sign-out-button" type="button" onClick={onSignOut}>Sair</button><button type="button" onClick={()=>changePage('springs')}>Molas</button><button type="button" onClick={()=>changePage('turnover')}>Giro e ABC</button></div></details></div>
           <label className="mobile-module-menu">Ir para
@@ -597,7 +601,9 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               <option value="catalog">Aplicações</option><option value="profile">Minha conta</option>
             </select>
           </label>
-        </header>
+        </>}>
+
+
 
         <div className="content" id="consulta" tabIndex={-1}>
           {resumeError && <p className="auth-error" role="status">{resumeError}</p>}
@@ -792,16 +798,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
           {dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') && <ShelfCountNotice key={`count-notice:${userId}`} userId={userId} onOpen={() => changePage('inventory')}/>}
           {dataMode === 'database' && isAdministrator && <PendingOutflowNotice key={`outflow-notice:${userId}`} userId={userId} onOpen={() => changePage('outflow')}/>}
         </div>
-      </section>
-      {dataMode === 'database' && <StockNotice key={userId} userId={userId} catalog={catalog} stock={stock} onOpen={() => changePage('alerts')} />}
-      {testingRow && <ShockTestingDialog row={testingRow} ready={dataMode === 'database' && inventoryApiVersion >= 9}
-        canApprove={userRole === 'administrator' || userRole === 'tester'} onClose={() => setTestingRow(null)}
-        onRecorded={() => {
-          setTestingRow(null)
-          setTransferMessage('Aprovação de teste registrada com responsável e data.')
-          void refreshDatabaseSnapshot().catch(() => setTransferMessage('Aprovação salva. Recarregue o site para atualizar os saldos.'))
-        }} />}
-    </main>
+      </InventoryLayout>
     </ProductPhotosProvider>
   )
 }

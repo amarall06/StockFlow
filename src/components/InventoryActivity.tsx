@@ -5,29 +5,32 @@ import type { DashboardCategory } from '../lib/dashboard-api'
 const date = (day: string) => new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' }).format(new Date(day+'T12:00:00Z'))
 
 export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
+  const [compact,setCompact]=useState(()=>matchMedia('(max-width:650px)').matches)
+  useEffect(()=>{const media=matchMedia('(max-width:650px)'),update=()=>setCompact(media.matches);media.addEventListener('change',update);return()=>media.removeEventListener('change',update)},[])
   const [series,setSeries] = useState<'sold_boxes'|'received_boxes'>('sold_boxes')
   const [chartType,setChartType] = useState<'bars'|'line'>('bars')
   const [selected,setSelected] = useState(0)
   const current = rows[Math.min(selected, rows.length-1)]
   const maximum = Math.max(1,...rows.map(row=>row[series]))
-  const pointX = (index: number) => 45+(index+.5)/Math.max(1,rows.length)*535
-  const points = rows.map((row,index)=>`${pointX(index)},${150-row[series]/maximum*120}`).join(' ')
+  const left=compact?32:60,right=compact?310:580,bottom=compact?150:190,top=30,range=bottom-top
+  const pointX = (index: number) => left+(index+.5)/Math.max(1,rows.length)*(right-left)
+  const points = rows.map((row,index)=>`${pointX(index)},${bottom-row[series]/maximum*range}`).join(' ')
   const title = series === 'sold_boxes' ? 'Vendas' : 'Entradas'
   return <>
-    <svg className="activity-chart" viewBox="0 0 600 180" role="img" aria-label={`${title} em caixas por dia; os valores também estão na tabela abaixo`}>
-      {[...new Set([0,1,2,3,4].map(n=>Math.round(maximum*n/4)))].map(n=><g key={n}><path d={`M40 ${150-n/maximum*120}H580`} stroke="currentColor" opacity=".12"/><text x="30" y={154-n/maximum*120} textAnchor="end" fill="currentColor" fontSize="11">{n}</text></g>)}
-      <path d="M40 25V150H580" stroke="currentColor" fill="none" opacity=".3" />
+    <svg className="activity-chart" viewBox={`0 0 ${compact?320:600} ${compact?180:220}`} role="img" aria-label={`${title} em caixas por dia; os valores também estão na tabela abaixo`}>
+      {[...new Set([0,1,2,3,4].map(n=>Math.round(maximum*n/4)))].map(n=><g key={n}><path d={`M${left} ${bottom-n/maximum*range}H${right}`} stroke="currentColor" opacity=".12"/><text x={left-10} y={bottom+4-n/maximum*range} textAnchor="end" fill="currentColor" fontSize="12">{n}</text></g>)}
+      <path d={`M${left} 25V${bottom}H${right}`} stroke="currentColor" fill="none" opacity=".3" />
       <text x="20" y="18" fill="currentColor" fontSize="12">{maximum} cx.</text>
-      {chartType==='line'?<polyline points={points} fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />:rows.map((row,index)=><rect key={row.day} x={45+index/rows.length*535+4} y={150-row[series]/maximum*120} width={Math.max(1,535/rows.length-8)} height={row[series]/maximum*120} rx="3" fill="currentColor"><title>{date(row.day)}: {row[series]} caixas</title></rect>)}
-      {current && chartType==='line' && <circle cx={pointX(Math.min(selected,rows.length-1))} cy={150-current[series]/maximum*120} r="5" fill="currentColor" />}
-      {rows.length>0 && (rows.length<=7?rows.map((row,index)=><text key={row.day} x={45+(index+.5)/rows.length*535} y="170" textAnchor="middle" fill="currentColor" fontSize="11">{date(row.day)}</text>):<><text x="40" y="174" fill="currentColor" fontSize="12">{date(rows[0].day)}</text><text x="580" y="174" textAnchor="end" fill="currentColor" fontSize="12">{date(rows.at(-1)!.day)}</text></>)}
+      {chartType==='line'?<polyline points={points} fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />:rows.map((row,index)=><rect key={row.day} x={left+(index+.18)/rows.length*(right-left)} y={bottom-row[series]/maximum*range} width={Math.max(1,(right-left)/rows.length*.64)} height={row[series]/maximum*range} rx="3" fill="currentColor"><title>{date(row.day)}: {row[series]} caixas</title></rect>)}
+      {current && chartType==='line' && <circle cx={pointX(Math.min(selected,rows.length-1))} cy={bottom-current[series]/maximum*range} r="5" fill="currentColor" />}
+      {rows.length>0 && (rows.length<=7?rows.map((row,index)=><text key={row.day} x={pointX(index)} y={bottom+20} textAnchor="middle" fill="currentColor" fontSize="12">{date(row.day)}</text>):<><text x={left} y={bottom+20} fill="currentColor" fontSize="12">{date(rows[0].day)}</text><text x={right} y={bottom+20} textAnchor="end" fill="currentColor" fontSize="12">{date(rows.at(-1)!.day)}</text></>)}
     </svg>
 
-    <div className="activity-chart-controls"><label className="activity-filter">Mostrar<select aria-label="Série do gráfico" value={series} onChange={event=>setSeries(event.target.value as typeof series)}><option value="sold_boxes">Vendas</option><option value="received_boxes">Entradas</option></select></label>
+    <details className="activity-options"><summary title="Opções do gráfico"><span aria-hidden="true">⋯</span><span className="ui-sr-only">Opções do gráfico</span></summary><div className="activity-options-content"><div className="activity-chart-controls"><label className="activity-filter">Mostrar<select aria-label="Série do gráfico" value={series} onChange={event=>setSeries(event.target.value as typeof series)}><option value="sold_boxes">Vendas</option><option value="received_boxes">Entradas</option></select></label>
     <label className="activity-filter">Visualização<select aria-label="Visualização do gráfico" value={chartType} onChange={event=>setChartType(event.target.value as typeof chartType)}><option value="bars">Barras</option><option value="line">Linhas</option></select></label></div>
     <details className="activity-values"><summary>Ver tabela de valores</summary>
     <p>{rows.reduce((sum,row)=>sum+row[series],0)} caixas · {title.toLowerCase()} no período selecionado.</p>
-{current && <label className="activity-day">Consultar dia<input aria-label="Dia do gráfico" type="range" min="0" max={rows.length-1} value={Math.min(selected,rows.length-1)} onChange={event=>setSelected(Number(event.target.value))}/><output aria-live="polite">{date(current.day)}: {current[series]} caixas</output></label>}<table><thead><tr><th>Dia</th><th>Vendas (cx.)</th><th>Entradas (cx.)</th></tr></thead><tbody>{rows.map(row=><tr key={row.day}><td>{date(row.day)}</td><td>{row.sold_boxes}</td><td>{row.received_boxes}</td></tr>)}</tbody></table></details>
+{current && <label className="activity-day">Consultar dia<input aria-label="Dia do gráfico" type="range" min="0" max={rows.length-1} value={Math.min(selected,rows.length-1)} onChange={event=>setSelected(Number(event.target.value))}/><output aria-live="polite">{date(current.day)}: {current[series]} caixas</output></label>}<table><thead><tr><th>Dia</th><th>Vendas (cx.)</th><th>Entradas (cx.)</th></tr></thead><tbody>{rows.map(row=><tr key={row.day}><td>{date(row.day)}</td><td>{row.sold_boxes}</td><td>{row.received_boxes}</td></tr>)}</tbody></table></details></div></details>
   </>
 }
 export function InventoryActivity({ category, revision, pauseRef }: { category: DashboardCategory; revision: number; pauseRef?: RefObject<boolean> }) {

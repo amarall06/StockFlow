@@ -5,6 +5,7 @@ import { ModuleBoundary, ModuleLoadError, ModuleLoading } from './components/Mod
 import { supabase } from './lib/supabase'
 import './App.css'
 import { clearOfflineStock, retainOfflineStockFor } from './lib/offline-stock'
+import {useTheme} from './lib/use-theme'
 
 // A tela de login não precisa baixar os módulos operacionais.
 const InventoryApp = lazy(() => import('./InventoryApp'))
@@ -18,13 +19,7 @@ type AuthView =
 
 // Confere no banco se a conta autenticada tem um perfil ativo antes de exibir a interface.
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    try { return window.localStorage.getItem('liber-automotive-theme') === 'dark' } catch { return false }
-  })
-  const toggleTheme = () => setIsDarkMode((current) => !current)
-  useEffect(() => {
-    try { window.localStorage.setItem('liber-automotive-theme', isDarkMode ? 'dark' : 'light') } catch { /* O tema continua funcionando em memória. */ }
-  }, [isDarkMode])
+  const {dark:isDarkMode,toggle:toggleTheme}=useTheme()
   const [authView, setAuthView] = useState<AuthView>({ status: 'loading' })
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

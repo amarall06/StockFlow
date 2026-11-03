@@ -1,0 +1,16 @@
+@font-face{font-family:Inter;src:url('/fonts/InterVariable.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
+:root,.liber-layout{
+ --liber-canvas:#FBF8F5;--liber-surface:#FFFFFF;--liber-line:#EEE5DE;
+ --liber-ink:#2B1810;--liber-muted:#6B5448;--liber-sidebar:#33231B;--liber-menu-ink:#E9DCD2;
+ --liber-accent:#C2571F;--liber-button:#C1561F;--liber-button-ink:#FFFFFF;--liber-chart:#D9733A;
+ --liber-soft:#FDE7D3;--liber-badge-ink:#9A3F12;--liber-section:#FBD9A8;--liber-section-ink:#6B3A10;
+ --liber-track:#F0E9E3;--liber-card-radius:16px;--liber-control-radius:10px;--liber-sidebar-width:264px;
+ --liber-shadow:0 1px 2px #2B181008,0 6px 22px #2B181005;
+}
+.liber-layout.theme-dark{
+ --liber-canvas:#1F120B;--liber-surface:#2B1A11;--liber-line:#4A3022;
+ --liber-ink:#FBEEE3;--liber-muted:#D2B8A6;--liber-sidebar:#241710;
+ --liber-accent:#F97316;--liber-button:#F97316;--liber-button-ink:#1F120B;--liber-chart:#F97316;
+ --liber-soft:#3A2216;--liber-badge-ink:#FFB578;--liber-track:#3A2216;--liber-shadow:none;
+ color-scheme:dark;
+}

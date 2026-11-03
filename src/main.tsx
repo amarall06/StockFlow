@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import './Design.css'
+import './styles/design-tokens.css'
+import './styles/reference-layout.css'
 import { observeInstallPrompt } from './lib/install-prompt'
 
 const stopInstallPrompt = observeInstallPrompt()
