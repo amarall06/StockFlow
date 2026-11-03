@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { Fragment, useEffect, useId, useRef, useState, type FormEvent } from 'react'
 import { allowedReturnStatuses, loadWarrantyReturns, returnStatusLabels, saveWarrantyReturn, type WarrantyReturn, type WarrantyReturnInput } from '../lib/warranty-returns'
 import type { WarrantyManufacturer } from '../lib/warranty-api'
 import { EditButton } from './EditButton'
@@ -7,6 +7,7 @@ import { useModalDialog } from '../lib/use-modal-dialog'
 import { confirmOperation } from '../lib/confirm-operation'
 import { startResumeRefresh } from '../lib/resume-refresh'
 import { saveOfflineCustomerReturns } from '../lib/offline-stock'
+import { Badge, Card, Table } from './Interface'
 
 const initialReturn: WarrantyReturnInput = {
   manufacturer_id: null, product_kind: 'unknown', product_code: '', description: '', boxes: 1,
@@ -98,6 +99,8 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
   const [message, setMessage] = useState('')
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const prefix = useId()
   const [automaticError, setAutomaticError] = useState({ revision: -1, message: '' })
   const loading = ready && result.revision !== revision
   useEffect(() => {
@@ -127,23 +130,34 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
   const names = new Map(manufacturers.map((m) => [m.id, m.name]))
   const filtered = result.rows.filter((row) => (!status || row.status === status)
     && `${row.product_code} ${row.description} ${row.location} ${row.reason} ${names.get(row.manufacturer_id ?? '') ?? ''}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR')))
-  return <section className="inventory-panel warranty-returns" aria-labelledby="returns-title">
-    <div className="panel-heading"><div><h2 id="returns-title">Devoluções recebidas</h2><p>Acompanhe a conferência, o local e o destino de cada recebimento.</p></div>{ready && isAdministrator && <button className="add-product-button" type="button" onClick={() => setEditing(null)}>Receber devolução</button>}</div>
+  const totals = [
+    {label: 'Em acompanhamento', icon: '◷', count: result.rows.filter(row => !['warranty', 'closed'].includes(row.status)).length},
+    {label: 'Em garantia', icon: '◇', count: result.rows.filter(row => row.status === 'warranty').length},
+    {label: 'Encerradas', icon: '×', count: result.rows.filter(row => row.status === 'closed').length},
+  ]
+  return <>
+    <div className="warranty-metrics" aria-label="Resumo das devoluções consultadas">{totals.map(item => <Card key={item.label}><span className="warranty-metric-icon" aria-hidden="true">{item.icon}</span><div><span>{item.label}</span><strong>{!ready || loading || result.error ? '—' : item.count}</strong><small>{item.count === 1 ? 'registro' : 'registros'}</small></div></Card>)}</div>
+    <section className="inventory-panel warranty-returns" aria-labelledby="returns-title">
+    <div className="panel-heading"><h2 id="returns-title" tabIndex={-1}>Casos de garantia</h2>{ready && isAdministrator && <button className="add-product-button" type="button" onClick={() => setEditing(null)}>Novo registro</button>}</div>
     {!ready ? <p className="manufacturer-notice">O acompanhamento de devoluções aguarda ativação no banco.</p> : <>
-      <div className="manufacturer-list-tools"><label>Buscar devolução<input type="search" value={search} onChange={(e) => setSearch(e.target.value)} /></label><label>Andamento<select value={status} onChange={(e) => setStatus(e.target.value)}><option value="">Todos</option>{Object.entries(returnStatusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><button className="theme-toggle" type="button" disabled={loading} onClick={onChanged}>Atualizar devoluções</button></div>
+      <details className="warranty-filters"><summary>Filtros e atualização</summary><div className="manufacturer-list-tools"><label>Buscar devolução<input type="search" value={search} onChange={(e) => setSearch(e.target.value)} /></label><label>Andamento<select value={status} onChange={(e) => setStatus(e.target.value)}><option value="">Todos</option>{Object.entries(returnStatusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label><button className="theme-toggle" type="button" disabled={loading} onClick={onChanged}>Atualizar devoluções</button></div></details>
       {message && <p className="manufacturer-feedback manufacturer-success" role="status">{message}</p>}
       {automaticError.revision === revision && automaticError.message && <p className="manufacturer-feedback auth-error" role="status">{automaticError.message}</p>}
       {loading ? <p className="manufacturer-feedback" role="status">Carregando devoluções…</p> : result.error ? <p className="manufacturer-feedback auth-error" role="alert">{result.error}</p> : <>
-        <p className="manufacturer-feedback">Consulta limitada às 100 devoluções mais recentes. Os filtros se aplicam a esses registros.</p>
         {!filtered.length && <p className="manufacturer-feedback">Nenhuma devolução encontrada.</p>}
-        <ul className="return-cards">{filtered.map((row) => <li key={row.id}>
+        {!!filtered.length && <Table aria-label="Casos de garantia"><thead><tr><th scope="col">Registro</th><th scope="col">Código</th><th scope="col">Motivo</th><th scope="col">Data</th><th scope="col">Situação</th></tr></thead><tbody>{filtered.map((row, index) => <Fragment key={row.id}>
+          <tr><th scope="row"><button type="button" className="warranty-record" aria-label={`Detalhes da devolução ${row.product_code || row.description}`} aria-expanded={expanded === row.id} aria-controls={`${prefix}-${index}`} onClick={() => setExpanded(expanded === row.id ? null : row.id)} title={row.id}>{row.id.slice(0, 8)} <span aria-hidden="true">{expanded === row.id ? '−' : '+'}</span></button></th><td>{row.product_code || 'Não identificado'}</td><td className="warranty-reason">{row.reason}</td><td><time dateTime={row.created_at}>{new Date(row.created_at).toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'})}</time></td><td><Badge className={row.status === 'closed' ? 'warranty-status-neutral' : ''}>{returnStatusLabels[row.status]}</Badge></td></tr>
+          <tr id={`${prefix}-${index}`} hidden={expanded !== row.id} className="warranty-detail-row"><td colSpan={5}>
           <div className="manufacturer-card-header"><h3>{row.product_code || 'Código não identificado'}</h3>{isAdministrator && row.status !== 'closed' && <EditButton label={`Atualizar devolução ${row.product_code || row.description}`} onClick={() => setEditing(row)} />}</div>
-          <span className="return-status">{returnStatusLabels[row.status]}</span><p>{row.description}</p>
+          <p>{row.description}</p><p><strong>Registro:</strong> {row.id}</p>
           <dl><div><dt>Caixas</dt><dd>{row.boxes}</dd></div><div><dt>Categoria</dt><dd>{row.product_kind === 'shock' ? 'Amortecedores' : row.product_kind === 'spring' ? 'Molas' : 'Não identificada / outro item'}</dd></div><div><dt>Fabricante</dt><dd>{names.get(row.manufacturer_id ?? '') ?? 'Não identificado'}</dd></div><div><dt>Local</dt><dd>{row.location}</dd></div><div><dt>Conferência</dt><dd>{row.ownership === 'ours' ? 'Confirmada como nossa' : row.ownership === 'other' ? 'Não é nossa / item errado' : 'Ainda não conferida'}</dd></div><div><dt>Recebida em</dt><dd>{new Date(row.created_at).toLocaleString('pt-BR')}</dd></div></dl>
           <p><strong>Motivo:</strong> {row.reason}</p>{row.destination && <p><strong>Destino:</strong> {row.destination}</p>}
-        </li>)}</ul>
+          </td></tr>
+        </Fragment>)}</tbody></Table>}
+        <p className="manufacturer-feedback warranty-query-scope">Consulta limitada às 100 devoluções mais recentes. Resumo e filtros se aplicam a esses registros. Toque no registro para ver detalhes e ações.</p>
       </>}
       {editing !== undefined && <ReturnDialog previous={editing} manufacturers={manufacturers} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); setMessage('Devolução salva. Saldos atualizados quando houver entrada ou saída da garantia.'); onChanged() }} />}
     </>}
   </section>
+  </>
 }

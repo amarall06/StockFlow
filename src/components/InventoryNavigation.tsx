@@ -7,6 +7,8 @@ import {searchableProductText} from '../lib/product-details'
 import {ProductPhoto} from './ProductPhotos'
 import {ExportCsvButton} from './ExportCsvButton'
 import './InventoryDashboard.css'
+import {PageHeading} from './InventoryLayout'
+import './InventoryAlertsReference.css'
 
 type Page='inventory'|'springs'|'catalog'
 
@@ -25,13 +27,12 @@ export function AllStockOverview({catalog,stock,onOpen}:{catalog:Record<string,P
 }
 
 // As duas categorias ficam lado a lado na mesma central, usando as regras já existentes.
-export function InventoryAlerts({catalog,stock,ready,isAdministrator,onRefresh}:{catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;isAdministrator:boolean;onRefresh:()=>Promise<void>}){
+export function InventoryAlerts({catalog,stock,ready,isAdministrator,onRefresh,onOpen,canReceive}:{catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;isAdministrator:boolean;onRefresh:()=>Promise<void>;onOpen:(page:Page)=>void;canReceive:boolean}){
   const summary=dashboardStockSummary(catalog,stock,'all')
-  return <>
-    <div className="page-heading"><div><p className="eyebrow">REPOSIÇÃO</p><h1>Alertas de estoque</h1><p className="subtitle">{ready?`${summary.zeros} produtos sem estoque · ${summary.low} no mínimo ou abaixo`:'Carregando disponibilidade dos alertas.'}</p></div></div>
-    <div className="alerts-category-heading"><h2>Amortecedores</h2><span>Estoque normal</span></div>
-    <StockAlerts titleId="shock-alerts-title" catalog={catalog} stock={stock} springs={false} ready={ready} isAdministrator={isAdministrator} onRefresh={onRefresh}/>
-    <div className="alerts-category-heading"><h2>Molas</h2><span>Estoque normal</span></div>
-    <StockAlerts titleId="spring-alerts-title" catalog={catalog} stock={stock} springs ready={ready} isAdministrator={isAdministrator} onRefresh={onRefresh}/>
-  </>
+  return <div className="reference-alerts">
+    <PageHeading section="ATENÇÃO" title="Alertas" subtitle="Produtos que chegaram ao estoque mínimo, ficaram abaixo dele ou estão sem estoque."/>
+    <div className="reference-alert-banner" role="status"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><div><strong>{ready?`${summary.zeros+summary.low} ${(summary.zeros+summary.low)===1?'produto precisa':'produtos precisam'} de reposição`:'Consultando alertas de reposição…'}</strong><p>Faça a reposição para evitar falta em estoque.</p></div></div>
+    <StockAlerts reference onOpenStock={()=>onOpen('inventory')} canReceive={canReceive} titleId="shock-alerts-title" catalog={catalog} stock={stock} springs={false} ready={ready} isAdministrator={isAdministrator} onRefresh={onRefresh}/>
+    <StockAlerts reference onOpenStock={()=>onOpen('springs')} canReceive={canReceive} titleId="spring-alerts-title" catalog={catalog} stock={stock} springs ready={ready} isAdministrator={isAdministrator} onRefresh={onRefresh}/>
+  </div>
 }

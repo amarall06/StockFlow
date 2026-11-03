@@ -1,0 +1,76 @@
+import{test,expect}from'@playwright/test'
+import AxeBuilder from'@axe-core/playwright'
+import{prepareRedesign}from'./helpers/redesign'
+import{openRedesignModule}from'./helpers/warranty-redesign'
+for(const theme of ['light','dark'] as const)for(const mobile of [false,true])test(`Alertas ${theme} ${mobile?'celular':'desktop'}: desenho, saldos e contraste`,async({page})=>{
+ await page.setViewportSize(mobile?{width:375,height:812}:{width:1440,height:1000})
+ const state=await prepareRedesign(page,theme);await openRedesignModule(page,'alerts')
+ await expect(page.locator('.reference-alert-banner')).toContainText('3 produtos precisam de reposição')
+ await expect(page.locator('.reference-alert-row')).toHaveCount(3)
+ await expect(page.locator('.reference-alert-row').filter({hasText:'MFR-57'})).toContainText('Abaixo do mínimo')
+ await expect(page.locator('.reference-alert-row').filter({hasText:'MGM-35'})).toContainText('No limite mínimo')
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true)
+ await page.locator('h1').click();await page.screenshot({path:`docs/design/alertas-${theme}${mobile?'-mobile':''}.png`,fullPage:true})
+ expect((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()).violations).toEqual([])
+ expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
+})
+for(const theme of ['light','dark'] as const)test(`Pop-up ${theme}: destaque no celular, teclado e acesso direto a Alertas`,async({page})=>{
+ await page.setViewportSize({width:320,height:812});const state=await prepareRedesign(page,theme)
+ await page.evaluate(()=>sessionStorage.removeItem('liber:stock-notices:v1:11111111-1111-4111-8111-111111111111'))
+ await page.reload();const notice=page.getByRole('complementary',{name:'Aviso de estoque',exact:true})
+ await expect(notice).toBeVisible();await expect(notice.locator('.stock-notice-icon svg')).toBeVisible()
+ const box=await notice.boundingBox();expect(box!.x).toBeGreaterThanOrEqual(0);expect(box!.x+box!.width).toBeLessThanOrEqual(320)
+ expect((await new AxeBuilder({page}).include('.stock-notice').withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()).violations).toEqual([])
+ await page.screenshot({path:`docs/design/alerta-popup-${theme}-mobile.png`,fullPage:true})
+ await notice.getByRole('button',{name:'Ver alertas',exact:true}).focus();await page.keyboard.press('Enter')
+ await expect(page.locator('.reference-alerts h1')).toHaveText('Alertas');await expect(notice).toHaveCount(0)
+ expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
+})
+test('Alertas: detalhes, mínimos e entrada continuam nos fluxos existentes',async({page})=>{
+ const state=await prepareRedesign(page);await openRedesignModule(page,'alerts')
+ const row=page.locator('.reference-alert-row').filter({hasText:'AGM-52'})
+ await row.locator('summary').click();await expect(row).toContainText('Aplicação cadastrada 4')
+ await row.getByRole('button',{name:'Editar mínimo de AGM-52',exact:true}).click()
+ await expect(page.getByRole('dialog',{name:'Configurar estoque mínimo'})).toBeVisible()
+ await expect(page.getByLabel('Estoque mínimo (caixas)',{exact:true})).toHaveValue('3');await page.keyboard.press('Escape')
+ await row.getByRole('button',{name:'Registrar entrada',exact:true}).click()
+ await expect(page.getByRole('heading',{name:'Registrar entrada de estoque',exact:true})).toBeVisible()
+ expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
+})
+test('Alertas: leitura sem edição, zero sem mínimo e ausência de alertas',async({page})=>{
+ const state=await prepareRedesign(page)
+ await page.route('**/rest/v1/profiles*',route=>route.fulfill({json:{is_active:true,display_name:'Consulta',role:'viewer'}}))
+ await page.route('**/rest/v1/products*',route=>route.fulfill({json:Number(new URL(route.request().url()).searchParams.get('offset'))>0?[]:[{id:'p0',code:'AGM-35',application:'Peça consultada',default_location_id:'l0',minimum_boxes:null}]}))
+ await page.route('**/rest/v1/stock_balances*',route=>route.fulfill({json:[]}))
+ await page.reload();await expect(page.locator('.dashboard-stock-totals')).toBeVisible();await openRedesignModule(page,'alerts')
+ await expect(page.locator('.reference-alert-row')).toContainText('Sem estoque');await expect(page.locator('.reference-alert-row')).toContainText('mínimo não configurado')
+ await expect(page.getByRole('button',{name:'Registrar entrada',exact:true})).toHaveCount(0)
+ await expect(page.getByRole('button',{name:'Configurar mínimos',exact:true})).toHaveCount(0)
+ await expect(page.getByRole('button',{name:'Ver estoque',exact:true})).toHaveCount(1)
+ await page.route('**/rest/v1/stock_balances*',route=>route.fulfill({json:Number(new URL(route.request().url()).searchParams.get('offset'))>0?[]:[state.stock[0]]}))
+ await page.reload();await expect(page.locator('.dashboard-stock-totals')).toBeVisible();await openRedesignModule(page,'alerts')
+ await expect(page.locator('.reference-alert-row')).toHaveCount(0)
+ await expect(page.locator('.reference-alert-banner')).toContainText('0 produtos')
+ expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
+})
+
+for(const theme of ['light','dark'] as const)test(`Alertas ${theme}: opções recolhidas, cartões compactos e capturas finais`,async({browser})=>{
+ for(const mobile of [false,true]){
+  const context=await browser.newContext({baseURL:test.info().project.use.baseURL,viewport:mobile?{width:375,height:812}:{width:1440,height:1000}})
+  try{
+   const page=await context.newPage(),state=await prepareRedesign(page,theme);await openRedesignModule(page,'alerts')
+   await expect(page.locator('.reference-alert-options[open]')).toHaveCount(0)
+   await expect(page.getByRole('button',{name:'Atualizar alertas',exact:true})).toHaveCount(0)
+   if(!mobile){const box=await page.locator('.reference-alert-row').first().boundingBox();expect(box!.height).toBeLessThanOrEqual(100)}
+   const options=page.locator('.reference-alert-options').first()
+   await options.locator('summary').focus();await page.keyboard.press('Enter')
+   await expect(options.getByRole('button',{name:'Atualizar alertas',exact:true})).toBeVisible()
+   await expect(options.getByRole('button',{name:'Configurar mínimos',exact:true})).toBeVisible()
+   const bounds=await options.locator(':scope>div').boundingBox();expect(bounds!.x).toBeGreaterThanOrEqual(0);expect(bounds!.x+bounds!.width).toBeLessThanOrEqual(mobile?375:1440)
+   expect((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()).violations).toEqual([])
+   await options.locator('summary').click();await page.locator('h1').click()
+   await page.screenshot({path:`docs/design/alertas-${theme}${mobile?'-mobile':''}.png`,fullPage:true})
+   expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
+  }finally{await context.close()}
+ }
+})

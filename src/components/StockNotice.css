@@ -1,5 +1,10 @@
-.stock-notice{position:fixed;right:1rem;bottom:1rem;z-index:50;width:min(24rem,calc(100vw - 2rem));padding:1rem;border:2px solid #9b6400;border-radius:12px;background:#fff8e6;color:#382800;box-shadow:0 4px 24px #0003}
-.stock-notice p{margin:0 0 .75rem;overflow-wrap:anywhere}
-.stock-notice div{display:flex;gap:.75rem;flex-wrap:wrap}
-.stock-notice button{min-height:44px;padding:.5rem .8rem;border:1px solid currentColor;border-radius:6px;background:transparent;color:inherit;font:inherit;cursor:pointer}
-.stock-notice button:focus-visible{outline:3px solid #165baa;outline-offset:3px}
+.app-shell.liber-layout .stock-notice{position:fixed;right:20px;bottom:20px;z-index:50;display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;width:min(420px,calc(100vw - 32px));padding:20px;border:2px solid var(--liber-accent);border-top-width:6px;border-radius:16px;background:var(--liber-surface);color:var(--liber-ink);box-shadow:0 12px 48px #0003}
+.app-shell.liber-layout .stock-notice-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--liber-soft);color:var(--liber-accent)}
+.app-shell.liber-layout .stock-notice-icon svg{width:28px;height:28px}
+.app-shell.liber-layout .stock-notice p{margin:0;color:var(--liber-muted);font-size:14px;line-height:22px;overflow-wrap:anywhere}
+.app-shell.liber-layout .stock-notice strong{display:inline-block;margin-bottom:4px;color:var(--liber-ink);font-size:18px}
+.app-shell.liber-layout .stock-notice>div{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap}
+.app-shell.liber-layout .stock-notice button{min-height:44px;padding:10px 18px;border:1px solid var(--liber-line);border-radius:10px;background:var(--liber-surface);color:var(--liber-ink);font:inherit;font-size:14px;cursor:pointer}
+.app-shell.liber-layout .stock-notice button:first-child{flex:1;background:var(--liber-button);border-color:var(--liber-button);color:var(--liber-button-ink);font-weight:700}
+.app-shell.liber-layout .stock-notice button:focus-visible{outline:3px solid var(--liber-accent);outline-offset:3px}
+@media(max-width:650px){.app-shell.liber-layout .stock-notice{right:16px;bottom:16px;padding:16px;gap:12px;max-height:calc(100dvh - 32px);overflow:auto}}

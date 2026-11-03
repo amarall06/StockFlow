@@ -9,6 +9,9 @@ import './WarrantyManufacturers.css'
 import { saveOfflineWarranty } from '../lib/offline-stock'
 import { OfflineWarranty } from './OfflineWarranty'
 import { OfflineCustomerReturns } from './OfflineCustomerReturns'
+import { PageHeading } from './InventoryLayout'
+import { Button } from './Interface'
+import './WarrantyReference.css'
 
 export function WarrantyManufacturers({ apiVersion, isAdministrator, userId = '' }: {
   apiVersion: number; isAdministrator: boolean; userId?: string
@@ -25,6 +28,8 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator, userId = ''
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const nameRef = useRef<HTMLInputElement>(null)
+  const moreRef = useRef<HTMLDetailsElement>(null)
+  const shortcutsRef = useRef<HTMLDetailsElement>(null)
   const interaction = useRef({ name: '', editing: false, saving: false })
   const canAutoRefresh = useCallback(() => !interaction.current.name.trim() && !interaction.current.editing && !interaction.current.saving && !document.querySelector('dialog[open]'), [])
   const reportKey = `${revision}:${boxesReady}`
@@ -94,12 +99,22 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator, userId = ''
 
   const filtered = result.rows.filter((manufacturer) => manufacturer.name.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR')))
 
-  return <>
+  function openSection(id: string) {
+    if (shortcutsRef.current) shortcutsRef.current.open = false
+    if (id === 'manufacturers-title' && moreRef.current) moreRef.current.open = true
+    const target = document.getElementById(id)
+    target?.focus()
+    target?.scrollIntoView({behavior: 'smooth', block: 'start'})
+  }
+
+  return <div className="reference-warranty">
     {boxesReady && userId && <OfflineWarranty key={userId} userId={userId} role={isAdministrator?'administrator':'viewer'} onRefresh={async()=>{setRevision(value=>value+1)}}/>}
     {apiVersion >= 8 && userId && <OfflineCustomerReturns key={`returns:${userId}`} userId={userId} role={isAdministrator?'administrator':'viewer'} onRefresh={async()=>{setRevision(value=>value+1)}}/>}
-    <div className="page-heading"><div><p className="eyebrow">AMORTECEDORES E MOLAS</p><h1>Garantia</h1><p className="subtitle">Controle as caixas em garantia de cada fabricante.</p></div></div>
+    <PageHeading section="PÓS-VENDA" title="Garantia" subtitle="Acompanhe casos, devoluções e a situação de cada análise." actions={<details ref={shortcutsRef} className="warranty-shortcuts"><summary>Atalhos</summary><div><Button onClick={() => openSection('returns-title')}>Casos e devoluções</Button><Button onClick={() => openSection('manufacturers-title')}>Fabricantes, saldos e exportação</Button></div></details>}/>
+    <WarrantyReturns userId={userId} ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} canAutoRefresh={canAutoRefresh} />
+    <details className="warranty-more" ref={moreRef}><summary>Mais informações <span>Fabricantes, caixas e exportação</span></summary>
     <section className="inventory-panel warranty-manufacturers" aria-labelledby="manufacturers-title">
-      <div className="panel-heading"><div><h2 id="manufacturers-title">Fabricantes das peças</h2><p>Cadastro compartilhado entre amortecedores e molas.</p></div>{ready && !loading && !result.error && <span className="row-count">{result.rows.length} fabricantes</span>}</div>
+      <div className="panel-heading"><div><h2 id="manufacturers-title" tabIndex={-1}>Fabricantes das peças</h2><p>Cadastro compartilhado entre amortecedores e molas.</p></div>{ready && !loading && !result.error && <span className="row-count">{result.rows.length} fabricantes</span>}</div>
       {boxesReady && !loading && !result.error && <ExportCsvButton name="liber-garantia-fabricantes" headers={['Fabricante','Amortecedores (caixas)','Molas (caixas)','Total (caixas)']} rows={filtered.map(row=>[row.name,row.shock_boxes??0,row.spring_boxes??0,(row.shock_boxes??0)+(row.spring_boxes??0)])}/>}
       {automaticError.key === reportKey && automaticError.message && <p className="manufacturer-feedback auth-error" role="status">{automaticError.message}</p>}
       {!ready ? <p className="manufacturer-notice" role="status">O cadastro de fabricantes aguarda ativação no banco. Depois da atualização, recarregue o site.</p> : <>
@@ -122,8 +137,8 @@ export function WarrantyManufacturers({ apiVersion, isAdministrator, userId = ''
             </li>)}</ul>}
       </>}
     </section>
-    <WarrantyReturns userId={userId} ready={apiVersion >= 8} isAdministrator={isAdministrator} manufacturers={result.rows} revision={revision} onChanged={() => setRevision((value) => value + 1)} canAutoRefresh={canAutoRefresh} />
+    </details>
     {boxOperation && <WarrantyBoxesDialog manufacturer={boxOperation.manufacturer} direction={boxOperation.direction}
       onClose={() => setBoxOperation(null)} onSaved={(feedback) => { setBoxOperation(null); setMessage(feedback); setError(''); setRevision((value) => value + 1) }} />}
-  </>
+  </div>
 }

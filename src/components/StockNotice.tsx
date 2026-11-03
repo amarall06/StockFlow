@@ -30,6 +30,7 @@ export function StockNotice({ userId, catalog, stock, onOpen }: {
   }, [catalog, stock, key])
   if (!codes.length) return null
   return <aside className="stock-notice" aria-label="Aviso de estoque">
+    <span className="stock-notice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5m0 3v1"/></svg></span>
     <p role="status"><strong>Estoque baixo ou zerado</strong><br />{codes.length} {codes.length === 1 ? 'produto precisa' : 'produtos precisam'} de atenção: {codes.slice(0, 3).join(', ')}{codes.length > 3 ? '…' : ''}.</p>
     <div><button type="button" onClick={() => { setCodes([]); onOpen() }}>Ver alertas</button><button type="button" onClick={() => setCodes([])} aria-label="Fechar aviso de estoque">Fechar</button></div>
   </aside>

@@ -5,6 +5,7 @@ import {calculateStockAlerts} from '../lib/stock-alerts'
 import {saveStockMinimum} from '../lib/stock-minimum-api'
 import {EditButton} from './EditButton'
 import './StockAlerts.css'
+import {Badge, Progress} from './Interface'
 
 function MinimumDialog({catalog,codes,initialCode,onClose,onSaved}:{catalog:Record<string,ProductInfo>;codes:string[];initialCode:string;onClose:()=>void;onSaved:()=>void}){
   const dialogRef=useRef<HTMLDialogElement>(null)
@@ -35,8 +36,8 @@ function MinimumDialog({catalog,codes,initialCode,onClose,onSaved}:{catalog:Reco
   </dialog>
 }
 
-export function StockAlerts({catalog,stock,springs,ready,isAdministrator,onRefresh,titleId='stock-alerts-title'}:{
-  catalog:Record<string,ProductInfo>;stock:StockRow[];springs:boolean;ready:boolean;isAdministrator:boolean;onRefresh:()=>Promise<void>;titleId?:string
+export function StockAlerts({catalog,stock,springs,ready,isAdministrator,onRefresh,titleId='stock-alerts-title',reference=false,onOpenStock,canReceive=false}:{
+  catalog:Record<string,ProductInfo>;stock:StockRow[];springs:boolean;ready:boolean;isAdministrator:boolean;onRefresh:()=>Promise<void>;titleId?:string;reference?:boolean;onOpenStock?:()=>void;canReceive?:boolean
 }){
   const [editing,setEditing]=useState<string|null>(null)
   const [showAll,setShowAll]=useState(false)
@@ -54,15 +55,20 @@ export function StockAlerts({catalog,stock,springs,ready,isAdministrator,onRefre
     setEditing(null);setMessage('Limite salvo.');setError('');setRefreshing(true)
     void onRefresh().catch(()=>setError('Limite salvo. Atualize os alertas para consultar o valor atual.')).finally(()=>setRefreshing(false))
   }
+  const actions = ready&&<div className="alerts-actions"><button type="button" className="theme-toggle" disabled={refreshing} onClick={()=>void refresh()}>Atualizar alertas</button>{isAdministrator&&codes.length>0&&<button type="button" className="add-product-button" disabled={refreshing} onClick={()=>setEditing(codes[0])}>Configurar mínimos</button>}</div>
+  const description = <p>{springs?'Conta todas as caixas de molas em estoque.':'Soma caixas aguardando teste e liberadas, em todas as localizações.'} Garantia não entra nesta contagem.</p>
+  const totals = <div className="alerts-totals"><span><strong>{zeros}</strong> produtos sem estoque</span><span><strong>{lows}</strong> no mínimo ou abaixo</span><span><strong>{configured}/{summary.length}</strong> limites configurados</span></div>
   return <section className={`inventory-panel stock-alerts${ready&&alerts.length?' has-alerts':''}`} aria-labelledby={titleId}>
-    <div className="alerts-heading"><div><h2 id={titleId}>Alertas de reposição</h2><p>{springs?'Conta todas as caixas de molas em estoque.':'Soma caixas aguardando teste e liberadas, em todas as localizações.'} Garantia não entra nesta contagem.</p></div>
-      {ready&&<div className="alerts-actions"><button type="button" className="theme-toggle" disabled={refreshing} onClick={()=>void refresh()}>Atualizar alertas</button>{isAdministrator&&codes.length>0&&<button type="button" className="add-product-button" disabled={refreshing} onClick={()=>setEditing(codes[0])}>Configurar mínimos</button>}</div>}
-    </div>
+    {reference ? <div className="reference-alert-heading"><h2 id={titleId}>{springs?'Molas':'Amortecedores'}</h2><details className="reference-alert-options"><summary>Opções</summary><div>{actions}{description}{ready&&totals}</div></details></div> : <div className="alerts-heading"><div><h2 id={titleId}>Alertas de reposição</h2>{description}</div>{actions}</div>}
     {!ready?<p className="alerts-message" role="status">Os alertas de reposição aguardam ativação no banco.</p>:<>
-      <div className="alerts-totals"><span><strong>{zeros}</strong> produtos sem estoque</span><span><strong>{lows}</strong> no mínimo ou abaixo</span><span><strong>{configured}/{summary.length}</strong> limites configurados</span></div>
+      {!reference&&totals}
       {message&&<p className="alerts-message" role="status">{message}</p>}{error&&<p className="alerts-message auth-error" role="alert">{error}</p>}
       {!summary.length?<p className="alerts-message">Nenhum produto cadastrado nesta categoria.</p>:!alerts.length?<p className="alerts-message">Nenhum produto zerado ou no limite configurado.{configured===0?' Os limites mínimos ainda não foram definidos.':''}</p>:<>
-        <ul className="stock-alert-cards">{(showAll?alerts:alerts.slice(0,6)).map((row)=><li className={`stock-alert-${row.severity}`} key={row.code}>
+        <ul className="stock-alert-cards">{(showAll?alerts:alerts.slice(0,6)).map((row)=>reference ? <li className="reference-alert-row" key={row.code}>
+          <details className="reference-alert-product"><summary aria-label={`Detalhes de ${row.code}`}><strong>{row.code}</strong><span>{springs?'Mola':'Amortecedor'} · Detalhes</span></summary><div><p>{catalog[row.code].application}</p>{!springs&&<p>Disponíveis para venda: {row.available} · Aguardando teste: {row.awaiting}</p>}{isAdministrator&&<EditButton label={`Editar mínimo de ${row.code}`} disabled={refreshing} onClick={()=>setEditing(row.code)}/>}</div></details>
+          <div className="reference-alert-level"><div><Badge>{row.severity==='zero'?'Sem estoque':row.minimum!==null&&row.total<row.minimum?'Abaixo do mínimo':'No limite mínimo'}</Badge><span>{row.minimum===null?`${row.total} caixas · mínimo não configurado`:`${row.total} de ${row.minimum} (mínimo)`}</span></div><Progress value={row.total} max={row.minimum??1} label={`Estoque de ${row.code}: ${row.total} caixas${row.minimum===null?', sem mínimo configurado':`, mínimo ${row.minimum}`}`}/></div>
+          {onOpenStock&&<button type="button" className="add-product-button" onClick={onOpenStock}>{canReceive?'Registrar entrada':'Ver estoque'}</button>}
+        </li> : <li className={`stock-alert-${row.severity}`} key={row.code}>
           <div className="alert-card-title"><strong>{row.code}</strong><span>{row.severity==='zero'?'Sem estoque':'Repor estoque'}</span>{isAdministrator&&<EditButton label={`Editar mínimo de ${row.code}`} disabled={refreshing} onClick={()=>setEditing(row.code)}/>}</div>
           <p>{catalog[row.code].application}</p><p><strong>{row.total} caixas no estoque</strong> · {row.minimum===null?'mínimo não configurado':`mínimo: ${row.minimum} caixas`}</p>
           {!springs&&<p>Disponíveis para venda: {row.available} · Aguardando teste: {row.awaiting}</p>}

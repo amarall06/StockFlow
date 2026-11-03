@@ -33,6 +33,7 @@ test('CSV de garantia contém somente o fabricante filtrado e seus saldos', asyn
     await page.getByRole('button', { name: 'Menu', exact: true }).click()
   }
   await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name: 'Garantia', exact: true }).click()
+  await page.locator('.warranty-more > summary').click()
   await expect(page.locator('.manufacturer-cards > li')).toHaveCount(2)
   await page.getByLabel('Buscar fabricante').fill('Fábrica')
   await expect(page.locator('.manufacturer-cards > li')).toHaveCount(1)

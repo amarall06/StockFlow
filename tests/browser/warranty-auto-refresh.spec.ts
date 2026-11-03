@@ -20,7 +20,8 @@ async function prepare(page: Page) {
   const writes = await prepareKeyboardPage(page, { warranty_manufacturers: manufacturers, warranty_box_balances: balances(2), warranty_returns: returns(2) })
   await openModule(page, 'Garantia')
   await expect(page.locator('.manufacturer-cards > li')).toHaveCount(2)
-  await expect(page.locator('.return-cards > li')).toHaveCount(2)
+  await expect(page.locator('.warranty-detail-row')).toHaveCount(2)
+  await page.getByRole('button', { name: 'Detalhes da devolução MGM-35', exact: true }).click()
   let release!: () => void
   const gate = new Promise<void>(resolve => { release = resolve })
   const state = { factor: 2, failed: new Set<string>(), requests: [] as string[], hold: false, held: 0, release }
@@ -40,7 +41,7 @@ async function tick(page: Page, ms = 30_000) {
   await page.clock.runFor(200)
 }
 const manufacturer = (page: Page) => page.locator('.manufacturer-cards > li').filter({ hasText: 'Fabricante teste' })
-const returnCard = (page: Page) => page.locator('.return-cards > li').filter({ hasText: 'MGM-35' })
+const returnCard = (page: Page) => page.locator('.warranty-detail-row').filter({ hasText: 'MGM-35' })
 const total = (page: Page) => manufacturer(page).locator('.warranty-box-summary strong')
 const returnBoxes = (page: Page) => returnCard(page).locator('dd').first()
 
@@ -60,7 +61,7 @@ test('Garantia atualiza saldos, devoluções e CSV mantendo buscas e andamento',
   await expect(page.getByLabel('Buscar devolução', { exact: true })).toHaveValue('MGM-35')
   await expect(page.getByRole('combobox', { name: /^Andamento/ })).toHaveValue('received')
   await expect(page.locator('.manufacturer-cards > li')).toHaveCount(1)
-  await expect(page.locator('.return-cards > li')).toHaveCount(1)
+  await expect(page.locator('.warranty-detail-row')).toHaveCount(1)
   const downloadPromise = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Exportar CSV', exact: true }).click()
   const download = await downloadPromise
@@ -132,7 +133,7 @@ test('diálogos de caixas e devolução pausam a Garantia e preservam seus campo
   expect(state.requests).toHaveLength(0)
   await expect(note).toHaveValue('Observação em rascunho')
   await page.keyboard.press('Escape')
-  await page.getByRole('button', { name: 'Receber devolução', exact: true }).click()
+  await page.getByRole('button', { name: 'Novo registro', exact: true }).click()
   await page.getByRole('dialog').getByLabel('Descrição do que chegou').fill('Descrição em rascunho')
   await tick(page, 60_000)
   expect(state.requests).toHaveLength(0)

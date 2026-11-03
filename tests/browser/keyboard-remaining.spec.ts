@@ -6,7 +6,7 @@ const dialogs = [
   { module: 'Visão geral', trigger: 'Ver testagem de AGM-35', title: 'Testagem · AGM-35' },
   { module: 'Garantia', trigger: 'Adicionar caixas em Fabricante teste', title: 'Adicionar caixas · Fabricante teste' },
   { module: 'Garantia', trigger: 'Retirar caixas de Fabricante teste', title: 'Retirar caixas · Fabricante teste' },
-  { module: 'Garantia', trigger: 'Receber devolução', title: 'Receber devolução' },
+  { module: 'Garantia', trigger: 'Novo registro', title: 'Receber devolução' },
   { module: 'Aplicações', trigger: 'Ver histórico completo de AGM-35', title: 'Histórico completo · AGM-35' },
 ]
 
@@ -43,7 +43,7 @@ test('formulário de mínimo rejeita fração pelo teclado sem salvar', async ({
 test('devolução vazia aponta o campo obrigatório pelo teclado sem salvar', async ({ page }) => {
   const writes = await prepareKeyboardPage(page)
   await openModule(page, 'Garantia')
-  await tabTo(page, page.getByRole('button', { name: 'Receber devolução', exact: true }))
+  await tabTo(page, page.getByRole('button', { name: 'Novo registro', exact: true }))
   await page.keyboard.press('Enter')
   const dialog = page.getByRole('dialog', { name: 'Receber devolução', exact: true })
   await tabTo(page, dialog.getByRole('button', { name: 'Salvar devolução', exact: true }))
@@ -65,7 +65,7 @@ test('menu móvel abre e navega até Produtos somente com teclado', async ({ pag
   await tabTo(page, dialog.getByRole('button', { name: 'Produtos', exact: true }))
   await page.keyboard.press('Enter')
   await expect(dialog).not.toBeVisible()
-  await expect(page.getByRole('heading', { name: 'Produtos cadastrados', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Produtos', exact: true })).toBeVisible()
   await expect(menu).toBeFocused()
   expect(writes).toEqual([])
 })

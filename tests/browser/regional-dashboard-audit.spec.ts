@@ -108,7 +108,7 @@ test('Conferência final: alertas, unidades em caixas e tabela limitada do Paine
   expect(await productTable.locator('..').evaluate(element=>element.clientHeight)).toBeLessThanOrEqual(420)
   await page.screenshot({path:'test-results/painel-regional.png'})
   await page.getByRole('navigation',{name:'Menu principal'}).getByRole('button',{name:/^Alertas/}).click()
-  await expect(page.getByRole('heading',{name:'Alertas de estoque',exact:true})).toBeVisible()
+  await expect(page.getByRole('heading',{name:'Alertas',exact:true})).toBeVisible()
   await openModule(page,'Visão geral')
   await expect(page.getByRole('heading',{name:'Prateleiras por região',exact:true})).toBeVisible()
   await expect(page.locator('#consulta')).not.toContainText('cada caixa contém 2 peças')

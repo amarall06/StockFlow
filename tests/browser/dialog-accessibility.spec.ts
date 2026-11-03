@@ -6,7 +6,7 @@ const dialogs=[
   {module:'Visão geral',trigger:'Ver testagem de AGM-35',title:'Testagem · AGM-35'},
   {module:'Garantia',trigger:'Adicionar caixas em Fabricante teste',title:'Adicionar caixas · Fabricante teste'},
   {module:'Garantia',trigger:'Retirar caixas de Fabricante teste',title:'Retirar caixas · Fabricante teste'},
-  {module:'Garantia',trigger:'Receber devolução',title:'Receber devolução'},
+  {module:'Garantia',trigger:'Novo registro',title:'Receber devolução'},
   {module:'Aplicações',trigger:'Ver histórico completo de AGM-35',title:'Histórico completo · AGM-35'},
   {module:'Produtos',trigger:'Ampliar foto de AGM-35 — exemplo ilustrativo',title:'AGM-35'},
 ]
@@ -19,6 +19,8 @@ for(const theme of ['light','dark']) {
     if(await closeNotice.isVisible()) await closeNotice.click()
     await page.getByRole('button',{name:'Menu',exact:true}).click()
     await page.getByRole('dialog',{name:'Menu de navegação'}).getByRole('button',{name:item.module,exact:true}).click()
+    if(item.module==='Garantia'&&item.trigger!=='Novo registro')await page.locator('.warranty-more>summary').click()
+    if(item.module==='Produtos')await page.getByRole('button',{name:'Detalhes de AGM-35',exact:true}).click()
     await page.getByRole('button',{name:item.trigger,exact:true}).click()
     const dialog=page.getByRole('dialog',{name:item.title,exact:true})
     await expect(dialog).toBeVisible()

@@ -59,6 +59,10 @@ export async function tabTo(page: Page, target: Locator, key = 'Tab') {
 export async function openModule(page: Page, name: string) {
   // Preparação do módulo; os fluxos sob teste começam nos controles internos.
   await page.getByRole('navigation', { name: 'Menu principal' }).getByRole('button', { name, exact: true }).click()
+  if (name === 'Garantia') {
+    await page.locator('.warranty-more > summary').click()
+    await page.locator('.warranty-filters > summary').click()
+  }
 }
 
 export async function checkModalKeyboard(page: Page, trigger: Locator, dialog: Locator) {

@@ -60,7 +60,7 @@ for (const category of [{ kind: 'shock', code: 'AGM-35', module: 'Visão geral' 
   cases.push({ name: `devolução em garantia de ${category.code}`, rpc: 'save_warranty_return', text: ['Confirmar registro de devolução?', category.code, 'Em garantia', 'somadas à garantia'],
     setup: async page => {
       await module(page, 'Garantia')
-      await page.getByRole('button', { name: 'Receber devolução', exact: true }).click()
+      await page.getByRole('button', { name: 'Novo registro', exact: true }).click()
       const dialog = page.getByRole('dialog')
       await dialog.getByLabel('Descrição do que chegou').fill('Devolução fictícia')
       await dialog.getByRole('combobox', { name: /^Categoria/ }).selectOption(category.kind)
