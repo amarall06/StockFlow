@@ -39,4 +39,4 @@ A prioridade definida pelo usuário é concluir primeiro o que não depende de d
 
 ## Publicação
 
-Em conferência.
+Publicado em `16453bb03798bdbacb18e15b2e7f1a0bb26f4ef9`, Vercel success. Domínio https://liber-automotive.vercel.app/ com HTTP 200 e dezenove recursos públicos idênticos ao build aprovado, incluindo análises, mapa, fonte e licença. Nenhum teste funcional repetido na publicação.
