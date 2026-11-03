@@ -56,4 +56,4 @@ Próxima tela: **Produtos**, usando a base já criada. Não considerar as quatro
 
 ## Publicação
 
-Aguardando confirmação.
+Publicado em `16b5ef1d065697cff185508da2922b13943e67e2`, Vercel success. Domínio HTTP 200 e dezesseis recursos públicos iguais ao build aprovado, incluindo Inter e licença. Nenhum teste funcional repetido na publicação.
