@@ -31,9 +31,9 @@ export function ProductsOverview({catalog, stock, onOpen, isAdministrator}: {
   return <div className="reference-products">
     <PageHeading section="CADASTRO" title="Produtos" subtitle="Consulte amortecedores e molas por código, tipo e situação." actions={
       <details className="products-shortcuts"><summary>Atalhos</summary><div>
-        <Button onClick={() => onOpen('catalog')}>{isAdministrator ? 'Editar' : 'Consultar'} aplicações de amortecedores</Button>
-        <Button onClick={() => onOpen('inventory')}>Estoque de amortecedores</Button>
-        <Button onClick={() => onOpen('springs')}>Estoque de molas</Button>
+        <Button icon="catalog" onClick={() => onOpen('catalog')}>{isAdministrator ? 'Editar' : 'Consultar'} aplicações de amortecedores</Button>
+        <Button icon="products" onClick={() => onOpen('inventory')}>Estoque de amortecedores</Button>
+        <Button icon="springs" onClick={() => onOpen('springs')}>Estoque de molas</Button>
       </div></details>
     }/>
     <Card className="products-card" aria-label="Catálogo de produtos">

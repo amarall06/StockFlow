@@ -1,5 +1,8 @@
 // Ícones vetoriais mantêm o mesmo traço e tamanho em todos os itens do menu.
 const paths:Record<string,string>={
+  map:'M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2V5z M9 3v16 M15 5v16',
+  download:'M12 3v12 M7 10l5 5 5-5 M4 16v5h16v-5',
+  filter:'M3 5h18 M6 12h12 M9 19h6 M8 3v4 M16 10v4 M12 17v4',
   dashboard:'M3 10l9-8 9 8 M5 9v12h14V9',
   inventory:'M5 21V12 M12 21V3 M19 21V8',
   alerts:'M5 17h14l-2-3V9a5 5 0 0 0-10 0v5z M10 21h4',

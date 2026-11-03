@@ -1,8 +1,9 @@
 import{useId,type ComponentPropsWithoutRef,type ReactNode}from'react'
+import{NavigationIcon}from'./NavigationIcon'
 
 export function Card({className='',...props}:ComponentPropsWithoutRef<'section'>){return <section className={`ui-card ${className}`} {...props}/>}
 export function Badge({className='',...props}:ComponentPropsWithoutRef<'span'>){return <span className={`ui-badge ${className}`} {...props}/>}
-export function Button({className='',variant='secondary',...props}:ComponentPropsWithoutRef<'button'>&{variant?:'primary'|'secondary'|'link'}){return <button type="button" className={`ui-button ui-button-${variant} ${className}`} {...props}/>}
+export function Button({className='',variant='secondary',icon,children,...props}:ComponentPropsWithoutRef<'button'>&{variant?:'primary'|'secondary'|'link';icon?:string}){return <button type="button" className={`ui-button ui-button-${variant} ${className}`} {...props}>{icon&&<NavigationIcon name={icon}/>} {children}</button>}
 export function Table({children,...props}:ComponentPropsWithoutRef<'table'>){return <div className="ui-table-scroll" tabIndex={0} role="region" aria-label={typeof props['aria-label']==='string'?`Rolagem: ${props['aria-label']}`:'Rolagem da tabela'}><table {...props}>{children}</table></div>}
 export function Progress({value,max,label}:{value:number;max:number;label:string}){return <meter className="ui-progress" min={0} max={Math.max(1,max)} value={value} aria-label={label}/>}
 export function ActionGroup({label,children}:{label:string;children:ReactNode}){return <div className="ui-action-group" role="group" aria-label={label}>{children}</div>}

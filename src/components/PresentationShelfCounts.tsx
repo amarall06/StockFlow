@@ -14,7 +14,7 @@ import {mergeCountReviews,reviewLabels,type CountReview} from '../lib/presentati
 import {beginPresentationRecount,mergeRecountLinks,type RecountLink} from '../lib/presentation-recounts'
 import {loadRecountLinks,loadRelatedCount} from '../lib/presentation-recounts-api'
 import {SharedCountMap} from './SharedCountMap'
-import {RecurringDivergences} from './RecurringDivergences'
+import {SharedRecurrence} from './SharedRecurrence'
 import {bahiaDay,sharedDivergenceChecks} from '../lib/shared-divergence-checks'
 import {SharedCountPending} from './SharedCountPending'
 const date=(value:string)=>new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Bahia',dateStyle:'short',timeStyle:'short'}).format(new Date(value))
@@ -102,7 +102,7 @@ export function PresentationShelfCounts({userId,canOperate,canReview=false,ready
       }}/>} {sending&&<p role="status">Confirmando envio… Mantenha esta tela aberta.</p>}
     </fieldset>:<p>Perfil de consulta: acompanhe os envios. Administrador e Estoquista podem preparar contagens.</p>}
     {rows!==null&&<SharedCountMap counts={rows} reviews={reviews} userId={userId} onHistory={id=>{focusCount(id)}} stale={Boolean(error)}/>}
-    {rows!==null&&<RecurringDivergences userId={userId} canEdit={canReview} checks={sharedDivergenceChecks(rows,reviews)} reference={recurrenceDay} shared stale={Boolean(error)} onEvidence={id=>{focusCount(id)}}/>}
+    {rows!==null&&<SharedRecurrence userId={userId} canEdit={canReview} checks={sharedDivergenceChecks(rows,reviews)} reference={recurrenceDay} shared stale={Boolean(error)} onEvidence={id=>{focusCount(id)}}/>}
     <h3>Histórico de envios e decisões</h3><p>Começa pelos 50 envios mais recentes. Carregue os anteriores para ampliar também o mapa, as pendências e a recorrência desta consulta. As aprovações valem somente para a apresentação; não autorizam ajustes nem comprovam conferência física real.</p>
     {hasMore&&<button type="button" className="theme-toggle" disabled={historyBusy} onClick={()=>{setHistoryBusy(true);if(confirmedLimit<historyLimit)refresh.current();else setHistoryLimit(value=>value+50)}}>{historyBusy?'Consultando envios anteriores…':'Carregar mais 50 envios anteriores'}</button>}
     {rows!==null&&<p role="status">{rows.length} envios carregados nesta consulta, incluindo vínculos abertos.</p>}

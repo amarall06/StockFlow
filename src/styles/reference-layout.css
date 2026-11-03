@@ -159,3 +159,5 @@
 .app-shell.liber-layout button{min-height:44px}
 @media(max-width:359px){.app-shell.liber-layout .profile-name-text{max-width:80px}.app-shell.liber-layout .user-chip{gap:4px}.app-shell.liber-layout .reference-summary-grid .dashboard-receipts-panel h2{max-width:calc(100% - 110px)}.app-shell.liber-layout .reference-summary-grid .dashboard-alert-heading h2{max-width:calc(100% - 70px)}.app-shell.liber-layout .reference-summary-grid .dashboard-sales-panel .reference-section-heading{align-items:flex-start;flex-wrap:wrap}.app-shell.liber-layout .dashboard-quicknav>div{width:calc(100vw - 32px)}}
 @media(max-width:650px){.app-shell.liber-layout .dashboard-quicknav>div{position:absolute;top:50px;right:0;max-height:calc(100dvh - 300px)}}
+.app-shell.liber-layout .ui-button .nav-icon{flex:none;width:18px;height:18px}
+.app-shell.liber-layout :is(.dashboard-quicknav,.products-shortcuts,.warranty-shortcuts) .ui-button{justify-content:flex-start;text-align:left}
