@@ -36,4 +36,4 @@ Revisão React: hooks incondicionais, chaves por identificador, estados de UI lo
 
 ## Publicação
 
-Em conferência. Pode riscar o redesign de Garantia e de Alertas e o aviso destacado com acesso direto. Com Painel e Produtos anteriores, as quatro telas de referência estão implementadas; isso não encerra pendências operacionais das 26 anotações.
+Publicado em `74357a44002601b70b6f2d9f0c0c76ffd27b988c`, Vercel success. Domínio https://liber-automotive.vercel.app/ com HTTP 200 e dezoito recursos públicos idênticos ao build aprovado, incluindo módulos/CSS de Garantia e Alertas, pop-up e fonte/licença. Nenhum teste funcional repetido durante a publicação. Pode riscar o redesign de Garantia e de Alertas e o aviso destacado com acesso direto. Com Painel e Produtos anteriores, as quatro telas de referência estão implementadas; isso não encerra pendências operacionais das 26 anotações.
