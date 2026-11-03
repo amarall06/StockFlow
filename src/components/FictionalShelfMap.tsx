@@ -46,7 +46,7 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
       <div className="floor-aisle floor-aisle-vertical" aria-hidden="true">Corredor principal</div><div className="floor-aisle floor-aisle-horizontal" aria-hidden="true"/>
       <div className="floor-zone floor-receiving">Recebimento</div><div className="floor-zone floor-dispatch">Expedição</div>
       {shelves.map(row => <button type="button" key={row.location} ref={element => { if (element) buttons.current.set(row.location, element); else buttons.current.delete(row.location) }}
-        className={`map-shelf map-${row.location.toLowerCase()}${row.count ? ' map-divergent' : row.boxes === 0 ? ' map-empty' : ' map-occupied'}${row.matchedBoxes ? ' map-match' : ''}`}
+        data-location={row.location} className={`map-shelf map-${row.location.toLowerCase()}${row.count ? ' map-divergent' : row.boxes === 0 ? ' map-empty' : ' map-occupied'}${row.matchedBoxes ? ' map-match' : ''}`}
         style={{ left: displayLayout[row.location].x * floorGrid.cell, top: displayLayout[row.location].y * floorGrid.cell, width: displayLayout[row.location].width * floorGrid.cell, height: displayLayout[row.location].height * floorGrid.cell }}
         aria-label={`Prateleira ${row.location} — ${row.state}${row.matchedBoxes ? ` — produto encontrado: ${row.matchedBoxes} caixas` : ''}`} aria-pressed={selected === row.location} aria-controls="fictional-map-details" onClick={() => setSelected(value => value === row.location ? null : row.location)}>
         <strong>{row.location}</strong><span>{row.boxes} caixas</span><span>{row.state}</span>

@@ -51,6 +51,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   const [automaticError,setAutomaticError]=useState({key:'',message:''})
   const manualPending=useRef(false)
   const shortcuts=useRef<HTMLDetailsElement>(null)
+  const [mapMessage,setMapMessage]=useState('')
   const reportKey=`${category}:${revision}`
   const [result,setResult]=useState<{category:DashboardCategory;revision:number;report:DashboardReport|null;error:string}>({category:'all',revision:-1,report:null,error:''})
   const loading=ready&&(result.category!==category||result.revision!==revision)
@@ -97,6 +98,16 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
     setView('stock')
     requestAnimationFrame(()=>{const more=document.getElementById('dashboard-more') as HTMLDetailsElement|null;const target=document.getElementById(id);if(!more||!target)return;more.open=true;if(target instanceof HTMLDetailsElement)target.open=true;target.focus();target.scrollIntoView({block:'start',behavior:'instant'})})
   }
+  function openLocation(location:string){
+    setMapMessage('')
+    showMore('dashboard-map')
+    requestAnimationFrame(()=>{
+      const button=Array.from(document.querySelectorAll<HTMLButtonElement>('#dashboard-map .map-shelf')).find(item=>item.dataset.location===location)
+      if(!button){setMapMessage('A planta operacional ainda não está disponível para esta região. Aguarde a consulta ou atualize a planta e tente novamente.');return}
+      if(button.getAttribute('aria-pressed')!=='true')button.click()
+      button.focus();button.scrollIntoView({block:'center',behavior:'instant'})
+    })
+  }
   return <div className="reference-dashboard">
     <PageHeading section="VISÃO GERAL" title="Painel inicial" subtitle="Acompanhe seu estoque, movimentações e principais indicadores." actions={<details ref={shortcuts} className="dashboard-quicknav" onKeyDown={event=>{if(event.key==='Escape'&&shortcuts.current){event.preventDefault();shortcuts.current.open=false;shortcuts.current.querySelector('summary')?.focus()}}}><summary>Atalhos <span aria-hidden="true">⌄</span></summary><div><ActionGroup label="Ir para um módulo">
       <Button onClick={()=>openPage('products')}>Produtos</Button><Button onClick={()=>openPage('warranty')}>Garantia</Button><Button onClick={()=>openPage('alerts')}>Alertas</Button>{isAdministrator&&<Button onClick={()=>openPage('outflow')}>Saídas</Button>}<Button onClick={()=>openPage('history')}>Histórico</Button><Button onClick={()=>openPage('catalog')}>Aplicações</Button><Button onClick={()=>openPage('turnover')}>Giro e ABC</Button>
@@ -132,9 +143,9 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <div id="dashboard-exports" tabIndex={-1}><StockReportExport/></div>
-      <div id="dashboard-map" tabIndex={-1}>{capacityUserId && <SharedShelfLayout key={`inventory:${capacityUserId}`} userId={capacityUserId} canEdit={isAdministrator} operationalStock={stock} data={{...presentationBundle,locations}}/>}</div>
+      <div id="dashboard-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId && <SharedShelfLayout key={`inventory:${capacityUserId}`} userId={capacityUserId} canEdit={isAdministrator} operationalStock={stock} data={{...presentationBundle,locations}}/>}</div>
       <div id="dashboard-analysis" tabIndex={-1}>
-      <InventoryInsights catalog={catalog} stock={stock} category={category}/>
+      <InventoryInsights catalog={catalog} stock={stock} category={category} locations={locations} onOpenLocation={capacityUserId?openLocation:undefined}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
       </div>
       {result.report&&<p className="dashboard-message">Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.</p>}

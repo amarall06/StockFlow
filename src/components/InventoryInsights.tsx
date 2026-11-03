@@ -6,11 +6,17 @@ import { startResumeRefresh } from '../lib/resume-refresh'
 import { isSpringCode } from '../lib/product-category'
 import type { DashboardCategory } from '../lib/dashboard-api'
 import './InventoryInsights.css'
+import {ExportCsvButton} from './ExportCsvButton'
+import {Button} from './Interface'
+import {regionalLocations,regionalOrder} from '../lib/regional-locations'
+import {searchableProductText} from '../lib/product-details'
 
 const date = (value: string) => new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Bahia', dateStyle: 'short', timeStyle: 'short' }).format(new Date(value))
-export function InventoryInsights({ catalog, stock, category }: { catalog: Record<string, ProductInfo>; stock: StockRow[]; category: DashboardCategory }) {
+export function InventoryInsights({ catalog, stock, category, locations = [], onOpenLocation }: { catalog: Record<string, ProductInfo>; stock: StockRow[]; category: DashboardCategory; locations?: string[]; onOpenLocation?: (location:string)=>void }) {
   const [days, setDays] = useState(90)
   const [metric, setMetric] = useState<'operations' | 'boxes'>('operations')
+  const [onlyQuiet,setOnlyQuiet] = useState(false)
+  const [search,setSearch] = useState('')
   const [result, setResult] = useState<{ days: number; stockCodes: string; value: Awaited<ReturnType<typeof loadInventoryInsights>> } | null>(null)
   const [error, setError] = useState<{ days: number; stockCodes: string; text: string } | null>(null)
   const stockCodes = JSON.stringify([...new Set(stock.filter(row => row.boxes > 0).map(row => row.code))].sort())
@@ -29,6 +35,9 @@ export function InventoryInsights({ catalog, stock, category }: { catalog: Recor
   const data = current && inventoryInsights(Object.fromEntries(Object.entries(catalog).filter(([code]) => belongs(code))), stock.filter(row => belongs(row.code)), current.movements.filter(row => row.product && belongs(row.product.code)))
   const quiet = data?.products.filter(row => !row.last) ?? []
   const maximum = Math.max(1, ...data?.locations.map(row => row[metric]) ?? [])
+  const term = search.trim().toLocaleLowerCase('pt-BR')
+  const products = data?.products.filter(row => (!onlyQuiet || !row.last) && `${row.code} ${searchableProductText(catalog[row.code])} ${row.locations.join(' ')}`.toLocaleLowerCase('pt-BR').includes(term)) ?? []
+  const activityLocations = regionalOrder([...locations,...data?.locations.map(row=>row.code)??[]]).map(code=>data?.locations.find(row=>row.code===code)??{code,operations:0,boxes:0,last:null})
   return <section className="inventory-panel dashboard-panel inventory-insights" aria-label="Atividade por produto e prateleira">
     <h2>Produtos e prateleiras no período</h2>
     <div className="dashboard-tools"><label>Período de atividade<select value={days} onChange={event => setDays(Number(event.target.value))}>{[30, 90, 180, 365].map(value => <option key={value} value={value}>Últimos {value} dias</option>)}</select></label><label>Intensidade do mapa de calor<select value={metric} onChange={event => setMetric(event.target.value as typeof metric)}><option value="operations">Frequência de operações</option><option value="boxes">Caixas movimentadas</option></select></label></div>
@@ -38,9 +47,13 @@ export function InventoryInsights({ catalog, stock, category }: { catalog: Recor
       <p>Consultado em {date(current.asOf)}. Desde {date(current.start)}. Todas as operações de caixas autorizadas para sua conta, inclusive transferências e testagem.</p>
       <h3>Produtos com saldo sem movimentação no período: {quiet.length}</h3>
       <p>Sem evento neste intervalo não significa idade física das caixas. A última movimentação conhecida inclui o histórico anterior ao período, conforme o acesso da sua conta.</p>
-      <div className="table-scroll" tabIndex={0} role="region" aria-label="Rolagem dos produtos"><table aria-label="Última movimentação dos produtos com saldo"><thead><tr><th>Produto</th><th>Caixas atuais</th><th>Prateleiras atuais</th><th>Última movimentação conhecida</th></tr></thead><tbody>{data.products.map(row => <tr key={row.code}><td>{row.code}</td><td>{row.boxes}</td><td>{row.locations.join(', ')}</td><td>{row.last ? date(row.last) : <>{current.previous[row.code] ? date(current.previous[row.code]!) : 'Sem histórico disponível'}<br />Sem movimentação no período</>}</td></tr>)}</tbody></table></div>
+      <div className="insights-product-tools"><label>Buscar produto ou região<input type="search" value={search} onChange={event=>setSearch(event.target.value)} placeholder="Código, aplicação ou região"/></label><label className="insights-quiet-filter"><input type="checkbox" checked={onlyQuiet} onChange={event=>setOnlyQuiet(event.target.checked)}/> Somente sem movimentação no período</label><ExportCsvButton name="liber-atividade-produtos" headers={['Consultado em (ISO)','Início do período (ISO)','Dias','Categoria','Código','Caixas atuais','Regiões atuais','Última movimentação conhecida (ISO)','Movimentação no período']} rows={products.map(row=>[current.asOf,current.start,days,category==='all'?'Amortecedores e molas':category==='springs'?'Molas':'Amortecedores',row.code,row.boxes,row.locations.join(', '),row.last??current.previous[row.code],row.last?'Sim':'Não'])}/></div>
+      <p className="insights-result-count" role="status">{products.length} produtos na lista</p>
+      <div className="table-scroll" tabIndex={0} role="region" aria-label="Rolagem dos produtos"><table aria-label="Última movimentação dos produtos com saldo"><thead><tr><th>Produto</th><th>Caixas atuais</th><th>Prateleiras atuais</th><th>Última movimentação conhecida</th></tr></thead><tbody>{products.map(row => <tr key={row.code}><td>{row.code}</td><td>{row.boxes}</td><td><div className="insights-location-links">{row.locations.map(location=>onOpenLocation&&regionalLocations.includes(location)?<Button key={location} variant="link" onClick={()=>onOpenLocation(location)}>Ver {location} na planta</Button>:<span key={location}>{location}</span>)}</div></td><td>{row.last ? date(row.last) : <>{current.previous[row.code] ? date(current.previous[row.code]!) : 'Sem histórico disponível'}<br />Sem movimentação no período</>}</td></tr>)}</tbody></table></div>
+      {data.products.length>0&&!products.length&&<p>Nenhum produto corresponde aos filtros desta lista.</p>}
       {!data.products.length && <p>Nenhum produto com saldo normal nesta categoria.</p>}
       <h3>Mapa de calor por prateleira</h3><p>Intensidade relativa ao maior valor da consulta, sem representar capacidade física. Transferências contam uma operação e suas caixas em cada local envolvido; o volume não é saldo líquido. Divergências ainda não incluídas.</p>
+      <div className="insights-regions" aria-label="Atividade das regiões operacionais">{activityLocations.map(row=><article key={row.code} className="insights-region"><div><h4>{row.code}</h4><span>{row[metric]===0?'Sem atividade no período':`${Math.round(row[metric]/maximum*100)}% de intensidade`}</span></div><meter min={0} max={maximum} value={row[metric]} aria-label={`Atividade de ${row.code}: ${row[metric]} ${metric==='operations'?'operações':'caixas movimentadas'}`}/><p>{row.operations} operações · {row.boxes} caixas movimentadas</p>{onOpenLocation&&regionalLocations.includes(row.code)&&<Button onClick={()=>onOpenLocation(row.code)}>Ver {row.code} na planta ↗</Button>}</article>)}</div>
       <div className="table-scroll" tabIndex={0} role="region" aria-label="Rolagem das prateleiras"><table aria-label="Mapa de calor por prateleira"><thead><tr><th>Prateleira</th><th>Operações</th><th>Caixas movimentadas</th><th>Última no período</th><th>Intensidade relativa</th></tr></thead><tbody>{data.locations.map(row => <tr key={row.code}><td>{row.code}</td><td>{row.operations}</td><td>{row.boxes}</td><td>{row.last ? date(row.last) : 'Sem evento no período'}</td><td><meter min={0} max={maximum} value={row[metric]} aria-label={`Intensidade de ${row.code}`} /> {Math.round(row[metric] / maximum * 100)}%</td></tr>)}</tbody></table></div>
       {!data.locations.length && <p>Nenhuma prateleira nesta consulta.</p>}
     </>}
