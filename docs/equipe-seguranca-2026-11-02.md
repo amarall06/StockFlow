@@ -38,3 +38,9 @@ Publicação confirmada: código fd761540b609367c88c4a370cb0f346f5a914aa1, Verce
 Auditoria depois das migrações: aviso de funções SECURITY DEFINER expostas caiu de 18 para 17; demais funções ainda precisam de revisão individual. [Referência do aviso](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable). A auditoria privada sem políticas/permissões de cliente é intencionalmente fechada. Proteção de senhas vazadas permanece pendente: [configuração do serviço](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 
 Conferência final: duas contas originais, Administrador e Consulta ativos, versão 1; nenhum registro permanente de teste em team_access_requests; 95 produtos, 113 movimentos e hash de saldos dfa96a2fa33dcc97c385e1cd5094fd58 preservados.
+
+## Proteção contra senhas vazadas
+
+O auditor do projeto confirmou que a proteção está desativada. O Supabase disponibiliza o bloqueio nativo no plano Pro ou superior. O LIBER não implementa cadastro ou troca de senha no front-end. A proteção deve ser configurada no serviço de autenticação para alcançar os fluxos que definem senhas. [Documentação do Supabase](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
+
+Quando houver um ambiente com o recurso disponível, ativar a proteção em Auth e conferir se o alerta desaparece. Validar com uma conta descartável que uma senha sintética conhecida pelo verificador seja recusada e que uma senha forte, aleatória e inédita seja aceita. Não usar senhas de funcionários no ensaio. A ativação e o teste de rejeição permanecem pendentes.
