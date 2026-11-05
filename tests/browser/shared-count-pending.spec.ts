@@ -24,6 +24,25 @@ async function prepare(page,db,role='administrator'){
  await expect(queue(page)).toBeVisible()
  return writes
 }
+test('fila prioriza a data da pendência e usa a data da decisão para recontagem',async({page})=>{
+ const db=database()
+ db.counts[2].created_at='2026-11-02T16:10:00Z'
+ const writes=await prepareKeyboardPage(page)
+ await page.route('**/rest/v1/presentation_scenarios*',route=>route.fulfill({json:base}))
+ await page.route('**/rest/v1/presentation_shelf_counts*',route=>route.fulfill({json:db.counts}))
+ await page.route('**/rest/v1/presentation_count_reviews*',route=>route.fulfill({json:db.reviews}))
+ await page.route('**/rest/v1/presentation_recount_links*',route=>route.fulfill({json:db.links}))
+ const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true})
+ if(await close.isVisible())await close.click()
+ await page.locator('.dashboard-quicknav summary').click()
+ await page.getByLabel('Visualização do Painel').selectOption('presentation')
+ const items=queue(page).getByRole('listitem')
+ await expect(items.first()).toContainText('NORTE — Recontagem por iniciar')
+ await expect(items.first().locator('time')).toHaveAttribute('datetime',db.reviews[0].reviewed_at)
+ await expect(items.last()).toContainText('OESTE — Aguardando revisão')
+ await expect(items.last().locator('time')).toHaveAttribute('datetime',db.counts[2].created_at)
+ expect(writes).toEqual([])
+})
 test('fila separa revisão de recontagem e abre a evidência correspondente sem escrita',async({page})=>{
  const db=database(),writes=await prepare(page,db)
  await expect(queue(page)).toContainText('1 envios aguardando revisão · 1 recontagens por iniciar')
