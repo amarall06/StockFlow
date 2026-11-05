@@ -5,6 +5,32 @@ const panel=page=>page.getByRole('region',{name:'Modo missão',exact:true})
 async function prepare(page){const writes=await prepareKeyboardPage(page);const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true});if(await close.isVisible())await close.click();await page.getByLabel('Visualização do Painel').selectOption('presentation');return writes}
 async function confirm(page,quantity){const form=panel(page).getByRole('form',{name:'Conferência do item da missão'});await form.getByLabel('Leitura do item',{exact:true}).fill((await form.locator('code').innerText()).trim());if(quantity!==undefined)await form.getByLabel('Total de caixas separadas neste item').fill(String(quantity));await form.getByRole('button',{name:'Confirmar separação do item'}).click()}
 
+test('foco acompanha a missão local do início à conclusão pelo teclado', async ({page}) => {
+  const writes = await prepareKeyboardPage(page)
+  const close = page.getByRole('button', {name:'Fechar aviso de estoque', exact:true})
+  if (await close.isVisible()) await close.click()
+  await page.locator('summary').filter({hasText:'Atalhos'}).click()
+  await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  const mission = panel(page)
+  const scan = mission.getByLabel('Leitura do item', {exact:true})
+  const complete = mission.getByRole('button', {name:'Concluir separação'})
+  await mission.getByRole('button', {name:'Iniciar missão', exact:true}).press('Enter')
+  for (const code of ['AGM-35', 'MGM-35']) {
+    await expect(mission.getByRole('heading', {name:new RegExp('Conferir ' + code)})).toBeVisible()
+    await expect(scan).toBeFocused()
+    await scan.fill(await mission.getByRole('form', {name:'Conferência do item da missão'}).locator('code').innerText())
+    await page.keyboard.press('Tab')
+    await expect(mission.getByLabel('Total de caixas separadas neste item')).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(mission.getByRole('button', {name:'Confirmar separação do item'})).toBeFocused()
+    await page.keyboard.press('Enter')
+  }
+  await expect(complete).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(mission.getByRole('status').filter({hasText:'Separação concluída — expedição não registrada'})).toBeFocused()
+  expect(writes).toEqual([])
+})
+
 test('pedido inicia roteiro vendável e localiza a prateleira no mapa sem movimentar estoque',async({page})=>{
   const writes=await prepare(page);await panel(page).getByRole('button',{name:'Iniciar missão',exact:true}).click()
   const route=panel(page).getByRole('list',{name:'Roteiro por prateleira'})

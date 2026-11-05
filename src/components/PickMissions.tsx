@@ -1,4 +1,5 @@
-import { useRef, useState, useSyncExternalStore } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
+import type { Ref } from 'react'
 import type { StockRow } from '../lib/inventory-api'
 import { cancelPickMission, changeMissionStatus, confirmPick, parseMissions, pickCode, readMissionRaw, sampleOrders, saveMissions, startPickMission, subscribeMissions, type MissionState, type PickStep } from '../lib/pick-missions'
 import { locateMissionShelf } from '../lib/map-navigation'
@@ -6,7 +7,7 @@ import { createPickList, createPickListPdf, downloadPickListPdf, pickListHeaders
 import { downloadCsv } from '../lib/csv'
 import './PickMissions.css'
 
-function PickItemForm({ step, onConfirm }: { step: PickStep; onConfirm: (scan: string, quantity: number) => void }) {
+function PickItemForm({ step, onConfirm, scanRef }: { step: PickStep; onConfirm: (scan: string, quantity: number) => void; scanRef: Ref<HTMLInputElement> }) {
   const [scan, setScan] = useState('')
   const [quantity, setQuantity] = useState(String(step.quantity))
   const [reading, setReading] = useState('')
@@ -14,7 +15,7 @@ function PickItemForm({ step, onConfirm }: { step: PickStep; onConfirm: (scan: s
     <h3>Conferir {step.code} em {step.location}</h3>
     <p>Solicitado: {step.quantity} caixas. Já separado: {step.counted}. Informe o total acumulado separado neste item, não um acréscimo.</p>
     <p>Código para leitura: <code>{pickCode(step)}</code></p>
-    <label>Leitura do item<input autoComplete="off" required value={scan} onChange={event => { setScan(event.target.value); setReading('') }} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); setReading(scan.trim().toUpperCase() === pickCode(step).toUpperCase() ? 'Código reconhecido. Confira a quantidade e confirme a separação.' : 'Código não corresponde a este item. Confira prateleira, produto e situação.') } }}/></label>
+    <label>Leitura do item<input ref={scanRef} autoComplete="off" required value={scan} onChange={event => { setScan(event.target.value); setReading('') }} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); setReading(scan.trim().toUpperCase() === pickCode(step).toUpperCase() ? 'Código reconhecido. Confira a quantidade e confirme a separação.' : 'Código não corresponde a este item. Confira prateleira, produto e situação.') } }}/></label>
     {reading && <p role="status">{reading}</p>}
     <label>Total de caixas separadas neste item<input type="number" min={Math.max(1, step.counted)} max={step.quantity} step="1" required value={quantity} onChange={event => setQuantity(event.target.value)}/></label>
     <button className="theme-toggle" type="submit">Confirmar separação do item</button>
@@ -38,6 +39,10 @@ export function PickMissions({ userId, stock, canOperate, orders=sampleOrders }:
   const [orderId, setOrderId] = useState(orders[0].id)
   const [feedback, setFeedback] = useState({ text: '', error: false })
   const busy = useRef(false)
+  const advanceFocus = useRef(false)
+  const scanRef = useRef<HTMLInputElement>(null)
+  const completeRef = useRef<HTMLButtonElement>(null)
+  const statusRef = useRef<HTMLParagraphElement>(null)
   const [exporting, setExporting] = useState(false)
   const exportBusy = useRef(false)
   let state: MissionState | null = null, error = ''
@@ -47,6 +52,12 @@ export function PickMissions({ userId, stock, canOperate, orders=sampleOrders }:
   const current = mission?.status === 'active' ? mission.steps.find(row => row.counted < row.quantity) : null
   const counted = mission?.steps.reduce((sum, row) => sum + row.counted, 0) ?? 0
   const total = order.items.reduce((sum, item) => sum + item.boxes, 0)
+  useLayoutEffect(() => {
+    if (!advanceFocus.current) return
+    advanceFocus.current = false
+    const next = scanRef.current ?? completeRef.current ?? statusRef.current
+    next?.focus()
+  }, [feedback])
   async function exportList(format: 'pdf' | 'csv') {
     if (!mission || error || exportBusy.current) return
     exportBusy.current = true; setExporting(true)
@@ -61,7 +72,11 @@ export function PickMissions({ userId, stock, canOperate, orders=sampleOrders }:
   function apply(change: (value: MissionState) => MissionState, message: string) {
     if (!state || !canOperate || busy.current) return
     busy.current = true
-    try { saveMissions(change(state), raw); setFeedback({ text: message, error: false }) }
+    try {
+      saveMissions(change(state), raw)
+      advanceFocus.current = true
+      setFeedback({ text: message, error: false })
+    }
     catch (caught) { setFeedback({ text: caught instanceof Error ? caught.message : 'Não foi possível salvar a missão.', error: true }) }
     finally { busy.current = false }
   }
@@ -74,7 +89,7 @@ export function PickMissions({ userId, stock, canOperate, orders=sampleOrders }:
     {!canOperate && <p>Perfil de consulta: a separação é feita pelo Administrador ou Estoquista.</p>}
     {(!mission || mission.status === 'cancelled') && <button className="theme-toggle" type="button" disabled={!state || !canOperate} onClick={() => apply(value => startPickMission(value, orderId, stock), 'Missão iniciada. Quantidades destinadas localmente a este pedido.')}>{mission ? 'Reiniciar missão cancelada' : 'Iniciar missão'}</button>}
     {mission && <>
-      <p role="status">{mission.status === 'active' ? 'Missão em andamento' : mission.status === 'separated' ? 'Separação concluída — expedição não registrada' : 'Missão cancelada'} · {counted} de {total} caixas separadas.</p>
+      <p ref={statusRef} tabIndex={-1} role="status">{mission.status === 'active' ? 'Missão em andamento' : mission.status === 'separated' ? 'Separação concluída — expedição não registrada' : 'Missão cancelada'} · {counted} de {total} caixas separadas.</p>
       {mission.cancellation && <section aria-label="Registro do cancelamento"><h3>Cancelamento registrado neste navegador</h3><p>Motivo: {mission.cancellation.reason}</p><p>{mission.cancellation.disposition === 'returned' ? 'Retorno às prateleiras de origem declarado como conferido.' : 'Sem caixas registradas como separadas.'}</p><p>Registrado em {new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Bahia', dateStyle: 'short', timeStyle: 'short' }).format(new Date(mission.cancellation.recordedAt))} (America/Bahia).</p></section>}
       <div className="pick-actions" aria-label="Exportar lista de retirada" aria-busy={exporting}>
         <button type="button" className="theme-toggle" disabled={exporting || Boolean(error)} onClick={() => void exportList('pdf')}>Baixar lista de retirada PDF</button>
@@ -85,8 +100,8 @@ export function PickMissions({ userId, stock, canOperate, orders=sampleOrders }:
         <h3>{index + 1}. {step.location} — {step.code}</h3><p>{step.status} · Solicitado: {step.quantity} · Separado: {step.counted} · {step.counted === step.quantity ? 'Item conferido' : 'Pendente'}</p>
         <button type="button" className="theme-toggle" onClick={() => { try { locateMissionShelf(userId, step.location) } catch (caught) { setFeedback({ text: caught instanceof Error ? caught.message : 'Não foi possível abrir o mapa.', error: true }) } }}>Localizar {step.location} no mapa</button>
       </li>)}</ol>
-      {current && canOperate && !error && <PickItemForm key={`${orderId}:${current.id}:${current.counted}`} step={current} onConfirm={(scan, quantity) => apply(value => confirmPick(value, orderId, current.id, scan, quantity), 'Quantidade separada salva neste navegador.')}/>}
-      {mission.status === 'active' && <div className="pick-actions"><button type="button" className="theme-toggle" disabled={Boolean(current) || !canOperate || Boolean(error)} onClick={() => apply(value => changeMissionStatus(value, orderId, 'separated'), 'Separação concluída localmente. As quantidades continuam destinadas a este pedido; nenhuma venda ou expedição foi registrada.')}>Concluir separação</button>
+      {current && canOperate && !error && <PickItemForm key={`${orderId}:${current.id}:${current.counted}`} step={current} scanRef={scanRef} onConfirm={(scan, quantity) => apply(value => confirmPick(value, orderId, current.id, scan, quantity), 'Quantidade separada salva neste navegador.')}/>}
+      {mission.status === 'active' && <div className="pick-actions"><button ref={completeRef} type="button" className="theme-toggle" disabled={Boolean(current) || !canOperate || Boolean(error)} onClick={() => apply(value => changeMissionStatus(value, orderId, 'separated'), 'Separação concluída localmente. As quantidades continuam destinadas a este pedido; nenhuma venda ou expedição foi registrada.')}>Concluir separação</button>
       </div>}
       {mission.status === 'active' && canOperate && !error && <CancelMissionForm key={`${orderId}:${counted}`} counted={counted} onConfirm={(reason, returned) => apply(value => cancelPickMission(value, orderId, reason, returned), 'Cancelamento registrado localmente com motivo e conferência. Nenhum saldo real foi alterado.')} />}
     </>}
