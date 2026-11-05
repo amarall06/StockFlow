@@ -33,6 +33,8 @@
 > **Continuação em ordem — 02/11/2026:** ajuste do gráfico operacional da 2, gestão autenticada de contas existentes da 4 e proteção de perfis/função de nome da 7 implementados. Onze testes novos de navegador e dois roteiros novos no banco real aprovados, sem repetir anteriores; dados preservados. Guia `equipe-seguranca-2026-11-02.md`. Publicado em fd76154, com recursos públicos conferidos. 4 ainda exige funcionários/contas individuais e piloto; 7 continua parcial. Nenhuma conta foi criada ou teve acesso real alterado.
 # O que falta nas 26 anotações — atualizado em 02/11/2026
 
+**21 — explicação da falta de espaço:** a apresentação informa a capacidade livre conferida e quanto falta na melhor prateleira compatível quando nenhuma acomoda a quantidade inteira. A resposta continua sem sugerir uso parcial ou prateleiras com divergência. Um caso novo de navegador e a compilação passaram. Dados físicos, concorrência e piloto permanecem pendentes.
+
 **26 — teclado no modo missão:** após iniciar ou confirmar um item, o foco segue para o campo de leitura da etapa atual. Após o último item segue para Concluir separação, e após concluir ou cancelar segue para o status. Um novo caso de navegador aprovado, sem repetir suítes anteriores. Permanecem as verificações em leitor de tela e Safari/iPhone físico.
 
 **7 — recuperação parcial:** restauração local do bundle Git e de 17 tabelas do backup lógico de 25/10 aprovada. O banco restaurado tinha 8 produtos, 24 movimentos, 53 caixas e nenhum saldo com produto ausente. Falta a recuperação completa em Supabase isolado, além da proteção contra senhas vazadas. Veja `preparacao-empresa.md`.

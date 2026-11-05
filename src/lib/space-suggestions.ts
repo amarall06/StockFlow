@@ -28,8 +28,9 @@ export function suggestSpaces(stock: StockRow[], capacities: Capacities, request
     if (!capacity || basisKey(capacity.basis) !== basisKey(request.basis) || basisKey(check.basis) !== basisKey(request.basis)) reasons.push('Padrão de caixa incompatível')
     const logicalFree = capacity ? Math.max(0, capacity.boxes - boxes) : 0
     const available = Math.min(logicalFree, Math.max(0, Number.isSafeInteger(check.verifiedFree) ? check.verifiedFree : 0))
+    const shortfall = reasons.length === 0 && available < request.boxes ? request.boxes - available : null
     if (available < request.boxes) reasons.push('Espaço insuficiente para toda a quantidade')
-    return { location, used: boxes, available, logicalFree, verifiedFree: check.verifiedFree, reasons, remaining: available - request.boxes }
+    return { location, used: boxes, available, logicalFree, verifiedFree: check.verifiedFree, reasons, shortfall, remaining: available - request.boxes }
   })
   return { suggestions: locations.filter(row => !row.reasons.length).sort((a, b) => a.remaining - b.remaining || a.location.localeCompare(b.location)), excluded: locations.filter(row => row.reasons.length) }
 }

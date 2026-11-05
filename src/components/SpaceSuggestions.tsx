@@ -12,6 +12,10 @@ export function SpaceSuggestions({ stock, capacities, onSelect }: { stock: Stock
   const [error, setError] = useState('')
   let result: ReturnType<typeof suggestSpaces> | null = null
   try { if (request) result = suggestSpaces(stock, capacities, request) } catch { /* A falha é apresentada sem inventar disponibilidade. */ }
+  const closest = result?.excluded.reduce<(typeof result.excluded)[number] | null>((best, row) => {
+    if (row.shortfall === null) return best
+    return best === null || row.available > best.available ? row : best
+  }, null)
   return <section className="space-suggestions" aria-label="Sugestões de espaço">
     <h4>Sugestões de espaço</h4>
     <p>Considera capacidade, padrão de caixa, categoria, situação e espaço conferido. Prateleiras com divergência ficam fora da sugestão. A sugestão não reserva nem transfere caixas.</p>
@@ -26,6 +30,9 @@ export function SpaceSuggestions({ stock, capacities, onSelect }: { stock: Stock
     {request && !result && <p role="alert">Não foi possível conferir os dados para sugerir espaço.</p>}
     {result && <>
       <p role="status">{result.suggestions.length ? `${result.suggestions.length} prateleiras comportam todas as ${request!.boxes} caixas nas condições informadas.` : 'Nenhuma prateleira comporta toda a quantidade nas condições informadas.'}</p>
+      {result.suggestions.length === 0 && closest && <p>
+        Maior espaço compatível: <strong>{closest.location}</strong>, com {closest.available} caixas de capacidade livre conferida. Faltam {closest.shortfall} para acomodar o pedido inteiro.
+      </p>}
       <p>Ordem: menor sobra de espaço após acomodar todas as caixas; empate pelo código da prateleira.</p>
       <ol className="space-results">{result.suggestions.map(row => <li key={row.location}><strong>{row.location}</strong><p>Disponível conferido: {row.available} caixas. Sobra após acomodar: {row.remaining} caixas.</p><button type="button" className="theme-toggle" onClick={() => onSelect(row.location)}>Ver {row.location} no mapa</button></li>)}</ol>
       <details><summary>Por que as outras prateleiras não foram sugeridas?</summary><ul>{result.excluded.map(row => <li key={row.location}><strong>{row.location}:</strong> {row.reasons.join('; ')}.</li>)}</ul></details>

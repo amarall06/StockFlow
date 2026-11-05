@@ -4,6 +4,23 @@ import {prepareKeyboardPage} from './helpers/keyboard'
 async function prepare(page){const writes=await prepareKeyboardPage(page);const close=page.getByRole('button',{name:'Fechar aviso de estoque',exact:true});if(await close.isVisible())await close.click();await page.getByLabel('Visualização do Painel').selectOption('presentation');await page.getByRole('region',{name:'Sincronização da planta e capacidades',exact:true}).getByLabel('Configuração exibida').selectOption('local');return writes}
 const suggestions=page=>page.getByRole('region',{name:'Sugestões de espaço',exact:true})
 const map=page=>page.getByRole('region',{name:'Mapa de prateleiras',exact:true})
+test('explica quanto falta no melhor espaço compatível sem sugerir retirada parcial', async ({page}) => {
+  const writes = await prepareKeyboardPage(page)
+  const close = page.getByRole('button', {name:'Fechar aviso de estoque', exact:true})
+  if (await close.isVisible()) await close.click()
+  await page.locator('summary').filter({hasText:'Atalhos'}).click()
+  await page.getByLabel('Visualização do Painel').selectOption('presentation')
+  await page.getByRole('region', {name:'Sincronização da planta e capacidades', exact:true}).getByLabel('Configuração exibida').selectOption('local')
+  const section = suggestions(page)
+  await section.getByLabel('Categoria para armazenar').selectOption('spring')
+  await section.getByLabel('Caixas a acomodar').fill('45')
+  await section.getByRole('button', {name:'Sugerir espaços'}).click()
+  await expect(section).toContainText('Maior espaço compatível: OESTE, com 40 caixas de capacidade livre conferida. Faltam 5')
+  await expect(section.getByRole('button', {name:/no mapa/})).toHaveCount(0)
+  await section.getByLabel('Caixas a acomodar').fill('10')
+  await expect(section.getByText('Maior espaço compatível:')).toHaveCount(0)
+  expect(writes).toEqual([])
+})
 test('apresentação está no site original com textos normais e sem link para outra página',async({page})=>{
   const writes=await prepare(page)
   await expect(page.getByRole('region',{name:'Indicadores do estoque'})).toContainText('85')
