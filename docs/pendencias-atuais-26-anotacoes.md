@@ -45,7 +45,7 @@ Leia em conjunto com `progresso-26-anotacoes.md`. A implementação/publicação
 - Subpartes publicadas de 3, 13, 17, 20, 22 e 23: separação visual, avisos, contagem/CSV local, resumo de divergências locais, confirmação de saída pendente e última movimentação conhecida fora da janela. Ver `publicacao-contagem-e-alertas.md`.
 - 10: preparação/publicação da instalação PWA, não o ensaio físico.
 - 14: implementação/publicação dos escopos offline e os ensaios específicos já registrados; não o piloto autenticado em aparelhos reais.
-- 16: consulta periódica nas telas previstas e receptor privado no cliente; não a emissão/ativação no servidor.
+- 16: consulta periódica, notificações privadas entre aparelhos e atualização da planta/capacidades implementadas e publicadas. Falta o piloto autenticado em aparelhos físicos, incluindo reconexão.
 - 25/26: os testes e recortes de interface já aprovados. Complemento de teclado/celular offline publicado em `080869d`, com três testes novos aprovados; relatório `offline-acessibilidade-2026-11-01.md`.
 
 - 25/26: mais 30 casos novos de auditoria de campos/contraste nos dois temas, incluindo sete diálogos, contagem local e sete telas, aprovados. Correções prontas, publicado em `62b59f9`, com arquivos públicos conferidos. Guia `acessibilidade-formularios-2026-11-01.md`.
@@ -74,7 +74,7 @@ O preenchimento prático, sem solicitar senhas ou decisões técnicas do servido
 | 4 | Gestão de identificação/função/ativação das contas existentes entregue. Faltam contas individuais dos funcionários e validação real de autoria/permissões; criação de credenciais permanece no serviço de contas. | Equipe e contas individuais |
 | 5 | Escopo manual entregue. Fechamento histórico transacional/envio automático não integra essa entrega. | Eventual nova solicitação |
 | 6 | Recebimento local para conferência pronto na apresentação. Faltam regra e destino aprovados, identidade/permissões reais, remessa/expedição/servidor, liberação transacional e piloto. | Regra da empresa e servidor |
-| 7 | Concluir revisão de permissões/RPCs, armazenamento e recuperação; tratar proteção de senhas vazadas no serviço. | Supabase/configuração e auditoria |
+| 7 | Auditoria de leitura aprovada em 05/11: bucket privado, políticas de fotos revisadas, funções privilegiadas públicas bloqueadas ao anônimo e três operações negadas para identidade sem perfil. Faltam upload/substituição/leitura pela API com arquivo sintético, revisão individual das demais funções privilegiadas, recuperação e proteção de senhas vazadas. | Supabase/configuração e auditoria |
 | 8 | No final: inventariar dados fictícios, preparar cópia verificável/plano, obter a confirmação exigida e executar a transição. | Etapa final; aprovação para exclusão irreversível |
 | 9 | Definir e implementar etiquetas de testados e eventual QR por caixa. | Etapa adiada; definição/uso físico |
 | 10 | Instalar e verificar em Windows/Android reais, incluindo atualização do aplicativo. | Aparelhos reais |
