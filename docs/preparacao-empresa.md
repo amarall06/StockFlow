@@ -21,7 +21,13 @@ Esta lista registra a situação real; não significa que o sistema está libera
 
 Compilar, verificar as funções alteradas, fazer commit e push da pasta ativa em `C:/Users/fs_am/Documents/Codex/2026-10-23/files-mentioned-by-the-user-projeto/outputs/StockFlow`. Confirmar o mesmo commit na Vercel com status Ready em Production e testar o domínio principal. Salvar um arquivo não o envia ao GitHub. Migrações SQL são uma etapa separada; a Vercel não as executa.
 
-## Backup — pendente até exportação e restauração conferidas
+## Backup — restauração parcial verificada
+
+O backup lógico de 25/10/2026 foi restaurado em um PostgreSQL temporário, restrito a `127.0.0.1` e com senha descartável. Foram restauradas as definições básicas e os dados de 17 tabelas de `public` em uma transação com interrupção no primeiro erro. A consulta local encontrou 8 produtos, 24 movimentos, 53 caixas e nenhum saldo com produto ausente. Esses números descrevem o snapshot restaurado. O servidor local foi desligado após o ensaio.
+
+Também foi restaurado o bundle Git de 04/11/2026 em uma pasta temporária. A cópia abriu no commit `721710b`, passou em `git fsck --full` e veio sem credenciais locais. Os ensaios usaram arquivos locais.
+
+A restauração completa ainda exige uma instância Supabase separada para validar autenticação, funções, gatilhos, políticas, arquivos do Storage e configuração da plataforma. O snapshot de outubro antecede as migrações mais recentes.
 
 Conferência no painel em 25/10: organização Liber no plano Free. A página Scheduled backups informa que esse plano não inclui backups do projeto. Nenhum upgrade foi contratado. O usuário confirmou ter a senha do banco, sem compartilhá-la. Preparados clientes portáteis PostgreSQL 18.6 em outputs/tools/pgsql/bin, extraídos do arquivo oficial EDB indicado pelo PostgreSQL para Windows; executáveis pg_dump e pg_restore conferidos. Certificado público do Supabase obtido no botão Download certificate de Database > Settings, somado às raízes confiáveis do Windows para a verificação TLS.
 
