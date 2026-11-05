@@ -17,6 +17,7 @@ export function InventoryInsights({ catalog, stock, category, locations = [], on
   const [metric, setMetric] = useState<'operations' | 'boxes'>('operations')
   const [onlyQuiet,setOnlyQuiet] = useState(false)
   const [search,setSearch] = useState('')
+  const [productOrder, setProductOrder] = useState('default')
   const [result, setResult] = useState<{ days: number; stockCodes: string; value: Awaited<ReturnType<typeof loadInventoryInsights>> } | null>(null)
   const [error, setError] = useState<{ days: number; stockCodes: string; text: string } | null>(null)
   const stockCodes = JSON.stringify([...new Set(stock.filter(row => row.boxes > 0).map(row => row.code))].sort())
@@ -37,6 +38,13 @@ export function InventoryInsights({ catalog, stock, category, locations = [], on
   const maximum = Math.max(1, ...data?.locations.map(row => row[metric]) ?? [])
   const term = search.trim().toLocaleLowerCase('pt-BR')
   const products = data?.products.filter(row => (!onlyQuiet || !row.last) && `${row.code} ${searchableProductText(catalog[row.code])} ${row.locations.join(' ')}`.toLocaleLowerCase('pt-BR').includes(term)) ?? []
+  if (productOrder === 'oldest' && current) {
+    const timestamp = (row: typeof products[number]) => {
+      const lastKnown = row.last ?? current.previous[row.code]
+      return lastKnown ? Date.parse(lastKnown) : Infinity
+    }
+    products.sort((a, b) => timestamp(a) - timestamp(b) || a.code.localeCompare(b.code))
+  }
   const activityLocations = regionalOrder([...locations,...data?.locations.map(row=>row.code)??[]]).map(code=>data?.locations.find(row=>row.code===code)??{code,operations:0,boxes:0,last:null})
   return <section className="inventory-panel dashboard-panel inventory-insights" aria-label="Atividade por produto e prateleira">
     <h2>Produtos e prateleiras no período</h2>
@@ -48,6 +56,11 @@ export function InventoryInsights({ catalog, stock, category, locations = [], on
       <h3>Produtos com saldo sem movimentação no período: {quiet.length}</h3>
       <p>Sem evento neste intervalo não significa idade física das caixas. A última movimentação conhecida inclui o histórico anterior ao período, conforme o acesso da sua conta.</p>
       <div className="insights-product-tools"><label>Buscar produto ou região<input type="search" value={search} onChange={event=>setSearch(event.target.value)} placeholder="Código, aplicação ou região"/></label><label className="insights-quiet-filter"><input type="checkbox" checked={onlyQuiet} onChange={event=>setOnlyQuiet(event.target.checked)}/> Somente sem movimentação no período</label><ExportCsvButton name="liber-atividade-produtos" headers={['Consultado em (ISO)','Início do período (ISO)','Dias','Categoria','Código','Caixas atuais','Regiões atuais','Última movimentação conhecida (ISO)','Movimentação no período']} rows={products.map(row=>[current.asOf,current.start,days,category==='all'?'Amortecedores e molas':category==='springs'?'Molas':'Amortecedores',row.code,row.boxes,row.locations.join(', '),row.last??current.previous[row.code],row.last?'Sim':'Não'])}/></div>
+      <label>Ordenar produtos<select value={productOrder} onChange={event => setProductOrder(event.target.value)}>
+        <option value="default">Sem movimentação no período primeiro</option>
+        <option value="oldest">Última movimentação mais antiga primeiro</option>
+      </select></label>
+      {productOrder === 'oldest' && <p>Produtos sem histórico disponível aparecem no fim da lista.</p>}
       <p className="insights-result-count" role="status">{products.length} produtos na lista</p>
       <div className="table-scroll" tabIndex={0} role="region" aria-label="Rolagem dos produtos"><table aria-label="Última movimentação dos produtos com saldo"><thead><tr><th>Produto</th><th>Caixas atuais</th><th>Prateleiras atuais</th><th>Última movimentação conhecida</th></tr></thead><tbody>{products.map(row => <tr key={row.code}><td>{row.code}</td><td>{row.boxes}</td><td><div className="insights-location-links">{row.locations.map(location=>onOpenLocation&&regionalLocations.includes(location)?<Button key={location} variant="link" onClick={()=>onOpenLocation(location)}>Ver {location} na planta</Button>:<span key={location}>{location}</span>)}</div></td><td>{row.last ? date(row.last) : <>{current.previous[row.code] ? date(current.previous[row.code]!) : 'Sem histórico disponível'}<br />Sem movimentação no período</>}</td></tr>)}</tbody></table></div>
       {data.products.length>0&&!products.length&&<p>Nenhum produto corresponde aos filtros desta lista.</p>}

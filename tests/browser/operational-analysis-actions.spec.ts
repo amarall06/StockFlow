@@ -28,6 +28,20 @@ async function prepare(page:Page,theme:'light'|'dark'='light',layoutFailure=fals
  await expect(page.locator('.insights-region').filter({hasText:'NORTE'})).toContainText('2 operações · 14 caixas')
  return{...state,calls,setFail:()=>{failing=true}}
 }
+test('23: ordenar pela última movimentação coloca histórico antigo antes de datas recentes e desconhecidas', async ({page}) => {
+ const state = await prepare(page)
+ const calls = state.calls.length
+ await page.getByLabel('Ordenar produtos').selectOption('oldest')
+ const rows = page.getByRole('table', {name:'Última movimentação dos produtos com saldo'}).locator('tbody tr')
+ await expect(rows.first()).toContainText('MGM-44')
+ await expect(rows.nth(1)).toContainText('AGM-35')
+ await expect(rows.last()).toContainText('Sem histórico disponível')
+ await page.getByLabel('Somente sem movimentação no período').check()
+ await expect(rows.first()).toContainText('MGM-44')
+ await expect(rows).toHaveCount(5)
+ expect(state.calls).toHaveLength(calls)
+ expect(state.writes).toEqual([])
+})
 test('20: atividade operacional por região, métrica e atalho para a planta correta',async({page})=>{
  const state=await prepare(page)
  const north=page.locator('.insights-region').filter({hasText:'NORTE'}),west=page.locator('.insights-region').filter({hasText:'OESTE'})
