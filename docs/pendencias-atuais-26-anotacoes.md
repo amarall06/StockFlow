@@ -33,6 +33,8 @@
 > **Continuação em ordem — 02/11/2026:** ajuste do gráfico operacional da 2, gestão autenticada de contas existentes da 4 e proteção de perfis/função de nome da 7 implementados. Onze testes novos de navegador e dois roteiros novos no banco real aprovados, sem repetir anteriores; dados preservados. Guia `equipe-seguranca-2026-11-02.md`. Publicado em fd76154, com recursos públicos conferidos. 4 ainda exige funcionários/contas individuais e piloto; 7 continua parcial. Nenhuma conta foi criada ou teve acesso real alterado.
 # O que falta nas 26 anotações — atualizado em 02/11/2026
 
+**17 — folha de conferência operacional:** em Visão geral, a contagem local pode baixar um CSV de trabalho por prateleira antes de terminar a conferência. Lista produto e situação, com quantidade e observação em branco. O relatório de revisão continua separado. Um teste novo com dados simulados aprovado. A conferência física e os ajustes autorizados continuam pendentes.
+
 **Mudança de escopo:** o site abre apenas no modo operacional. A Apresentação foi removida do Painel e da compilação pública; o endereço antigo redireciona à página inicial. Os testes exclusivos da interface retirada ficaram como referência histórica. Os registros do banco foram preservados. Os protótipos exclusivos da Apresentação descritos abaixo não são fluxos operacionais publicados.
 
 **13 — prioridade na fila:** pendências compartilhadas da apresentação ordenadas da mais antiga à mais recente. A fila mostra a data do envio para revisão e a data da decisão para recontagem, no horário da Bahia. Um caso novo de navegador aprovado. Prazos, destinatários individuais e resolução operacional continuam pendentes.

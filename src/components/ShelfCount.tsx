@@ -82,6 +82,13 @@ export function ShelfCount({ userId, stock, catalog, locations, consultedAt, onR
       </form>
       <label>Observação da contagem<textarea maxLength={2000} value={draft.notes} onChange={event => save({ ...draft, notes: event.target.value })}/></label>
       <div className="shelf-count-actions">
+        <button type="button" className="theme-toggle" disabled={!draft.rows.length} onClick={() => {
+          try {
+            downloadCsv('folha-contagem-prateleira', ['Prateleira', 'Produto', 'Situação', 'Caixas contadas', 'Observação'],
+              draft.rows.map(row => [draft.location, row.code, row.status, '', '']))
+            setMessage('Folha de contagem preparada sem mostrar os saldos do sistema.')
+          } catch (caught) { setMessage(caught instanceof Error ? caught.message : 'Falha na exportação.') }
+        }}>Baixar folha de contagem</button>
         <button type="button" className="theme-toggle" disabled={busy} onClick={async () => { setBusy(true); try { await onRefresh(); setMessage('Consulta atualizada. Confira o aviso de mudanças antes da revisão.') } catch { setMessage('Não foi possível atualizar. A contagem foi preservada.') } finally { setBusy(false) } }}>Atualizar saldo para comparação</button>
         <button type="button" className="theme-toggle" disabled={!draft.rows.length || Boolean(summary!.pending)} onClick={() => { try { downloadCsv('conferencia-prateleira-rascunho', shelfCountHeaders, shelfCountReport(draft, changed)); setMessage('CSV de rascunho preparado para revisão. Não enviado nem aprovado.') } catch (caught) { setMessage(caught instanceof Error ? caught.message : 'Falha na exportação.') } }}>Exportar contagem para revisão</button>
         <button type="button" className="theme-toggle" onClick={() => { if (window.confirm('Descartar esta contagem local? Os valores contados serão removidos deste aparelho. O estoque não será alterado.')) save(null) }}>Descartar contagem local</button>
