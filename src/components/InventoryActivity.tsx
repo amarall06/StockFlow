@@ -21,8 +21,10 @@ export function ActivityChart({ rows }: { rows: ActivityDay[] }) {
       {[...new Set([0,1,2,3,4].map(n=>Math.round(maximum*n/4)))].map(n=><g key={n}><path d={`M${left} ${bottom-n/maximum*range}H${right}`} stroke="currentColor" opacity=".12"/><text x={left-10} y={bottom+4-n/maximum*range} textAnchor="end" fill="currentColor" fontSize="12">{n}</text></g>)}
       <path d={`M${left} 25V${bottom}H${right}`} stroke="currentColor" fill="none" opacity=".3" />
       <text x="20" y="18" fill="currentColor" fontSize="12">{maximum} cx.</text>
+      <g className="activity-chart-series" key={`${chartType}:${series}`}>
       {chartType==='line'?<polyline points={points} fill="none" stroke="currentColor" strokeWidth="3" strokeLinejoin="round" />:rows.map((row,index)=><rect key={row.day} x={left+(index+.18)/rows.length*(right-left)} y={bottom-row[series]/maximum*range} width={Math.max(1,(right-left)/rows.length*.64)} height={row[series]/maximum*range} rx="3" fill="currentColor"><title>{date(row.day)}: {row[series]} caixas</title></rect>)}
       {current && chartType==='line' && <circle cx={pointX(Math.min(selected,rows.length-1))} cy={bottom-current[series]/maximum*range} r="5" fill="currentColor" />}
+      </g>
       {rows.length>0 && (rows.length<=7?rows.map((row,index)=><text key={row.day} x={pointX(index)} y={bottom+20} textAnchor="middle" fill="currentColor" fontSize="12">{date(row.day)}</text>):<><text x={left} y={bottom+20} fill="currentColor" fontSize="12">{date(rows[0].day)}</text><text x={right} y={bottom+20} textAnchor="end" fill="currentColor" fontSize="12">{date(rows.at(-1)!.day)}</text></>)}
     </svg>
 
