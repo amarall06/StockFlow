@@ -20,8 +20,3 @@ test('reabrir o Painel recupera a capacidade operacional sem selecionar os exemp
   await expect(chart(page)).toContainText('Capacidade: 20 caixas · Caixa conferida')
   await expect(chart(page).getByRole('meter')).toHaveAttribute('aria-valuenow','5')
 })
-test('página de apresentação conserva as quatro prateleiras sem usar a consulta operacional',async({page})=>{
-  await page.goto('/demonstracao.html')
-  await expect(chart(page).getByRole('article',{name:'Prateleira NORTE',exact:true})).toContainText('Capacidade: 40 caixas')
-  await expect(chart(page).getByRole('article',{name:'Consultada A01',exact:true})).toHaveCount(0)
-})

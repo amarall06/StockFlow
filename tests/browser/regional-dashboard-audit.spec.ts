@@ -32,7 +32,7 @@ test('Painel regional: 95 produtos, quatro capacidades e gráfico dentro do eixo
   expect(writes).toEqual([])
 })
 
-test('Revisão de navegação: todos os módulos e apresentação sem quebra',async({page})=>{
+test('Revisão de navegação: todos os módulos operacionais sem quebra',async({page})=>{
   const {errors}=await prepare(page)
   for(const module of ['Produtos','Giro e ABC','Visão geral','Garantia','Molas','Saídas','Histórico','Aplicações','Painel inicial']){
     if(['Giro e ABC','Molas'].includes(module)){
@@ -46,8 +46,6 @@ test('Revisão de navegação: todos os módulos e apresentação sem quebra',as
   await page.getByRole('button',{name:'Abrir meu perfil',exact:true}).click()
   await expect(page.locator('h1')).toContainText('perfil')
   await openModule(page,'Painel inicial')
-  await page.getByRole('combobox',{name:'Visualização do Painel',exact:true}).selectOption('presentation')
-  await expect(page.getByRole('region',{name:'Apresentação do estoque',exact:true})).toBeVisible()
   expect(errors).toEqual([])
 })
 

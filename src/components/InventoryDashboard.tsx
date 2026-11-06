@@ -11,7 +11,6 @@ import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
 import { SharedShelfLayout } from './SharedShelfLayout'
 import {presentationBundle} from '../lib/presentation-bundle'
-import { StockPresentation } from './StockPresentation'
 import './InventoryDashboard.css'
 import {PageHeading} from './InventoryLayout'
 import {Card,Button,Table,Progress,ActionGroup} from './Interface'
@@ -44,7 +43,6 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history'|'catalog'|'turnover')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
-  const [view,setView]=useState<'stock'|'presentation'>('stock')
   const [revision,setRevision]=useState(0)
   const [refreshing,setRefreshing]=useState(false)
   const [refreshError,setRefreshError]=useState('')
@@ -61,7 +59,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   const springBoxes=dashboardStockSummary(catalog,stock,'springs').boxes
   const stockPage=category==='all'?'stock':category==='springs'?'springs':'inventory'
   useEffect(()=>{
-    if(!ready||view==='presentation')return
+    if(!ready)return
     let current=true
     let initialPending=true
     let hasReport=false
@@ -83,7 +81,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       },
     })
     return()=>{current=false;stop()}
-  },[ready,category,revision,reportKey,view])
+  },[ready,category,revision,reportKey])
   async function refresh(){
     if(refreshing||loading||manualPending.current)return
     manualPending.current=true
@@ -95,7 +93,6 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   function openPage(page:Parameters<typeof onOpen>[0]){if(shortcuts.current)shortcuts.current.open=false;onOpen(page)}
   function showMore(id:string){
     if(shortcuts.current)shortcuts.current.open=false
-    setView('stock')
     requestAnimationFrame(()=>{const more=document.getElementById('dashboard-more') as HTMLDetailsElement|null;const target=document.getElementById(id);if(!more||!target)return;more.open=true;if(target instanceof HTMLDetailsElement)target.open=true;target.focus();target.scrollIntoView({block:'start',behavior:'instant'})})
   }
   function openLocation(location:string){
@@ -112,8 +109,8 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
     <PageHeading section="VISÃO GERAL" title="Painel inicial" subtitle="Acompanhe seu estoque, movimentações e principais indicadores." actions={<details ref={shortcuts} className="dashboard-quicknav" onKeyDown={event=>{if(event.key==='Escape'&&shortcuts.current){event.preventDefault();shortcuts.current.open=false;shortcuts.current.querySelector('summary')?.focus()}}}><summary>Atalhos <span aria-hidden="true">⌄</span></summary><div><ActionGroup label="Ir para um módulo">
       <Button icon="products" onClick={()=>openPage('products')}>Produtos</Button><Button icon="warranty" onClick={()=>openPage('warranty')}>Garantia</Button><Button icon="alerts" onClick={()=>openPage('alerts')}>Alertas</Button>{isAdministrator&&<Button icon="outflow" onClick={()=>openPage('outflow')}>Saídas</Button>}<Button icon="history" onClick={()=>openPage('history')}>Histórico</Button><Button icon="catalog" onClick={()=>openPage('catalog')}>Aplicações</Button><Button icon="turnover" onClick={()=>openPage('turnover')}>Giro e ABC</Button>
     </ActionGroup><ActionGroup label="Informações do Painel"><Button icon="map" onClick={()=>showMore('dashboard-map')}>Planta e capacidades</Button><Button icon="download" onClick={()=>showMore('dashboard-exports')}>Exportar relatórios</Button><Button icon="inventory" onClick={()=>showMore('dashboard-analysis')}>Análises e conferências</Button><Button icon="filter" onClick={()=>showMore('dashboard-filters')}>Filtros e atualização</Button></ActionGroup>
-    {capacityUserId&&<label>Visualização do Painel<select value={view} onChange={event=>{setView(event.target.value as typeof view);if(shortcuts.current)shortcuts.current.open=false}}><option value="stock">Consulta do estoque</option><option value="presentation">Apresentação</option></select></label>}</div></details>}/>
-    {view==='presentation'&&capacityUserId?<StockPresentation userId={`presentation:${capacityUserId}`} canEdit={isAdministrator} canPick={Boolean(countUserId)}/>:!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
+    </div></details>}/>
+    {!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
       <section className="dashboard-stock-totals" aria-label="Total de caixas por categoria">
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('inventory')}><MetricIcon kind="shock"/><span>Amortecedores</span><strong>{shockBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">→</span></span></button>
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('springs')}><MetricIcon kind="spring"/><span>Molas</span><strong>{springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">→</span></span></button>

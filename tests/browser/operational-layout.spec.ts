@@ -38,11 +38,9 @@ test('mapa operacional usa saldos consultados e capacidades vazias sem divergên
  await expect(stock(page).getByRole('button',{name:/^Prateleira LESTE — Sem caixas/})).toBeVisible()
  await expect(stock(page).locator('.map-divergent')).toHaveCount(0)
  await expect(stock(page).locator('.space-suggestions')).toHaveCount(0)
- await page.getByRole('combobox',{name:'Visualização do Painel',exact:true}).selectOption('presentation')
- await expect(page.getByRole('article',{name:'Prateleira NORTE',exact:true})).toContainText('Capacidade: 40 caixas')
  expect(writes).toEqual([]);expect(db.commits).toBe(0)
 })
-test('confirmação operacional recuperada sincroniza outro navegador sem alterar apresentação',async({page,browser})=>{
+test('confirmação operacional recuperada sincroniza outro navegador',async({page,browser})=>{
  const db=server(),context=await browser.newContext({baseURL:test.info().project.use.baseURL})
  try{
   const writes=await prepare(page,db),other=await context.newPage(),otherWrites=await prepare(other,db)
@@ -57,8 +55,6 @@ test('confirmação operacional recuperada sincroniza outro navegador sem altera
   expect(db.calls[0].p_request_id).toBe(db.calls[1].p_request_id);expect(db.commits).toBe(1)
   await other.evaluate(()=>window.dispatchEvent(new Event('focus')))
   await expect(north(other)).toContainText('Capacidade: 100 caixas')
-  await page.getByRole('combobox',{name:'Visualização do Painel',exact:true}).selectOption('presentation')
-  await expect(page.getByRole('article',{name:'Prateleira NORTE',exact:true})).toContainText('Capacidade: 40 caixas')
   expect(writes).toEqual([]);expect(otherWrites).toEqual([])
  }finally{await context.close()}
 })
