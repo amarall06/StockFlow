@@ -1,65 +1,71 @@
 /* A apresentação fica restrita à Garantia; os formulários mantêm seus fluxos. */
-.app-shell.liber-layout .reference-warranty .warranty-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-bottom:20px}
-.app-shell.liber-layout .reference-warranty .warranty-metrics .ui-card{display:flex;align-items:center;gap:16px;min-height:112px;padding:22px}
-.app-shell.liber-layout .reference-warranty .warranty-metric-icon{display:grid;place-content:center;flex:none;width:56px;height:56px;border-radius:16px;background:var(--liber-soft);color:var(--liber-accent);font-size:26px}
-.app-shell.liber-layout .reference-warranty .warranty-metrics strong{display:block;font-size:32px;line-height:36px;color:var(--liber-ink)}
-.app-shell.liber-layout .reference-warranty .warranty-metrics small,.app-shell.liber-layout .reference-warranty .warranty-metrics div>span{font-size:14px;color:var(--liber-muted)}
-.app-shell.liber-layout .reference-warranty .warranty-returns{margin:0;padding:22px;background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:16px;box-shadow:var(--liber-shadow)}
-.app-shell.liber-layout .reference-warranty .warranty-returns>.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0;margin:0 0 12px;border:0}
-.app-shell.liber-layout .reference-warranty h2{font-size:18px;color:var(--liber-ink);line-height:26px;scroll-margin-top:24px}
-.app-shell.liber-layout .reference-warranty :is(button.add-product-button,button.theme-toggle){min-height:44px;padding:10px 18px;border-radius:10px;font-size:14px}
+.app-shell.liber-layout .reference-warranty .warranty-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--liber-space-5);margin-bottom:var(--liber-space-5)}
+.app-shell.liber-layout .reference-warranty .warranty-metrics .ui-card{display:flex;align-items:center;gap:var(--liber-space-4);min-height:var(--liber-dashboard-metric-height);padding:var(--liber-warranty-metric-padding-block) var(--liber-warranty-card-padding)}
+.app-shell.liber-layout .reference-warranty .warranty-metric-icon{display:grid;place-content:center;flex:none;width:var(--liber-dashboard-metric-icon);height:var(--liber-dashboard-metric-icon);border-radius:var(--liber-card-radius);background:var(--liber-soft);color:var(--liber-accent);font-size:var(--liber-warranty-icon-text-size)}
+.app-shell.liber-layout .reference-warranty .warranty-metrics strong{display:block;font-size:var(--liber-dashboard-number-size);line-height:var(--liber-space-9);color:var(--liber-ink)}
+.app-shell.liber-layout .reference-warranty .warranty-metrics small,.app-shell.liber-layout .reference-warranty .warranty-metrics div>span{font-size:var(--liber-type-base);color:var(--liber-muted)}
+.app-shell.liber-layout .reference-warranty .warranty-returns{margin:0;padding:var(--liber-warranty-card-padding);background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:var(--liber-card-radius);box-shadow:var(--liber-shadow)}
+.app-shell.liber-layout .reference-warranty .warranty-returns>.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:var(--liber-space-4);padding:0;margin:0 0 var(--liber-space-3);border:0}
+.app-shell.liber-layout .reference-warranty h2{font-size:var(--liber-dashboard-card-heading);color:var(--liber-ink);line-height:var(--liber-warranty-icon-text-size);scroll-margin-top:var(--liber-space-6)}
+.app-shell.liber-layout .reference-warranty :is(button.add-product-button,button.theme-toggle){min-height:var(--liber-touch);padding:var(--liber-control-radius) var(--liber-warranty-mobile-padding);border-radius:var(--liber-control-radius);font-size:var(--liber-type-base)}
 .app-shell.liber-layout .reference-warranty .add-product-button{background:var(--liber-button);border:1px solid var(--liber-button);color:var(--liber-button-ink)}
 .app-shell.liber-layout .reference-warranty .theme-toggle{background:var(--liber-surface);border:1px solid var(--liber-line);color:var(--liber-ink)}
-.app-shell.liber-layout .reference-warranty .warranty-filters{margin:0 0 10px}
-.app-shell.liber-layout .reference-warranty summary{min-height:44px;cursor:pointer;color:var(--liber-muted);font-size:13px;line-height:22px;padding:10px 0}
-.app-shell.liber-layout .reference-warranty .manufacturer-list-tools,.app-shell.liber-layout .reference-warranty .manufacturer-form{padding:14px 0}
-.app-shell.liber-layout .reference-warranty :is(input,select,textarea){min-height:44px;border:1px solid #B69A87;border-radius:10px;padding:10px 12px;background:var(--liber-surface);color:var(--liber-ink);font-size:14px}
+.app-shell.liber-layout .reference-warranty .warranty-filters{margin:0 0 var(--liber-control-radius)}
+.app-shell.liber-layout .reference-warranty summary{min-height:var(--liber-touch);cursor:pointer;color:var(--liber-muted);font-size:var(--liber-type-sm);line-height:var(--liber-warranty-card-padding);padding:var(--liber-control-radius) 0}
+.app-shell.liber-layout .reference-warranty .manufacturer-list-tools,.app-shell.liber-layout .reference-warranty .manufacturer-form{padding:var(--liber-type-base) 0}
+.app-shell.liber-layout .reference-warranty :is(input,select,textarea){min-height:var(--liber-touch);border:1px solid var(--liber-warranty-field-border);border-radius:var(--liber-control-radius);padding:var(--liber-control-radius) var(--liber-space-3);background:var(--liber-surface);color:var(--liber-ink);font-size:var(--liber-type-base)}
 .app-shell.liber-layout .reference-warranty input::placeholder{color:var(--liber-muted);opacity:1}
-.app-shell.liber-layout .reference-warranty :is(label,.manufacturer-feedback,.manufacturer-card-label,.warranty-box-summary){color:var(--liber-muted);font-size:13px}
-.app-shell.liber-layout .reference-warranty .manufacturer-feedback{padding:12px 0}
+.app-shell.liber-layout .reference-warranty :is(label,.manufacturer-feedback,.manufacturer-card-label,.warranty-box-summary){color:var(--liber-muted);font-size:var(--liber-type-sm)}
+.app-shell.liber-layout .reference-warranty .manufacturer-feedback{padding:var(--liber-space-3) 0}
 .app-shell.liber-layout .reference-warranty .auth-error{color:var(--liber-badge-ink)}
-.app-shell.liber-layout .reference-warranty .warranty-query-scope{font-size:12px;margin:12px 0 0;padding-bottom:0}
-.app-shell.liber-layout .reference-warranty table{width:100%;min-width:850px;border-collapse:collapse;font-size:14px;text-align:left;line-height:20px}
+.app-shell.liber-layout .reference-warranty .warranty-query-scope{font-size:var(--liber-type-xs);margin:var(--liber-space-3) 0 0;padding-bottom:0}
+.app-shell.liber-layout .reference-warranty table{width:100%;min-width:var(--liber-warranty-table-width);border-collapse:collapse;font-size:var(--liber-type-base);text-align:left;line-height:var(--liber-space-5)}
 .app-shell.liber-layout .reference-warranty thead{background:transparent}
-.app-shell.liber-layout .reference-warranty th,.app-shell.liber-layout .reference-warranty td{padding:11px 8px;font-size:14px;letter-spacing:0;border:0;border-bottom:1px solid var(--liber-line);background:transparent;color:var(--liber-ink);text-align:left;vertical-align:middle}
-.app-shell.liber-layout .reference-warranty thead th{font-size:13px;font-weight:400;color:var(--liber-muted);white-space:nowrap}
-.app-shell.liber-layout .reference-warranty .warranty-record{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;min-width:116px;margin:-8px 0;padding:0;border:0;background:transparent;color:var(--liber-ink);font:inherit;font-weight:700;white-space:nowrap}
+.app-shell.liber-layout .reference-warranty th,.app-shell.liber-layout .reference-warranty td{padding:var(--liber-products-row-padding) var(--liber-space-2);font-size:var(--liber-type-base);letter-spacing:0;border:0;border-bottom:1px solid var(--liber-line);background:transparent;color:var(--liber-ink);text-align:left;vertical-align:middle}
+.app-shell.liber-layout .reference-warranty thead th{font-size:var(--liber-type-sm);font-weight:400;color:var(--liber-muted);white-space:nowrap}
+.app-shell.liber-layout .reference-warranty .warranty-record{display:flex;align-items:center;justify-content:space-between;gap:var(--liber-space-3);min-height:var(--liber-touch);min-width:var(--liber-warranty-record-width);margin:calc(-1 * var(--liber-space-2)) 0;padding:0;border:0;background:transparent;color:var(--liber-ink);font:inherit;font-weight:700;white-space:nowrap}
 .app-shell.liber-layout .reference-warranty .warranty-record span{font-weight:400;color:var(--liber-muted)}
-.app-shell.liber-layout .reference-warranty .warranty-reason{max-width:330px;overflow-wrap:anywhere}
-.app-shell.liber-layout .reference-warranty .ui-badge{white-space:nowrap;font-size:12px;line-height:16px}
+.app-shell.liber-layout .reference-warranty .warranty-reason{max-width:var(--liber-warranty-reason-width);overflow-wrap:anywhere}
+.app-shell.liber-layout .reference-warranty .ui-badge{white-space:nowrap;font-size:var(--liber-type-xs);line-height:var(--liber-space-4)}
 .app-shell.liber-layout .reference-warranty .warranty-status-neutral{background:var(--liber-track);color:var(--liber-muted)}
 .app-shell.liber-layout .reference-warranty .warranty-detail-row[hidden]{display:none}
-.app-shell.liber-layout .reference-warranty .warranty-detail-row td{padding:18px;background:var(--liber-canvas);overflow-wrap:anywhere}
-.app-shell.liber-layout .reference-warranty .warranty-detail-row dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0;font-size:13px}
+.app-shell.liber-layout .reference-warranty .warranty-returns .ui-table-scroll{container-type:inline-size}
+.app-shell.liber-layout .reference-warranty .warranty-detail-row td{padding:var(--liber-warranty-mobile-padding);background:var(--liber-canvas);overflow-wrap:anywhere}
+.app-shell.liber-layout .reference-warranty .warranty-detail-row dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--liber-space-3);margin:var(--liber-space-4) 0;font-size:var(--liber-type-sm)}
 .app-shell.liber-layout .reference-warranty .warranty-detail-row dt{color:var(--liber-muted)}
-.app-shell.liber-layout .reference-warranty .warranty-detail-row dd{margin:4px 0 0}
-.app-shell.liber-layout .reference-warranty .warranty-detail-row p{font-size:13px;line-height:22px}
-.app-shell.liber-layout .reference-warranty .warranty-more{margin-top:20px;border:1px solid var(--liber-line);border-radius:16px;background:var(--liber-surface);box-shadow:var(--liber-shadow)}
-.app-shell.liber-layout .reference-warranty .warranty-more>summary{padding:18px 22px;font-size:16px;font-weight:600;color:var(--liber-ink)}
-.app-shell.liber-layout .reference-warranty .warranty-more>summary span{display:inline-block;margin-left:12px;font-size:13px;font-weight:400;color:var(--liber-muted)}
-.app-shell.liber-layout .reference-warranty .warranty-manufacturers{padding:0 22px 22px;margin:0;border:0;background:transparent;box-shadow:none}
-.app-shell.liber-layout .reference-warranty .warranty-manufacturers .panel-heading{padding:0 0 16px}
+.app-shell.liber-layout .reference-warranty .warranty-detail-row dd{margin:var(--liber-space-1) 0 0}
+.app-shell.liber-layout .reference-warranty .warranty-detail-row p{font-size:var(--liber-type-sm);line-height:var(--liber-warranty-card-padding)}
+.app-shell.liber-layout .reference-warranty .warranty-more{margin-top:var(--liber-space-5);border:1px solid var(--liber-line);border-radius:var(--liber-card-radius);background:var(--liber-surface);box-shadow:var(--liber-shadow)}
+.app-shell.liber-layout .reference-warranty .warranty-more>summary{padding:var(--liber-warranty-mobile-padding) var(--liber-warranty-card-padding);font-size:var(--liber-type-body);font-weight:600;color:var(--liber-ink)}
+.app-shell.liber-layout .reference-warranty .warranty-more>summary span{display:inline-block;margin-left:var(--liber-space-3);font-size:var(--liber-type-sm);font-weight:400;color:var(--liber-muted)}
+.app-shell.liber-layout .reference-warranty .warranty-manufacturers{padding:0 var(--liber-warranty-card-padding) var(--liber-warranty-card-padding);margin:0;border:0;background:transparent;box-shadow:none}
+.app-shell.liber-layout .reference-warranty .warranty-manufacturers .panel-heading{padding:0 0 var(--liber-space-4)}
 .app-shell.liber-layout .reference-warranty .manufacturer-form{background:transparent;border-color:var(--liber-line)}
 .app-shell.liber-layout .reference-warranty .manufacturer-cards{padding:0}
-.app-shell.liber-layout .reference-warranty .manufacturer-cards li{background:var(--liber-canvas);border:1px solid var(--liber-line);border-radius:16px}
+.app-shell.liber-layout .reference-warranty .manufacturer-cards li{background:var(--liber-canvas);border:1px solid var(--liber-line);border-radius:var(--liber-card-radius)}
 .app-shell.liber-layout .reference-warranty :is(.manufacturer-cards h3,.warranty-box-summary strong){color:var(--liber-ink)}
 .app-shell.liber-layout .reference-warranty .warranty-shortcuts{position:relative}
-.app-shell.liber-layout .reference-warranty .warranty-shortcuts>summary{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;border:1px solid var(--liber-line);border-radius:10px;background:var(--liber-surface);color:var(--liber-ink);font-size:14px;font-weight:600;list-style:none}
+.app-shell.liber-layout .reference-warranty .warranty-shortcuts>summary{display:flex;align-items:center;justify-content:center;min-height:var(--liber-touch);padding:var(--liber-control-radius) var(--liber-space-5);border:1px solid var(--liber-line);border-radius:var(--liber-control-radius);background:var(--liber-surface);color:var(--liber-ink);font-size:var(--liber-type-base);font-weight:600;list-style:none}
 .app-shell.liber-layout .reference-warranty .warranty-shortcuts>summary::-webkit-details-marker{display:none}
-.app-shell.liber-layout .reference-warranty .warranty-shortcuts>div{position:absolute;right:0;top:52px;width:280px;max-width:calc(100vw - 64px);display:grid;gap:8px;z-index:25;padding:12px;background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:16px;box-shadow:0 10px 30px #0002}
-.app-shell.liber-layout .reference-warranty .warranty-box-dialog{border-color:var(--liber-line);border-radius:16px;background:var(--liber-surface);color:var(--liber-ink)}
+.app-shell.liber-layout .reference-warranty .warranty-shortcuts>div{position:absolute;right:0;top:calc(var(--liber-touch) + var(--liber-space-2));width:var(--liber-products-menu-width);max-width:calc(100vw - 4 * var(--liber-space-4));display:grid;gap:var(--liber-space-2);z-index:var(--liber-products-menu-layer);padding:var(--liber-space-3);background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:var(--liber-card-radius);box-shadow:var(--liber-overlay-shadow)}
+.app-shell.liber-layout .reference-warranty .warranty-box-dialog{border-color:var(--liber-line);border-radius:var(--liber-card-radius);background:var(--liber-surface);color:var(--liber-ink)}
 .app-shell.liber-layout .reference-warranty .warranty-box-dialog :is(label,p){color:var(--liber-muted)}
-.app-shell.liber-layout .reference-warranty .warranty-box-dialog :is(input,select,textarea){background:var(--liber-canvas);color:var(--liber-ink);border-color:#B69A87}
+.app-shell.liber-layout .reference-warranty .warranty-box-dialog :is(input,select,textarea){background:var(--liber-canvas);color:var(--liber-ink);border-color:var(--liber-warranty-field-border)}
 @media(max-width:650px){
- .app-shell.liber-layout .reference-warranty .warranty-metrics{grid-template-columns:minmax(0,1fr);gap:12px}
- .app-shell.liber-layout .reference-warranty .warranty-metrics .ui-card{min-height:104px;padding:18px}
- .app-shell.liber-layout .reference-warranty .warranty-returns{padding:18px}
- .app-shell.liber-layout .reference-warranty .warranty-returns>.panel-heading{flex-wrap:wrap;gap:10px}
- .app-shell.liber-layout .reference-warranty .warranty-more>summary{padding:16px 18px}
+ .app-shell.liber-layout .reference-warranty .warranty-metrics{grid-template-columns:minmax(0,1fr);gap:var(--liber-space-3)}
+ .app-shell.liber-layout .reference-warranty .warranty-metrics .ui-card{min-height:var(--liber-warranty-mobile-metric-height);padding:var(--liber-warranty-mobile-padding)}
+ .app-shell.liber-layout .reference-warranty .warranty-returns{padding:var(--liber-warranty-mobile-padding)}
+ .app-shell.liber-layout .reference-warranty .warranty-returns>.panel-heading{flex-wrap:wrap;gap:var(--liber-control-radius)}
+ .app-shell.liber-layout .reference-warranty .warranty-more>summary{padding:var(--liber-space-4) var(--liber-warranty-mobile-padding)}
  .app-shell.liber-layout .reference-warranty .warranty-more>summary span{display:block;margin-left:0}
- .app-shell.liber-layout .reference-warranty .warranty-manufacturers{padding:0 18px 18px}
- .app-shell.liber-layout .reference-warranty :is(input,select,textarea){font-size:16px}
- .app-shell.liber-layout .reference-warranty .warranty-box-dialog{padding:18px}
+ .app-shell.liber-layout .reference-warranty .warranty-manufacturers{padding:0 var(--liber-warranty-mobile-padding) var(--liber-warranty-mobile-padding)}
+ .app-shell.liber-layout .reference-warranty :is(input,select,textarea){font-size:var(--liber-type-body)}
+ .app-shell.liber-layout .reference-warranty .warranty-box-dialog{padding:var(--liber-warranty-mobile-padding)}
+ .app-shell.liber-layout .reference-warranty .warranty-case-detail{
+   position:sticky;
+   inset-inline-start:var(--liber-warranty-mobile-padding);
+   max-inline-size:calc(100cqi - 2 * var(--liber-warranty-mobile-padding));
+ }
+ .app-shell.liber-layout .reference-warranty .warranty-detail-row dl{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-.app-shell.liber-layout .reference-warranty .warranty-metrics .ui-card{padding:17px 22px}
-.app-shell.liber-layout .reference-warranty .warranty-metrics small,.app-shell.liber-layout .reference-warranty .warranty-metrics div>span{display:block;line-height:20px}
+.app-shell.liber-layout .reference-warranty .warranty-metrics small,.app-shell.liber-layout .reference-warranty .warranty-metrics div>span{display:block;line-height:var(--liber-space-5)}

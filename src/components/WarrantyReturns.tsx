@@ -8,6 +8,7 @@ import { confirmOperation } from '../lib/confirm-operation'
 import { startResumeRefresh } from '../lib/resume-refresh'
 import { saveOfflineCustomerReturns } from '../lib/offline-stock'
 import { Badge, Card, Table } from './Interface'
+import { NavigationIcon } from './NavigationIcon'
 
 const initialReturn: WarrantyReturnInput = {
   manufacturer_id: null, product_kind: 'unknown', product_code: '', description: '', boxes: 1,
@@ -131,8 +132,8 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
   const filtered = result.rows.filter((row) => (!status || row.status === status)
     && `${row.product_code} ${row.description} ${row.location} ${row.reason} ${names.get(row.manufacturer_id ?? '') ?? ''}`.toLocaleLowerCase('pt-BR').includes(search.trim().toLocaleLowerCase('pt-BR')))
   const totals = [
-    {label: 'Em acompanhamento', icon: '◷', count: result.rows.filter(row => !['warranty', 'closed'].includes(row.status)).length},
-    {label: 'Em garantia', icon: '◇', count: result.rows.filter(row => row.status === 'warranty').length},
+    {label: 'Em acompanhamento', icon: <NavigationIcon name="history"/>, count: result.rows.filter(row => !['warranty', 'closed'].includes(row.status)).length},
+    {label: 'Em garantia', icon: <NavigationIcon name="warranty"/>, count: result.rows.filter(row => row.status === 'warranty').length},
     {label: 'Encerradas', icon: '×', count: result.rows.filter(row => row.status === 'closed').length},
   ]
   return <>
@@ -147,12 +148,12 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
         {!filtered.length && <p className="manufacturer-feedback">Nenhuma devolução encontrada.</p>}
         {!!filtered.length && <Table aria-label="Casos de garantia"><thead><tr><th scope="col">Registro</th><th scope="col">Código</th><th scope="col">Motivo</th><th scope="col">Data</th><th scope="col">Situação</th></tr></thead><tbody>{filtered.map((row, index) => <Fragment key={row.id}>
           <tr><th scope="row"><button type="button" className="warranty-record" aria-label={`Detalhes da devolução ${row.product_code || row.description}`} aria-expanded={expanded === row.id} aria-controls={`${prefix}-${index}`} onClick={() => setExpanded(expanded === row.id ? null : row.id)} title={row.id}>{row.id.slice(0, 8)} <span aria-hidden="true">{expanded === row.id ? '−' : '+'}</span></button></th><td>{row.product_code || 'Não identificado'}</td><td className="warranty-reason">{row.reason}</td><td><time dateTime={row.created_at}>{new Date(row.created_at).toLocaleDateString('pt-BR', {day: '2-digit', month: 'short'})}</time></td><td><Badge className={row.status === 'closed' ? 'warranty-status-neutral' : ''}>{returnStatusLabels[row.status]}</Badge></td></tr>
-          <tr id={`${prefix}-${index}`} hidden={expanded !== row.id} className="warranty-detail-row"><td colSpan={5}>
+          <tr id={`${prefix}-${index}`} hidden={expanded !== row.id} className="warranty-detail-row"><td colSpan={5}><div className="warranty-case-detail">
           <div className="manufacturer-card-header"><h3>{row.product_code || 'Código não identificado'}</h3>{isAdministrator && row.status !== 'closed' && <EditButton label={`Atualizar devolução ${row.product_code || row.description}`} onClick={() => setEditing(row)} />}</div>
           <p>{row.description}</p><p><strong>Registro:</strong> {row.id}</p>
           <dl><div><dt>Caixas</dt><dd>{row.boxes}</dd></div><div><dt>Categoria</dt><dd>{row.product_kind === 'shock' ? 'Amortecedores' : row.product_kind === 'spring' ? 'Molas' : 'Não identificada / outro item'}</dd></div><div><dt>Fabricante</dt><dd>{names.get(row.manufacturer_id ?? '') ?? 'Não identificado'}</dd></div><div><dt>Local</dt><dd>{row.location}</dd></div><div><dt>Conferência</dt><dd>{row.ownership === 'ours' ? 'Confirmada como nossa' : row.ownership === 'other' ? 'Não é nossa / item errado' : 'Ainda não conferida'}</dd></div><div><dt>Recebida em</dt><dd>{new Date(row.created_at).toLocaleString('pt-BR')}</dd></div></dl>
           <p><strong>Motivo:</strong> {row.reason}</p>{row.destination && <p><strong>Destino:</strong> {row.destination}</p>}
-          </td></tr>
+          </div></td></tr>
         </Fragment>)}</tbody></Table>}
         <p className="manufacturer-feedback warranty-query-scope">Consulta limitada às 100 devoluções mais recentes. Resumo e filtros se aplicam a esses registros. Toque no registro para ver detalhes e ações.</p>
       </>}

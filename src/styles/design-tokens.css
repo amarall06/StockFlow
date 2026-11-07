@@ -36,6 +36,11 @@
  --liber-products-menu-width:280px;--liber-products-menu-layer:25;
  --liber-products-search-border:#9D7D69;
  --liber-overlay-shadow:0 10px 30px #0002;
+ --liber-warranty-card-padding:22px;--liber-warranty-mobile-padding:18px;
+ --liber-warranty-metric-padding-block:17px;
+ --liber-warranty-table-width:850px;--liber-warranty-record-width:116px;
+ --liber-warranty-reason-width:330px;--liber-warranty-mobile-metric-height:104px;
+ --liber-warranty-icon-text-size:26px;--liber-warranty-field-border:#B69A87;
  color-scheme:light;
 }
 .liber-layout.theme-dark{
