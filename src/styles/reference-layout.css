@@ -48,6 +48,15 @@
 .ui-progress{appearance:none;width:100%;height:14px;border:0;border-radius:999px;background:var(--liber-track)}
 .ui-progress::-webkit-meter-bar{background:var(--liber-track);border:0;border-radius:999px}.ui-progress::-webkit-meter-optimum-value{background:var(--liber-chart);border-radius:999px}.ui-progress::-moz-meter-bar{background:var(--liber-chart);border-radius:999px}
 /* Painel inicial: quatro métricas, grade 8/4 e depois 4/4/4. */
+@media (prefers-reduced-motion:no-preference) {
+  .liber-layout .reference-dashboard :is(.dashboard-stat,.reference-summary-grid) {
+    animation:liber-panel-enter var(--liber-panel-enter-duration) ease-out;
+  }
+}
+@keyframes liber-panel-enter {
+  from { opacity:.8;translate:0 var(--liber-panel-enter-offset); }
+  to { opacity:1;translate:0 0; }
+}
 .app-shell.liber-layout .reference-dashboard .dashboard-stock-totals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--liber-dashboard-gap);margin:0 0 var(--liber-dashboard-gap)}
 .app-shell.liber-layout .reference-dashboard .dashboard-stock-totals .dashboard-stat{position:relative;display:grid;align-content:center;gap:0;min-height:var(--liber-dashboard-metric-height);padding:var(--liber-caption-line) var(--liber-space-4) var(--liber-caption-line) calc(var(--liber-dashboard-card-padding) + var(--liber-dashboard-metric-icon) + var(--liber-space-4));background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:var(--liber-card-radius);box-shadow:var(--liber-shadow);text-align:left;transform:none;overflow-wrap:anywhere}
 .app-shell.liber-layout .reference-dashboard .metric-icon-box{position:absolute;left:var(--liber-dashboard-card-padding);top:50%;transform:translateY(-50%);display:grid;place-content:center;width:var(--liber-dashboard-metric-icon);height:var(--liber-dashboard-metric-icon);border-radius:var(--liber-card-radius);background:var(--liber-soft);color:var(--liber-accent)}
