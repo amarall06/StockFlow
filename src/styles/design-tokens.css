@@ -6,6 +6,25 @@
  --liber-soft:#FDE7D3;--liber-badge-ink:#9A3F12;--liber-section:#FBD9A8;--liber-section-ink:#6B3A10;
  --liber-track:#F0E9E3;--liber-card-radius:16px;--liber-control-radius:10px;--liber-sidebar-width:264px;
  --liber-shadow:0 1px 2px #2B181008,0 6px 22px #2B181005;
+ --liber-font:Inter,system-ui,sans-serif;
+ --liber-space-1:4px;--liber-space-2:8px;--liber-space-3:12px;--liber-space-4:16px;
+ --liber-space-5:20px;--liber-space-6:24px;--liber-space-7:28px;--liber-space-9:36px;--liber-space-10:40px;
+ --liber-touch:44px;--liber-nav-height:46px;--liber-brand-size:48px;--liber-icon-size:20px;
+ --liber-avatar-size:36px;--liber-profile-width:160px;--liber-header-reserve:180px;
+ --liber-menu-gap:6px;--liber-menu-drawer-limit:85vw;--liber-menu-badge-size:24px;
+ --liber-pill-radius:999px;--liber-small-radius:8px;--liber-brand-radius:12px;
+ --liber-type-xs:12px;--liber-type-sm:13px;--liber-type-base:14px;--liber-type-body:16px;
+ --liber-type-brand:30px;--liber-type-mark:28px;--liber-type-title:40px;--liber-title-line:48px;
+ --liber-type-title-tablet:32px;--liber-title-line-tablet:40px;--liber-title-line-phone:38px;
+ --liber-copy-line-tablet:21px;
+ --liber-title-tracking:-1px;--liber-brand-tracking:.6px;--liber-label-tracking:.1px;
+ --liber-brand-line:1.2;--liber-copy-line:20px;--liber-caption-line:18px;
+ --liber-focus-width:3px;--liber-focus-offset:3px;--liber-focus:var(--liber-button);
+ --liber-menu-hover:#FFFFFF0D;--liber-menu-line:#624A3A;--liber-menu-muted:#D2B8A6;
+ --liber-menu-badge:#FFAE57;--liber-menu-badge-ink:#2B1810;--liber-menu-close-line:#FFFFFF50;
+ --liber-brand-fill:#D96A28;--liber-brand-ink:#FFFFFF;--liber-drawer-backdrop:#0007;
+ --liber-topbar-layer:20;
+ color-scheme:light;
 }
 .liber-layout.theme-dark{
  --liber-canvas:#1F120B;--liber-surface:#2B1A11;--liber-line:#4A3022;
