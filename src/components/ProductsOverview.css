@@ -1,44 +1,54 @@
-.app-shell.liber-layout .reference-products .products-card{padding:22px;min-width:0}
-.app-shell.liber-layout .reference-products .products-toolbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:12px;flex-wrap:wrap}
-.app-shell.liber-layout .reference-products .products-filters{display:flex;flex-wrap:wrap;gap:8px}
-.app-shell.liber-layout .reference-products .products-filters button{border-radius:999px;font-weight:400;padding:9px 16px;font-size:14px}
-.app-shell.liber-layout .reference-products .products-filters button[aria-pressed=true]{background:var(--liber-sidebar);border-color:var(--liber-sidebar);color:#fff}
+.app-shell.liber-layout .reference-products .products-card{padding:var(--liber-products-card-padding);min-width:0}
+.app-shell.liber-layout .reference-products .products-toolbar{display:flex;align-items:center;justify-content:space-between;gap:var(--liber-space-5);margin-bottom:var(--liber-space-3);flex-wrap:wrap}
+.app-shell.liber-layout .reference-products .products-filters{display:flex;flex-wrap:wrap;gap:var(--liber-space-2)}
+.app-shell.liber-layout .reference-products .products-filters button{border-radius:var(--liber-pill-radius);font-weight:400;padding:var(--liber-space-2) var(--liber-space-4);font-size:var(--liber-type-base)}
+.app-shell.liber-layout .reference-products .products-filters button[aria-pressed=true]{background:var(--liber-sidebar);border-color:var(--liber-sidebar);color:var(--liber-button-ink)}
 .app-shell.liber-layout.theme-dark .reference-products .products-filters button[aria-pressed=true]{border-color:var(--liber-accent);background:var(--liber-soft);color:var(--liber-badge-ink)}
-.app-shell.liber-layout .reference-products .products-search-actions{display:flex;align-items:center;gap:12px;min-width:0}
-.app-shell.liber-layout .reference-products input[type=search]{width:240px;min-width:0;min-height:44px;border:1px solid #B69A87;border-radius:10px;padding:10px 14px;background:var(--liber-surface);color:var(--liber-ink);font:inherit;font-size:14px}
+.app-shell.liber-layout .reference-products .products-search-actions{display:flex;align-items:center;gap:var(--liber-space-3);min-width:0}
+.app-shell.liber-layout .reference-products input[type=search]{width:var(--liber-products-search-width);min-width:0;min-height:var(--liber-touch);border:1px solid var(--liber-products-search-border);border-radius:var(--liber-control-radius);padding:var(--liber-control-radius) var(--liber-products-detail-padding);background:var(--liber-surface);color:var(--liber-ink);font:inherit;font-size:var(--liber-type-base)}
 .app-shell.liber-layout .reference-products input::placeholder{color:var(--liber-muted);opacity:1}
-.app-shell.liber-layout .reference-products table{width:100%;min-width:760px;border-collapse:collapse;text-align:left;font-size:14px;line-height:20px}
+.app-shell.liber-layout .reference-products table{width:100%;min-width:var(--liber-products-table-width);border-collapse:collapse;text-align:left;font-size:var(--liber-type-base);line-height:var(--liber-copy-line)}
 .app-shell.liber-layout .reference-products thead{background:transparent}
-.app-shell.liber-layout .reference-products tbody th,.app-shell.liber-layout .reference-products tbody td{font-size:14px;letter-spacing:0}
+.app-shell.liber-layout .reference-products tbody th,.app-shell.liber-layout .reference-products tbody td{font-size:var(--liber-type-base);letter-spacing:0}
 .app-shell.liber-layout .reference-products thead th{letter-spacing:0}
-.app-shell.liber-layout .reference-products th,.app-shell.liber-layout .reference-products td{padding:11px 8px;border:0;border-bottom:1px solid var(--liber-line);background:transparent;color:var(--liber-ink);vertical-align:middle;text-align:left;white-space:nowrap}
-.app-shell.liber-layout .reference-products thead th{font-weight:400;font-size:13px;color:var(--liber-muted);padding-top:12px;padding-bottom:8px}
+.app-shell.liber-layout .reference-products th,.app-shell.liber-layout .reference-products td{padding:var(--liber-products-row-padding) var(--liber-space-2);border:0;border-bottom:1px solid var(--liber-line);background:transparent;color:var(--liber-ink);vertical-align:middle;text-align:left;white-space:nowrap}
+.app-shell.liber-layout .reference-products thead th{font-weight:400;font-size:var(--liber-type-sm);color:var(--liber-muted);padding-top:var(--liber-space-3);padding-bottom:var(--liber-space-2)}
 .app-shell.liber-layout .reference-products tbody tr:last-of-type td{border:0}
-.app-shell.liber-layout .reference-products .products-code{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:96px;min-height:44px;margin:-8px 0;padding:0;border:0;background:transparent;color:var(--liber-ink);font:inherit;font-weight:700;text-align:left}
-.app-shell.liber-layout .reference-products .products-code span{font-size:14px;color:var(--liber-muted);font-weight:400}
-.app-shell.liber-layout .reference-products .ui-badge{font-size:12px;line-height:16px;padding:3px 10px;white-space:nowrap}
+.app-shell.liber-layout .reference-products .products-code{display:flex;align-items:center;justify-content:space-between;gap:var(--liber-space-3);width:100%;min-width:var(--liber-products-code-width);min-height:var(--liber-touch);margin:calc(-1 * var(--liber-space-2)) 0;padding:0;border:0;background:transparent;color:var(--liber-ink);font:inherit;font-weight:700;text-align:left}
+.app-shell.liber-layout .reference-products .products-code span{font-size:var(--liber-type-base);color:var(--liber-muted);font-weight:400}
+.app-shell.liber-layout .reference-products .ui-badge{font-size:var(--liber-type-xs);line-height:var(--liber-space-4);padding:3px var(--liber-control-radius);white-space:nowrap}
 .app-shell.liber-layout .reference-products .products-status-neutral{background:var(--liber-track);color:var(--liber-muted)}
 .app-shell.liber-layout .reference-products .products-detail-row[hidden]{display:none}
-.app-shell.liber-layout .reference-products .products-detail-row td{background:var(--liber-canvas);white-space:normal;padding:18px 14px}
-.app-shell.liber-layout .reference-products .products-detail{display:flex;align-items:center;gap:18px}
+.app-shell.liber-layout .reference-products .ui-table-scroll{container-type:inline-size}
+.app-shell.liber-layout .reference-products .products-detail-row td{background:var(--liber-canvas);white-space:normal;padding:var(--liber-caption-line) var(--liber-products-detail-padding)}
+.app-shell.liber-layout .reference-products .products-detail{display:flex;align-items:center;gap:var(--liber-caption-line)}
 .app-shell.liber-layout .reference-products .products-detail>div{flex:1}
-.app-shell.liber-layout .reference-products .products-detail .vehicle-applications,.app-shell.liber-layout .reference-products .products-detail small{display:block;color:var(--liber-muted);margin-top:6px}
-.app-shell.liber-layout .reference-products .products-empty{padding:32px 8px;text-align:center;color:var(--liber-muted)}
-.app-shell.liber-layout .reference-products .products-help{margin:16px 8px 0;color:var(--liber-muted);font-size:12px;line-height:20px}
+.app-shell.liber-layout .reference-products .products-detail .vehicle-applications,.app-shell.liber-layout .reference-products .products-detail small{display:block;color:var(--liber-muted);margin-top:var(--liber-menu-gap)}
+.app-shell.liber-layout .reference-products .products-empty{padding:var(--liber-type-title-tablet) var(--liber-space-2);text-align:center;color:var(--liber-muted)}
+.app-shell.liber-layout .reference-products .products-help{margin:var(--liber-space-4) var(--liber-space-2) 0;color:var(--liber-muted);font-size:var(--liber-type-xs);line-height:var(--liber-copy-line)}
 .app-shell.liber-layout .reference-products details{position:relative}
-.app-shell.liber-layout .reference-products summary{display:flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:10px 20px;border:1px solid var(--liber-line);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;list-style:none}
+.app-shell.liber-layout .reference-products summary{display:flex;align-items:center;justify-content:center;min-height:var(--liber-touch);min-width:var(--liber-touch);padding:var(--liber-control-radius) var(--liber-space-5);border:1px solid var(--liber-line);border-radius:var(--liber-control-radius);font-size:var(--liber-type-base);font-weight:600;cursor:pointer;list-style:none}
 .app-shell.liber-layout .reference-products summary::-webkit-details-marker{display:none}
 .app-shell.liber-layout .reference-products .products-create summary{background:var(--liber-button);border-color:var(--liber-button);color:var(--liber-button-ink);white-space:nowrap}
-.app-shell.liber-layout .reference-products details>div{position:absolute;right:0;top:52px;width:280px;max-width:calc(100vw - 64px);padding:12px;display:grid;gap:8px;z-index:25;background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:16px;box-shadow:0 10px 30px #0002;color:var(--liber-ink)}
-.app-shell.liber-layout .reference-products details>div p{margin:0 0 4px;font-size:13px;line-height:20px;color:var(--liber-muted)}
+.app-shell.liber-layout .reference-products details>div{position:absolute;right:0;top:calc(var(--liber-touch) + var(--liber-space-2));width:var(--liber-products-menu-width);max-width:calc(100vw - 4 * var(--liber-space-4));padding:var(--liber-space-3);display:grid;gap:var(--liber-space-2);z-index:var(--liber-products-menu-layer);background:var(--liber-surface);border:1px solid var(--liber-line);border-radius:var(--liber-card-radius);box-shadow:var(--liber-overlay-shadow);color:var(--liber-ink)}
+.app-shell.liber-layout .reference-products details>div p{margin:0 0 var(--liber-space-1);font-size:var(--liber-type-sm);line-height:var(--liber-copy-line);color:var(--liber-muted)}
 .app-shell.liber-layout .reference-products .products-shortcuts summary{color:var(--liber-ink);background:var(--liber-surface)}
 @media(max-width:650px){
- .app-shell.liber-layout .reference-products .products-card{padding:16px}
- .app-shell.liber-layout .reference-products .products-toolbar{gap:16px}
- .app-shell.liber-layout .reference-products .products-filters{gap:6px}
- .app-shell.liber-layout .reference-products .products-filters button{font-size:12px;padding:9px 10px}
- .app-shell.liber-layout .reference-products .products-search-actions{width:100%;flex-wrap:wrap;gap:10px}
- .app-shell.liber-layout .reference-products input[type=search]{width:100%;flex:1 1 200px;font-size:16px}
- .app-shell.liber-layout .reference-products .products-create{margin-left:auto}
+ .app-shell.liber-layout .reference-products .products-card{padding:var(--liber-space-4)}
+ .app-shell.liber-layout .reference-products .products-toolbar{gap:var(--liber-space-4)}
+ .app-shell.liber-layout .reference-products .products-filters{gap:var(--liber-menu-gap)}
+ .app-shell.liber-layout .reference-products .products-filters button{font-size:var(--liber-type-xs);padding:var(--liber-space-2) var(--liber-control-radius)}
+ .app-shell.liber-layout .reference-products .products-search-actions{display:grid;width:100%;gap:var(--liber-space-3)}
+ .app-shell.liber-layout .reference-products input[type=search]{width:100%;font-size:var(--liber-type-body)}
+ .app-shell.liber-layout .reference-products .products-create{justify-self:end}
+ .app-shell.liber-layout .reference-products .products-detail{
+   position:sticky;
+   inset-inline-start:var(--liber-products-detail-padding);
+   max-inline-size:calc(100cqi - 2 * var(--liber-products-detail-padding));
+   display:grid;
+   justify-items:start;
+   gap:var(--liber-space-3);
+ }
+ .app-shell.liber-layout .reference-products .products-detail>div{min-width:0;overflow-wrap:anywhere}
  .app-shell.liber-layout .reference-products .products-help{margin-left:0;margin-right:0}
 }

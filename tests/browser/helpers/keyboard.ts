@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 
-export async function prepareKeyboardPage(page: Page, overrides: Record<string, unknown> = {}) {
+export async function prepareKeyboardPage(page: Page, overrides: Record<string, unknown> = {}, beforeNavigate?: () => Promise<void>) {
   const user = { id: '11111111-1111-4111-8111-111111111111', aud: 'authenticated', role: 'authenticated', email: 'teste@example.com', app_metadata: {}, user_metadata: {}, created_at: '2026-10-27T00:00:00Z' }
   const writes: string[] = []
   await page.addInitScript(value => {
@@ -40,6 +40,7 @@ export async function prepareKeyboardPage(page: Page, overrides: Record<string, 
     if (name === 'inventory_dashboard') return route.fulfill({ json: { as_of: '2026-10-27T00:00:00Z', period_start: '2026-09-27T00:00:00Z', sold_boxes: 0, sales_count: 0, sales_by_product: [], receipts: [] } })
     return route.fulfill({ json: [] })
   })
+  await beforeNavigate?.()
   await page.goto('/')
   await expect(page.getByRole('heading', { name: 'Painel inicial', exact: true })).toBeVisible()
   await expect(page.locator('.dashboard-stock-totals')).toBeVisible()

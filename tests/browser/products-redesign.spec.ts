@@ -38,6 +38,23 @@ for(const theme of ['light','dark'] as const){
   expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
  })
 }
+test('Produtos: detalhes cabem na área visível da tabela em 360px',async({page})=>{
+ await page.setViewportSize({width:360,height:800})
+ const state=await prepareRedesign(page,'system');await openProducts(page)
+ const scroll=page.locator('.reference-products .ui-table-scroll')
+ const trigger=page.getByRole('button',{name:'Detalhes de AGM-35',exact:true})
+ await trigger.press('Enter')
+ await expect(trigger).toHaveAttribute('aria-expanded','true')
+ const detail=scroll.locator('.products-detail')
+ const bounds=await scroll.boundingBox()
+ const action=detail.getByRole('button',{name:/Ver estoque de AGM-35/})
+ await expect(action).toBeVisible()
+ const button=await action.boundingBox()
+ expect(button!.x).toBeGreaterThanOrEqual(bounds!.x)
+ expect(button!.x+button!.width).toBeLessThanOrEqual(bounds!.x+bounds!.width)
+ expect(await scroll.evaluate(el=>el.scrollWidth>el.clientWidth)).toBe(true)
+ expect(state.writes).toEqual([])
+})
 test('Produtos: filtros combinam busca por aplicação e estado vazio sem perder dados',async({page})=>{
  const state=await prepareRedesign(page);await openProducts(page)
  await page.getByRole('button',{name:'Molas (4)',exact:true}).click()
