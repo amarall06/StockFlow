@@ -6,6 +6,8 @@ import { ProductApplications } from './ProductApplications'
 import { EditButton } from './EditButton'
 import { ApplicationHistory } from './ApplicationHistory'
 import './ProductCatalog.css'
+import { PageHeading } from './InventoryLayout'
+import { Card } from './Interface'
 
 type DraftApplication = { key: string; vehicleModel: string; yearFrom: string; yearTo: string }
 type CatalogProps = {
@@ -28,8 +30,8 @@ export function ProductCatalog(props: CatalogProps) {
   const pendingMigration = props.databaseMode && props.apiVersion < 3
 
   return <>
-    <div className="page-heading"><div><p className="eyebrow">AMORTECEDORES</p><h1>Cadastro de aplicações</h1><p className="subtitle">Informe os veículos e anos de cada amortecedor para facilitar a identificação pela etiqueta.</p></div></div>
-    <section className="inventory-panel catalog-panel">
+    <PageHeading section="AMORTECEDORES" title="Cadastro de aplicações" subtitle="Informe os veículos e anos de cada amortecedor para facilitar a identificação pela etiqueta."/>
+    <Card className="inventory-panel catalog-panel" aria-label="Aplicações de amortecedores">
       <div className="catalog-selection"><label htmlFor="catalog-product">Amortecedor<select id="catalog-product" value={code} disabled={savingProduct || codes.length === 0} onChange={(event) => {
         if (dirty && !window.confirm('Descartar as alterações ainda não salvas deste produto?')) return
         setSelectedCode(event.target.value)
@@ -51,7 +53,7 @@ export function ProductCatalog(props: CatalogProps) {
           setMessage(props.databaseMode ? 'Aplicações salvas no Supabase.' : 'Aplicações atualizadas na demonstração local.')
         }} /> : <p className="history-message">Cadastre primeiro um amortecedor no estoque para informar suas aplicações.</p>}
       {code && <ApplicationHistory key={code} code={code} databaseMode={props.databaseMode} apiVersion={props.apiVersion} revision={revision} />}
-    </section>
+    </Card>
   </>
 }
 

@@ -1,5 +1,5 @@
 import {regionalLocations, regionalLocation, regionalOrder} from './lib/regional-locations'
-import {InventoryLayout} from './components/InventoryLayout'
+import {InventoryLayout, PageHeading} from './components/InventoryLayout'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -43,6 +43,7 @@ import {
 import './App.css'
 // O botão de perfil fica no cabeçalho, antes da primeira abertura da página de perfil.
 import './components/ProfileSettings.css'
+import './styles/operational-layout.css'
 
 import { AuthScreen, Brand } from './components/AuthScreen'
 import { ModuleBoundary, ModuleLoading } from './components/ModuleBoundary'
@@ -605,22 +606,18 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
 
 
-        <div className="content" id="consulta" tabIndex={-1}>
+        <div className={`content${showInventoryPage || ['outflow','history','catalog'].includes(activePage) ? ' operational-content' : ''}`} id="consulta" tabIndex={-1}>
           {resumeError && <p className="auth-error" role="status">{resumeError}</p>}
           {signOutError && <p className="auth-error" role="alert">{signOutError}</p>}
           <ModuleBoundary key={activePage}><Suspense fallback={<ModuleLoading />}>
           {showInventoryPage ? <>
-          <div className="page-heading">
-            <div>
-              <p className="eyebrow">CONTROLE DE {isSpringPage ? 'MOLAS' : 'AMORTECEDORES'}</p>
-              <h1>{isSpringPage ? 'Estoque de molas' : 'Visão geral'}</h1>
-              <p className="subtitle">Consulte quantidades de {productName} por produto, localização e situação.</p>
-            </div>
-            <div className="page-heading-tools">
+          <PageHeading section={`CONTROLE DE ${isSpringPage ? 'MOLAS' : 'AMORTECEDORES'}`}
+            title={isSpringPage ? 'Estoque de molas' : 'Visão geral'}
+            subtitle={`Consulte quantidades de ${productName} por produto, localização e situação.`}
+            actions={<div className="page-heading-tools">
               <span className="storage-badge" role="status">{storageMessage}</span>
               <span className="demo-badge"><span /> {dataMode === 'database' ? 'Dados do Supabase' : 'Dados fictícios'}</span>
-            </div>
-          </div>
+            </div>}/>
 
           {springUpdatePending && <p className="transfer-message" role="status">As situações antigas de molas precisam ser atualizadas no banco para “Em estoque”. Entradas e transferências de molas ficam aguardando essa atualização.</p>}
           {dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') && <ShelfCount key={`count:${userId}`} userId={userId} stock={stock} catalog={catalog} locations={locations} consultedAt={consultedAt} onRefresh={refreshDatabaseSnapshot}/>}
@@ -757,7 +754,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               />
             </label>
 
-            <div className="table-wrap">
+            <div className="table-wrap" tabIndex={0} role="region" aria-label="Rolagem da tabela de estoque">
               <table>
                 <thead>
                   <tr><th>PRODUTO</th><th>LOCALIZAÇÃO</th><th>SITUAÇÃO</th><th className="quantity-heading">QUANTIDADE (CAIXAS)</th></tr>

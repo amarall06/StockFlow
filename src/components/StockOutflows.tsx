@@ -3,6 +3,8 @@ import type { ProductInfo, StockRow } from '../lib/inventory-api'
 import { eligibleOutflows, outflowLabels, registerOutflow, normalizeOutflow, OutflowRejectedError, type OutflowReason } from '../lib/outflow-api'
 import { readPendingOutflow, savePendingOutflow, clearPendingOutflow, type PendingOutflow } from '../lib/pending-outflow'
 import './StockOutflows.css'
+import { PageHeading } from './InventoryLayout'
+import { Card } from './Interface'
 import { OfflineOperations } from './OfflineOperations'
 import { readOfflineOperations, removeOfflineOperation, type OfflineOperation } from '../lib/offline-operations'
 
@@ -109,8 +111,8 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
   }
   return <>
     <OfflineOperations key={`${userId}:${offlineRevision}`} userId={userId} disabled={!ready||!isAdministrator||saving||Boolean(pending)||Boolean(recovery.error)} onSend={draft=>void sendOffline(draft)}/>
-    <div className="page-heading"><div><p className="eyebrow">AMORTECEDORES E MOLAS</p><h1>Saídas de estoque</h1><p className="subtitle">Registre a retirada de caixas e acompanhe o motivo no Histórico.</p></div></div>
-    <section className="inventory-panel outflow-panel" aria-label="Registrar saída de caixas">
+    <PageHeading section="AMORTECEDORES E MOLAS" title="Saídas de estoque" subtitle="Registre a retirada de caixas e acompanhe o motivo no Histórico."/>
+    <Card className="inventory-panel outflow-panel" aria-label="Registrar saída de caixas">
       {!isAdministrator?<p>O registro de saídas está disponível apenas para Administrador nesta etapa.</p>:!ready?<p role="status">O registro de saídas aguarda ativação no banco.</p>:<>
         <div className="outflow-heading"><div><h2>Registrar saída</h2><p>A operação desconta caixas do estoque normal. Transferências e garantia têm controles próprios.</p></div><button type="button" className="theme-toggle" disabled={saving} onClick={()=>void refresh()}>Atualizar estoque</button></div>
         {recovery.error&&<p className="auth-error" role="alert">{recovery.error}</p>}
@@ -136,6 +138,6 @@ export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefr
         </form>
         {error&&<p className="auth-error" role="alert">{error}</p>}{message&&<p className="outflow-success" role="status">{message}</p>}
       </>}
-    </section>
+    </Card>
   </>
 }

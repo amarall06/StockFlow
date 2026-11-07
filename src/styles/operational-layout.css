@@ -1,0 +1,51 @@
+.app-shell.liber-layout .operational-content :is(.inventory-panel,.summary-card,.scan-panel,.location-workspace) {
+  min-width:0;
+  border:1px solid var(--liber-line);
+  border-radius:var(--liber-card-radius);
+  background:var(--liber-surface);
+  color:var(--liber-ink);
+  box-shadow:var(--liber-shadow);
+}
+
+.app-shell.liber-layout .operational-content :is(.outflow-summary,.catalog-preview,.catalog-notice) {
+  border-color:var(--liber-line);
+  border-radius:var(--liber-control-radius);
+  background:var(--liber-canvas);
+  color:var(--liber-ink);
+}
+
+.app-shell.liber-layout .operational-content :is(.outflow-panel,.history-panel,.catalog-panel,.scan-panel,.location-workspace,.shelf-count) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {
+  min-width:0;
+  min-height:var(--liber-touch);
+  border:1px solid var(--liber-products-search-border);
+  border-radius:var(--liber-control-radius);
+  background:var(--liber-surface);
+  color:var(--liber-ink);
+  font-size:var(--liber-type-base);
+}
+
+.app-shell.liber-layout .operational-content :is(.history-filters,.catalog-selection) { border-color:var(--liber-line); }
+.app-shell.liber-layout .operational-content :is(.history-filters label,.history-detail,.history-pagination,.catalog-editor label,.catalog-selection label,.outflow-panel label,.outflow-heading p,.catalog-product-heading p,.catalog-application-heading p,.catalog-empty) {
+  color:var(--liber-muted);
+  font-size:var(--liber-type-sm);
+}
+
+.app-shell.liber-layout .operational-content :is(.add-product-button,.theme-toggle,.catalog-remove) {
+  min-height:var(--liber-touch);
+  border-radius:var(--liber-control-radius);
+  font-size:var(--liber-type-base);
+}
+.app-shell.liber-layout .operational-content .add-product-button { background:var(--liber-button);border-color:var(--liber-button);color:var(--liber-button-ink); }
+.app-shell.liber-layout .operational-content :is(.theme-toggle,.catalog-remove) { background:var(--liber-surface);border-color:var(--liber-line);color:var(--liber-ink); }
+.app-shell.liber-layout .operational-content .table-wrap { max-width:100%;overflow-x:auto; }
+.app-shell.liber-layout .operational-content .table-wrap :is(th,td) { border-color:var(--liber-line);color:var(--liber-ink); }
+.app-shell.liber-layout .operational-content .table-wrap th { background:var(--liber-canvas);color:var(--liber-muted); }
+.app-shell.liber-layout .operational-content .page-heading-tools { display:flex;flex-wrap:wrap;gap:var(--liber-space-2); }
+
+@media (max-width:650px) {
+  .app-shell.liber-layout .operational-content :is(.outflow-panel,.history-panel,.catalog-panel,.scan-panel,.location-workspace,.shelf-count) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {
+    font-size:var(--liber-type-body);
+  }
+  .app-shell.liber-layout .operational-content .catalog-application-row { grid-template-columns:minmax(0,1fr); }
+  .app-shell.liber-layout .operational-content .page-heading-actions { margin-left:0; }
+}

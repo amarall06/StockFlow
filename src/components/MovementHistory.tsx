@@ -3,6 +3,8 @@ import { supabase } from '../lib/supabase'
 import { springCodePrefixes } from '../lib/product-category'
 import { startResumeRefresh } from '../lib/resume-refresh'
 import './MovementHistory.css'
+import { PageHeading } from './InventoryLayout'
+import { Button, Card } from './Interface'
 
 type Movement = {
   id: string
@@ -132,14 +134,12 @@ export function MovementHistory() {
   }
 
   return <>
-    <div className="page-heading">
-      <div><p className="eyebrow">CONTROLE DE ESTOQUE</p><h1>Histórico de movimentações</h1><p className="subtitle">Entradas, saídas, testes e transferências de amortecedores e molas.</p></div>
-      <button className="theme-toggle" type="button" onClick={() => setRevision((value) => value + 1)} disabled={loading}>Atualizar</button>
-    </div>
-    <section className="inventory-panel history-panel" aria-label="Movimentações do estoque">
+    <PageHeading section="CONTROLE DE ESTOQUE" title="Histórico de movimentações" subtitle="Entradas, saídas, testes e transferências de amortecedores e molas."
+      actions={<Button onClick={() => setRevision((value) => value + 1)} disabled={loading}>Atualizar</Button>}/>
+    <Card className="inventory-panel history-panel" aria-label="Movimentações do estoque">
       <form className="history-filters" onSubmit={applyFilters}>
         <label>Categoria<select value={category} onChange={(event) => setCategory(event.target.value)}><option value="">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label>
-        <label>Código do produto<input value={code} onChange={(event) => setCode(event.target.value)} placeholder="Ex.: AGM-35 ou MGM-35" /></label>
+        <label>Código do produto<input value={code} onChange={(event) => setCode(event.target.value)} placeholder="Buscar por código" /></label>
         <label>Tipo de operação<select value={type} onChange={(event) => setType(event.target.value)}><option value="">Todos os tipos</option>{Object.entries(typeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         <button className="add-product-button" type="submit">Filtrar</button>
       </form>
@@ -147,7 +147,7 @@ export function MovementHistory() {
       {loading ? <p className="history-message" role="status">Carregando movimentações…</p>
         : error ? <p className="history-message auth-error" role="alert">{error}</p>
           : rows.length === 0 ? <p className="history-message" role="status">Nenhuma movimentação encontrada para estes filtros.</p>
-            : <div className="table-wrap"><table>
+            : <div className="table-wrap" tabIndex={0} role="region" aria-label="Rolagem da tabela de movimentações"><table>
               <thead><tr><th>DATA E HORA</th><th>PRODUTO / OPERAÇÃO</th><th>QUANTIDADE</th><th>ORIGEM → DESTINO</th><th>SITUAÇÃO</th><th>RESPONSÁVEL</th></tr></thead>
               <tbody>{rows.map((row) => <tr key={row.id}>
                 <td><time dateTime={row.created_at}>{dateFormatter.format(new Date(row.created_at))}</time></td>
@@ -160,6 +160,6 @@ export function MovementHistory() {
             </table></div>}
       <div className="history-pagination"><span>Página {page + 1} · até {PAGE_SIZE} registros por página</span><div><button className="theme-toggle" type="button" disabled={loading || page === 0} onClick={() => setPage((value) => value - 1)}>Anterior</button><button className="theme-toggle" type="button" disabled={loading || !!error || !hasNextPage} onClick={() => setPage((value) => value + 1)}>Próxima</button></div></div>
       <p className="table-note">Horários no fuso deste dispositivo. Quando o nome não está disponível, mostramos parte do identificador da conta. Os saldos iniciais fictícios aparecem como ajustes de inventário.</p>
-    </section>
+    </Card>
   </>
 }
