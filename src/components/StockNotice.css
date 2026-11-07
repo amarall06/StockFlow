@@ -1,10 +1,23 @@
-.app-shell.liber-layout .stock-notice{position:fixed;right:20px;bottom:20px;z-index:50;display:grid;grid-template-columns:48px minmax(0,1fr);gap:14px;width:min(420px,calc(100vw - 32px));padding:20px;border:2px solid var(--liber-accent);border-top-width:6px;border-radius:16px;background:var(--liber-surface);color:var(--liber-ink);box-shadow:0 12px 48px #0003}
-.app-shell.liber-layout .stock-notice-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--liber-soft);color:var(--liber-accent)}
-.app-shell.liber-layout .stock-notice-icon svg{width:28px;height:28px}
-.app-shell.liber-layout .stock-notice p{margin:0;color:var(--liber-muted);font-size:14px;line-height:22px;overflow-wrap:anywhere}
-.app-shell.liber-layout .stock-notice strong{display:inline-block;margin-bottom:4px;color:var(--liber-ink);font-size:18px}
-.app-shell.liber-layout .stock-notice>div{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap}
-.app-shell.liber-layout .stock-notice button{min-height:44px;padding:10px 18px;border:1px solid var(--liber-line);border-radius:10px;background:var(--liber-surface);color:var(--liber-ink);font:inherit;font-size:14px;cursor:pointer}
+.app-shell.liber-layout .stock-notice{position:fixed;right:var(--liber-space-5);bottom:var(--liber-space-5);z-index:var(--liber-notice-layer);display:grid;grid-template-columns:var(--liber-brand-size) minmax(0,1fr);gap:var(--liber-type-base);width:min(var(--liber-notice-width),calc(100vw - 2 * var(--liber-space-5)));padding:var(--liber-space-5);border:var(--liber-notice-stroke) solid var(--liber-accent);border-top-width:var(--liber-notice-accent-stroke);border-radius:var(--liber-card-radius);background:var(--liber-surface);color:var(--liber-ink);box-shadow:var(--liber-notice-shadow)}
+.app-shell.liber-layout .stock-notice-icon{display:grid;place-items:center;width:var(--liber-brand-size);height:var(--liber-brand-size);border-radius:var(--liber-type-base);background:var(--liber-soft);color:var(--liber-accent)}
+.app-shell.liber-layout .stock-notice-icon svg{width:var(--liber-type-mark);height:var(--liber-type-mark)}
+.app-shell.liber-layout .stock-notice p{margin:0;color:var(--liber-muted);font-size:var(--liber-type-base);line-height:var(--liber-alert-card-padding);overflow-wrap:anywhere}
+.app-shell.liber-layout .stock-notice strong{display:inline-block;margin-bottom:var(--liber-space-1);color:var(--liber-ink);font-size:var(--liber-alert-card-inset)}
+.app-shell.liber-layout .stock-notice>div{grid-column:1/-1;display:flex;gap:var(--liber-space-3);flex-wrap:wrap}
+.app-shell.liber-layout .stock-notice button{min-height:var(--liber-touch);padding:var(--liber-control-radius) var(--liber-alert-card-inset);border:1px solid var(--liber-line);border-radius:var(--liber-control-radius);background:var(--liber-surface);color:var(--liber-ink);font:inherit;font-size:var(--liber-type-base);cursor:pointer}
 .app-shell.liber-layout .stock-notice button:first-child{flex:1;background:var(--liber-button);border-color:var(--liber-button);color:var(--liber-button-ink);font-weight:700}
-.app-shell.liber-layout .stock-notice button:focus-visible{outline:3px solid var(--liber-accent);outline-offset:3px}
-@media(max-width:650px){.app-shell.liber-layout .stock-notice{right:16px;bottom:16px;padding:16px;gap:12px;max-height:calc(100dvh - 32px);overflow:auto}}
+.app-shell.liber-layout .stock-notice button:focus-visible{outline:var(--liber-focus-width) solid var(--liber-focus);outline-offset:var(--liber-focus-offset)}
+@media(max-width:650px){
+  .app-shell.liber-layout .stock-notice{
+    --notice-right:max(var(--liber-space-4),env(safe-area-inset-right));
+    --notice-left:max(var(--liber-space-4),env(safe-area-inset-left));
+    --notice-bottom:max(var(--liber-space-4),env(safe-area-inset-bottom));
+    right:var(--notice-right);
+    bottom:var(--notice-bottom);
+    width:min(var(--liber-notice-width),calc(100vw - var(--notice-left) - var(--notice-right)));
+    padding:var(--liber-space-4);
+    gap:var(--liber-space-3);
+    max-height:calc(100dvh - var(--notice-bottom) - max(var(--liber-space-4),env(safe-area-inset-top)));
+    overflow:auto;
+  }
+}

@@ -41,6 +41,10 @@
  --liber-warranty-table-width:850px;--liber-warranty-record-width:116px;
  --liber-warranty-reason-width:330px;--liber-warranty-mobile-metric-height:104px;
  --liber-warranty-icon-text-size:26px;--liber-warranty-field-border:#B69A87;
+ --liber-alert-card-padding:22px;--liber-alert-card-inset:18px;--liber-alert-card-height:88px;
+ --liber-alert-product-min:130px;--liber-alert-product-max:200px;--liber-alert-menu-width:300px;
+ --liber-notice-width:420px;--liber-notice-layer:50;--liber-notice-shadow:0 12px 48px #0003;
+ --liber-notice-stroke:2px;--liber-notice-accent-stroke:6px;
  color-scheme:light;
 }
 .liber-layout.theme-dark{
