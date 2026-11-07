@@ -24,6 +24,12 @@
  --liber-menu-badge:#FFAE57;--liber-menu-badge-ink:#2B1810;--liber-menu-close-line:#FFFFFF50;
  --liber-brand-fill:#D96A28;--liber-brand-ink:#FFFFFF;--liber-drawer-backdrop:#0007;
  --liber-topbar-layer:20;
+ --liber-dashboard-gap:20px;--liber-dashboard-card-padding:22px;
+ --liber-dashboard-metric-height:112px;--liber-dashboard-metric-icon:56px;
+ --liber-dashboard-number-size:32px;--liber-dashboard-number-line:34px;
+ --liber-dashboard-top-height:356px;--liber-dashboard-bottom-height:258px;
+ --liber-dashboard-card-heading:18px;--liber-dashboard-chart-height:250px;
+ --liber-dashboard-chart-offset:26px;
  color-scheme:light;
 }
 .liber-layout.theme-dark{

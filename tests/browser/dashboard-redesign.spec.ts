@@ -111,9 +111,11 @@ test('carregamento preserva os indicadores enquanto o relatório aguarda respost
  let release!:()=>void;state.holdReport=new Promise<void>(resolve=>{release=resolve})
  await page.reload()
  await expect(page.getByRole('status').filter({hasText:'Carregando vendas e recebimentos…'})).toBeVisible()
+ await expect(page.locator('.dashboard-loading-bars > span')).toHaveCount(3)
  await expect(page.locator('.dashboard-stock-totals')).toContainText('53')
  state.holdReport=null;release()
  await expect(page.getByRole('table',{name:'Vendas por código',exact:true})).toBeVisible()
+ await expect(page.locator('.dashboard-loading-bars')).toHaveCount(0)
  expect(state.writes).toEqual([])
 })
 
