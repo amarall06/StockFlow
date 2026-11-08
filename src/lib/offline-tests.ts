@@ -1,7 +1,7 @@
 import type { StockRow } from './inventory-api'
 import { isSpringCode } from './product-category'
 type TestInput = { row: StockRow; boxes: number }
-function normalizeTest(input: TestInput) { if(!input || !input.row || !/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(input.row.code) || isSpringCode(input.row.code) || input.row.status!=='Aguardando testagem' || typeof input.row.location!=='string' || !input.row.location.trim() || !Number.isSafeInteger(input.row.boxes) || input.row.boxes<1 || !Number.isSafeInteger(input.boxes) || input.boxes<1 || input.boxes>input.row.boxes)throw new Error('Confira amortecedor aguardando testagem, local e quantidade dentro da consulta.') }
+function normalizeTest(input: TestInput) { if(!input || !input.row || !/^(?:(?:AMD|AMT)-(?!MGM-|MFI-|MRE-|MFR-))?[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(input.row.code) || isSpringCode(input.row.code) || input.row.status!=='Aguardando testagem' || typeof input.row.location!=='string' || !input.row.location.trim() || !Number.isSafeInteger(input.row.boxes) || input.row.boxes<1 || !Number.isSafeInteger(input.boxes) || input.boxes<1 || input.boxes>input.row.boxes)throw new Error('Confira amortecedor aguardando testagem, local e quantidade dentro da consulta.') }
 export type OfflineTest = { id: string; userId: string; input: TestInput; phase: 'draft' | 'uncertain' | 'confirmed' }
 export const offlineTestsKey = (userId: string) => `liber:offline-tests:v1:${userId}`
 export function readOfflineTests(userId: string): OfflineTest[] {

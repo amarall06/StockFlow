@@ -99,7 +99,7 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived, use
     <form className="add-product-form receipt-form" onSubmit={submit} onChange={changed}>
       <div className="form-heading"><h2>Registrar entrada de estoque</h2><p>Fornecedor e lote são opcionais. Código novo cadastra o produto e sua entrada juntos.</p></div>
       <fieldset disabled={disabled || creating} className="receipt-fields">
-        <label>Código do produto<input required maxLength={7} placeholder={springs?'MGM-12':'AGM-35'} value={code} onChange={(e)=>setCode(e.target.value)} /></label>
+        <label>Código do produto<input required maxLength={springs?10:14} placeholder={springs?'MGM-12':'AMD-AGM-35'} value={code} onChange={(e)=>setCode(e.target.value)} /></label>
         <label>Aplicação (para código novo)<input maxLength={500} required={!known} disabled={!!known} value={known?.application ?? application} onChange={(e)=>setApplication(e.target.value)} /></label>
         <label>Localização<select required value={location} onChange={(e)=>setLocation(e.target.value)}><option value="">Escolha a prateleira</option>{locations.map((l)=><option key={l}>{l}</option>)}</select></label>
         {springs ? <label>Situação<input value="Em estoque" readOnly /></label> : <label>Situação<select disabled={!admin} value={status} onChange={(e)=>setStatus(e.target.value)}><option value="awaiting_test">Aguardando testagem</option>{admin && <option value="released_for_sale">Liberado para venda</option>}</select></label>}

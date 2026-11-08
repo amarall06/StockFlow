@@ -37,7 +37,7 @@ export function parseShelfCount(raw: string | null, userId: string): ShelfCount 
   if (!Array.isArray(reference) || reference.some(row => !row || typeof row.code !== 'string' || !quantity(row.boxes) || !validCountStatus(row.code, row.status))) throw new Error('Referência de contagem inválida.')
   const seen = new Set<string>()
   for (const row of value.rows) {
-    if (!row || typeof row.code !== 'string' || !/^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(row.code) || !validCountStatus(row.code, row.status) || !quantity(row.expected) || (row.counted !== null && !quantity(row.counted)) || seen.has(countRowKey(row))) throw new Error('Item de contagem inválido.')
+    if (!row || typeof row.code !== 'string' || !/^(?:(?:AMD|AMT)-(?!MGM-|MFI-|MRE-|MFR-))?[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(row.code) || !validCountStatus(row.code, row.status) || !quantity(row.expected) || (row.counted !== null && !quantity(row.counted)) || seen.has(countRowKey(row))) throw new Error('Item de contagem inválido.')
     seen.add(countRowKey(row))
     if (row.expected !== (reference.find(item => countRowKey(item) === countRowKey(row))?.boxes ?? 0)) throw new Error('Referência de contagem divergente.')
   }

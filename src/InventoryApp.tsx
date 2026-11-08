@@ -463,7 +463,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     event.preventDefault() // Evita que o navegador recarregue a página.
     if (springUpdatePending) return
     const normalizedCode = newCode.trim().toUpperCase()
-    const codeIsValid = /^[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(normalizedCode)
+    const codeIsValid = /^(?:(?:AMD|AMT)-(?!MGM-|MFI-|MRE-|MFR-))?[A-Z]{3}-(100|[1-9][0-9]?|0[1-9])([A-Z]{1,3})?$/.test(normalizedCode)
     const codeMatchesPage = isSpringCode(normalizedCode) === isSpringPage
     const quantity = Number(newQuantity)
 
