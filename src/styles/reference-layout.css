@@ -196,3 +196,86 @@
   font-size:var(--liber-type-body);
 }
 .app-shell.liber-layout :is(.dashboard-quicknav,.products-shortcuts,.warranty-shortcuts) .ui-button{justify-content:flex-start;text-align:left}
+
+.app-shell.liber-layout {
+  --liber-motion-control: 140ms;
+  --liber-motion-reveal: 220ms;
+  --liber-motion-chart: 340ms;
+  --liber-motion-ease: cubic-bezier(.2,.7,.25,1);
+}
+
+.app-shell.liber-layout .subtitle { color: var(--liber-muted); }
+.app-shell.liber-layout .dashboard-stat strong,
+.app-shell.liber-layout .activity-chart text { font-variant-numeric: tabular-nums; }
+
+.app-shell.liber-layout .dashboard-more>summary::marker { color: var(--liber-accent); }
+.app-shell.liber-layout .dashboard-more>summary::after {
+  content: '';
+  margin-inline-start: auto;
+  width: var(--liber-space-2);
+  height: var(--liber-space-2);
+  border: solid var(--liber-muted);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.app-shell.liber-layout .dashboard-more[open]>summary::after { transform: rotate(225deg); }
+
+.app-shell.liber-layout .dashboard-quicknav>div {
+  box-sizing: border-box;
+  grid-template-columns: minmax(0, 1fr);
+}
+.app-shell.liber-layout .dashboard-quicknav .ui-button {
+  min-width: 0;
+  white-space: normal;
+}
+
+@media (hover:hover) {
+  .app-shell.liber-layout .reference-dashboard .dashboard-stock-totals button.dashboard-stat:hover {
+    border-color: var(--liber-accent);
+  }
+  .app-shell.liber-layout :is(.dashboard-quicknav,.activity-options)>summary:hover {
+    background: var(--liber-soft);
+  }
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  .app-shell.liber-layout :is(.nav-item,.ui-button,.dashboard-stat,.dashboard-quicknav>summary,.activity-options>summary) {
+    transition: background-color var(--liber-motion-control) ease,
+      border-color var(--liber-motion-control) ease,
+      color var(--liber-motion-control) ease,
+      filter var(--liber-motion-control) ease;
+  }
+
+  .app-shell.liber-layout .dashboard-more>summary::after {
+    transition: transform var(--liber-motion-control) var(--liber-motion-ease);
+  }
+
+  .app-shell.liber-layout :is(.dashboard-quicknav[open]>div,.activity-options[open]>.activity-options-content,.stock-notice) {
+    animation: liber-control-reveal var(--liber-motion-reveal) var(--liber-motion-ease) both;
+  }
+
+  .app-shell.liber-layout .mobile-navigation-dialog[open] {
+    animation: liber-drawer-reveal var(--liber-motion-reveal) var(--liber-motion-ease) both;
+  }
+
+  .app-shell.liber-layout .activity-chart rect {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: liber-bar-reveal var(--liber-motion-chart) var(--liber-motion-ease) both;
+  }
+}
+
+@keyframes liber-control-reveal {
+  from { opacity: 0; transform: translateY(var(--liber-space-1)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes liber-drawer-reveal {
+  from { opacity: 0; transform: translateX(calc(-1 * var(--liber-space-3))); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes liber-bar-reveal {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
