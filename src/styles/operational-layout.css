@@ -49,3 +49,53 @@
   .app-shell.liber-layout .operational-content .catalog-application-row { grid-template-columns:minmax(0,1fr); }
   .app-shell.liber-layout .operational-content .page-heading-actions { margin-left:0; }
 }
+
+.app-shell.liber-layout :is(.products-shortcuts,.products-create,.warranty-shortcuts) > summary {
+  gap:var(--liber-space-3);
+}
+.app-shell.liber-layout :is(.products-shortcuts,.products-create,.warranty-shortcuts) > summary::after {
+  content:'';
+  flex:none;
+  width:var(--liber-space-2);
+  height:var(--liber-space-2);
+  border:solid currentColor;
+  border-width:0 2px 2px 0;
+  transform:translateY(-2px) rotate(45deg);
+}
+.app-shell.liber-layout :is(.products-shortcuts,.products-create,.warranty-shortcuts)[open] > summary::after {
+  transform:translateY(2px) rotate(225deg);
+}
+
+.app-shell.liber-layout :is(.reference-products,.reference-warranty,.reference-alerts,.operational-content) table {
+  font-variant-numeric:tabular-nums;
+}
+.app-shell.liber-layout :is(.reference-products,.reference-warranty,.operational-content) tbody tr:focus-within > td {
+  background-color:var(--liber-canvas);
+}
+
+@media (hover:hover) {
+  .app-shell.liber-layout :is(.reference-products,.reference-warranty,.operational-content) tbody tr:hover > td {
+    background-color:var(--liber-canvas);
+  }
+  .app-shell.liber-layout :is(.products-shortcuts,.warranty-shortcuts) > summary:hover {
+    border-color:var(--liber-accent);
+  }
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  .app-shell.liber-layout :is(.products-shortcuts,.products-create,.warranty-shortcuts) > summary::after {
+    transition:transform var(--liber-motion-control,140ms) ease;
+  }
+  .app-shell.liber-layout :is(.products-shortcuts,.products-create,.warranty-shortcuts)[open] > div {
+    animation:liber-control-reveal var(--liber-motion-reveal,220ms) var(--liber-motion-ease,ease-out) both;
+  }
+  .app-shell.liber-layout :is(.reference-products,.reference-warranty,.reference-alerts,.operational-content)
+    :is(.add-product-button,.theme-toggle,.products-filters button) {
+    transition:background-color var(--liber-motion-control,140ms) ease,
+      border-color var(--liber-motion-control,140ms) ease,
+      color var(--liber-motion-control,140ms) ease;
+  }
+  .app-shell.liber-layout .reference-alert-row {
+    animation:liber-panel-enter var(--liber-panel-enter-duration,220ms) ease-out;
+  }
+}
