@@ -39,7 +39,7 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
   const capacity = current && Object.hasOwn(capacities, current.location) ? capacities[current.location] : null
   return <section className={operational ? 'fictional-shelf-map operational-shelf-map' : 'fictional-shelf-map'} aria-label="Mapa de prateleiras">
     <h3>Mapa — Norte, Sul, Leste e Oeste</h3>
-    <p>Norte acima, Sul abaixo, Oeste à esquerda e Leste à direita. Clique ou use Tab e Enter para consultar cada prateleira.</p>
+    <p>Norte acima, Sul abaixo, Oeste à esquerda e Leste à direita.</p>
     <label>Buscar produto no mapa<input type="search" maxLength={60} value={query} onChange={event => setQuery(event.target.value)} placeholder="Ex.: AGM-35 ou MGM-35"/></label>
     {query && <button type="button" className="theme-toggle" onClick={() => setQuery('')}>Limpar busca do mapa</button>}
     <p role="status">{normalized ? matches.length ? `Produto encontrado em ${matches.length} prateleiras: ${matches.map(row => row.location).join(', ')}.` : 'Nenhum produto encontrado no mapa. As prateleiras continuam mostrando seus saldos completos.' : 'Digite um código ou parte dele para destacar todas as prateleiras correspondentes.'}</p>

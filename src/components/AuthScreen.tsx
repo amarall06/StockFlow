@@ -6,5 +6,5 @@ export function AuthScreen({ dark, onToggle, children }: { dark: boolean; onTogg
 }
 
 export function Brand() {
-  return <div className="auth-brand"><span className="brand-mark">L</span><span>LIBER<span className="brand-light"> automotive</span></span></div>
+  return <div className="auth-brand"><img className="brand-mark" src="/liber-logo.png" alt="" /><span>LIBER<span className="brand-light"> automotive</span></span></div>
 }

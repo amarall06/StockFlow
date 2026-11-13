@@ -530,7 +530,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const sidebarContent = <>
 
         <a className="brand" href="#inicio" aria-label="LIBER automotive, início" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}>
-          <span className="brand-mark">L</span>
+          <img className="brand-mark" src="/liber-logo.png" alt="" />
           <span className="brand-wordmark">LIBER</span><span className="brand-light">SOLUÇÕES EM ESTOQUE<br/> AUTOMOTIVO</span>
         </a>
 
@@ -668,7 +668,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             </div>
             <LocationStockSummary locations={locations} stock={activeStock} springs={isSpringPage}/>
             <div className="location-tools">
-              <section className="location-create-form"><h3>Prateleiras por região</h3><p>Norte, Sul, Leste e Oeste. Escolha uma região nos registros e nas transferências.</p></section>
+              <section className="location-create-form"><h3>Prateleiras por região</h3><p>Norte, Sul, Leste e Oeste.</p></section>
               <>{dataMode === 'database' ? <StockTransfers userId={userId} stock={activeStock} locations={locations} canTransfer={canTransferStock} ready={inventoryApiVersion >= 15} onRefresh={refreshDatabaseSnapshot} /> : <form className="transfer-form" onSubmit={handleTransfer}>
                 <h3>Transferir entre prateleiras</h3>
                 <p>A quantidade transferida mantém a situação operacional.</p>

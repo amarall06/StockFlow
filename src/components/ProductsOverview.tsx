@@ -74,7 +74,7 @@ export function ProductsOverview({catalog, stock, onOpen, isAdministrator}: {
         })}</tbody>
       </Table>
       {!products.length && <p className="products-empty" role="status">{entries.length ? 'Nenhum produto encontrado para esta busca ou tipo.' : 'Nenhum produto cadastrado.'}</p>}
-      <p className="products-help" role="status">{products.length} {products.length === 1 ? 'produto encontrado' : 'produtos encontrados'} · Toque no código para ver foto, aplicações e estoque.</p>
+      <p className="products-help" role="status">{products.length} {products.length === 1 ? 'produto encontrado' : 'produtos encontrados'}</p>
     </Card>
   </div>
 }

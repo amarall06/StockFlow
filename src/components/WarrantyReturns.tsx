@@ -155,7 +155,7 @@ export function WarrantyReturns({ ready, isAdministrator, manufacturers, revisio
           <p><strong>Motivo:</strong> {row.reason}</p>{row.destination && <p><strong>Destino:</strong> {row.destination}</p>}
           </div></td></tr>
         </Fragment>)}</tbody></Table>}
-        <p className="manufacturer-feedback warranty-query-scope">Consulta limitada às 100 devoluções mais recentes. Resumo e filtros se aplicam a esses registros. Toque no registro para ver detalhes e ações.</p>
+        <p className="manufacturer-feedback warranty-query-scope">Consulta limitada às 100 devoluções mais recentes. Resumo e filtros se aplicam a esses registros.</p>
       </>}
       {editing !== undefined && <ReturnDialog previous={editing} manufacturers={manufacturers} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); setMessage('Devolução salva. Saldos atualizados quando houver entrada ou saída da garantia.'); onChanged() }} />}
     </>}
