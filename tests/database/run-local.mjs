@@ -37,6 +37,7 @@ try {
     const migration = readFileSync(new URL(`supabase/migrations/${name}`,root),'utf8')
     if (name.endsWith('_four_regional_shelves.sql')) {
       sql("insert into public.locations(code) values ('NORTE'),('SUL'),('LESTE'),('OESTE') on conflict(code) do nothing")
+      sql("insert into private.company_allowed_emails(email) values ('regional-migration@test.invalid'); insert into auth.users(id,email) values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','regional-migration@test.invalid'); update public.profiles set is_active=true, role='administrator' where id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';")
       sql(`begin;\n${migration}\ncommit;`)
     } else sql(migration)
   }
