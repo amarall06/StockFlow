@@ -294,9 +294,9 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   }
 
   useEffect(() => {
-    // Primeira etapa da sincronização: somente telas de consulta. Formulários,
+    // Atualiza saldos nas telas de consulta e operação. Formulários,
     // diálogos operacionais e recuperação de pedidos conservam seu fluxo atual.
-    if (dataMode !== 'database' || !['dashboard', 'stock', 'products', 'alerts'].includes(activePage)) return
+    if (dataMode !== 'database' || !['dashboard', 'stock', 'products', 'alerts', 'inventory', 'springs', 'outflow'].includes(activePage)) return
     return startResumeRefresh({
       load: loadInventorySnapshot,
       intervalMs: 30_000,

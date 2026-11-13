@@ -75,14 +75,16 @@ test('aviso privado atualiza dois clientes isolados antes do intervalo sem aplic
   } finally { await otherContext.close() }
 })
 
-test('aviso Realtime não consulta nem altera rascunho em formulário operacional', async ({ page }) => {
+test('aviso Realtime atualiza saldo e preserva o formulário operacional', async ({ page }) => {
   const current = await consumer(page)
   await openModule(page, 'Visão geral')
   const code = page.locator('.receipt-form').getByLabel('Código do produto', { exact: true })
   await code.fill('AGM-35')
+  current.stock.shocks = 7
   current.server.emit()
   await page.clock.runFor(500)
-  expect(current.queries()).toBe(0)
+  await expect(page.getByRole('region', { name: 'Rolagem da tabela de estoque' })).toContainText('7 cx.')
+  expect(current.queries()).toBeGreaterThan(0)
   await expect(code).toHaveValue('AGM-35')
   expect(current.writes).toEqual([])
 })
