@@ -199,7 +199,6 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [moveQuantity, setMoveQuantity] = useState('1')
   const [transferMessage, setTransferMessage] = useState('')
   const [search, setSearch] = useState('')
-  const [onlyAwaitingTest, setOnlyAwaitingTest] = useState(false)
   const [showAllShocks, setShowAllShocks] = useState(false)
   // Estados dos campos do formulário para incluir um registro fictício.
   const [newCode, setNewCode] = useState('')
@@ -334,15 +333,14 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   // Filtra por código, aplicação ou localização sempre que a busca muda.
   const filteredStock = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR')
-    const rows = onlyAwaitingTest ? activeStock.filter(row => row.status === 'Aguardando testagem' && row.boxes > 0) : activeStock
-    if (!term) return rows
+    if (!term) return activeStock
 
-    return rows.filter((row) =>
+    return activeStock.filter((row) =>
       `${row.code} ${searchableProductText(activeCatalog[row.code])} ${row.location}`
         .toLocaleLowerCase('pt-BR')
         .includes(term),
     )
-  }, [search, activeStock, activeCatalog, onlyAwaitingTest])
+  }, [search, activeStock, activeCatalog])
   const canExpandStock = !isSpringPage && !search.trim() && filteredStock.length > 8
   const visibleStock = canExpandStock && !showAllShocks ? filteredStock.slice(0, 8) : filteredStock
 
@@ -377,7 +375,6 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     setScanResult(null)
     setScanMessage('')
     setSearch('')
-    setOnlyAwaitingTest(false)
     setTransferMessage('')
   }
 
@@ -749,7 +746,6 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               <span className="row-count">{visibleStock.length < filteredStock.length ? `${visibleStock.length} de ` : ''}{filteredStock.length} registros</span>
             </div>
 
-            {onlyAwaitingTest && <button className="ui-button" type="button" onClick={() => setOnlyAwaitingTest(false)}>Remover filtro: aguardando testagem</button>}
             <div className="regional-stock-tools">
               <label className="search-box">
                 <span aria-hidden="true">⌕</span>
@@ -795,7 +791,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts onOpen={changePage} canReceive={canReceiveStock} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} stock={stock} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard onOpenAwaitingTest={() => { changePage('inventory'); setOnlyAwaitingTest(true) }} hasPendingOutflow={isAdministrator && Boolean(readPendingOutflow(userId).pending)} capacityUserId={dataMode === 'database' ? userId : undefined} locations={locations} countUserId={dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') ? userId : undefined} activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts onOpen={changePage} canReceive={canReceiveStock} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview catalog={catalog} stock={stock} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard capacityUserId={dataMode === 'database' ? userId : undefined} locations={locations} countUserId={dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') ? userId : undefined} activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {
