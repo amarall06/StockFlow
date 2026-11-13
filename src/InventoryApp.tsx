@@ -746,22 +746,24 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               <span className="row-count">{visibleStock.length < filteredStock.length ? `${visibleStock.length} de ` : ''}{filteredStock.length} registros</span>
             </div>
 
-            <label className="search-box">
-              <span aria-hidden="true">⌕</span>
-              <input
-                type="search"
-                placeholder="Buscar por código, aplicação ou localização..."
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                aria-label="Buscar por código, aplicação ou localização"
-              />
-            </label>
+            <div className="regional-stock-tools">
+              <label className="search-box">
+                <span aria-hidden="true">⌕</span>
+                <input
+                  type="search"
+                  placeholder="Buscar por código, aplicação ou localização..."
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  aria-label="Buscar por código, aplicação ou localização"
+                />
+              </label>
 
-            {canExpandStock && (
-              <button className="theme-toggle" type="button" aria-expanded={showAllShocks} aria-controls="regional-stock-table" onClick={() => setShowAllShocks((value) => !value)}>
-                {showAllShocks ? 'Mostrar menos amortecedores' : 'Ver todos os amortecedores'}
-              </button>
-            )}
+              {canExpandStock && (
+                <button className="ui-button ui-button-primary" type="button" aria-expanded={showAllShocks} aria-controls="regional-stock-table" onClick={() => setShowAllShocks((value) => !value)}>
+                  {showAllShocks ? 'Mostrar menos amortecedores' : 'Ver todos os amortecedores'}
+                </button>
+              )}
+            </div>
             <div id="regional-stock-table" className="table-wrap" tabIndex={0} role="region" aria-label="Rolagem da tabela de estoque">
               <table>
                 <thead>

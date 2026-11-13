@@ -42,6 +42,35 @@
 .app-shell.liber-layout .operational-content .table-wrap th { background:var(--liber-canvas);color:var(--liber-muted); }
 .app-shell.liber-layout .operational-content .page-heading-tools { display:flex;flex-wrap:wrap;gap:var(--liber-space-2); }
 
+.app-shell.liber-layout .regional-stock-tools {
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--liber-space-3);
+  margin:0 var(--liber-space-4) var(--liber-space-4);
+}
+.app-shell.liber-layout .regional-stock-tools .search-box {
+  flex:1 1 18rem;
+  min-width:0;
+  height:auto;
+  min-height:var(--liber-touch);
+  margin:0;
+}
+.app-shell.liber-layout .regional-stock-tools .search-box input {
+  min-width:0;
+  font-size:1rem;
+}
+.app-shell.liber-layout .regional-stock-tools .search-box input:focus-visible {
+  outline:none;
+}
+.app-shell.liber-layout .regional-stock-tools .search-box:focus-within {
+  outline:2px solid var(--liber-focus);
+  outline-offset:2px;
+  box-shadow:none;
+}
+@media (max-width:600px) {
+  .app-shell.liber-layout .regional-stock-tools > button { width:100%; }
+}
+
 @media (max-width:650px) {
   .app-shell.liber-layout .operational-content :is(.outflow-panel,.history-panel,.catalog-panel,.scan-panel,.location-workspace,.shelf-count) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {
     font-size:var(--liber-type-body);
