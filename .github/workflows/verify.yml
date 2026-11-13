@@ -24,7 +24,14 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Verificar disputa pela última caixa
-        run: node tests/database/run-local.mjs --reservations
+        run: |
+          if ! node tests/database/run-local.mjs --reservations > /tmp/reservations.log 2>&1; then
+            cat /tmp/reservations.log
+            message=$(grep -m 1 -E 'ERROR:|^Error:' /tmp/reservations.log || true)
+            printf '::error::%s\n' "$message"
+            exit 1
+          fi
+          cat /tmp/reservations.log
       - name: Build e regressões
         run: npm test
       - name: Análise do código
