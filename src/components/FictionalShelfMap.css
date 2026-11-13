@@ -20,3 +20,22 @@
 .floor-zone{position:absolute;bottom:24px;width:180px;height:80px;display:grid;place-content:center;background:#326d6f;border:2px solid #8bc9cb;color:#fff;font-size:16px;border-radius:3px}.floor-receiving{left:40px}.floor-dispatch{right:40px}
 .floor-properties h5{font-size:14px;margin-block:12px}.floor-properties>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.floor-properties label{font-size:12px;display:grid;gap:5px;min-width:0}.floor-properties input{font-size:16px;padding:7px;min-height:44px}.floor-properties button{margin-block:12px}.fictional-map .map-shelf:focus-visible{outline:4px solid #fff;outline-offset:5px}
 @media(max-width:1100px){.floor-workspace{grid-template-columns:minmax(0,1fr)}.floor-viewport{height:460px}}
+
+.operational-shelf-map .floor-workspace {
+  --map-height: clamp(340px, 62vh, 520px);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: clamp(8px, 2vw, 16px);
+}
+.operational-shelf-map .floor-viewport,
+.operational-shelf-map .map-details {
+  box-sizing: border-box;
+  height: var(--map-height);
+}
+.operational-shelf-map .map-details {
+  overflow: auto;
+  overflow-wrap: anywhere;
+  background: var(--liber-surface, #fff);
+}
+.operational-shelf-map .map-table-scroll table { min-width: 0; }
+.operational-shelf-map .map-table-scroll th,
+.operational-shelf-map .map-table-scroll td { padding: 6px; }

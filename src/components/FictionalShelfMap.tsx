@@ -18,12 +18,26 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
   const originalRaw = useRef(saved.raw)
   const [layout, setLayout] = useState<FloorPlan>(saved.layout)
   const displayLayout=sharedView?baseLayout:layout
-  const [zoom, setZoom] = useState(0.75)
+  const [baseZoom, setZoom] = useState(0.75)
   const [feedback, setFeedback] = useState({ text: '', error: false })
   const { shelves, normalized, matches } = fictionalShelfMap(stock, query,operational)
   const current = shelves.find(row => row.location === selected)
+  const zoomOffset = operational && current ? 0.25 : 0
+  const zoom = Math.min(1.5, baseZoom + zoomOffset)
+  const selectedLocation = current?.location
+  useEffect(() => {
+    if (!operational || !selectedLocation) return
+    const area = viewport.current
+    const shelf = buttons.current.get(selectedLocation)
+    if (!area || !shelf) return
+    area.scrollTo({
+      left: (shelf.offsetLeft + shelf.offsetWidth / 2) * zoom - area.clientWidth / 2,
+      top: (shelf.offsetTop + shelf.offsetHeight / 2) * zoom - area.clientHeight / 2,
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+    })
+  }, [operational, selectedLocation, zoom])
   const capacity = current && Object.hasOwn(capacities, current.location) ? capacities[current.location] : null
-  return <section className="fictional-shelf-map" aria-label="Mapa de prateleiras">
+  return <section className={operational ? 'fictional-shelf-map operational-shelf-map' : 'fictional-shelf-map'} aria-label="Mapa de prateleiras">
     <h3>Mapa — Norte, Sul, Leste e Oeste</h3>
     <p>Norte acima, Sul abaixo, Oeste à esquerda e Leste à direita. Clique ou use Tab e Enter para consultar cada prateleira.</p>
     <label>Buscar produto no mapa<input type="search" maxLength={60} value={query} onChange={event => setQuery(event.target.value)} placeholder="Ex.: AGM-35 ou MGM-35"/></label>
@@ -32,9 +46,9 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
     <ul className="map-legend" aria-label="Legenda do mapa"><li>Ocupada: há caixas registradas.</li><li>Sem caixas: saldo zero, sem comprovação de espaço livre real.</li><li>Divergência de contagem: contagem difere da referência.</li><li>Produto encontrado: destaque também identificado por texto.</li></ul>
     {operational?<p>Mapa do saldo consultado. Posições são um modelo editável; valide a disposição física. Sugestões de espaço exigem capacidade, restrições e espaço físico conferidos.</p>:<SpaceSuggestions stock={stock} capacities={capacities} onSelect={location => { setSelected(location); buttons.current.get(location)?.focus() }}/>}
     <div className="floor-toolbar" role="group" aria-label="Controles da planta">
-      <button type="button" className="theme-toggle" disabled={zoom >= 1.5} onClick={() => setZoom(value => Math.min(1.5, value + 0.25))}>Ampliar planta</button>
-      <button type="button" className="theme-toggle" disabled={zoom <= 0.5} onClick={() => setZoom(value => Math.max(0.5, value - 0.25))}>Reduzir planta</button>
-      <button type="button" className="theme-toggle" onClick={() => setZoom(Math.max(0.5, Math.min(1.5, ((viewport.current?.clientWidth ?? 720) - 24) / 960)))}>Ajustar visualização</button>
+      <button type="button" className="theme-toggle" disabled={zoom >= 1.5} onClick={() => setZoom(Math.min(1.5, zoom + 0.25) - zoomOffset)}>Ampliar planta</button>
+      <button type="button" className="theme-toggle" disabled={zoom <= 0.5} onClick={() => setZoom(Math.max(0.5, zoom - 0.25) - zoomOffset)}>Reduzir planta</button>
+      <button type="button" className="theme-toggle" onClick={() => setZoom(Math.max(0.5, Math.min(1.5, ((viewport.current?.clientWidth ?? 720) - 24) / 960)) - zoomOffset)}>Ajustar visualização</button>
       <span aria-label="Nível de zoom">{Math.round(zoom * 100)}%</span>
       {canEdit && <><button type="button" className="theme-toggle" disabled={Boolean(saved.error)} onClick={() => { try { originalRaw.current = saveFloorPlan(userId, layout, originalRaw.current); setFeedback({ text: 'Planta salva neste navegador.', error: false }) } catch (caught) { setFeedback({ text: caught instanceof Error ? caught.message : 'Não foi possível salvar.', error: true }) } }}>Salvar planta local</button><button type="button" className="theme-toggle" onClick={() => { setLayout(structuredClone(initialFloorPlan)); setSelected(null); setFeedback({ text: 'Posições padrão aplicadas. Salve a planta para conservar.', error: false }) }}>Restaurar posições</button></>}
     </div>

@@ -199,6 +199,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [moveQuantity, setMoveQuantity] = useState('1')
   const [transferMessage, setTransferMessage] = useState('')
   const [search, setSearch] = useState('')
+  const [showAllShocks, setShowAllShocks] = useState(false)
   // Estados dos campos do formulário para incluir um registro fictício.
   const [newCode, setNewCode] = useState('')
   const [newApplication, setNewApplication] = useState('')
@@ -340,6 +341,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
         .includes(term),
     )
   }, [search, activeStock, activeCatalog])
+  const canExpandStock = !isSpringPage && !search.trim() && filteredStock.length > 8
+  const visibleStock = canExpandStock && !showAllShocks ? filteredStock.slice(0, 8) : filteredStock
 
   // Set conta cada código uma vez; reduce soma as quantidades de caixas.
   const totalBoxes = activeStock.reduce((sum, row) => sum + row.boxes, 0)
@@ -740,7 +743,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
                 <h2>Estoque de {productName} por localização</h2>
                 <p>Quantidades em caixas. O produto pode aparecer em várias regiões e situações.</p>
               </div>
-              <span className="row-count">{filteredStock.length} registros</span>
+              <span className="row-count">{visibleStock.length < filteredStock.length ? `${visibleStock.length} de ` : ''}{filteredStock.length} registros</span>
             </div>
 
             <label className="search-box">
@@ -754,13 +757,18 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
               />
             </label>
 
-            <div className="table-wrap" tabIndex={0} role="region" aria-label="Rolagem da tabela de estoque">
+            {canExpandStock && (
+              <button className="theme-toggle" type="button" aria-expanded={showAllShocks} aria-controls="regional-stock-table" onClick={() => setShowAllShocks((value) => !value)}>
+                {showAllShocks ? 'Mostrar menos amortecedores' : 'Ver todos os amortecedores'}
+              </button>
+            )}
+            <div id="regional-stock-table" className="table-wrap" tabIndex={0} role="region" aria-label="Rolagem da tabela de estoque">
               <table>
                 <thead>
                   <tr><th>PRODUTO</th><th>LOCALIZAÇÃO</th><th>SITUAÇÃO</th><th className="quantity-heading">QUANTIDADE (CAIXAS)</th></tr>
                 </thead>
                 <tbody>
-                  {filteredStock.map((row) => (
+                  {visibleStock.map((row) => (
                     <tr key={`${row.code}-${row.location}-${row.status}`}>
                       <td>
                         <div className="product-cell">
