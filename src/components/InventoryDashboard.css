@@ -121,3 +121,17 @@
 .theme-dark .activity-filter select { background: #382c28; color: #f1e7df; border-color: #81685c; }
 .dashboard-stat-link, .dashboard-stock-totals strong small { color: #66564b; }
 .theme-dark .dashboard-stat-link, .theme-dark .dashboard-stock-totals strong small { color: #d3beb2; }
+
+.reference-dashboard .dashboard-work-queue {
+  margin: 0 0 var(--liber-space-5);
+  padding: var(--liber-space-4);
+}
+.dashboard-work-queue h2 { margin: 0 0 var(--liber-space-3); }
+.dashboard-work-queue ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--liber-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}

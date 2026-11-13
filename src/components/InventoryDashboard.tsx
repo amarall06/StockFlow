@@ -39,8 +39,8 @@ export function DashboardActivity({report,onHistory=()=>{}}:{report:DashboardRep
   </div>
 }
 
-export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId,capacityUserId,locations=[]}:{
-  capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history'|'catalog'|'turnover')=>void
+export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId,capacityUserId,locations=[],onOpenAwaitingTest,hasPendingOutflow=false}:{
+  onOpenAwaitingTest?:()=>void;hasPendingOutflow?:boolean;capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history'|'catalog'|'turnover')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
@@ -57,6 +57,13 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   // O resumo principal sempre inclui as duas categorias, mesmo com o relatório filtrado.
   const shockBoxes=dashboardStockSummary(catalog,stock,'shocks').boxes
   const springBoxes=dashboardStockSummary(catalog,stock,'springs').boxes
+  const awaitingBoxes = stock.reduce((total, row) => row.status === 'Aguardando testagem' ? total + row.boxes : total, 0)
+  const replenishmentCount = dashboardStockSummary(catalog, stock, 'all').alerts.length
+  const workItems = [
+    ...(awaitingBoxes > 0 && onOpenAwaitingTest ? [{label: `${awaitingBoxes} cx. aguardando testagem`, open: onOpenAwaitingTest}] : []),
+    ...(replenishmentCount > 0 ? [{label: `${replenishmentCount} produtos para reposição`, open: () => onOpen('alerts')}] : []),
+    ...(hasPendingOutflow ? [{label: '1 saída para conferir neste aparelho', open: () => onOpen('outflow')}] : []),
+  ]
   const stockPage=category==='all'?'stock':category==='springs'?'springs':'inventory'
   useEffect(()=>{
     if(!ready)return
@@ -119,6 +126,10 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
       {automaticError.key===reportKey&&automaticError.message&&<p className="dashboard-error auth-error" role="status">{automaticError.message}</p>}
+      {onOpenAwaitingTest && <Card className="inventory-panel dashboard-panel dashboard-work-queue" aria-labelledby="dashboard-work-title">
+        <h2 id="dashboard-work-title">Fila de trabalho</h2>
+        {workItems.length ? <ul>{workItems.map(item => <li key={item.label}><Button onClick={item.open}>{item.label}</Button></li>)}</ul> : <p>Nenhuma pendência nesta consulta.</p>}
+      </Card>}
       <div id="dashboard-detail" className="dashboard-detail is-expanded reference-summary-grid">
       {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
       {loading?<Card className="dashboard-message dashboard-loading" role="status">
