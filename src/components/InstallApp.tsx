@@ -1,15 +1,21 @@
-import { useState, useSyncExternalStore } from 'react'
-import { canInstall, installApp, subscribeInstall } from '../lib/install-prompt'
+import { canInstall, installApp } from '../lib/install-prompt'
+import { NavigationIcon } from './NavigationIcon'
+
+function showBrowserInstallOption() {
+  window.alert('No Chrome, abra o menu ⋮ → Transmitir, salvar e compartilhar → Instalar página como app. Se o Controle de estoque já estiver instalado, abra pelo ícone do aplicativo.')
+}
 
 export function InstallApp() {
-  const available = useSyncExternalStore(subscribeInstall, canInstall, () => false)
-  const [error, setError] = useState('')
   function requestInstall() {
-    setError('')
-    void installApp().catch(() => setError('Não foi possível abrir a instalação. Tente pelo menu do navegador.'))
+    if (!canInstall()) {
+      showBrowserInstallOption()
+      return
+    }
+    void installApp().catch(showBrowserInstallOption)
   }
-  return <>
-    <button type="button" onClick={() => available ? requestInstall() : setError('Use a opção Instalar ou Adicionar à tela inicial no menu do navegador. Se o app já estiver instalado, abra pelo ícone.')}>Instalar aplicativo</button>
-    {error && <p role="status">{error}</p>}
-  </>
+
+  return <button type="button" className="ui-button" onClick={requestInstall}>
+    <NavigationIcon name="download" />
+    Instalar aplicativo
+  </button>
 }

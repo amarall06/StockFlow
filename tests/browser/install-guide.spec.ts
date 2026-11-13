@@ -7,8 +7,12 @@ test('menu da conta mostra a ação de instalação com ou sem convite nativo', 
   await expect(page.getByRole('button', { name: /Como instalar/ })).toHaveCount(0)
   const install = page.getByRole('button', { name: 'Instalar aplicativo', exact: true })
   await expect(install).toBeVisible()
-  await install.click()
-  await expect(page.getByRole('status').filter({ hasText: 'Use a opção Instalar' })).toBeVisible()
+  await expect(install.locator('svg')).toBeVisible()
+  const fallback = page.waitForEvent('dialog').then(async dialog => {
+    expect(dialog.message()).toContain('Instalar página como app')
+    await dialog.dismiss()
+  })
+  await Promise.all([fallback, install.click()])
   await page.evaluate(() => {
     const event = new Event('beforeinstallprompt', { cancelable: true })
     Object.assign(event, {
