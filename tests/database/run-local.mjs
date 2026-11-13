@@ -33,7 +33,13 @@ try {
   const root=new URL('../../',import.meta.url)
   sql(readFileSync(new URL('tests/database/bootstrap.sql',root),'utf8'))
   const migrations=readdirSync(new URL('supabase/migrations/',root)).filter(name=>name.endsWith('.sql')).sort()
-  for(const name of migrations)sql(readFileSync(new URL(`supabase/migrations/${name}`,root),'utf8'))
+  for (const name of migrations) {
+    const migration = readFileSync(new URL(`supabase/migrations/${name}`,root),'utf8')
+    if (name.endsWith('_four_regional_shelves.sql')) {
+      sql("insert into public.locations(code) values ('NORTE'),('SUL'),('LESTE'),('OESTE') on conflict(code) do nothing")
+      sql(`begin;\n${migration}\ncommit;`)
+    } else sql(migration)
+  }
   if (process.argv.includes('--reservations')) {
     const fixture = readFileSync(new URL('tests/database/box-reservations.sql',root),'utf8')
     sql(fixture)
