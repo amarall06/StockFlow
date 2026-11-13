@@ -34,6 +34,35 @@ try {
   sql(readFileSync(new URL('tests/database/bootstrap.sql',root),'utf8'))
   const migrations=readdirSync(new URL('supabase/migrations/',root)).filter(name=>name.endsWith('.sql')).sort()
   for(const name of migrations)sql(readFileSync(new URL(`supabase/migrations/${name}`,root),'utf8'))
+  if (process.argv.includes('--reservations')) {
+    const fixture = readFileSync(new URL('tests/database/box-reservations.sql',root),'utf8')
+    sql(fixture)
+    const accounts = ['11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-222222222222']
+    const balance = '33333333-3333-4333-8333-333333333333'
+    const requests = [randomUUID(), randomUUID()]
+    const as = (index, command) => `begin; set local role authenticated;
+      select set_config('request.jwt.claim.sub','${accounts[index]}',true);
+      ${command}; commit;`
+    const reserve = (index, id) => as(index, `select public.reserve_stock_boxes('${id}','${balance}',1)`)
+    const results = await Promise.allSettled(requests.map((id,index) => asyncSql(reserve(index,id))))
+    const winner = results.findIndex(result => result.status === 'fulfilled')
+    if (results.filter(result => result.status === 'fulfilled').length !== 1 ||
+        !results.some(result => result.status === 'rejected' && String(result.reason).includes('já foi reservada'))) {
+      throw new Error('A disputa pela última caixa não teve exatamente um vencedor.')
+    }
+    if (sql(`select quantity from public.stock_balances where id='${balance}'`).trim() !== '1') {
+      throw new Error('A reserva alterou o saldo físico.')
+    }
+    sql(as(winner, `select public.finish_stock_reservation('${requests[winner]}',false)`))
+    const next = randomUUID()
+    sql(reserve(1-winner,next))
+    await Promise.all([0,1].map(() => asyncSql(as(1-winner,`select public.finish_stock_reservation('${next}',true)`))))
+    if (sql(`select count(*) from public.stock_movements where outflow_request_id='${next}'`).trim() !== '1' ||
+        sql(`select count(*) from public.stock_balances where id='${balance}'`).trim() !== '0') {
+      throw new Error('A confirmação repetida não deu baixa exatamente uma vez.')
+    }
+    console.log('OK: duas contas, última caixa, cancelamento e confirmação repetida.')
+  } else {
   sql(readFileSync(new URL('tests/database/transfers.sql',root),'utf8'))
   sql(readFileSync(new URL('tests/database/company-activity.sql',root),'utf8'))
   const uid='11111111-1111-4111-8111-111111111111'
@@ -60,6 +89,7 @@ try {
   console.log('OK: lote fictício de 88 códigos, reexecução sem duplicação, saldos preservados e rastreamento privado.')
   if(process.argv.includes('--capacity'))console.log('CAPACITY_RESULT '+sql(readFileSync(new URL('tests/database/capacity.sql',root),'utf8')).trim())
   console.log(`OK: ${migrations.length} migrações em PostgreSQL 17 isolado; contratos, permissões e dois reenvios simultâneos geram uma transferência e conservam 20 caixas.`)
+  }
 } finally {
   command(['rm','-f',container])
 }

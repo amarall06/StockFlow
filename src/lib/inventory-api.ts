@@ -8,6 +8,8 @@ export type { ProductInfo, ShockType, VehicleApplication } from './product-detai
 export { shockTypeLabels } from './product-details'
 
 export type StockRow = {
+  balanceId?: string
+  availableBoxes?: number
   code: string
   location: string
   status: 'Aguardando testagem' | 'Liberado para venda' | 'Em estoque'
@@ -42,7 +44,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     readAllRows((from, to) => client.from('locations').select('id, code, is_active')
       .order('code').range(from, to).abortSignal(signal)),
     readAllRows((from, to) => client.from('stock_balances')
-      .select('product_id, location_id, status_code, quantity')
+      .select(Number(apiVersion) >= 18 ? 'id, product_id, location_id, status_code, quantity' : 'product_id, location_id, status_code, quantity')
       .eq('unit_type', 'box')
       .in('status_code', ['awaiting_test', 'released_for_sale', 'in_stock'])
       .order('product_id').order('location_id').order('status_code').range(from, to).abortSignal(signal)),
@@ -57,6 +59,13 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
   if (locationsResult.error) throw locationsResult.error
   if (balancesResult.error) throw balancesResult.error
   if (applicationsResult.error) throw applicationsResult.error
+
+  const reserved = new Map<string, number>()
+  if (Number(apiVersion) >= 18) {
+    const { data, error } = await client.rpc('available_stock_boxes').abortSignal(signal)
+    if (error) throw error
+    for (const row of data ?? []) reserved.set(row.balance_id, row.reserved_boxes)
+  }
 
   const locationRows = (locationsResult.data ?? []) as Array<{ id: string; code: string; is_active: boolean }>
   const productRows = (productsResult.data ?? []) as Array<{
@@ -78,7 +87,8 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     applications.push({ vehicleModel: row.vehicle_model, yearFrom: row.year_from, yearTo: row.year_to })
     applicationsByProduct.set(row.product_id, applications)
   }
-  const balanceRows = (balancesResult.data ?? []) as Array<{
+  const balanceRows = (balancesResult.data ?? []) as unknown as Array<{
+    id?: string
     product_id: string
     location_id: string
     status_code: string
@@ -108,6 +118,7 @@ export async function loadInventorySnapshot(): Promise<InventorySnapshot> {
     validateBalance({ quantity: balance.quantity, status: balance.status_code, code: product?.code, locationKnown: Boolean(location) })
     if (!product || !location || balance.quantity < 1) return []
     return [{
+      ...(balance.id ? { balanceId: balance.id, availableBoxes: Math.max(0, balance.quantity - (reserved.get(balance.id) ?? 0)) } : {}),
       code: product.code,
       location,
       status: balance.status_code === 'in_stock' ? 'Em estoque' : balance.status_code === 'awaiting_test' ? 'Aguardando testagem' : 'Liberado para venda',

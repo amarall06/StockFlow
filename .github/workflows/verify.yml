@@ -23,6 +23,8 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
+      - name: Verificar disputa pela última caixa
+        run: node tests/database/run-local.mjs --reservations
       - name: Build e regressões
         run: npm test
       - name: Análise do código
