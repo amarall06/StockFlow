@@ -53,7 +53,7 @@ export function FictionalShelfMap({ stock, capacities, userId, canEdit, baseLayo
       {canEdit && <><button type="button" className="theme-toggle" disabled={Boolean(saved.error)} onClick={() => { try { originalRaw.current = saveFloorPlan(userId, layout, originalRaw.current); setFeedback({ text: 'Planta salva neste navegador.', error: false }) } catch (caught) { setFeedback({ text: caught instanceof Error ? caught.message : 'Não foi possível salvar.', error: true }) } }}>Salvar planta local</button><button type="button" className="theme-toggle" onClick={() => { setLayout(structuredClone(initialFloorPlan)); setSelected(null); setFeedback({ text: 'Posições padrão aplicadas. Salve a planta para conservar.', error: false }) }}>Restaurar posições</button></>}
     </div>
     {saved.error && <p role="alert">{saved.error}</p>}{feedback.text && <p role={feedback.error ? 'alert' : 'status'}>{feedback.text}</p>}
-    <div className="floor-workspace">
+    <div className={current ? 'floor-workspace floor-workspace-selected' : 'floor-workspace'}>
     <div ref={viewport} className="floor-viewport" tabIndex={0} role="region" aria-label="Área da planta com rolagem">
     <div className="floor-stage" style={{ width: 960 * zoom, height: 640 * zoom }}>
     <div className="fictional-map" role="group" aria-label="Disposição das prateleiras" style={{ transform: `scale(${zoom})` }}>

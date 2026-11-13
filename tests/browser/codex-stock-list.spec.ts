@@ -21,8 +21,8 @@ test('Visão geral limita a lista e busca registros ocultos',async ({page})=>{
 })
 
 import {prepareRedesign} from './helpers/redesign'
-for (const width of [1440, 390]) {
- test('Planta amplia prateleira e mantém lista ao lado em '+width+'px', async ({page}) => {
+for (const width of [1440, 820, 390]) {
+ test('Planta amplia prateleira e ajusta a posição da lista em '+width+'px', async ({page}) => {
   await page.setViewportSize({width,height:900})
   await prepareRedesign(page)
   await page.locator('.dashboard-quicknav summary').click()
@@ -36,8 +36,14 @@ for (const width of [1440, 390]) {
   await expect(details.getByRole('table',{name:'Produtos de NORTE'})).toBeVisible()
   const area=await map.getByRole('region',{name:'Área da planta com rolagem'}).boundingBox()
   const list=await details.boundingBox()
-  expect(list!.x).toBeGreaterThan(area!.x+area!.width-1)
-  expect(list!.height).toBe(area!.height)
+  if (width > 600) {
+   expect(list!.x).toBeGreaterThan(area!.x+area!.width-1)
+   expect(list!.height).toBe(area!.height)
+  } else {
+   expect(list!.x).toBeCloseTo(area!.x)
+   expect(list!.y).toBeGreaterThan(area!.y+area!.height-1)
+   expect(list!.height).toBeLessThanOrEqual(900*.42+1)
+  }
   await details.getByRole('button',{name:'Fechar detalhes do mapa'}).click()
   await expect(map.getByLabel('Nível de zoom')).toHaveText('75%')
  })
