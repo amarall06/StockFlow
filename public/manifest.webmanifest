@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "LIBER automotive — Controle de Estoque",
-  "short_name": "LIBER automotive",
+  "name": "Controle de estoque",
+  "short_name": "Controle de estoque",
   "description": "Controle de estoque de amortecedores e molas em caixas.",
   "lang": "pt-BR",
   "start_url": "/",
