@@ -141,3 +141,21 @@ test('Produtos: catálogo vazio mantém consulta e atalhos disponíveis',async({
  await expect(page.locator('.products-create summary')).toBeVisible()
  expect(state.errors).toEqual([]);expect(state.writes).toEqual([])
 })
+
+test('Produtos: abre Histórico com código exato e mantém a busca manual', async ({page}) => {
+ await page.setViewportSize({width:360,height:800})
+ const state = await prepareRedesign(page)
+ await page.route('**/rest/v1/stock_movements?*', route => route.fulfill({json: []}))
+ await openProducts(page)
+ await page.getByRole('button', {name:'Detalhes de AGM-35', exact:true}).click()
+ const firstQuery = page.waitForRequest(request => new URL(request.url()).searchParams.get('product.code') === 'eq.AGM-35')
+ await page.getByRole('button', {name:'Ver movimentações', exact:true}).click()
+ await expect(page.getByLabel('Código do produto')).toHaveValue('AGM-35')
+ await firstQuery
+ await page.getByLabel('Código do produto').fill('AGM')
+ const manualQuery = page.waitForRequest(request => new URL(request.url()).searchParams.get('product.code') === 'ilike.%AGM%')
+ await page.getByRole('button', {name:'Filtrar', exact:true}).click()
+ await manualQuery
+ expect(state.errors).toEqual([])
+ expect(state.writes).toEqual([])
+})

@@ -36,11 +36,11 @@ const statusLabels: Record<string, string> = {
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
 
 // Consulta apenas o histórico autorizado pelas políticas RLS da conta conectada.
-export function MovementHistory() {
-  const [code, setCode] = useState('')
+export function MovementHistory({ initialCode = '' }: { initialCode?: string }) {
+  const [code, setCode] = useState(initialCode)
   const [type, setType] = useState('')
   const [category, setCategory] = useState('')
-  const [filters, setFilters] = useState({ code: '', type: '', category: '' })
+  const [filters, setFilters] = useState({ code: initialCode, exact: Boolean(initialCode), type: '', category: '' })
   const [page, setPage] = useState(0)
   const [revision, setRevision] = useState(0)
   const [rows, setRows] = useState<Movement[]>([])
@@ -77,7 +77,8 @@ export function MovementHistory() {
         for (const prefix of springCodePrefixes) query = query.not('product.code', 'like', `${prefix}-%`)
       }
       // Escapa os caracteres especiais do filtro para buscar o texto digitado literalmente.
-      if (filters.code) query = query.ilike('product.code', `%${filters.code.replace(/[\\%_]/g, '\\$&')}%`)
+      if (filters.exact) query = query.eq('product.code', filters.code)
+      else if (filters.code) query = query.ilike('product.code', `%${filters.code.replace(/[\\%_]/g, '\\$&')}%`)
       const { data, error: queryError } = await query.range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
       if (queryError) throw queryError
       const movements = (data ?? []) as unknown as Movement[]
@@ -129,7 +130,8 @@ export function MovementHistory() {
 
   function applyFilters(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setFilters({ code: code.trim().toUpperCase(), type, category })
+    const normalizedCode = code.trim().toUpperCase()
+    setFilters({ code: normalizedCode, exact: normalizedCode !== '' && normalizedCode === initialCode, type, category })
     setPage(0)
   }
 

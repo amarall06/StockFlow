@@ -13,8 +13,8 @@ type Page = 'inventory' | 'springs' | 'catalog'
 type Category = 'all' | 'shocks' | 'springs'
 
 // Apenas apresentação: saldo e classificação continuam usando a regra compartilhada.
-export function ProductsOverview({catalog, stock, onOpen, isAdministrator}: {
-  catalog: Record<string, ProductInfo>; stock: StockRow[]; onOpen: (page: Page) => void; isAdministrator: boolean
+export function ProductsOverview({catalog, stock, onOpen, onViewMovements, isAdministrator}: {
+  catalog: Record<string, ProductInfo>; stock: StockRow[]; onOpen: (page: Page) => void; onViewMovements: (code: string) => void; isAdministrator: boolean
 }) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<Category>('all')
@@ -68,7 +68,7 @@ export function ProductsOverview({catalog, stock, onOpen, isAdministrator}: {
               <td><Badge className={summary.severity === 'ok' ? 'products-status-neutral' : ''}>{status}</Badge></td>
             </tr>
             <tr id={detailsId} hidden={!open} className="products-detail-row"><td colSpan={6}>
-              {open && <div className="products-detail"><ProductPhoto code={code}/><div><strong>Aplicações de {code}</strong><ProductApplications product={product}/><small>{summary.available} caixas disponíveis · {summary.awaiting} aguardando testagem</small></div><Button onClick={() => onOpen(isSpringCode(code) ? 'springs' : 'inventory')}>Ver estoque de {code} ↗</Button></div>}
+              {open && <div className="products-detail"><ProductPhoto code={code}/><div><strong>Aplicações de {code}</strong><ProductApplications product={product}/><small>{summary.available} caixas disponíveis · {summary.awaiting} aguardando testagem</small></div><Button onClick={() => onOpen(isSpringCode(code) ? 'springs' : 'inventory')}>Ver estoque de {code} ↗</Button><Button onClick={() => onViewMovements(code)}>Ver movimentações</Button></div>}
             </td></tr>
           </Fragment>
         })}</tbody>
