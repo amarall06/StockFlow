@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import type { ProductInfo } from '../lib/inventory-api'
 import { isSpringCode } from '../lib/product-category'
 import { createSupplier, loadSuppliers, normalizeReceipt, receiveWithSupplier, type Supplier } from '../lib/receipt-api'
@@ -9,6 +9,10 @@ import { saveOfflineSuppliers } from '../lib/offline-stock'
 export function ReceiptForm({ catalog, locations, springs, role, onReceived, userId = '' }: {
   userId?: string; catalog: Record<string,ProductInfo>; locations: string[]; springs: boolean; role: string; onReceived: () => Promise<void>
 }) {
+  const [scan,setScan] = useState<{text:string; warning:boolean} | null>(null)
+  const applicationField = useRef<HTMLInputElement>(null)
+  const locationField = useRef<HTMLSelectElement>(null)
+  const audioRef = useRef<AudioContext | null>(null)
   const [code,setCode] = useState('')
   const [application,setApplication] = useState('')
   const [location,setLocation] = useState('')
@@ -46,9 +50,48 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived, use
     return () => { current = false }
   },[revision,userId])
 
+  useEffect(() => () => { void audioRef.current?.close().catch(() => {}) }, [])
+
+  function handleCodeScan(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter' || event.nativeEvent.isComposing) return
+    event.preventDefault()
+    if (event.repeat || disabled || creating) return
+
+    const field = event.currentTarget
+    const value = field.value.trim().toUpperCase()
+    const correctCategory = Boolean(value) && isSpringCode(value) === springs
+    const warning = !correctCategory || !known
+    const text = !value ? 'Código vazio.'
+      : !correctCategory ? 'Código de outra categoria.'
+      : known ? 'Código reconhecido.'
+      : 'Código fora do catálogo.'
+    setScan({text, warning})
+    try {
+      const audio = audioRef.current ??= new AudioContext()
+      void audio.resume().then(() => {
+        const tone = audio.createOscillator()
+        const volume = audio.createGain()
+        const start = audio.currentTime
+        tone.frequency.value = warning ? 290 : 880
+        volume.gain.setValueAtTime(.1, start)
+        volume.gain.exponentialRampToValueAtTime(.001, start + .13)
+        tone.connect(volume).connect(audio.destination)
+        tone.start(start)
+        tone.stop(start + .14)
+      }).catch(() => {})
+    } catch { /* O aviso visual continua disponível. */ }
+    if (!correctCategory || (!known && !admin)) {
+      field.select()
+    } else if (known) {
+      locationField.current?.focus()
+    } else {
+      applicationField.current?.focus()
+    }
+  }
+
   function changed() { requestId.current=null; setError(''); setMessage('') }
   function clearForm() {
-    setCode(''); setApplication(''); setLocation(''); setQuantity('1'); setStatus('awaiting_test'); setLot(''); setSupplierId('')
+    setScan(null); setCode(''); setApplication(''); setLocation(''); setQuantity('1'); setStatus('awaiting_test'); setLot(''); setSupplierId('')
     requestId.current=null; setRecorded(false)
   }
   async function syncSavedReceipt() {
@@ -99,9 +142,9 @@ export function ReceiptForm({ catalog, locations, springs, role, onReceived, use
     <form className="add-product-form receipt-form" onSubmit={submit} onChange={changed}>
       <div className="form-heading"><h2>Registrar entrada de estoque</h2><p>Fornecedor e lote são opcionais. Código novo cadastra o produto e sua entrada juntos.</p></div>
       <fieldset disabled={disabled || creating} className="receipt-fields">
-        <label>Código do produto<input required maxLength={springs?10:14} placeholder={springs?'MGM-12':'AMD-AGM-35'} value={code} onChange={(e)=>setCode(e.target.value)} /></label>
-        <label>Aplicação (para código novo)<input maxLength={500} required={!known} disabled={!!known} value={known?.application ?? application} onChange={(e)=>setApplication(e.target.value)} /></label>
-        <label>Localização<select required value={location} onChange={(e)=>setLocation(e.target.value)}><option value="">Escolha a prateleira</option>{locations.map((l)=><option key={l}>{l}</option>)}</select></label>
+        <div><label>Código do produto<input onKeyDown={handleCodeScan} required maxLength={springs?10:14} placeholder={springs?'MGM-12':'AMD-AGM-35'} value={code} onChange={(e)=>{setCode(e.target.value);setScan(null)}} /></label><span role="status" aria-atomic="true">{scan && <small className={scan.warning ? "auth-error" : undefined}>{scan.text}</small>}</span></div>
+        <label>Aplicação (para código novo)<input ref={applicationField} maxLength={500} required={!known} disabled={!!known} value={known?.application ?? application} onChange={(e)=>setApplication(e.target.value)} /></label>
+        <label>Localização<select ref={locationField} required value={location} onChange={(e)=>setLocation(e.target.value)}><option value="">Escolha a prateleira</option>{locations.map((l)=><option key={l}>{l}</option>)}</select></label>
         {springs ? <label>Situação<input value="Em estoque" readOnly /></label> : <label>Situação<select disabled={!admin} value={status} onChange={(e)=>setStatus(e.target.value)}><option value="awaiting_test">Aguardando testagem</option>{admin && <option value="released_for_sale">Liberado para venda</option>}</select></label>}
         <label>Quantidade (caixas)<input type="number" required min="1" max="2147483647" step="1" value={quantity} onChange={(e)=>setQuantity(e.target.value)} /></label>
         <label>Fornecedor (opcional)<select value={supplierId} onChange={(e)=>{setSupplierId(e.target.value);if(!e.target.value)setLot('')}}><option value="">Não informado</option>{suppliers.map((s)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
