@@ -159,3 +159,24 @@ test('Produtos: abre Histórico com código exato e mantém a busca manual', asy
  expect(state.errors).toEqual([])
  expect(state.writes).toEqual([])
 })
+
+test('Produtos: exporta catálogo completo para Correios mesmo com filtro ativo', async ({page}) => {
+ const state = await prepareRedesign(page)
+ await openProducts(page)
+ await page.getByRole('button', {name:'Molas (4)', exact:true}).click()
+ await page.locator('.products-shortcuts summary').click()
+ const pending = page.waitForEvent('download')
+ await page.getByRole('button', {name:'Exportar catálogo para Correios', exact:true}).click()
+ const download = await pending
+ expect(download.suggestedFilename()).toBe('stockflow-catalog.json')
+ const stream = await download.createReadStream()
+ const chunks = []
+ for await (const chunk of stream!) chunks.push(chunk)
+ const rows = JSON.parse(Buffer.concat(chunks).toString('utf8'))
+ expect(rows).toHaveLength(8)
+ expect(rows.find((row: {code:string}) => row.code === 'AGM-35')).toMatchObject({family:'Amortecedor'})
+ expect(rows.find((row: {code:string}) => row.code === 'MGM-35')).toMatchObject({family:'Mola'})
+ expect(rows.every((row: object) => Object.keys(row).sort().join(',') === 'code,description,family')).toBe(true)
+ expect(state.writes).toEqual([])
+ expect(state.errors).toEqual([])
+})

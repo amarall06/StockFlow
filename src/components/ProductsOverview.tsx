@@ -7,6 +7,7 @@ import {PageHeading} from './InventoryLayout'
 import {Badge, Button, Card, Table} from './Interface'
 import {ProductApplications} from './ProductApplications'
 import {ProductPhoto} from './ProductPhotos'
+import {downloadPostalCatalog} from '../lib/postal-catalog'
 import './ProductsOverview.css'
 
 type Page = 'inventory' | 'springs' | 'catalog'
@@ -34,6 +35,7 @@ export function ProductsOverview({catalog, stock, onOpen, onViewMovements, isAdm
         <Button icon="catalog" onClick={() => onOpen('catalog')}>{isAdministrator ? 'Editar' : 'Consultar'} aplicações de amortecedores</Button>
         <Button icon="products" onClick={() => onOpen('inventory')}>Estoque de amortecedores</Button>
         <Button icon="springs" onClick={() => onOpen('springs')}>Estoque de molas</Button>
+        {isAdministrator && <Button disabled={!entries.length} onClick={() => downloadPostalCatalog(catalog)}>Exportar catálogo para Correios</Button>}
       </div></details>
     }/>
     <Card className="products-card" aria-label="Catálogo de produtos">
