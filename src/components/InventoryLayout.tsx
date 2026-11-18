@@ -1,11 +1,19 @@
-import type {ReactNode} from 'react'
+import {useState, type ReactNode} from 'react'
 import {Badge} from './Interface'
 
 // Apenas estrutura visual; permissões, eventos e estado continuam no controlador.
 export function InventoryLayout({dark,sidebar,mobileNavigation,header,notices,children,overlays}:{dark:boolean;sidebar:ReactNode;mobileNavigation:ReactNode;header:ReactNode;notices:ReactNode;children:ReactNode;overlays:ReactNode}){
- return <main className={`app-shell liber-layout${dark?' theme-dark':''}`}>
+ const [collapsed, setCollapsed] = useState(() => {
+  try { return localStorage.getItem('liber:sidebar-collapsed') === 'true' } catch { return false }
+ })
+ function toggleSidebar() {
+  const next = !collapsed
+  setCollapsed(next)
+  try { localStorage.setItem('liber:sidebar-collapsed', String(next)) } catch { /* A preferência permanece ativa nesta sessão. */ }
+ }
+ return <main className={`app-shell liber-layout${collapsed?' sidebar-collapsed':''}${dark?' theme-dark':''}`}>
   <a className="skip-link" href="#consulta">Ir para o conteúdo</a>
-  <aside className="sidebar">{sidebar}</aside>
+  <aside className="sidebar"><button type="button" className="sidebar-toggle" aria-label={collapsed?'Expandir menu':'Recolher menu'} aria-expanded={!collapsed} onClick={toggleSidebar}><span aria-hidden="true">{collapsed?'»':'«'}</span></button>{sidebar}</aside>
   {mobileNavigation}
   <section className="main-panel" id="inicio">{notices}<header className="topbar">{header}</header>{children}</section>
   {overlays}

@@ -55,3 +55,5 @@
  --liber-soft:#3A2216;--liber-badge-ink:#FFB578;--liber-track:#3A2216;--liber-shadow:none;
  color-scheme:dark;
 }
+
+:root { --liber-sidebar-collapsed-width:88px; }

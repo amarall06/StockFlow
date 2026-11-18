@@ -540,29 +540,29 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
         <div className="sidebar-label">MÓDULOS</div>
         <nav className="sidebar-navigation" aria-label="Menu principal">
-        <button data-page="dashboard" className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> Painel inicial</button>
-        <button data-page="alerts" className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> Alertas <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
-        <button data-page="products" className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" aria-current={activePage === 'products' ? 'page' : undefined} onClick={() => changePage('products')}><NavigationIcon name="products"/> Produtos</button>
-        <button data-page="turnover" className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> Giro e ABC</button>
-        <button data-page="inventory" className={`nav-item${activePage === 'inventory' ? ' active' : ''}`} type="button" aria-current={activePage === 'inventory' ? 'page' : undefined} onClick={() => changePage('inventory')}>
-          <NavigationIcon name="inventory"/> Visão geral
+        <button data-page="dashboard" title="Painel inicial" className={`nav-item${activePage === 'dashboard' ? ' active' : ''}`} type="button" aria-current={activePage === 'dashboard' ? 'page' : undefined} onClick={() => changePage('dashboard')}><NavigationIcon name="dashboard"/> <span className="nav-label">Painel inicial</span></button>
+        <button data-page="alerts" title="Alertas" className={`nav-item nav-alerts${activePage === 'alerts' ? ' active' : ''}`} type="button" aria-current={activePage === 'alerts' ? 'page' : undefined} onClick={() => changePage('alerts')}><NavigationIcon name="alerts"/> <span className="nav-label">Alertas</span> <span className="nav-alert-count" aria-label={`${alertCount} produtos em alerta`}>{alertCount}</span></button>
+        <button data-page="products" title="Produtos" className={`nav-item${activePage === 'products' ? ' active' : ''}`} type="button" aria-current={activePage === 'products' ? 'page' : undefined} onClick={() => changePage('products')}><NavigationIcon name="products"/> <span className="nav-label">Produtos</span></button>
+        <button data-page="turnover" title="Giro e ABC" className={`nav-item${activePage === 'turnover' ? ' active' : ''}`} type="button" aria-current={activePage === 'turnover' ? 'page' : undefined} onClick={() => changePage('turnover')}><NavigationIcon name="turnover"/> <span className="nav-label">Giro e ABC</span></button>
+        <button data-page="inventory" title="Visão geral" className={`nav-item${activePage === 'inventory' ? ' active' : ''}`} type="button" aria-current={activePage === 'inventory' ? 'page' : undefined} onClick={() => changePage('inventory')}>
+          <NavigationIcon name="inventory"/> <span className="nav-label">Visão geral</span>
         </button>
         {/* Os módulos extras são exibidos quando o usuário autoriza a apresentação. */}
         {SHOW_DEVELOPMENT_MODULES && <>
-          <button data-page="warranty" className={`nav-item${activePage === 'warranty' ? ' active' : ''}`} type="button" aria-current={activePage === 'warranty' ? 'page' : undefined} onClick={() => changePage('warranty')}>
-            <NavigationIcon name="warranty"/> Garantia
+          <button data-page="warranty" title="Garantia" className={`nav-item${activePage === 'warranty' ? ' active' : ''}`} type="button" aria-current={activePage === 'warranty' ? 'page' : undefined} onClick={() => changePage('warranty')}>
+            <NavigationIcon name="warranty"/> <span className="nav-label">Garantia</span>
           </button>
-          <button data-page="springs" className={`nav-item${activePage === 'springs' ? ' active' : ''}`} type="button" aria-current={activePage === 'springs' ? 'page' : undefined} onClick={() => changePage('springs')}>
-            <NavigationIcon name="springs"/> Molas
+          <button data-page="springs" title="Molas" className={`nav-item${activePage === 'springs' ? ' active' : ''}`} type="button" aria-current={activePage === 'springs' ? 'page' : undefined} onClick={() => changePage('springs')}>
+            <NavigationIcon name="springs"/> <span className="nav-label">Molas</span>
           </button>
         </>}
 
-        {isAdministrator && <button data-page="outflow" className={`nav-item${activePage === 'outflow' ? ' active' : ''}`} type="button" aria-current={activePage === 'outflow' ? 'page' : undefined} onClick={() => changePage('outflow')}><NavigationIcon name="outflow"/> Saídas</button>}
-        <button data-page="history" className={`nav-item${activePage === 'history' ? ' active' : ''}`} type="button" aria-current={activePage === 'history' ? 'page' : undefined} onClick={() => changePage('history')}>
-          <NavigationIcon name="history"/> Histórico
+        {isAdministrator && <button data-page="outflow" title="Saídas" className={`nav-item${activePage === 'outflow' ? ' active' : ''}`} type="button" aria-current={activePage === 'outflow' ? 'page' : undefined} onClick={() => changePage('outflow')}><NavigationIcon name="outflow"/> <span className="nav-label">Saídas</span></button>}
+        <button data-page="history" title="Histórico" className={`nav-item${activePage === 'history' ? ' active' : ''}`} type="button" aria-current={activePage === 'history' ? 'page' : undefined} onClick={() => changePage('history')}>
+          <NavigationIcon name="history"/> <span className="nav-label">Histórico</span>
         </button>
-        <button data-page="catalog" className={`nav-item${activePage === 'catalog' ? ' active' : ''}`} type="button" aria-current={activePage === 'catalog' ? 'page' : undefined} onClick={() => changePage('catalog')}>
-          <NavigationIcon name="catalog"/> Aplicações
+        <button data-page="catalog" title="Aplicações" className={`nav-item${activePage === 'catalog' ? ' active' : ''}`} type="button" aria-current={activePage === 'catalog' ? 'page' : undefined} onClick={() => changePage('catalog')}>
+          <NavigationIcon name="catalog"/> <span className="nav-label">Aplicações</span>
         </button>
 
         </nav>
