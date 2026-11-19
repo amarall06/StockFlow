@@ -9,8 +9,8 @@ import { DashboardWarranty } from './DashboardWarranty'
 import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
-import { SharedShelfLayout } from './SharedShelfLayout'
-import {presentationBundle} from '../lib/presentation-bundle'
+import { WarehousePreview } from './WarehousePreview'
+
 import './InventoryDashboard.css'
 import {PageHeading} from './InventoryLayout'
 import {Card,Button,Table,Progress,ActionGroup} from './Interface'
@@ -98,17 +98,12 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   function openLocation(location:string){
     setMapMessage('')
     showMore('dashboard-map')
-    requestAnimationFrame(()=>{
-      const button=Array.from(document.querySelectorAll<HTMLButtonElement>('#dashboard-map .map-shelf')).find(item=>item.dataset.location===location)
-      if(!button){setMapMessage('A planta operacional ainda não está disponível para esta região. Aguarde a consulta ou atualize a planta e tente novamente.');return}
-      if(button.getAttribute('aria-pressed')!=='true')button.click()
-      button.focus();button.scrollIntoView({block:'center',behavior:'instant'})
-    })
+    setMapMessage('O endereço '+location+' ainda aguarda confirmação na nova planta.')
   }
   return <div className="reference-dashboard">
     <PageHeading section="VISÃO GERAL" title="Painel inicial" subtitle="Acompanhe seu estoque, movimentações e principais indicadores." actions={<details ref={shortcuts} className="dashboard-quicknav" onKeyDown={event=>{if(event.key==='Escape'&&shortcuts.current){event.preventDefault();shortcuts.current.open=false;shortcuts.current.querySelector('summary')?.focus()}}}><summary>Atalhos <span aria-hidden="true">⌄</span></summary><div><ActionGroup label="Ir para um módulo">
       <Button icon="products" onClick={()=>openPage('products')}>Produtos</Button><Button icon="warranty" onClick={()=>openPage('warranty')}>Garantia</Button><Button icon="alerts" onClick={()=>openPage('alerts')}>Alertas</Button>{isAdministrator&&<Button icon="outflow" onClick={()=>openPage('outflow')}>Saídas</Button>}<Button icon="history" onClick={()=>openPage('history')}>Histórico</Button><Button icon="catalog" onClick={()=>openPage('catalog')}>Aplicações</Button><Button icon="turnover" onClick={()=>openPage('turnover')}>Giro e ABC</Button>
-    </ActionGroup><ActionGroup label="Informações do Painel"><Button icon="map" onClick={()=>showMore('dashboard-map')}>Planta e capacidades</Button><Button icon="download" onClick={()=>showMore('dashboard-exports')}>Exportar relatórios</Button><Button icon="inventory" onClick={()=>showMore('dashboard-analysis')}>Análises e conferências</Button><Button icon="filter" onClick={()=>showMore('dashboard-filters')}>Filtros e atualização</Button></ActionGroup>
+    </ActionGroup><ActionGroup label="Informações do Painel"><Button icon="map" onClick={()=>showMore('dashboard-map')}>Mapa 3D</Button><Button icon="download" onClick={()=>showMore('dashboard-exports')}>Exportar relatórios</Button><Button icon="inventory" onClick={()=>showMore('dashboard-analysis')}>Análises e conferências</Button><Button icon="filter" onClick={()=>showMore('dashboard-filters')}>Filtros e atualização</Button></ActionGroup>
     </div></details>}/>
     {!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
       <section className="dashboard-stock-totals" aria-label="Total de caixas por categoria">
@@ -143,7 +138,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
       </section>
       <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
       <div id="dashboard-exports" tabIndex={-1}><StockReportExport/></div>
-      <div id="dashboard-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId && <SharedShelfLayout key={`inventory:${capacityUserId}`} userId={capacityUserId} canEdit={isAdministrator} operationalStock={stock} data={{...presentationBundle,locations}}/>}</div>
+      <div id="dashboard-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId && <WarehousePreview stock={stock}/>}</div>
       <div id="dashboard-analysis" tabIndex={-1}>
       <InventoryInsights catalog={catalog} stock={stock} category={category} locations={locations} onOpenLocation={capacityUserId?openLocation:undefined}/>
       {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
