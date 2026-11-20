@@ -27,3 +27,9 @@ Botão de ampliação substituído por ícone no cabeçalho do mapa, com rótulo
 ## Clique direto no endereço físico da prévia — 20/11/2026
 
 Áreas de clique calculadas pela mesma projeção das faces, divisões A–D e níveis 1–4. Frente e verso possuem endereços separados, conforme numeração ainda provisória. Hover realça a divisão e indica o endereço; clique abre os amortecedores desse endereço imediatamente, sem exigir outra seleção na janela. Arraste continua girando sem abrir uma consulta. Consulta conserva a igualdade exata do local e exclui molas. Teclado mantém seleção da prateleira e botões de endereço. Na vista superior somente o nível 4 é visível/selecionável pelo desenho. Nenhum saldo ou localização foi alterado. Cache/arquivos v19.
+
+## Busca por código no mapa — 20/11/2026
+
+Campo de busca no mapa principal e ampliado. Busca exata normalizada por código de amortecedor, sem diferenciar maiúsculas, espaços ou hífen; somente caixas positivas, agrupadas por endereço sem duplicar situações. Realça todas as prateleiras e divisões/níveis visíveis correspondentes. Resultado selecionado gira para frente/verso e centraliza o local; Enter permite abrir o endereço. Limpar retira destaques e restaura a vista. Busca sincronizada entre o mapa do Painel e o ampliado sem guardar informações no servidor ou no armazenamento público.
+
+Consulta sem saldo válido/expirada não inventa resultado. Locais fora dos endereços T03–T16/A–D/1–4 são listados como fora da planta, sem posicionamento fictício. Nenhum saldo, endereço ou permissão foi alterado. Interface móvel com leitura por teclado e mensagens acessíveis. Cache e arquivos v20.

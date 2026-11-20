@@ -13,13 +13,15 @@ function ExpandedMap({frame,onClose}:{frame:RefObject<HTMLIFrameElement|null>;on
 export function WarehousePreview({stock,topSellers=[],focusLocation}:{stock:StockRow[];topSellers?:Seller[];focusLocation?:string}){
  const frame=useRef<HTMLIFrameElement>(null),expandedFrame=useRef<HTMLIFrameElement>(null)
  const [expanded,setExpanded]=useState(false)
+ const searchCode=useRef('')
  useEffect(()=>{
-  function send(target:Window|null|undefined){target?.postMessage({type:'liber:warehouse-stock',rows:stock,topSellers},window.location.origin)}
+  function send(target:Window|null|undefined){target?.postMessage({type:'liber:warehouse-stock',rows:stock,topSellers,searchCode:searchCode.current},window.location.origin)}
   function message(event:MessageEvent){
    if(event.origin!==window.location.origin)return
    const small=frame.current?.contentWindow,large=expandedFrame.current?.contentWindow
    if(event.source!==small&&event.source!==large)return
    if(event.data?.type==='liber:warehouse-ready')send(event.source as Window)
+   if(event.data?.type==='liber:warehouse-search'&&typeof event.data.code==='string'&&event.data.code.length<=40){searchCode.current=event.data.code;const other=event.source===small?large:small;other?.postMessage({type:'liber:warehouse-search-sync',code:searchCode.current},window.location.origin)}
    if(expanded&&event.source===large&&event.data?.type==='liber:warehouse-close')setExpanded(false)
   }
   window.addEventListener('message',message);send(frame.current?.contentWindow);send(expandedFrame.current?.contentWindow)
