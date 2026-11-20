@@ -35,6 +35,8 @@ export function startResumeRefresh<T>({ load, apply, onError, intervalMs = 0, ca
   window.addEventListener('online', schedule)
   window.addEventListener(INVENTORY_CHANGE_EVENT, schedule)
   document.addEventListener('visibilitychange', schedule)
+  // O evento close não borbulha; captura cobre confirmações fechadas por botão ou Escape.
+  document.addEventListener('close', schedule, true)
   const interval = intervalMs > 0 ? window.setInterval(schedule, intervalMs) : undefined
   return () => {
     active = false
@@ -45,5 +47,6 @@ export function startResumeRefresh<T>({ load, apply, onError, intervalMs = 0, ca
     window.removeEventListener('online', schedule)
     window.removeEventListener(INVENTORY_CHANGE_EVENT, schedule)
     document.removeEventListener('visibilitychange', schedule)
+    document.removeEventListener('close', schedule, true)
   }
 }

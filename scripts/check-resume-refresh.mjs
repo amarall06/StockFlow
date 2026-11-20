@@ -98,3 +98,7 @@ function environment() {
   stop()
 }
 console.log('OK: três casos novos — fila sem sobreposição, descarte após limpeza e aba oculta. Sem rede ou banco.')
+
+// Uma confirmação aberta adia a leitura até fechar, sem esperar o intervalo.
+{const env=environment();let allowed=false,calls=0;const stop=startResumeRefresh({load:async()=>++calls,apply:()=>{},onError:()=>assert.fail(),canRefresh:()=>allowed});window.dispatchEvent(new Event('liber:inventory-change'));await env.flush();assert.equal(calls,0);allowed=true;document.dispatchEvent(new Event('close'));await env.flush();assert.equal(calls,1);stop();document.dispatchEvent(new Event('close'));assert.equal(env.timers.size,0)}
+console.log('OK: atualização adiada até fechar confirmação e limpeza do evento.')
