@@ -10,13 +10,13 @@ import { readOfflineOperations, removeOfflineOperation, type OfflineOperation } 
 
 const keyOf=(row:StockRow)=>JSON.stringify([row.code,row.location,row.status])
 
-export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefresh}:{
-  stock:StockRow[];catalog:Record<string,ProductInfo>;ready:boolean;isAdministrator:boolean;userId:string;onRefresh:()=>Promise<void>
+export function StockOutflows({stock,catalog,ready,isAdministrator,userId,onRefresh,initialRow}:{
+  initialRow?:StockRow;stock:StockRow[];catalog:Record<string,ProductInfo>;ready:boolean;isAdministrator:boolean;userId:string;onRefresh:()=>Promise<void>
 }) {
   const [recovery,setRecovery]=useState(()=>readPendingOutflow(userId))
-  const [springs,setSprings]=useState(Boolean(recovery.pending?.input.row.code.startsWith('M')))
+  const [springs,setSprings]=useState(Boolean((recovery.pending?.input.row.code??initialRow?.code)?.startsWith('M')))
   const [reason,setReason]=useState<OutflowReason>(recovery.pending?.input.reason??'sale')
-  const [source,setSource]=useState(recovery.pending?keyOf(recovery.pending.input.row):'')
+  const [source,setSource]=useState(recovery.pending?keyOf(recovery.pending.input.row):initialRow?keyOf(initialRow):'')
   const [quantity,setQuantity]=useState(String(recovery.pending?.input.boxes??1))
   const [notes,setNotes]=useState(recovery.pending?.input.notes??'')
   const [reference,setReference]=useState(recovery.pending?.input.reference??'')

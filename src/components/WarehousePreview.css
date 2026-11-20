@@ -3,3 +3,7 @@
 .warehouse-fullscreen-dialog h2{color:#fff5ec}.warehouse-fullscreen-dialog{color-scheme:dark}.warehouse-fullscreen-dialog button:hover{background:#583b27;color:#fff5ec}
 
 .warehouse-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.warehouse-panel-heading h2{margin:0}.app-shell.liber-layout .warehouse-panel-heading .warehouse-expand{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;padding:10px;margin:0;flex-shrink:0}.warehouse-expand svg{display:block;pointer-events:none}
+
+.warehouse-heading-tools{display:flex;align-items:center;gap:8px}.warehouse-demo-toggle[aria-pressed=true]{border-color:#bc772d;background:#67411f;color:#fff3dc}@media(max-width:500px){.warehouse-heading-tools{gap:4px}.warehouse-heading-tools .warehouse-demo-toggle{font-size:11px;padding:8px}}
+
+.map-inventory-context{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;border:1px solid var(--liber-line);border-radius:10px;background:var(--liber-surface);color:var(--liber-ink)}

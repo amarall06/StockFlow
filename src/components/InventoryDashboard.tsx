@@ -9,6 +9,7 @@ import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
 import { WarehousePreview } from './WarehousePreview'
+import type {WarehouseActionHandler} from '../lib/warehouse-navigation'
 
 import './InventoryDashboard.css'
 import './DashboardHome.css'
@@ -28,7 +29,7 @@ export function DashboardActivity({report,onHistory=()=>{},showSales=true,showRe
   return <div className="dashboard-columns">
     {showSales&&<Card className="inventory-panel dashboard-panel dashboard-sales-panel" aria-labelledby="dashboard-sales-title"><div className="reference-section-heading"><h2 id="dashboard-sales-title">Vendas por código</h2><span>Últimos 30 dias</span></div>
       {!report.sales_by_product.length?<div className="dashboard-empty"><svg className="sales-empty-chart" viewBox="0 0 500 150" role="img" aria-label="Vendas por código: zero caixas vendidas no período"><path d="M30 20V120H480" fill="none" stroke="currentColor" opacity=".3"/><path d="M30 70H480M30 20H480" fill="none" stroke="currentColor" opacity=".12"/><text x="250" y="80" textAnchor="middle" fill="currentColor" fontSize="18">0 caixas vendidas</text></svg><p>Nenhuma venda registrada neste período e categoria.</p></div>:<Table className="dashboard-sales-table" aria-label="Vendas por código"><thead><tr><th>Produto</th><th>Caixas vendidas</th></tr></thead><tbody>{report.sales_by_product.map((row)=><tr key={row.code}><td>{row.code}</td><td><span className="dashboard-bar-track" aria-hidden="true"><span style={{width:`${row.boxes/maximum*100}%`}}/></span><strong>{row.boxes}</strong></td></tr>)}</tbody></Table>}
-      <details className="dashboard-sales-notes"><summary>Detalhes das vendas</summary><p>{report.sold_boxes} {report.sold_boxes===1?'caixa vendida':'caixas vendidas'} em {report.sales_count} {report.sales_count===1?'registro de venda':'registros de venda'}.</p><p>Período: {dateFormat.format(new Date(report.period_start))} até {dateFormat.format(new Date(report.as_of))}. Até 10 códigos com mais caixas vendidas.</p><p>Transferências, descartes e devoluções não entram na contagem de vendas.</p></details>
+      <details className="dashboard-sales-notes"><summary>Detalhes das vendas</summary><p>{report.sold_boxes} {report.sold_boxes===1?'caixa vendida':'caixas vendidas'} em {report.sales_count} {report.sales_count===1?'registro de venda':'registros de venda'}.</p><p>Período: {dateFormat.format(new Date(report.period_start))} até {dateFormat.format(new Date(report.as_of))}. Até 10 códigos com mais caixas vendidas.</p><p>Transferências e devoluções não entram na contagem de vendas.</p></details>
     </Card>}
     {showReceipts&&<Card className="inventory-panel dashboard-panel dashboard-receipts-panel" aria-labelledby="dashboard-receipts-title"><div className="reference-section-heading"><h2 id="dashboard-receipts-title">Entradas recentes</h2><Button variant="link" onClick={onHistory}>Ver todas</Button></div>
       {!report.receipts.length?<p className="dashboard-empty">Nenhum recebimento registrado nesta categoria.</p>:<ol className="dashboard-receipt-list" tabIndex={0} aria-label="Entradas recentes com rolagem">{report.receipts.map((row)=><li key={row.id}>
@@ -39,8 +40,8 @@ export function DashboardActivity({report,onHistory=()=>{},showSales=true,showRe
   </div>
 }
 
-export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId,capacityUserId,locations=[]}:{
-  capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history'|'catalog'|'turnover')=>void
+export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdministrator=false,activityReady=false,countUserId,capacityUserId,locations=[],onMapAction}:{
+  onMapAction?:WarehouseActionHandler;capacityUserId?:string;locations?:string[];countUserId?:string;activityReady?:boolean;isAdministrator?:boolean;catalog:Record<string,ProductInfo>;stock:StockRow[];ready:boolean;onRefresh:()=>Promise<void>;onOpen:(page:'inventory'|'springs'|'products'|'alerts'|'stock'|'warranty'|'outflow'|'history'|'catalog'|'turnover')=>void
 }){
   const [category,setCategory]=useState<DashboardCategory>('all')
   const [revision,setRevision]=useState(0)
@@ -121,7 +122,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
     {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
     {automaticError.key===reportKey&&automaticError.message&&<p className="dashboard-error auth-error" role="status">{automaticError.message}</p>}
     <div className="home-main-grid">
-      <div id="dashboard-map" className="home-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId?<WarehousePreview stock={stock} topSellers={result.category===category?result.report?.sales_by_product:undefined}/>:<Card><h2>Mapa 3D</h2><a href="/warehouse-preview.html">Abrir prévia do galpão</a></Card>}</div>
+      <div id="dashboard-map" className="home-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId?<WarehousePreview stock={stock} canOutflow={isAdministrator} onAction={onMapAction} topSellers={result.category===category?result.report?.sales_by_product:undefined}/>:<Card><h2>Mapa 3D</h2><a href="/warehouse-preview.html">Abrir prévia do galpão</a></Card>}</div>
       <div className="home-charts" aria-label="Gráficos do estoque">
         {activityReady&&<InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
         {!ready?<Card><p role="status">Gráficos aguardando ativação. Consulte os produtos pelo menu.</p></Card>:loading?<Card className="dashboard-message dashboard-loading" role="status"><p>Carregando gráficos…</p><div className="dashboard-loading-bars" aria-hidden="true"><span/><span/><span/></div></Card>:result.error?<Card className="dashboard-error auth-error" role="alert">{result.error}</Card>:result.report&&<DashboardActivity report={result.report} showReceipts={false}/>}

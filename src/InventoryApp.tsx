@@ -1,4 +1,5 @@
 import {regionalLocations, regionalLocation, regionalOrder} from './lib/regional-locations'
+import type {WarehouseAction} from './lib/warehouse-navigation'
 import {InventoryLayout, PageHeading} from './components/InventoryLayout'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
 import { StockTransfers } from './components/StockTransfers'
@@ -53,7 +54,6 @@ const MovementHistory = lazy(() => import('./components/MovementHistory').then(m
 const ProductCatalog = lazy(() => import('./components/ProductCatalog').then(module => ({ default: module.ProductCatalog })))
 const ProfileSettings = lazy(() => import('./components/ProfileSettings').then(module => ({ default: module.ProfileSettings })))
 const WarrantyManufacturers = lazy(() => import('./components/WarrantyManufacturers').then(module => ({ default: module.WarrantyManufacturers })))
-const BoxReservations = lazy(() => import('./components/BoxReservations').then(module => ({ default: module.BoxReservations })))
 const StockOutflows = lazy(() => import('./components/StockOutflows').then(module => ({ default: module.StockOutflows })))
 const InventoryDashboard = lazy(() => import('./components/InventoryDashboard').then(module => ({ default: module.InventoryDashboard })))
 const InventoryTurnover = lazy(() => import('./components/InventoryTurnover').then(module => ({ default: module.InventoryTurnover })))
@@ -200,6 +200,8 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   const [moveQuantity, setMoveQuantity] = useState('1')
   const [transferMessage, setTransferMessage] = useState('')
   const [search, setSearch] = useState('')
+  const [mapSelection,setMapSelection]=useState<StockRow|null>(null)
+  const [mapOutflowRow,setMapOutflowRow]=useState<StockRow|null>(null)
   const [showAllShocks, setShowAllShocks] = useState(false)
   // Estados dos campos do formulário para incluir um registro fictício.
   const [newCode, setNewCode] = useState('')
@@ -334,14 +336,15 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
   // Filtra por código, aplicação ou localização sempre que a busca muda.
   const filteredStock = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('pt-BR')
-    if (!term) return activeStock
+    const rows=mapSelection?activeStock.filter(row=>row.code===mapSelection.code&&row.location===mapSelection.location):activeStock
+    if (!term) return rows
 
-    return activeStock.filter((row) =>
+    return rows.filter((row) =>
       `${row.code} ${searchableProductText(activeCatalog[row.code])} ${row.location}`
         .toLocaleLowerCase('pt-BR')
         .includes(term),
     )
-  }, [search, activeStock, activeCatalog])
+  }, [search, activeStock, activeCatalog,mapSelection])
   const canExpandStock = !isSpringPage && !search.trim() && filteredStock.length > 8
   const visibleStock = canExpandStock && !showAllShocks ? filteredStock.slice(0, 8) : filteredStock
 
@@ -379,7 +382,16 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
     setScanResult(null)
     setScanMessage('')
     setSearch('')
+    setMapSelection(null);setMapOutflowRow(null)
     setTransferMessage('')
+  }
+
+  function handleMapAction(action:WarehouseAction,requested:StockRow){
+    const row=stock.find(r=>r.code===requested.code&&r.location===requested.location&&r.status===requested.status&&r.boxes>0)
+    if(!row)return
+    if(action==='outflow'){if(!isAdministrator)return;changePage('outflow');setMapOutflowRow(row)}
+    else if(action==='history'){changePage('history');setHistoryProductCode(row.code)}
+    else{changePage(isSpringCode(row.code)?'springs':'inventory');setSearch(row.code);setMapSelection(row);setShowAllShocks(true);setMoveCode(row.code);setMoveFrom(row.location);setMoveStatus(row.status);setMoveQuantity('1')}
   }
 
   // Transfere caixas sem mudar sua situação operacional.
@@ -614,6 +626,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
 
 
         <div className={`content${showInventoryPage || ['outflow','history','catalog'].includes(activePage) ? ' operational-content' : ''}`} id="consulta" tabIndex={-1}>
+          {showInventoryPage&&mapSelection&&<p className="map-inventory-context" role="status">Selecionado pelo mapa: <strong>{mapSelection.code} · {mapSelection.location}</strong> <button type="button" className="theme-toggle" onClick={()=>{setMapSelection(null);setSearch('')}}>Ver todo o estoque</button></p>}
           {resumeError && <p className="auth-error" role="status">{resumeError}</p>}
           {signOutError && <p className="auth-error" role="alert">{signOutError}</p>}
           <ModuleBoundary key={activePage}><Suspense fallback={<ModuleLoading />}>
@@ -795,7 +808,7 @@ export default function InventoryApp({ userId, onSignOut, displayName, userRole,
             </div>
             <p className="table-note">{dataMode === 'database' ? 'Quantidades em caixas, consultadas no Supabase. Entradas e transferências ficam registradas na página Histórico.' : 'Demonstração: situação agrupada por caixa (regra ainda a confirmar). Quantidades fictícias em caixas; dados salvos neste navegador. Use “Restaurar dados fictícios” para recomeçar.'}</p>
           </section>
-          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts onOpen={changePage} canReceive={canReceiveStock} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview onViewMovements={(code) => { changePage('history'); setHistoryProductCode(code) }} catalog={catalog} stock={stock} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard capacityUserId={dataMode === 'database' ? userId : undefined} locations={locations} countUserId={dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') ? userId : undefined} activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <>{dataMode === 'database' && inventoryApiVersion >= 18 && isAdministrator && <BoxReservations key={userId} userId={userId} stock={stock} onRefresh={refreshDatabaseSnapshot}/>}<StockOutflows key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /></> : activePage === 'history' ? <MovementHistory initialCode={historyProductCode} /> : activePage === 'catalog' ? <ProductCatalog
+          </> : activePage === 'turnover' ? <InventoryTurnover catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 14} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'stock' ? <AllStockOverview catalog={catalog} stock={stock} onOpen={changePage} /> : activePage === 'alerts' ? <InventoryAlerts onOpen={changePage} canReceive={canReceiveStock} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 12} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'products' ? <ProductsOverview onViewMovements={(code) => { changePage('history'); setHistoryProductCode(code) }} catalog={catalog} stock={stock} onOpen={changePage} isAdministrator={isAdministrator} /> : activePage === 'dashboard' ? <InventoryDashboard onMapAction={handleMapAction} capacityUserId={dataMode === 'database' ? userId : undefined} locations={locations} countUserId={dataMode === 'database' && (isAdministrator || userRole === 'stockkeeper') ? userId : undefined} activityReady={inventoryApiVersion >= 16} isAdministrator={isAdministrator} catalog={catalog} stock={stock} ready={dataMode === 'database' && inventoryApiVersion >= 13} onRefresh={refreshDatabaseSnapshot} onOpen={changePage} /> : activePage === 'outflow' ? <StockOutflows initialRow={mapOutflowRow??undefined} key={userId} userId={userId} stock={stock} catalog={catalog} ready={dataMode === 'database' && inventoryApiVersion >= 11} isAdministrator={isAdministrator} onRefresh={refreshDatabaseSnapshot} /> : activePage === 'history' ? <MovementHistory initialCode={historyProductCode} /> : activePage === 'catalog' ? <ProductCatalog
             catalog={catalog} databaseMode={dataMode === 'database'} apiVersion={inventoryApiVersion}
             isAdministrator={isAdministrator}
             onUpdate={(code, product) => {

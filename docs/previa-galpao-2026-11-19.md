@@ -33,3 +33,13 @@ Botão de ampliação substituído por ícone no cabeçalho do mapa, com rótulo
 Campo de busca no mapa principal e ampliado. Busca exata normalizada por código de amortecedor, sem diferenciar maiúsculas, espaços ou hífen; somente caixas positivas, agrupadas por endereço sem duplicar situações. Realça todas as prateleiras e divisões/níveis visíveis correspondentes. Resultado selecionado gira para frente/verso e centraliza o local; Enter permite abrir o endereço. Limpar retira destaques e restaura a vista. Busca sincronizada entre o mapa do Painel e o ampliado sem guardar informações no servidor ou no armazenamento público.
 
 Consulta sem saldo válido/expirada não inventa resultado. Locais fora dos endereços T03–T16/A–D/1–4 são listados como fora da planta, sem posicionamento fictício. Nenhum saldo, endereço ou permissão foi alterado. Interface móvel com leitura por teclado e mensagens acessíveis. Cache e arquivos v20.
+
+## Fluxo iniciado pelo mapa e exemplos isolados — 20/11/2026
+
+Usuário confirmou retirar a busca por completo. Campo, resultados, sincronização de busca e teste específico foram removidos da interface atual. Clique no rótulo do bloco ou Enter lista todos os amortecedores das duas faces da prateleira; clique na divisão mantém consulta do endereço exato. A escolha de divisões pelo teclado permanece no seletor recolhido.
+
+Atalhos por amortecedor: Selecionar abre estoque filtrado por código e endereço, com contexto explícito e saída do filtro; Retirar, somente para Administrador, abre a tela de saídas com saldo de origem preselecionado; Histórico abre movimentos do código. Mensagens aceitas apenas da janela do mapa e mesma origem; linhas são conferidas contra o estoque atual no componente e no controlador. Seleção não baixa estoque. Aguardando teste continua sem venda disponível e pedidos pendentes conservam prioridade. Preservadas confirmação, validação no servidor e recuperação/offline da tela de saídas.
+
+Botão Testar exemplos carrega somente a prévia com AGM-35 (T03-A-1:6, T04-C-2:4), ARE-24 (T07-B-3:3), AFI-18 (T11-D-4:2), AFR-42 (T16-A-1:5) e AGM-10 (T09-C-2:7). Exemplos têm aviso visível e retirada simulada em memória, separada do estoque e do banco; voltar ao modo cadastrado restaura a consulta real. A página 3D independente/offline abre exemplos para teste, sem publicar nenhum saldo da empresa. Simulações reiniciam ao recarregar. Cache/recursos v21.
+
+Verificação: navegação estoque/saídas, simulação duplicada, totais preservados e negação de retirada para Consulta em navegador isolado; exemplos e retirada fictícia offline com auditoria A/AA. Não equivale ao teste com contas reais por cargo que continua no planejamento. Sem alteração do banco.
