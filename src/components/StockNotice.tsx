@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ProductInfo, StockRow } from '../lib/inventory-api'
 import { calculateStockAlerts } from '../lib/stock-alerts'
 import { nextStockNotices, type NoticeHistory } from '../lib/stock-notices'
@@ -19,6 +19,7 @@ export function StockNotice({ userId, catalog, stock, onOpen }: {
   const key = `liber:stock-notices:v1:${userId}`
   const history = useRef<NoticeHistory | null>(null)
   const [codes, setCodes] = useState<string[]>([])
+  const rows = useMemo(() => [...calculateStockAlerts(catalog, stock, false), ...calculateStockAlerts(catalog, stock, true)], [catalog, stock])
   useEffect(() => {
     history.current ??= readHistory(key)
     const rows = [...calculateStockAlerts(catalog, stock, false), ...calculateStockAlerts(catalog, stock, true)]
@@ -27,11 +28,12 @@ export function StockNotice({ userId, catalog, stock, onOpen }: {
     try { sessionStorage.setItem(key, JSON.stringify(next.history)) } catch { /* Memória continua funcionando sem armazenamento. */ }
     const current = new Set(rows.filter(row => row.severity !== 'ok').map(row => row.code))
     setCodes(old => [...new Set([...old.filter(code => current.has(code)), ...next.notices.map(row => row.code)])])
-  }, [catalog, stock, key])
-  if (!codes.length) return null
+  }, [rows, key])
+  const visible = rows.filter(row => codes.includes(row.code) && row.severity !== 'ok')
+  if (!visible.length) return null
   return <aside className="stock-notice" aria-label="Aviso de estoque">
     <span className="stock-notice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5m0 3v1"/></svg></span>
-    <p role="status"><strong>Estoque baixo ou zerado</strong><br />{codes.length} {codes.length === 1 ? 'produto precisa' : 'produtos precisam'} de atenção: {codes.slice(0, 3).join(', ')}{codes.length > 3 ? '…' : ''}.</p>
+    <div className="stock-notice-content" role="status" aria-atomic="true"><p><strong>Estoque baixo ou zerado</strong><br />{visible.length} {visible.length === 1 ? 'produto precisa' : 'produtos precisam'} de atenção.</p><ul className="stock-notice-products">{visible.slice(0,3).map(row=><li key={row.code}><b>{row.code}</b> — {row.total === 0 ? 'Estoque zerado' : 'Estoque baixo'}<br /><span>{row.total} {row.total===1?'caixa':'caixas'} no total · {row.minimum===null?'Mínimo não definido':`Mínimo: ${row.minimum} caixas`}</span></li>)}</ul>{visible.length>3&&<p>Mais {visible.length-3} produtos na aba Alertas.</p>}</div>
     <div><button type="button" onClick={() => { setCodes([]); onOpen() }}>Ver alertas</button><button type="button" onClick={() => setCodes([])} aria-label="Fechar aviso de estoque">Fechar</button></div>
   </aside>
 }

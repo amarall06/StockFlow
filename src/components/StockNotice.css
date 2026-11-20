@@ -21,3 +21,7 @@
     overflow:auto;
   }
 }
+
+.app-shell.liber-layout .stock-notice>.stock-notice-content{display:block;grid-column:2;min-width:0}
+.app-shell.liber-layout .stock-notice-products{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:10px;font-size:var(--liber-type-base);line-height:1.5}
+.app-shell.liber-layout .stock-notice-products span{color:var(--liber-muted)}
