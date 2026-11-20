@@ -13,3 +13,9 @@ Mapa novo visível na abertura, gráficos de movimentação e vendas ao lado no 
 ## Navegação sem botões no mapa
 
 Retirados controles de giro/zoom/vista e botões Bloco 1–7. Mouse: arrastar gira/inclina, roda aproxima e clique abre a prateleira; arraste não abre detalhes. Teclado com foco no mapa: cima/baixo percorrem as sete prateleiras, esquerda/direita giram, +/− aproximam, Enter/Espaço abrem, V alterna a vista, Home/0 restauram. Escape fecha e devolve o foco ao mapa. Seleção indicada visualmente e por anúncio acessível. Toque mantém seleção por toque, giro por arraste e zoom por pinça. Cache v16; conteúdo de produtos e validações anteriores preservados.
+
+## Divisórias, caixas e ampliação no próprio site
+
+Todos os sete blocos agora possuem quatro módulos A–D e quatro níveis, conforme novo pedido. Caixas pequenas, médias e grandes são apenas ilustrações, com mais pequenas em cima e algumas no chão; não representam contagem nem embalagem real. Bancada de embalagem encostada na parede esquerda. Sugestão visual para os três amortecedores mais vendidos da consulta dos últimos 30 dias nos blocos mais próximos da bancada, excluindo molas. O ranking aparece após clicar na prateleira e não cria localização, reserva ou movimento. Sem ranking disponível, não se inventam produtos.
+
+Ampliar mapa abre um diálogo sobre a própria página, sem nova aba; botão Fechar mapa e Escape, com retorno de foco e bloqueio de rolagem do fundo. Estoque e ranking enviados somente do Painel autenticado, por mensagens com verificação de origem e janela de origem. Arquivos estáticos v17 próprios evitam que o cache antigo sirva o desenho anterior; ao mudar novamente esses arquivos, gerar novos nomes de versão e atualizar o cache e a página juntos. Os arquivos canônicos e os v17 devem permanecer idênticos nesta versão.

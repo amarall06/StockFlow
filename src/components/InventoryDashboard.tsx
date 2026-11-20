@@ -121,7 +121,7 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
     {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
     {automaticError.key===reportKey&&automaticError.message&&<p className="dashboard-error auth-error" role="status">{automaticError.message}</p>}
     <div className="home-main-grid">
-      <div id="dashboard-map" className="home-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId?<WarehousePreview stock={stock}/>:<Card><h2>Mapa 3D</h2><a href="/warehouse-preview.html">Abrir prévia do galpão</a></Card>}</div>
+      <div id="dashboard-map" className="home-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId?<WarehousePreview stock={stock} topSellers={result.category===category?result.report?.sales_by_product:undefined}/>:<Card><h2>Mapa 3D</h2><a href="/warehouse-preview.html">Abrir prévia do galpão</a></Card>}</div>
       <div className="home-charts" aria-label="Gráficos do estoque">
         {activityReady&&<InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
         {!ready?<Card><p role="status">Gráficos aguardando ativação. Consulte os produtos pelo menu.</p></Card>:loading?<Card className="dashboard-message dashboard-loading" role="status"><p>Carregando gráficos…</p><div className="dashboard-loading-bars" aria-hidden="true"><span/><span/><span/></div></Card>:result.error?<Card className="dashboard-error auth-error" role="alert">{result.error}</Card>:result.report&&<DashboardActivity report={result.report} showReceipts={false}/>}
