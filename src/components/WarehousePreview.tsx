@@ -15,7 +15,7 @@ function ExpandedMap({frame,onClose}:{frame:RefObject<HTMLIFrameElement|null>;on
 export function WarehousePreview({stock,topSellers=[],focusLocation,canOutflow=false,onAction}:{stock:StockRow[];topSellers?:Seller[];focusLocation?:string;canOutflow?:boolean;onAction?:WarehouseActionHandler}){
  const frame=useRef<HTMLIFrameElement>(null),expandedFrame=useRef<HTMLIFrameElement>(null)
  const [expanded,setExpanded]=useState(false)
- const [demoMode,setDemoMode]=useState(false)
+ const [demoMode,setDemoMode]=useState(true)
  const [demoRows,setDemoRows]=useState(()=>warehouseDemoStock.map(row=>({...row})))
  const demoCurrent=useRef(demoRows)
  useEffect(()=>{

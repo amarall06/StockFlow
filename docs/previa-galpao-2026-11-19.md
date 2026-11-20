@@ -43,3 +43,7 @@ Atalhos por amortecedor: Selecionar abre estoque filtrado por código e endereç
 Botão Testar exemplos carrega somente a prévia com AGM-35 (T03-A-1:6, T04-C-2:4), ARE-24 (T07-B-3:3), AFI-18 (T11-D-4:2), AFR-42 (T16-A-1:5) e AGM-10 (T09-C-2:7). Exemplos têm aviso visível e retirada simulada em memória, separada do estoque e do banco; voltar ao modo cadastrado restaura a consulta real. A página 3D independente/offline abre exemplos para teste, sem publicar nenhum saldo da empresa. Simulações reiniciam ao recarregar. Cache/recursos v21.
 
 Verificação: navegação estoque/saídas, simulação duplicada, totais preservados e negação de retirada para Consulta em navegador isolado; exemplos e retirada fictícia offline com auditoria A/AA. Não equivale ao teste com contas reais por cargo que continua no planejamento. Sem alteração do banco.
+
+## Exemplos automáticos — 20/11/2026
+
+O mapa do Painel passa a abrir com os exemplos ativos por padrão, sem clique prévio em Testar exemplos. Aviso Dados fictícios e botão Exemplos ativos preservados; alternar continua permitindo consultar os dados cadastrados. Teste de abertura e retirada simulada aprovado, preservando os indicadores e sem chamadas de escrita ao banco.
