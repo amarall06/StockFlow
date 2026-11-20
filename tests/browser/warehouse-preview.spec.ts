@@ -17,7 +17,7 @@ test('sete blocos, destaque pelo mouse e endereço por divisão e altura, sem in
 
 test('Painel usa só mapa novo e produtos só aparecem no endereço clicado, filtrando molas',async({page})=>{
  await prepareKeyboardPage(page,{locations:[{id:'l1',code:'T03-A-1',is_active:true},{id:'l2',code:'T03-B-2',is_active:true}]})
- await page.locator('.dashboard-quicknav > summary').click();await page.getByRole('button',{name:'Mapa 3D',exact:true}).click()
+ // O mapa agora aparece diretamente no Painel, sem abrir atalhos.
  await expect(page.getByRole('region',{name:'Sincronização da planta e capacidades',exact:true})).toHaveCount(0);await expect(page.getByRole('region',{name:'Ocupação operacional compartilhada',exact:true})).toHaveCount(0);await expect(page.locator('.map-shelf')).toHaveCount(0)
  const frame=page.frameLocator('iframe[title="Mapa 3D ilustrativo do novo galpão"]');await frame.getByRole('button',{name:'Bloco 1',exact:true}).click();await expect(frame.locator('#products')).not.toBeVisible();await frame.getByRole('button',{name:'T03-A-1',exact:true}).click();await expect(frame.locator('#product-rows')).toContainText('AGM-35');await expect(frame.locator('#product-rows')).not.toContainText('MGM-35');await frame.getByRole('button',{name:'T03-B-2',exact:true}).click();await expect(frame.locator('#product-rows')).not.toContainText('AGM-35');await expect(frame.locator('#product-rows')).toContainText('Sem amortecedores vinculados')
 })

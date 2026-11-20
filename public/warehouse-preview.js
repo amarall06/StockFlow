@@ -1,5 +1,6 @@
 (() => {
 'use strict';
+if(window.parent!==window)document.body.classList.add('embedded');
 const canvas=document.getElementById('warehouse'),ctx=canvas.getContext('2d'),angle=document.getElementById('angle'),zoom=document.getElementById('zoom'),dialog=document.getElementById('rack-dialog'),face=document.getElementById('face');
 // Identificadores ilustrativos: não modificam endereços cadastrados no estoque.
 const racks=[{x:115,y:55,w:145,d:52,modules:3},{x:160,y:200,w:180,d:65,modules:3},{x:150,y:330,w:190,d:65,modules:3},{x:150,y:470,w:275,d:70,modules:4},{x:145,y:610,w:290,d:70,modules:4},{x:145,y:750,w:290,d:70,modules:4},{x:145,y:890,w:290,d:70,modules:4}];

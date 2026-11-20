@@ -2,3 +2,5 @@
 .face-choice{display:flex;align-items:center;gap:12px}
 
 dialog{position:fixed;top:18px;bottom:auto;margin:0 auto;max-height:calc(100dvh - 36px)}
+
+.embedded main{max-width:calc(100dvh - 180px)}.embedded nav button{font-size:11px;padding-inline:6px;white-space:nowrap}

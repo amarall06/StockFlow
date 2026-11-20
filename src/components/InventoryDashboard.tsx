@@ -5,15 +5,15 @@ import {loadDashboardReport,type DashboardCategory,type DashboardReport} from '.
 import {dashboardStockSummary} from '../lib/dashboard-summary'
 
 import { InventoryActivity } from './InventoryActivity'
-import { DashboardWarranty } from './DashboardWarranty'
 import { StockReportExport } from './StockReportExport'
 import { InventoryInsights } from './InventoryInsights'
 import { ShelfCountDivergences } from './ShelfCount'
 import { WarehousePreview } from './WarehousePreview'
 
 import './InventoryDashboard.css'
+import './DashboardHome.css'
 import {PageHeading} from './InventoryLayout'
-import {Card,Button,Table,Progress,ActionGroup} from './Interface'
+import {Card,Button,Table,ActionGroup} from './Interface'
 
 function MetricIcon({kind}:{kind:string}) {
  const cube='M4 7l8-4 8 4v10l-8 4-8-4z M4 7l8 4 8-4 M12 11v10'
@@ -23,19 +23,19 @@ function MetricIcon({kind}:{kind:string}) {
 
 const dateFormat=new Intl.DateTimeFormat('pt-BR',{dateStyle:'short',timeStyle:'short',timeZone:'America/Bahia'})
 
-export function DashboardActivity({report,onHistory=()=>{}}:{report:DashboardReport;onHistory?:()=>void}){
+export function DashboardActivity({report,onHistory=()=>{},showSales=true,showReceipts=true}:{report:DashboardReport;onHistory?:()=>void;showSales?:boolean;showReceipts?:boolean}){
   const maximum=Math.max(1,...report.sales_by_product.map((row)=>row.boxes))
   return <div className="dashboard-columns">
-    <Card className="inventory-panel dashboard-panel dashboard-sales-panel" aria-labelledby="dashboard-sales-title"><div className="reference-section-heading"><h2 id="dashboard-sales-title">Vendas por código</h2><span>Últimos 30 dias</span></div>
+    {showSales&&<Card className="inventory-panel dashboard-panel dashboard-sales-panel" aria-labelledby="dashboard-sales-title"><div className="reference-section-heading"><h2 id="dashboard-sales-title">Vendas por código</h2><span>Últimos 30 dias</span></div>
       {!report.sales_by_product.length?<div className="dashboard-empty"><svg className="sales-empty-chart" viewBox="0 0 500 150" role="img" aria-label="Vendas por código: zero caixas vendidas no período"><path d="M30 20V120H480" fill="none" stroke="currentColor" opacity=".3"/><path d="M30 70H480M30 20H480" fill="none" stroke="currentColor" opacity=".12"/><text x="250" y="80" textAnchor="middle" fill="currentColor" fontSize="18">0 caixas vendidas</text></svg><p>Nenhuma venda registrada neste período e categoria.</p></div>:<Table className="dashboard-sales-table" aria-label="Vendas por código"><thead><tr><th>Produto</th><th>Caixas vendidas</th></tr></thead><tbody>{report.sales_by_product.map((row)=><tr key={row.code}><td>{row.code}</td><td><span className="dashboard-bar-track" aria-hidden="true"><span style={{width:`${row.boxes/maximum*100}%`}}/></span><strong>{row.boxes}</strong></td></tr>)}</tbody></Table>}
       <details className="dashboard-sales-notes"><summary>Detalhes das vendas</summary><p>{report.sold_boxes} {report.sold_boxes===1?'caixa vendida':'caixas vendidas'} em {report.sales_count} {report.sales_count===1?'registro de venda':'registros de venda'}.</p><p>Período: {dateFormat.format(new Date(report.period_start))} até {dateFormat.format(new Date(report.as_of))}. Até 10 códigos com mais caixas vendidas.</p><p>Transferências, descartes e devoluções não entram na contagem de vendas.</p></details>
-    </Card>
-    <Card className="inventory-panel dashboard-panel dashboard-receipts-panel" aria-labelledby="dashboard-receipts-title"><div className="reference-section-heading"><h2 id="dashboard-receipts-title">Entradas recentes</h2><Button variant="link" onClick={onHistory}>Ver todas</Button></div>
+    </Card>}
+    {showReceipts&&<Card className="inventory-panel dashboard-panel dashboard-receipts-panel" aria-labelledby="dashboard-receipts-title"><div className="reference-section-heading"><h2 id="dashboard-receipts-title">Entradas recentes</h2><Button variant="link" onClick={onHistory}>Ver todas</Button></div>
       {!report.receipts.length?<p className="dashboard-empty">Nenhum recebimento registrado nesta categoria.</p>:<ol className="dashboard-receipt-list" tabIndex={0} aria-label="Entradas recentes com rolagem">{report.receipts.map((row)=><li key={row.id}>
         <time dateTime={row.created_at}>{new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'short',timeZone:'America/Bahia'}).format(new Date(row.created_at))}</time><strong>{row.code}</strong><b>+ {row.boxes}</b>
       </li>)}</ol>}
       <details className="dashboard-receipt-notes"><summary title="Detalhes das entradas">Detalhes das entradas</summary><p>Últimos 10 recebimentos da categoria selecionada, independentemente do período de vendas.</p>{report.receipts.map(row=><p key={row.id}>{row.code} · Fornecedor: {row.supplier??'Não informado'} · Lote: {row.lot??'Não informado'} · Local: {row.location??'—'}</p>)}</details>
-    </Card>
+    </Card>}
   </div>
 }
 
@@ -50,6 +50,8 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   const manualPending=useRef(false)
   const shortcuts=useRef<HTMLDetailsElement>(null)
   const [mapMessage,setMapMessage]=useState('')
+  const [activeTool,setActiveTool]=useState('')
+  const toolTrigger=useRef<HTMLElement|null>(null)
   const reportKey=`${category}:${revision}`
   const [result,setResult]=useState<{category:DashboardCategory;revision:number;report:DashboardReport|null;error:string}>({category:'all',revision:-1,report:null,error:''})
   const loading=ready&&(result.category!==category||result.revision!==revision)
@@ -92,59 +94,45 @@ export function InventoryDashboard({catalog,stock,ready,onRefresh,onOpen,isAdmin
   }
   function openPage(page:Parameters<typeof onOpen>[0]){if(shortcuts.current)shortcuts.current.open=false;onOpen(page)}
   function showMore(id:string){
+    toolTrigger.current=document.activeElement instanceof HTMLElement?document.activeElement:null
     if(shortcuts.current)shortcuts.current.open=false
-    requestAnimationFrame(()=>{const more=document.getElementById('dashboard-more') as HTMLDetailsElement|null;const target=document.getElementById(id);if(!more||!target)return;more.open=true;if(target instanceof HTMLDetailsElement)target.open=true;target.focus();target.scrollIntoView({block:'start',behavior:'instant'})})
+    if(id!=='dashboard-map')setActiveTool(id)
+    requestAnimationFrame(()=>{const target=document.getElementById(id);target?.focus();target?.scrollIntoView({block:'start',behavior:'instant'})})
   }
+  function closeTool(){setActiveTool('');const trigger=toolTrigger.current;const menu=trigger?.closest('details');if(menu&&!menu.open)menu.querySelector('summary')?.focus();else trigger?.focus()}
   function openLocation(location:string){
     setMapMessage('')
     showMore('dashboard-map')
     setMapMessage('O endereço '+location+' ainda aguarda confirmação na nova planta.')
   }
-  return <div className="reference-dashboard">
-    <PageHeading section="VISÃO GERAL" title="Painel inicial" subtitle="Acompanhe seu estoque, movimentações e principais indicadores." actions={<details ref={shortcuts} className="dashboard-quicknav" onKeyDown={event=>{if(event.key==='Escape'&&shortcuts.current){event.preventDefault();shortcuts.current.open=false;shortcuts.current.querySelector('summary')?.focus()}}}><summary>Atalhos <span aria-hidden="true">⌄</span></summary><div><ActionGroup label="Ir para um módulo">
-      <Button icon="products" onClick={()=>openPage('products')}>Produtos</Button><Button icon="warranty" onClick={()=>openPage('warranty')}>Garantia</Button><Button icon="alerts" onClick={()=>openPage('alerts')}>Alertas</Button>{isAdministrator&&<Button icon="outflow" onClick={()=>openPage('outflow')}>Saídas</Button>}<Button icon="history" onClick={()=>openPage('history')}>Histórico</Button><Button icon="catalog" onClick={()=>openPage('catalog')}>Aplicações</Button><Button icon="turnover" onClick={()=>openPage('turnover')}>Giro e ABC</Button>
-    </ActionGroup><ActionGroup label="Informações do Painel"><Button icon="map" onClick={()=>showMore('dashboard-map')}>Mapa 3D</Button><Button icon="download" onClick={()=>showMore('dashboard-exports')}>Exportar relatórios</Button><Button icon="inventory" onClick={()=>showMore('dashboard-analysis')}>Análises e conferências</Button><Button icon="filter" onClick={()=>showMore('dashboard-filters')}>Filtros e atualização</Button></ActionGroup>
-    </div></details>}/>
-    {!ready?<section className="inventory-panel dashboard-panel"><p role="status">O painel de vendas e recebimentos aguarda ativação no banco. Os módulos de estoque continuam disponíveis.</p><button className="add-product-button" type="button" onClick={()=>onOpen('inventory')}>Consultar amortecedores</button><button className="theme-toggle" type="button" onClick={()=>onOpen('springs')}>Consultar molas</button></section>:<>
+  return <div className="reference-dashboard dashboard-home">
+    <PageHeading section="VISÃO GERAL" title="Painel inicial" subtitle="Estoque, movimentação e localização." actions={<div className="home-heading-actions">
+      <Button className={summary.alerts.length?'home-alert-shortcut has-alerts':'home-alert-shortcut'} icon="alerts" onClick={()=>openPage('alerts')}>Alertas <span className="home-alert-count">{summary.alerts.length}</span></Button>
+      <details ref={shortcuts} className="dashboard-quicknav" onKeyDown={event=>{if(event.key==='Escape'&&shortcuts.current){event.preventDefault();shortcuts.current.open=false;shortcuts.current.querySelector('summary')?.focus()}}}><summary>Atalhos <span aria-hidden="true">⌄</span></summary><div><ActionGroup label="Ir para um módulo">
+        <Button icon="products" onClick={()=>openPage('products')}>Produtos</Button><Button icon="warranty" onClick={()=>openPage('warranty')}>Garantia</Button>{isAdministrator&&<Button icon="outflow" onClick={()=>openPage('outflow')}>Saídas</Button>}<Button icon="history" onClick={()=>openPage('history')}>Histórico</Button><Button icon="catalog" onClick={()=>openPage('catalog')}>Aplicações</Button><Button icon="turnover" onClick={()=>openPage('turnover')}>Giro e ABC</Button>
+      </ActionGroup><ActionGroup label="Ferramentas do Painel"><Button icon="download" onClick={()=>showMore('dashboard-exports')}>Relatórios</Button><Button icon="inventory" onClick={()=>showMore('dashboard-analysis')}>Análises e conferências</Button><Button icon="history" onClick={()=>showMore('dashboard-receipts')}>Entradas recentes</Button><Button icon="filter" onClick={()=>showMore('dashboard-filters')}>Filtros e atualização</Button></ActionGroup></div></details>
+    </div>}/>
       <section className="dashboard-stock-totals" aria-label="Total de caixas por categoria">
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('inventory')}><MetricIcon kind="shock"/><span>Amortecedores</span><strong>{shockBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">→</span></span></button>
         <button type="button" className="dashboard-stat" onClick={()=>onOpen('springs')}><MetricIcon kind="spring"/><span>Molas</span><strong>{springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Consultar estoque <span aria-hidden="true">→</span></span></button>
         <button type="button" className="dashboard-stat dashboard-stat-total" onClick={()=>onOpen('stock')}><MetricIcon kind="boxes"/><span>Total em estoque</span><strong>{shockBoxes+springBoxes}<small> caixas</small></strong><span className="dashboard-stat-link">Amortecedores + molas · sem garantia <span aria-hidden="true">→</span></span></button>
-        <button type="button" className="dashboard-stat dashboard-stat-products" onClick={()=>onOpen('products')}><MetricIcon kind="barcode"/><span>Produtos cadastrados</span><strong>{Object.keys(catalog).length}</strong><span className="dashboard-stat-link">Abrir catálogo de produtos <span aria-hidden="true">→</span></span></button>
       </section>
-      {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
-      {automaticError.key===reportKey&&automaticError.message&&<p className="dashboard-error auth-error" role="status">{automaticError.message}</p>}
-      <div id="dashboard-detail" className="dashboard-detail is-expanded reference-summary-grid">
-      {activityReady && <InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
-      {loading?<Card className="dashboard-message dashboard-loading" role="status">
-        <p>Carregando vendas e recebimentos…</p>
-        <div className="dashboard-loading-bars" aria-hidden="true"><span/><span/><span/></div>
-      </Card>:result.error?<Card className="dashboard-error auth-error" role="alert">{result.error}</Card>:result.report&&<DashboardActivity report={result.report} onHistory={()=>onOpen('history')}/>}
-      <Card className="inventory-panel dashboard-panel dashboard-replenishment" aria-label="Reposição"><h2>Reposição</h2>{summary.alerts.length?summary.alerts.slice(0,2).map(row=><div className="replenishment-row" key={row.code}><div><strong>{row.code}</strong><span>{row.total} de {row.minimum??'—'} (mínimo)</span></div><div className="replenishment-meter"><Progress max={Math.max(1,row.minimum??1)} value={row.total} label={`Estoque de ${row.code} em relação ao mínimo`}/><strong>{row.minimum?Math.round(row.total/row.minimum*100)+'%':'—'}</strong></div></div>):<p>Nenhum produto necessita reposição.</p>}</Card>
-      <Card className={`inventory-panel dashboard-panel dashboard-alert-panel${summary.alerts.length?' has-alerts':''}`} aria-labelledby="dashboard-alerts-title"><div className="dashboard-alert-heading"><h2 id="dashboard-alerts-title">Alertas de reposição</h2><Button variant="link" onClick={()=>onOpen('alerts')}>Ver todas</Button></div><div className="dashboard-alert-callout"><strong>{summary.alerts.length?`${summary.alerts.length} produtos no limite mínimo`:'Estoque dentro dos limites'}</strong><span>{summary.alerts.length?'Faça a reposição para evitar falta em estoque.':'Nenhuma reposição pendente nesta consulta.'}</span></div>
-        {!summary.alerts.length?<p>Nenhum produto zerado ou no limite configurado nesta consulta.</p>:<ul className="dashboard-alert-list" tabIndex={0} aria-label="Alertas de reposição com rolagem">{summary.alerts.slice(0,6).map((row)=><li key={row.code}><strong>{row.code}</strong><span>{row.severity==='zero'?'Sem estoque':`${row.total} caixas · mínimo ${row.minimum}`}</span></li>)}</ul>}
-        {summary.alerts.length>6&&<p>Prévia de 6 dos {summary.alerts.length} alertas. Consulte os estoques para ver todos.</p>}
-      </Card>
+
+    {refreshError&&<p className="dashboard-error auth-error" role="alert">{refreshError}</p>}
+    {automaticError.key===reportKey&&automaticError.message&&<p className="dashboard-error auth-error" role="status">{automaticError.message}</p>}
+    <div className="home-main-grid">
+      <div id="dashboard-map" className="home-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId?<WarehousePreview stock={stock}/>:<Card><h2>Mapa 3D</h2><a href="/warehouse-preview.html">Abrir prévia do galpão</a></Card>}</div>
+      <div className="home-charts" aria-label="Gráficos do estoque">
+        {activityReady&&<InventoryActivity category={category} revision={revision} pauseRef={manualPending}/>}
+        {!ready?<Card><p role="status">Gráficos aguardando ativação. Consulte os produtos pelo menu.</p></Card>:loading?<Card className="dashboard-message dashboard-loading" role="status"><p>Carregando gráficos…</p><div className="dashboard-loading-bars" aria-hidden="true"><span/><span/><span/></div></Card>:result.error?<Card className="dashboard-error auth-error" role="alert">{result.error}</Card>:result.report&&<DashboardActivity report={result.report} showReceipts={false}/>}
       </div>
-      <details id="dashboard-more" className="dashboard-more"><summary>Mais informações <span>Filtros, disponibilidade, Garantia, planta, relatórios e análises</span></summary><div className="dashboard-more-content">
-      <details id="dashboard-filters" tabIndex={-1} className="dashboard-controls"><summary>Filtros do painel</summary><div className="dashboard-tools"><label>Filtrar indicadores<select value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><Button disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</Button></div></details>
-      <section className="dashboard-totals" aria-label="Resumo do estoque normal">
-        <button type="button" className="dashboard-stat" onClick={()=>onOpen(stockPage)}><span>Caixas na seleção</span><strong>{summary.boxes}</strong><small>Consultar estoque ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('products')}><span>Produtos cadastrados</span><strong>{summary.products}</strong><small>Abrir catálogo de produtos ↗</small></button>
-        <button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>Produtos sem estoque</span><strong>{summary.zeros}</strong><small>Consultar alertas ↗</small></button><button type="button" className="dashboard-stat" onClick={()=>onOpen('alerts')}><span>No mínimo ou abaixo</span><strong>{summary.low}</strong><small>Consultar alertas ↗</small></button>
-      </section>
-      <section className="dashboard-totals dashboard-availability" aria-label="Disponibilidade por situação">
-        <button type="button" className="dashboard-stat" onClick={()=>onOpen(stockPage)}><span>Disponível para venda</span><strong>{summary.available}<small> caixas</small></strong><small>Amortecedores liberados e molas em estoque</small></button>
-        <button type="button" className="dashboard-stat" onClick={()=>onOpen('inventory')}><span>Aguardando testagem</span><strong>{summary.awaiting}<small> caixas</small></strong><small>Somente amortecedores · não disponíveis para venda</small></button>
-      </section>
-      <DashboardWarranty category={category} revision={revision} onOpen={()=>onOpen('warranty')}/>
-      <div id="dashboard-exports" tabIndex={-1}><StockReportExport/></div>
-      <div id="dashboard-map" tabIndex={-1}>{mapMessage&&<p role="status">{mapMessage}</p>}{capacityUserId && <WarehousePreview stock={stock}/>}</div>
-      <div id="dashboard-analysis" tabIndex={-1}>
-      <InventoryInsights catalog={catalog} stock={stock} category={category} locations={locations} onOpenLocation={capacityUserId?openLocation:undefined}/>
-      {countUserId && <ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}
-      </div>
-      {result.report&&<p className="dashboard-message">Movimentações consultadas em {dateFormat.format(new Date(result.report.as_of))}.</p>}
-      </div></details>
-    </>}
+    </div>
+    {activeTool&&<section id={activeTool} tabIndex={-1} className="home-tool-panel" aria-label="Ferramenta do Painel"><header><h2>{{'dashboard-exports':'Relatórios','dashboard-analysis':'Análises e conferências','dashboard-receipts':'Entradas recentes','dashboard-filters':'Filtros e atualização'}[activeTool]}</h2><Button onClick={closeTool}>Fechar</Button></header>
+      {activeTool==='dashboard-filters'&&<>      <section className="dashboard-controls" aria-label="Filtros do painel"><div className="dashboard-tools"><label>Filtrar indicadores<select aria-label="Filtrar indicadores" value={category} disabled={refreshing} onChange={(event)=>setCategory(event.target.value as DashboardCategory)}><option value="all">Amortecedores e molas</option><option value="shocks">Amortecedores</option><option value="springs">Molas</option></select></label><Button disabled={refreshing||loading} onClick={()=>void refresh()}>{refreshing?'Atualizando…':'Atualizar painel'}</Button></div></section>
+<p className="home-availability">{summary.available} caixas disponíveis · {summary.awaiting} amortecedores aguardando teste</p><Button onClick={()=>onOpen(stockPage)}>Consultar estoque da seleção</Button></>}
+      {activeTool==='dashboard-exports'&&<StockReportExport/>}
+      {activeTool==='dashboard-receipts'&&(result.report?<DashboardActivity report={result.report} showSales={false} onHistory={()=>onOpen('history')}/>:<p role="status">{result.error||'Carregando entradas…'}</p>)}
+      {activeTool==='dashboard-analysis'&&<><InventoryInsights catalog={catalog} stock={stock} category={category} locations={locations} onOpenLocation={capacityUserId?openLocation:undefined}/>{countUserId&&<ShelfCountDivergences userId={countUserId} category={category} stock={stock} onOpen={()=>onOpen('inventory')}/>}</>}
+    </section>}
   </div>
 }
