@@ -100,3 +100,8 @@ test('canal privado recusado conserva a atualização periódica de segurança',
   expect(current.server.privateJoins.every(Boolean)).toBe(true)
   expect(current.writes).toEqual([])
 })
+
+
+test('segunda sessão reconecta e recupera mudanças sem duplicar operações',async({page,browser})=>{
+ const first=await consumer(page);const context=await browser.newContext({baseURL:new URL(page.url()).origin});try{const other=await context.newPage();const second=await consumer(other);await expect(total(other)).toHaveText('5 caixas');await context.setOffline(true);await expect(other.getByText(/Sem conexão. A tela conserva/)).toBeVisible();first.stock.shocks=second.stock.shocks=9;first.stock.springs=second.stock.springs=6;first.server.emit();await page.clock.runFor(500);await expect(total(page)).toHaveText('15 caixas');await expect(total(other)).toHaveText('5 caixas');await context.setOffline(false);await other.clock.runFor(500);await expect(total(other)).toHaveText('15 caixas');await expect(other.getByText(/Conexão restabelecida. Conferindo/)).toHaveCount(0);expect(first.writes).toEqual([]);expect(second.writes).toEqual([])}finally{await context.close()}
+})
