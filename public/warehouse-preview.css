@@ -6,3 +6,5 @@ dialog{position:fixed;top:18px;bottom:auto;margin:0 auto;max-height:calc(100dvh 
 .embedded main{max-width:calc(100dvh - 180px)}.embedded nav button{font-size:11px;padding-inline:6px;white-space:nowrap}
 
 canvas{touch-action:none;cursor:grab}canvas:focus-visible{outline:3px solid #ffd48e;outline-offset:-4px}.embedded main{max-width:calc(100dvh - 36px)}
+
+#levels[hidden],.face-choice[hidden]{display:none}

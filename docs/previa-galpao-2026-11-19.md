@@ -23,3 +23,7 @@ Ampliar mapa abre um diálogo sobre a própria página, sem nova aba; botão Fec
 ## Ícone superior e caixas nas duas faces
 
 Botão de ampliação substituído por ícone no cabeçalho do mapa, com rótulo acessível e descrição ao passar o mouse. Caixas ilustrativas em duas fileiras independentes, frente e verso; dimensões limitadas para não se sobreporem no centro da prateleira. Faces visíveis e ordem de desenho ajustadas conforme o ângulo da câmera. Versão de arquivos e cache atualizada para v18.
+
+## Clique direto no endereço físico da prévia — 20/11/2026
+
+Áreas de clique calculadas pela mesma projeção das faces, divisões A–D e níveis 1–4. Frente e verso possuem endereços separados, conforme numeração ainda provisória. Hover realça a divisão e indica o endereço; clique abre os amortecedores desse endereço imediatamente, sem exigir outra seleção na janela. Arraste continua girando sem abrir uma consulta. Consulta conserva a igualdade exata do local e exclui molas. Teclado mantém seleção da prateleira e botões de endereço. Na vista superior somente o nível 4 é visível/selecionável pelo desenho. Nenhum saldo ou localização foi alterado. Cache/arquivos v19.

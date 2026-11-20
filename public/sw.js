@@ -1,5 +1,5 @@
-const CACHE = 'liber-public-offline-v18'
-const FILES = ['/offline.html', '/offline.js', '/warehouse-preview.html', '/warehouse-preview.css', '/warehouse-preview.js', '/warehouse-preview-v18.css', '/warehouse-preview-v18.js']
+const CACHE = 'liber-public-offline-v19'
+const FILES = ['/offline.html', '/offline.js', '/warehouse-preview.html', '/warehouse-preview.css', '/warehouse-preview.js', '/warehouse-preview-v19.css', '/warehouse-preview-v19.js']
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES))))
 self.addEventListener('activate', event => event.waitUntil((async () => {
   const keys = await caches.keys()
