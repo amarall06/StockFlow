@@ -9,3 +9,7 @@ Sete blocos; retiradas bancada e marcações de portas. Destaque por mouse e foc
 ## Painel inicial simplificado
 
 Mapa novo visível na abertura, gráficos de movimentação e vendas ao lado no computador e empilhados no celular. Três totais compactos: amortecedores, molas e total. Alertas com contador visível. Relatórios, filtros, entradas recentes e análises/conferências abrem sob demanda em Atalhos, uma área por vez; Garantia e cadastros continuam acessíveis pelo menu. Retirados cartões repetidos de reposição e listas longas da tela principal. Leituras de análises e conferências só começam quando abertas; dados e regras de estoque preservados. CSS e versão do cache ajustados para o encaixe da prévia incorporada.
+
+## Navegação sem botões no mapa
+
+Retirados controles de giro/zoom/vista e botões Bloco 1–7. Mouse: arrastar gira/inclina, roda aproxima e clique abre a prateleira; arraste não abre detalhes. Teclado com foco no mapa: cima/baixo percorrem as sete prateleiras, esquerda/direita giram, +/− aproximam, Enter/Espaço abrem, V alterna a vista, Home/0 restauram. Escape fecha e devolve o foco ao mapa. Seleção indicada visualmente e por anúncio acessível. Toque mantém seleção por toque, giro por arraste e zoom por pinça. Cache v16; conteúdo de produtos e validações anteriores preservados.

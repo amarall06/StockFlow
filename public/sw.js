@@ -1,4 +1,4 @@
-const CACHE = 'liber-public-offline-v15'
+const CACHE = 'liber-public-offline-v16'
 const FILES = ['/offline.html', '/offline.js', '/warehouse-preview.html', '/warehouse-preview.css', '/warehouse-preview.js']
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES))))
 self.addEventListener('activate', event => event.waitUntil((async () => {
@@ -11,5 +11,5 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET' || url.origin !== self.location.origin) return
   if (url.pathname === '/warehouse-preview.html') { event.respondWith(fetch(request).catch(() => caches.open(CACHE).then(cache => cache.match('/warehouse-preview.html')))); return }
   if (request.mode === 'navigate') event.respondWith(fetch(request).catch(() => caches.open(CACHE).then(cache => cache.match('/offline.html'))))
-  else if (FILES.includes(url.pathname)) event.respondWith(caches.open(CACHE).then(cache => cache.match(request)).then(saved => saved || fetch(request)))
+  else if (FILES.includes(url.pathname)) event.respondWith(caches.open(CACHE).then(cache => cache.match(request, { ignoreSearch: true })).then(saved => saved || fetch(request)))
 })
